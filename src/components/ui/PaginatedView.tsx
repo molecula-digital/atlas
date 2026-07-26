@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useMemo, type ReactNode } from 'react'
 import { ChevronLeft, ChevronRight, SearchX } from 'lucide-react'
 import { fetchPaginated, type PaginatedResponse } from '@/lib/api'
+import { btn } from '@/components/ui/button-styles'
 
 interface PaginatedViewProps<T> {
   endpoint: string
@@ -149,21 +150,19 @@ function Pagination({
     }
   }
 
-  const btn =
-    'inline-flex items-center justify-center min-w-[2.25rem] h-9 px-2 rounded text-sm font-mono transition-colors cursor-pointer'
-  const active = 'bg-accent/15 text-accent border border-accent/30'
-  const inactive = 'text-secondary hover:text-accent hover:bg-elevated border border-transparent'
-  const disabled = 'text-muted/40 pointer-events-none border border-transparent'
+  const active = btn({ variant: 'accent', size: 'md' }, 'min-w-7')
+  const inactive = btn({ variant: 'ghost', size: 'md' }, 'min-w-7')
+  const disabled = btn({ variant: 'ghost', size: 'md' }, 'min-w-7 text-muted/40 pointer-events-none')
 
   return (
     <nav aria-label="Paginación" className="flex items-center justify-center gap-1 mt-8">
       <button
         onClick={() => currentPage > 1 && onPageChange(currentPage - 1)}
-        className={`${btn} ${currentPage <= 1 ? disabled : inactive}`}
+        className={currentPage <= 1 ? disabled : inactive}
         aria-label="Página anterior"
         disabled={currentPage <= 1}
       >
-        <ChevronLeft className="w-4 h-4" />
+        <ChevronLeft className="w-3.5 h-3.5" />
       </button>
 
       {pages.map((p, i) =>
@@ -175,7 +174,7 @@ function Pagination({
           <button
             key={p}
             onClick={() => onPageChange(p)}
-            className={`${btn} ${p === currentPage ? active : inactive}`}
+            className={p === currentPage ? active : inactive}
             aria-current={p === currentPage ? 'page' : undefined}
           >
             {p}
@@ -185,11 +184,11 @@ function Pagination({
 
       <button
         onClick={() => currentPage < totalPages && onPageChange(currentPage + 1)}
-        className={`${btn} ${currentPage >= totalPages ? disabled : inactive}`}
+        className={currentPage >= totalPages ? disabled : inactive}
         aria-label="Página siguiente"
         disabled={currentPage >= totalPages}
       >
-        <ChevronRight className="w-4 h-4" />
+        <ChevronRight className="w-3.5 h-3.5" />
       </button>
     </nav>
   )

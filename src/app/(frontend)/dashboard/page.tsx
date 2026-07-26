@@ -9,6 +9,7 @@ import { MyEntries } from '@/components/dashboard/MyEntries'
 import { MyJobs } from '@/components/dashboard/MyJobs'
 import { Plus, Briefcase, User, FolderKanban } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
+import { btn } from '@/components/ui/button-styles'
 
 type Tab = 'profile' | 'projects' | 'jobs'
 
@@ -60,15 +61,15 @@ function DashboardContent() {
           <div className="flex gap-2">
             <Link
               href="/dashboard/entries/new"
-              className="flex items-center gap-1 px-3 py-1.5 text-xs font-mono font-medium bg-accent text-accent-foreground rounded-md hover:bg-accent/90 transition-colors"
+              className={btn({ variant: "accent", size: "md" })}
             >
-              <Plus className="w-3.5 h-3.5" /> Agregar registro
+              <Plus className="w-3 h-3" /> Agregar registro
             </Link>
             <Link
               href="/dashboard/jobs/new"
-              className="flex items-center gap-1 px-3 py-1.5 text-xs font-mono font-medium border border-border text-primary rounded-md hover:bg-elevated transition-colors"
+              className={btn({ size: "md" })}
             >
-              <Briefcase className="w-3.5 h-3.5" /> Publicar empleo
+              <Briefcase className="w-3 h-3" /> Publicar empleo
             </Link>
           </div>
         </div>

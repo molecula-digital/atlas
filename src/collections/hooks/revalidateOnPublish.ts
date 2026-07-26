@@ -61,6 +61,7 @@ export const revalidateEntry: CollectionAfterChangeHook = ({
   if (collection.slug === 'events') {
     safeRevalidatePath('/')
     safeRevalidatePath('/eventos')
+    if (doc.slug) safeRevalidatePath(`/eventos/${doc.slug}`)
   }
 
   if (collection.slug === 'jobs') {

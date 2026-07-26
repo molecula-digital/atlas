@@ -1,5 +1,6 @@
 import React from "react";
 import { ZoomIn, ZoomOut, RotateCcw, Lock, Unlock } from "lucide-react";
+import { btn } from "@/components/ui/button-styles";
 
 interface MapControlsProps {
   interactionEnabled: boolean;
@@ -23,7 +24,7 @@ export default function MapControls({
         <button
           type="button"
           onClick={() => onToggleLock()}
-          className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--color-card)]/90 border border-[var(--color-border)] shadow-lg text-xs font-mono text-[var(--color-muted)] hover:text-accent hover:border-accent transition-colors cursor-pointer backdrop-blur-sm"
+          className={btn({ size: "md" }, "absolute bottom-4 left-1/2 -translate-x-1/2 z-10 text-muted backdrop-blur-sm")}
         >
           <Lock size={12} />
           Toca para interactuar
@@ -34,11 +35,10 @@ export default function MapControls({
       <div className="absolute bottom-4 right-4 flex flex-col gap-1.5">
         <button
           onClick={onToggleLock}
-          className={`w-9 h-9 rounded-lg border flex items-center justify-center transition-colors ${
-            interactionEnabled
-              ? "bg-accent text-[var(--color-accent-foreground)] border-accent"
-              : "bg-[var(--color-elevated)] border-[var(--color-border)] text-[var(--color-muted)] hover:text-accent hover:border-accent"
-          }`}
+          className={btn(
+            { variant: interactionEnabled ? "accent" : "neutral", size: "lg", icon: true },
+            "rounded-lg",
+          )}
           aria-label={
             interactionEnabled ? "Bloquear mapa" : "Desbloquear mapa"
           }
@@ -51,7 +51,7 @@ export default function MapControls({
         <button
           onClick={onZoomIn}
           disabled={!interactionEnabled}
-          className="w-9 h-9 rounded-lg bg-[var(--color-elevated)] border border-[var(--color-border)] text-[var(--color-primary)] hover:text-accent hover:border-accent disabled:opacity-40 disabled:pointer-events-none transition-colors flex items-center justify-center"
+          className={btn({ size: "lg", icon: true }, "rounded-lg")}
           aria-label="Acercar"
         >
           <ZoomIn size={16} />
@@ -59,7 +59,7 @@ export default function MapControls({
         <button
           onClick={onZoomOut}
           disabled={!interactionEnabled}
-          className="w-9 h-9 rounded-lg bg-[var(--color-elevated)] border border-[var(--color-border)] text-[var(--color-primary)] hover:text-accent hover:border-accent disabled:opacity-40 disabled:pointer-events-none transition-colors flex items-center justify-center"
+          className={btn({ size: "lg", icon: true }, "rounded-lg")}
           aria-label="Alejar"
         >
           <ZoomOut size={16} />
@@ -67,7 +67,7 @@ export default function MapControls({
         <button
           onClick={onReset}
           disabled={!interactionEnabled}
-          className="w-9 h-9 rounded-lg bg-[var(--color-elevated)] border border-[var(--color-border)] text-[var(--color-primary)] hover:text-accent hover:border-accent disabled:opacity-40 disabled:pointer-events-none transition-colors flex items-center justify-center"
+          className={btn({ size: "lg", icon: true }, "rounded-lg")}
           aria-label="Resetear zoom"
         >
           <RotateCcw size={16} />

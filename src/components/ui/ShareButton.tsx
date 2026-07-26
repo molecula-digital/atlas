@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Share2, Check } from "lucide-react";
+import { btn } from "@/components/ui/button-styles";
 
 export default function ShareButton({
   title,
@@ -32,16 +33,16 @@ export default function ShareButton({
   return (
     <button
       onClick={handleShare}
-      className="inline-flex items-center gap-2 px-4 py-2 border border-border bg-card text-secondary font-mono font-semibold text-sm rounded-lg hover:bg-elevated hover:text-primary transition-colors cursor-pointer"
+      className={btn({ size: 'md' })}
     >
       {copied ? (
         <>
-          <Check className="w-4 h-4 text-accent" />
+          <Check className="w-3.5 h-3.5 text-accent" />
           <span className="text-accent">LINK COPIADO</span>
         </>
       ) : (
         <>
-          <Share2 className="w-4 h-4" />
+          <Share2 className="w-3.5 h-3.5" />
           COMPARTIR
         </>
       )}

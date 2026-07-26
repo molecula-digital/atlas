@@ -50,7 +50,7 @@ export default function StepReview({ state, setField, cities, logoRef, coverRef 
             onChange={(e) =>
               handleFilePreview(e.target.files?.[0], setField, "logoPreview")
             }
-            className="w-full text-sm text-muted font-mono file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border file:border-border file:text-sm file:font-mono file:font-semibold file:bg-card file:text-primary hover:file:border-accent file:transition-colors file:cursor-pointer"
+            className="w-full text-xs text-muted font-mono file:mr-3 file:py-1 file:px-2.5 file:rounded file:border file:border-border file:text-xs file:font-mono file:font-semibold file:bg-transparent file:text-primary hover:file:border-accent hover:file:text-accent file:transition-colors file:cursor-pointer"
           />
           {state.logoPreview && (
             <div className="mt-2 relative w-20 h-20">
@@ -65,7 +65,7 @@ export default function StepReview({ state, setField, cities, logoRef, coverRef 
                   setField("logoPreview", null);
                   if (logoRef.current) logoRef.current.value = "";
                 }}
-                className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center hover:bg-red-600 transition-colors"
+                className="absolute -top-2 -right-2 w-5 h-5 rounded-full border border-red-500/70 bg-transparent text-red-500 backdrop-blur-sm flex items-center justify-center hover:border-red-500 hover:bg-red-500/10 transition-colors cursor-pointer"
               >
                 <X className="w-3 h-3" />
               </button>
@@ -83,7 +83,7 @@ export default function StepReview({ state, setField, cities, logoRef, coverRef 
             onChange={(e) =>
               handleFilePreview(e.target.files?.[0], setField, "coverPreview")
             }
-            className="w-full text-sm text-muted font-mono file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border file:border-border file:text-sm file:font-mono file:font-semibold file:bg-card file:text-primary hover:file:border-accent file:transition-colors file:cursor-pointer"
+            className="w-full text-xs text-muted font-mono file:mr-3 file:py-1 file:px-2.5 file:rounded file:border file:border-border file:text-xs file:font-mono file:font-semibold file:bg-transparent file:text-primary hover:file:border-accent hover:file:text-accent file:transition-colors file:cursor-pointer"
           />
           {state.coverPreview && (
             <div className="mt-2 relative">
@@ -98,7 +98,7 @@ export default function StepReview({ state, setField, cities, logoRef, coverRef 
                   setField("coverPreview", null);
                   if (coverRef.current) coverRef.current.value = "";
                 }}
-                className="absolute top-2 right-2 w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center hover:bg-red-600 transition-colors"
+                className="absolute top-2 right-2 w-6 h-6 rounded-full border border-red-500/70 bg-transparent text-red-500 backdrop-blur-sm flex items-center justify-center hover:border-red-500 hover:bg-red-500/10 transition-colors cursor-pointer"
               >
                 <X className="w-3 h-3" />
               </button>

@@ -8,6 +8,7 @@ import { timeAgo } from '@/lib/utils'
 import { CheckCircle, Clock, XCircle, Pencil, ExternalLink, Plus, FolderKanban } from 'lucide-react'
 import { useUserResource } from '@/hooks/useUserResource'
 import { EmptyState } from '@/components/ui/EmptyState'
+import { btn } from '@/components/ui/button-styles'
 
 interface Entry {
   id: string
@@ -62,7 +63,7 @@ export function MyEntries() {
         action={
           <Link
             href="/dashboard/entries/new"
-            className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-mono font-medium bg-accent text-accent-foreground rounded-md hover:bg-accent/90 transition-colors"
+            className={btn({ variant: "accent", size: "md" })}
           >
             <Plus className="w-3.5 h-3.5" />
             Agregar registro
@@ -135,14 +136,14 @@ export function MyEntries() {
               <div className="flex gap-2 shrink-0">
                 <Link
                   href={`/dashboard/entries/${entry.id}`}
-                  className="flex items-center gap-1 px-3 py-1.5 text-xs font-mono text-secondary hover:text-primary border border-border rounded-md hover:bg-elevated transition-colors"
+                  className={btn({ size: "sm" })}
                 >
                   <Pencil className="w-3 h-3" /> Editar
                 </Link>
                 {entry._status === 'published' && (
                   <Link
                     href={entryUrl}
-                    className="flex items-center gap-1 px-3 py-1.5 text-xs font-mono text-secondary hover:text-primary border border-border rounded-md hover:bg-elevated transition-colors"
+                    className={btn({ size: "sm" })}
                   >
                     <ExternalLink className="w-3 h-3" /> Ver
                   </Link>
@@ -157,7 +158,7 @@ export function MyEntries() {
       <div className="text-center pt-2">
         <Link
           href="/dashboard/entries/new"
-          className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-mono font-medium bg-accent text-accent-foreground rounded-md hover:bg-accent/90 transition-colors"
+          className={btn({ variant: "accent", size: "md" })}
         >
           <Plus className="w-3.5 h-3.5" />
           Agregar registro

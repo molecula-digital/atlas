@@ -11,6 +11,7 @@ import { Tag } from '@/components/ui/Tag'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import { ExternalLink } from '@/components/ui/ExternalLink'
 import { MapPin, Clock, Briefcase, ExternalLink as LinkIcon, AlertTriangle } from 'lucide-react'
+import { btn } from '@/components/ui/button-styles'
 
 export const revalidate = 3600
 
@@ -160,7 +161,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
             <p className="text-sm text-primary font-medium mb-3">Interesado en esta oportunidad?</p>
             <ExternalLink
               href={job.contactUrl as string}
-              className="inline-flex items-center gap-2 px-6 py-2.5 bg-accent text-accent-foreground rounded-md text-sm font-mono font-medium hover:bg-accent/90 transition-colors"
+              className={btn({ variant: "accent", size: "md" })}
             >
               <LinkIcon className="w-4 h-4" /> Aplicar
             </ExternalLink>

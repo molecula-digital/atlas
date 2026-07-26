@@ -1,4 +1,5 @@
 import React from "react";
+import { btn } from "@/components/ui/button-styles";
 import { ENTRY_TYPE_CONFIG } from "@/config";
 import type { AtlasEntryType } from "@/config";
 import {
@@ -76,7 +77,7 @@ function StatsContent({
         <button
           type="button"
           onClick={onClose}
-          className="p-2 min-h-11 min-w-11 flex items-center justify-center rounded hover:bg-elevated transition-colors text-muted hover:text-primary"
+          className={btn({ variant: "ghost", size: "md", icon: true })}
           aria-label="Cerrar resumen"
         >
           <X className="w-4 h-4" />
@@ -111,7 +112,7 @@ function StatsContent({
       </div>
       <a
         href={`/directorio/${id}`}
-        className="mt-3 flex items-center justify-center gap-2 w-full text-center text-xs font-mono font-semibold px-3 py-3 min-h-11 rounded-lg bg-accent text-accent-foreground hover:bg-accent/90 transition-colors"
+        className={btn({ variant: 'accent', size: 'md' }, 'mt-3 w-full')}
       >
         VER COMUNIDAD
         <ArrowRight className="w-3.5 h-3.5" />
@@ -150,7 +151,7 @@ function StatsEmpty({ name, onClose }: { name: string; onClose: () => void }) {
         <button
           type="button"
           onClick={onClose}
-          className="p-2 min-h-11 min-w-11 flex items-center justify-center rounded hover:bg-elevated transition-colors text-muted hover:text-primary"
+          className={btn({ variant: "ghost", size: "md", icon: true })}
           aria-label="Cerrar resumen"
         >
           <X className="w-4 h-4" />
@@ -170,7 +171,7 @@ function StatsEmpty({ name, onClose }: { name: string; onClose: () => void }) {
         </div>
         <a
           href="/dashboard"
-          className="flex items-center justify-center gap-2 w-full text-center text-xs font-mono font-semibold px-3 py-3 min-h-11 rounded-lg border border-dashed border-accent/40 text-accent hover:bg-accent/10 transition-colors"
+          className={btn({ variant: 'accent', size: 'md' }, 'w-full border-dashed')}
         >
           <Plus className="w-3.5 h-3.5" />
           REGISTRAR PERFIL/STARTUP

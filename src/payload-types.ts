@@ -73,6 +73,7 @@ export interface Config {
     news: News;
     jobs: Job;
     events: Event;
+    'newsletter-subscribers': NewsletterSubscriber;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -86,6 +87,7 @@ export interface Config {
     news: NewsSelect<false> | NewsSelect<true>;
     jobs: JobsSelect<false> | JobsSelect<true>;
     events: EventsSelect<false> | EventsSelect<true>;
+    'newsletter-subscribers': NewsletterSubscribersSelect<false> | NewsletterSubscribersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -480,6 +482,10 @@ export interface Job {
 export interface Event {
   id: number;
   title: string;
+  /**
+   * Se genera automáticamente a partir del título y la fecha si se deja vacío.
+   */
+  slug: string;
   organizer?: string | null;
   description?: {
     root: {
@@ -524,6 +530,26 @@ export interface Event {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * Emails anónimos (sin cuenta Atlas). Exportar CSV (incluye también perfiles con newsletter activo): /api/newsletter-subscribers/export
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "newsletter-subscribers".
+ */
+export interface NewsletterSubscriber {
+  id: number;
+  email: string;
+  status: 'subscribed' | 'unsubscribed';
+  /**
+   * Se genera automáticamente. Usar en enlaces de baja del newsletter.
+   */
+  unsubscribeToken: string;
+  source: 'homepage' | 'footer' | 'manual';
+  subscribedAt?: string | null;
+  unsubscribedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -572,6 +598,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'events';
         value: number | Event;
+      } | null)
+    | ({
+        relationTo: 'newsletter-subscribers';
+        value: number | NewsletterSubscriber;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -806,6 +836,7 @@ export interface JobsSelect<T extends boolean = true> {
  */
 export interface EventsSelect<T extends boolean = true> {
   title?: T;
+  slug?: T;
   organizer?: T;
   description?: T;
   date?: T;
@@ -821,6 +852,20 @@ export interface EventsSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "newsletter-subscribers_select".
+ */
+export interface NewsletterSubscribersSelect<T extends boolean = true> {
+  email?: T;
+  status?: T;
+  unsubscribeToken?: T;
+  source?: T;
+  subscribedAt?: T;
+  unsubscribedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

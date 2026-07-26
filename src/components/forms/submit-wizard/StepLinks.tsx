@@ -1,5 +1,6 @@
 import { X, Plus } from "lucide-react";
 import { TYPE_COPY, type StepProps } from "./types";
+import { btn } from "@/components/ui/button-styles"
 
 export default function StepLinks({ state, setField }: StepProps) {
   const copy = state.entryType ? TYPE_COPY[state.entryType] : null;
@@ -160,9 +161,9 @@ export default function StepLinks({ state, setField }: StepProps) {
             type="button"
             onClick={addTag}
             disabled={state.tags.length >= 10}
-            className="px-3 py-2 rounded-lg border border-border bg-card text-muted hover:text-accent hover:border-accent transition-colors disabled:opacity-40"
+            className={btn({ size: "lg", icon: true })}
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-3.5 h-3.5" />
           </button>
         </div>
         {state.tags.length > 0 && (

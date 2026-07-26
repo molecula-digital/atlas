@@ -1,0 +1,1 @@
+ALTER TABLE "app"."profiles" ADD COLUMN "email" text;

@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { EntryCard } from '@/components/entries/EntryCard'
 import FeaturedCarousel from '@/components/entries/FeaturedCarousel'
 import { type AtlasEntryType } from '@/config'
+import { SectionTitle } from '@/components/ui/SectionTitle'
 
 interface FeaturedEntry {
   slug: string
@@ -25,16 +26,11 @@ export function FeaturedSection({ entries }: FeaturedSectionProps) {
 
   return (
     <section className="py-4 px-4">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-280 mx-auto">
         <div className="flex items-center justify-between mb-10">
-          <div>
-            <h2 className="text-2xl md:text-3xl font-sans font-bold text-primary">
-              Destacados
-            </h2>
-            <p className="mt-2 text-secondary">
-              Startups y organizaciones destacadas del ecosistema
-            </p>
-          </div>
+          <SectionTitle description="Startups y organizaciones destacadas del ecosistema">
+            Destacados
+          </SectionTitle>
           <Link
             href="/directorio"
             className="hidden sm:inline-flex items-center gap-2 text-sm font-mono text-accent hover:underline"

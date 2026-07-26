@@ -2,14 +2,13 @@ import type { Metadata } from 'next'
 import { getFeaturedEntries } from '@/lib/payload'
 import { getEntryCounts } from '@/lib/entry-counts'
 import { FAQS, SITE_URL, SITE_DESCRIPTION } from '@/config'
-import type { AtlasEntryType } from '@/config'
 
 import { HeroSection } from '@/components/sections/HeroSection'
-import { CategorySection } from '@/components/sections/CategorySection'
 import { FeaturedSection } from '@/components/sections/FeaturedSection'
 import MapSection from '@/components/sections/MapSection'
 import { CalendarSection } from '@/components/sections/CalendarSection'
 import { FaqSection } from '@/components/sections/FaqSection'
+import { CommunitySection } from '@/components/sections/CommunitySection'
 import { CombinedCtaSection } from '@/components/sections/CombinedCtaSection'
 import UpcomingEventsStrip from '@/components/calendar/UpcomingEventsStrip'
 
@@ -85,16 +84,16 @@ export default async function HomePage() {
         }}
       />
 
-      <HeroSection cityCounts={counts.byCity} />
+      <HeroSection cityCounts={counts.byCity} typeCounts={counts.byType} />
 
       <section className="py-4 px-4">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-280 mx-auto">
           <UpcomingEventsStrip />
         </div>
       </section>
 
-      <CategorySection counts={counts.byType as Record<AtlasEntryType, number>} />
       <FeaturedSection entries={featured as any} />
+      <CommunitySection />
       <MapSection cityCounts={counts.byCity} cityTypeCounts={counts.byCityAndType} />
       <CalendarSection />
       <FaqSection />

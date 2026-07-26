@@ -4,12 +4,38 @@ import { sql } from 'drizzle-orm'
 import { NextResponse, type NextRequest } from 'next/server'
 import { withRateLimit } from '@/lib/rate-limit'
 import type { Where } from 'payload'
+import {
+  listPublicProfiles,
+  publicProfileToDirectoryItem,
+  type PublicProfileSort,
+} from '@/lib/public-profile'
 
 const SORT_MAP: Record<string, string> = {
   'name-asc': 'name',
   'name-desc': '-name',
   'date-desc': '-publishDate',
   'date-asc': 'publishDate',
+}
+
+type DirectoryDoc = Record<string, unknown> & {
+  id: string | number
+  name?: string
+  publishDate?: string | null
+  kind?: string
+}
+
+function sortMerged(docs: DirectoryDoc[], sortKey: string): DirectoryDoc[] {
+  const copy = [...docs]
+  copy.sort((a, b) => {
+    if (sortKey === 'name-asc' || sortKey === 'name-desc') {
+      const cmp = String(a.name ?? '').localeCompare(String(b.name ?? ''), 'es', { sensitivity: 'base' })
+      return sortKey === 'name-asc' ? cmp : -cmp
+    }
+    const aDate = a.publishDate ? Date.parse(String(a.publishDate)) : 0
+    const bDate = b.publishDate ? Date.parse(String(b.publishDate)) : 0
+    return sortKey === 'date-asc' ? aDate - bDate : bDate - aDate
+  })
+  return copy
 }
 
 export async function GET(request: NextRequest) {
@@ -58,7 +84,6 @@ export async function GET(request: NextRequest) {
         })
       }
 
-      // Fetch full documents by IDs via Payload
       const fullResult = await payload.find({
         collection: 'entries',
         where: { id: { in: ids } },
@@ -73,6 +98,72 @@ export async function GET(request: NextRequest) {
         page: 1,
         hasNextPage: false,
         hasPrevPage: false,
+      })
+    }
+
+    // /personas: merge Payload person entries with public user profiles (no city filter).
+    // User profiles are independent of directory "person" CMS entries.
+    // If the app.profiles query fails (e.g. pending migration), still return Payload people.
+    if (entryType === 'person' && !city) {
+      const profileSort = (
+        ['name-asc', 'name-desc', 'date-desc', 'date-asc'].includes(sortKey)
+          ? sortKey
+          : 'date-desc'
+      ) as PublicProfileSort
+
+      const entriesResult = await payload.find({
+        collection: 'entries',
+        where,
+        limit: 500,
+        pagination: false,
+        sort,
+      })
+
+      let publicProfiles: Awaited<ReturnType<typeof listPublicProfiles>> = []
+      try {
+        publicProfiles = await listPublicProfiles(profileSort)
+      } catch (err) {
+        console.error('Public user profiles unavailable; serving Payload persons only:', err)
+      }
+
+      const entryDocs: DirectoryDoc[] = entriesResult.docs.map((doc) => ({
+        id: doc.id,
+        kind: 'entry',
+        slug: doc.slug,
+        name: doc.name,
+        tagline: doc.tagline ?? null,
+        entryType: doc.entryType,
+        logo: doc.logo,
+        coverImage: doc.coverImage,
+        city: doc.city,
+        tags: doc.tags ?? [],
+        publishDate: (doc.publishDate as string | null | undefined) ?? null,
+      }))
+
+      const profileDocs: DirectoryDoc[] = publicProfiles.map((p) => {
+        const item = publicProfileToDirectoryItem(p)
+        return {
+          ...item,
+          id: item.id,
+          name: item.name,
+          publishDate: item.publishDate,
+        }
+      })
+
+      const merged = sortMerged([...entryDocs, ...profileDocs], sortKey)
+      const totalDocs = merged.length
+      const totalPages = Math.max(1, Math.ceil(totalDocs / limit) || 1)
+      const safePage = Math.min(page, totalPages)
+      const start = (safePage - 1) * limit
+      const docs = merged.slice(start, start + limit)
+
+      return NextResponse.json({
+        docs,
+        totalDocs,
+        totalPages,
+        page: safePage,
+        hasNextPage: safePage < totalPages,
+        hasPrevPage: safePage > 1,
       })
     }
 

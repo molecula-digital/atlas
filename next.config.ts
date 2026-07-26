@@ -15,6 +15,14 @@ const nextConfig: NextConfig = {
         hostname: 'cdn.atlas-sinaloa.tech',
       },
       {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.googleusercontent.com',
+      },
+      {
         protocol: 'http',
         hostname: 'localhost',
         port: '9000',
@@ -42,9 +50,10 @@ export default withSentryConfig(withPayload(nextConfig), {
 
   // Route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
   // This can increase your server load as well as your hosting bill.
-  // Note: Check that the configured route will not match with your Next.js middleware, otherwise reporting of client-
+  // Note: Check that the configured route will not match with your Next.js proxy, otherwise reporting of client-
   // side errors will fail.
-  tunnelRoute: "/monitoring",
+  // Dev has no route to Sentry's ingest host, so the proxy only produces ETIMEDOUT noise.
+  tunnelRoute: process.env.NODE_ENV === "production" ? "/monitoring" : undefined,
 
   webpack: {
     // Enables automatic instrumentation of Vercel Cron Monitors. (Does not yet work with App Router route handlers.)

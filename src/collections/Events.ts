@@ -33,6 +33,34 @@ export const Events: CollectionConfig = {
       required: true,
     },
     {
+      name: 'slug',
+      label: 'Slug',
+      type: 'text',
+      required: true,
+      unique: true,
+      admin: {
+        position: 'sidebar',
+        description: 'Se genera automáticamente a partir del título y la fecha si se deja vacío.',
+      },
+      hooks: {
+        beforeValidate: [
+          ({ value, siblingData }) => {
+            if (!value && siblingData?.title) {
+              const base = (siblingData.title as string)
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/(^-|-$)/g, '')
+              const datePart = ((siblingData.date as string) || '').split('T')[0]
+              return datePart ? `${base}-${datePart}` : base
+            }
+            return value
+          },
+        ],
+      },
+    },
+    {
       name: 'organizer',
       label: 'Organizador',
       type: 'text',

@@ -1,10 +1,12 @@
 'use client'
 
 import { useState, useEffect } from "react";
-import { CalendarDays } from "lucide-react";
+import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
 import { useEventsData } from "@/hooks/useEventsData";
-import { openEventDetail, EVENT_DETAIL_EVENT } from "@/lib/event-bus";
+import { EVENT_DETAIL_EVENT, getEventHref, handleEventClick } from "@/lib/event-bus";
+import { cn } from "@/lib/utils";
 import UpcomingEventsSidebar from "./UpcomingEventsSidebar";
+import { btn } from "@/components/ui/button-styles";
 
 const WEEKDAYS = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
 const MONTH_NAMES = [
@@ -37,6 +39,26 @@ function getMonthDays(year: number, month: number) {
   if (startWeekday < 0) startWeekday = 6;
 
   return { daysInMonth, startWeekday };
+}
+
+function CalendarSkeleton() {
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <div className="h-8 w-8 rounded bg-elevated animate-pulse" />
+        <div className="h-6 w-36 rounded bg-elevated animate-pulse" />
+        <div className="h-8 w-8 rounded bg-elevated animate-pulse" />
+      </div>
+      <div className="grid grid-cols-7 gap-1.5">
+        {WEEKDAYS.map((day) => (
+          <div key={day} className="h-4 rounded bg-elevated/60 animate-pulse" />
+        ))}
+        {Array.from({ length: 35 }).map((_, i) => (
+          <div key={i} className="min-h-16 md:min-h-24 rounded-lg bg-elevated/40 animate-pulse" />
+        ))}
+      </div>
+    </div>
+  );
 }
 
 export default function EventCalendar() {
@@ -95,140 +117,136 @@ export default function EventCalendar() {
     return () => window.removeEventListener(EVENT_DETAIL_EVENT, handler);
   }, []);
 
-  const isLoading = status === "loading" && events.length === 0;
-
-  function MonthNav({ className = "" }: { className?: string }) {
-    return (
-      <div className={`flex items-center justify-between ${className}`}>
-        <button
-          onClick={prevMonth}
-          className="p-2 rounded-lg border border-border bg-card hover:bg-elevated transition-colors"
-          aria-label="Mes anterior"
-        >
-          <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
-        <div className="flex items-center gap-2">
-          <h3 className="text-lg font-sans font-bold text-primary">
-            {MONTH_NAMES[month]} {year}
-          </h3>
-          {!isCurrentMonth && (
-            <button
-              onClick={jumpToCurrentMonth}
-              className="inline-flex items-center gap-1 px-2 py-1 text-xs font-sans font-medium rounded-md border border-border bg-card hover:bg-elevated text-accent transition-colors"
-              aria-label="Saltar a mes actual"
-            >
-              <CalendarDays className="w-3 h-3" />
-              Hoy
-            </button>
-          )}
-        </div>
-        <button
-          onClick={nextMonth}
-          className="p-2 rounded-lg border border-border bg-card hover:bg-elevated transition-colors"
-          aria-label="Mes siguiente"
-        >
-          <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
-      </div>
-    );
-  }
+  const isLoading = (status === "loading" || status === "idle") && events.length === 0;
 
   return (
-    <div className="grid lg:grid-cols-9 gap-4 overflow-hidden">
-      {/* Left column — desktop only */}
-      <div className="hidden md:block lg:col-span-5 min-w-0">
-        {/* Desktop calendar */}
-        <div className="bg-card border border-border rounded-lg p-4">
-          <MonthNav className="mb-4" />
+    <div className="grid lg:grid-cols-5">
+      <div className="lg:col-span-3 p-4 md:p-6 border-b lg:border-b-0 lg:border-r border-border bg-elevated/30">
+        <div className="flex items-center justify-between gap-3 mb-5">
+          <button
+            onClick={prevMonth}
+            className={btn({ size: "md", icon: true })}
+            aria-label="Mes anterior"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
 
-          {isLoading ? (
-            <div className="bg-card border border-border rounded-lg overflow-hidden">
-              <div className="grid grid-cols-7 border-b border-border">
-                {WEEKDAYS.map((day) => (
-                  <div key={day} className="py-2 text-center text-xs font-mono font-semibold uppercase tracking-wider text-muted">
-                    {day}
-                  </div>
-                ))}
-              </div>
-              <div className="grid grid-cols-7">
-                {Array.from({ length: 35 }).map((_, i) => (
-                  <div key={i} className="min-h-25 border-b border-r border-border p-1.5">
-                    <div className="w-6 h-6 rounded-full bg-elevated animate-pulse" />
-                    {i % 7 === 2 && <div className="mt-2 h-4 w-4/5 rounded bg-elevated animate-pulse" />}
-                    {i % 7 === 5 && <div className="mt-2 h-4 w-3/5 rounded bg-elevated animate-pulse" />}
-                  </div>
-                ))}
-              </div>
-            </div>
-          ) : (
-            <div className="bg-card backdrop-blur-sm border border-border rounded-lg overflow-hidden">
-              <div className="grid grid-cols-7 border-b border-border">
-                {WEEKDAYS.map((day) => (
-                  <div key={day} className="py-2 text-center text-xs font-mono font-semibold uppercase tracking-wider text-muted">
-                    {day}
-                  </div>
-                ))}
-              </div>
+          <div className="flex items-center gap-2 min-w-0">
+            <p className="text-xs font-mono uppercase tracking-wider text-muted">
+              {year}
+            </p>
+            <h3 className="text-lg md:text-xl font-sans font-bold text-primary truncate">
+              {MONTH_NAMES[month]}
+            </h3>
+            {!isCurrentMonth && (
+              <button
+                onClick={jumpToCurrentMonth}
+                className={btn({ variant: "accent", size: "sm" })}
+                aria-label="Saltar a mes actual"
+              >
+                <CalendarDays className="w-3 h-3" />
+                Hoy
+              </button>
+            )}
+          </div>
 
-              <div className="grid grid-cols-7">
-                {Array.from({ length: startWeekday }).map((_, i) => (
-                  <div key={`empty-${i}`} className="min-h-25 border-b border-r border-border bg-elevated/30" />
-                ))}
-
-                {Array.from({ length: daysInMonth }).map((_, i) => {
-                  const day = i + 1;
-                  const key = toDateKey(year, month, day);
-                  const dayEvents = eventsByDate[key] ?? [];
-                  const isToday = day === todayKey;
-                  const overflow = dayEvents.length > MAX_PILLS ? dayEvents.length - MAX_PILLS : 0;
-
-                  return (
-                    <div
-                      key={day}
-                      className={`min-h-25 border-b border-r border-border p-1.5 ${isToday ? "bg-accent/5" : ""}`}
-                    >
-                      <span
-                        className={`inline-flex items-center justify-center w-6 h-6 text-xs font-mono rounded-full ${
-                          isToday
-                            ? "bg-accent text-accent-foreground font-bold"
-                            : "text-primary"
-                        }`}
-                      >
-                        {day}
-                      </span>
-
-                      <div className="mt-1 space-y-0.5">
-                        {dayEvents.slice(0, MAX_PILLS).map((ev, j) => (
-                          <button
-                            key={`${j}-${ev.date}-${ev.title}`}
-                            onClick={() => openEventDetail(ev)}
-                            className="w-full text-left px-1.5 py-0.5 text-2xs font-sans font-medium rounded bg-accent/15 text-accent truncate hover:bg-accent/25 transition-colors cursor-pointer"
-                            title={ev.title}
-                          >
-                            {ev.title}
-                          </button>
-                        ))}
-                        {overflow > 0 && (
-                          <span className="block text-2xs font-mono text-muted pl-1.5">
-                            +{overflow} más
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
+          <button
+            onClick={nextMonth}
+            className={btn({ size: "md", icon: true })}
+            aria-label="Mes siguiente"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
         </div>
 
+        {isLoading ? (
+          <CalendarSkeleton />
+        ) : (
+          <>
+            <div className="grid grid-cols-7 gap-1.5 mb-1.5">
+              {WEEKDAYS.map((day, i) => (
+                <div
+                  key={day}
+                  className={cn(
+                    "py-1 text-center text-2xs md:text-xs font-mono font-semibold uppercase tracking-wider",
+                    i >= 5 ? "text-muted/70" : "text-muted",
+                  )}
+                >
+                  <span className="md:hidden">{day.charAt(0)}</span>
+                  <span className="hidden md:inline">{day}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="grid grid-cols-7 gap-1.5">
+              {Array.from({ length: startWeekday }).map((_, i) => (
+                <div
+                  key={`empty-${i}`}
+                  className="min-h-16 md:min-h-24 rounded-lg bg-background/40"
+                  aria-hidden
+                />
+              ))}
+
+              {Array.from({ length: daysInMonth }).map((_, i) => {
+                const day = i + 1;
+                const key = toDateKey(year, month, day);
+                const dayEvents = eventsByDate[key] ?? [];
+                const isToday = day === todayKey;
+                const overflow = dayEvents.length > MAX_PILLS ? dayEvents.length - MAX_PILLS : 0;
+                const dayOfWeek = (startWeekday + i) % 7;
+                const isWeekend = dayOfWeek >= 5;
+
+                return (
+                  <div
+                    key={day}
+                    className={cn(
+                      "min-h-16 md:min-h-24 rounded-lg border p-1 md:p-1.5 flex flex-col transition-colors",
+                      isToday
+                        ? "border-accent/50 bg-accent/8 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-accent)_20%,transparent)]"
+                        : dayEvents.length > 0
+                          ? "border-border bg-card hover:border-accent/30"
+                          : isWeekend
+                            ? "border-transparent bg-background/50"
+                            : "border-transparent bg-card/60",
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "inline-flex items-center justify-center w-5 h-5 md:w-6 md:h-6 text-2xs md:text-xs font-mono rounded-full self-start",
+                        isToday
+                          ? "bg-accent text-accent-foreground font-bold"
+                          : "text-primary",
+                      )}
+                    >
+                      {day}
+                    </span>
+
+                    <div className="mt-0.5 md:mt-1 space-y-0.5 flex-1 min-h-0">
+                      {dayEvents.slice(0, MAX_PILLS).map((ev, j) => (
+                        <a
+                          key={`${j}-${ev.date}-${ev.title}`}
+                          href={getEventHref(ev)}
+                          onClick={(e) => handleEventClick(ev, e)}
+                          className="block w-full text-left truncate rounded-sm px-1 py-0.5 text-[9px] md:text-2xs font-mono text-accent bg-accent/10 border-l-2 border-accent hover:bg-accent/15 transition-colors"
+                          title={ev.title}
+                        >
+                          {ev.title}
+                        </a>
+                      ))}
+                      {overflow > 0 && (
+                        <span className="block text-[9px] md:text-2xs font-mono text-muted px-1">
+                          +{overflow} más
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
       </div>
 
-      {/* Right: Upcoming events sidebar */}
       <UpcomingEventsSidebar events={events} status={status} refetch={refetch} />
     </div>
   );

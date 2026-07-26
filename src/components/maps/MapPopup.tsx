@@ -1,4 +1,5 @@
 import React from "react";
+import { btn } from "@/components/ui/button-styles";
 
 function clamp(value: number, min: number, max: number) {
   return Math.max(min, Math.min(max, value));
@@ -67,7 +68,7 @@ export default function MapPopup({
           </div>
           <a
             href={`/directorio/${popup.id}`}
-            className="block w-full text-center text-xs font-mono font-semibold px-3 py-1.5 rounded bg-accent text-accent-foreground hover:bg-accent/80 transition-colors"
+            className={btn({ variant: "accent", size: "sm" }, "w-full")}
           >
             VER COMUNIDAD →
           </a>
@@ -79,7 +80,7 @@ export default function MapPopup({
           </p>
           <a
             href="/dashboard"
-            className="block w-full text-center text-xs font-mono font-semibold px-3 py-1.5 rounded border border-dashed border-accent/40 text-accent hover:bg-accent/10 transition-colors"
+            className={btn({ variant: "accent", size: "sm" }, "w-full border-dashed")}
           >
             REGISTRAR →
           </a>

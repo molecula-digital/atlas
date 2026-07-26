@@ -1,9 +1,14 @@
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
-import { useSession, authClient } from '@/lib/auth-client'
+import { useSession, authClient, signOut } from '@/lib/auth-client'
 import Image from 'next/image'
-import { Save, Loader2, CheckCircle, AlertCircle, Mail, Phone, Globe, QrCode, Smartphone } from 'lucide-react'
+import Link from 'next/link'
+import { Save, Loader2, CheckCircle, AlertCircle, Mail, Phone, Globe, QrCode, Smartphone, ExternalLink, LogOut } from 'lucide-react'
+import { btn } from '@/components/ui/button-styles'
+import { NEWSLETTER } from '@/config'
+import { slugifyProfile } from '@/lib/profile-fields'
+import { readJson } from '@/lib/read-json'
 
 interface ProfileData {
   name: string
@@ -16,6 +21,9 @@ interface ProfileData {
   linkedin: string
   x: string
   github: string
+  slug: string
+  newsletterEnabled: boolean
+  isPublic: boolean
 }
 
 const emptyProfile: ProfileData = {
@@ -29,14 +37,32 @@ const emptyProfile: ProfileData = {
   linkedin: '',
   x: '',
   github: '',
+  slug: '',
+  newsletterEnabled: false,
+  isPublic: false,
 }
-
-const readOnlyInputClass =
-  'mt-1 w-full px-3 py-2 rounded-lg border border-border bg-elevated text-muted font-mono text-base sm:text-sm cursor-not-allowed'
 
 const inputClass =
   'mt-1 w-full px-3 py-2 rounded-lg border border-border bg-card text-primary font-mono text-base sm:text-sm placeholder:text-muted/50 focus:outline-hidden focus:border-accent transition-colors'
 const labelClass = 'text-xs font-mono text-muted uppercase tracking-wider'
+
+function parseProfilePayload(data: Record<string, unknown>): ProfileData {
+  return {
+    name: String(data.name || ''),
+    title: String(data.title || ''),
+    company: String(data.company || ''),
+    email: String(data.email || ''),
+    phone: String(data.phone || ''),
+    website: String(data.website || ''),
+    photo: String(data.photo || ''),
+    linkedin: String(data.linkedin || ''),
+    x: String(data.x || ''),
+    github: String(data.github || ''),
+    slug: String(data.slug || ''),
+    newsletterEnabled: Boolean(data.newsletterEnabled),
+    isPublic: Boolean(data.isPublic),
+  }
+}
 
 export function ProfileForm() {
   const { data: session } = useSession()
@@ -45,6 +71,11 @@ export function ProfileForm() {
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [hasSavedProfile, setHasSavedProfile] = useState(false)
+  /** Last persisted public state — link only shows when this is live. */
+  const [published, setPublished] = useState<{ isPublic: boolean; slug: string }>({
+    isPublic: false,
+    slug: '',
+  })
   const [error, setError] = useState<string | null>(null)
   const [walletLoading, setWalletLoading] = useState<'apple' | 'google' | null>(null)
   const [walletTab, setWalletTab] = useState<'apple' | 'google'>('apple')
@@ -52,22 +83,18 @@ export function ProfileForm() {
   const fetchProfile = useCallback(async () => {
     try {
       const res = await fetch('/api/user/profile')
-      if (res.ok) {
-        const data = await res.json()
-        setProfile({
-          name: data.name || '',
-          title: data.title || '',
-          company: data.company || '',
-          email: data.email || '',
-          phone: data.phone || '',
-          website: data.website || '',
-          photo: data.photo || '',
-          linkedin: data.linkedin || '',
-          x: data.x || '',
-          github: data.github || '',
-        })
-        setHasSavedProfile(true)
+      const parsed = await readJson<Record<string, unknown>>(res)
+      if (!res.ok || !parsed.ok || !parsed.data) {
+        return
       }
+      const data = parsed.data
+      const next = parseProfilePayload(data)
+      setProfile(next)
+      setPublished({
+        isPublic: next.isPublic,
+        slug: next.isPublic ? next.slug : '',
+      })
+      setHasSavedProfile(Boolean(data.userId || data.exists))
     } catch {
       // No profile yet — use empty form
     } finally {
@@ -79,7 +106,7 @@ export function ProfileForm() {
     if (session) fetchProfile()
   }, [session, fetchProfile])
 
-  const handleChange = (field: keyof ProfileData, value: string) => {
+  const handleChange = (field: keyof ProfileData, value: string | boolean) => {
     setProfile((prev) => ({ ...prev, [field]: value }))
     setSaved(false)
   }
@@ -88,7 +115,6 @@ export function ProfileForm() {
     setError(null)
     setSaving(true)
     try {
-      // Update name in auth if it changed
       if (profile.name && profile.name !== session?.user?.name) {
         await authClient.updateUser({ name: profile.name })
       }
@@ -96,20 +122,62 @@ export function ProfileForm() {
       const res = await fetch('/api/user/profile', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(profile),
+        body: JSON.stringify({
+          email: profile.email,
+          slug: profile.slug,
+          title: profile.title,
+          company: profile.company,
+          phone: profile.phone,
+          website: profile.website,
+          linkedin: profile.linkedin,
+          x: profile.x,
+          github: profile.github,
+          newsletterEnabled: profile.newsletterEnabled,
+          isPublic: profile.isPublic,
+        }),
       })
-      if (!res.ok) {
-        const data = await res.json()
-        throw new Error(data.error || 'Failed to save')
+
+      const parsed = await readJson<Record<string, unknown>>(res)
+      if (!res.ok || !parsed.ok || !parsed.data) {
+        const msg =
+          (parsed.ok && parsed.data && typeof parsed.data.error === 'string'
+            ? parsed.data.error
+            : null) ||
+          (!parsed.ok ? parsed.error : null) ||
+          'No se pudo guardar'
+        throw new Error(msg)
       }
+
+      const savedProfile = parsed.data
+      if (typeof savedProfile.error === 'string') {
+        throw new Error(savedProfile.error)
+      }
+
+      const next = parseProfilePayload({
+        ...savedProfile,
+        name: profile.name || session?.user?.name || '',
+        photo: profile.photo || session?.user?.image || '',
+        email: savedProfile.email || profile.email,
+      })
+      setProfile(next)
+      setPublished({
+        isPublic: next.isPublic,
+        slug: next.isPublic ? next.slug : '',
+      })
       setSaved(true)
       setHasSavedProfile(true)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to save profile')
+      setError(err instanceof Error ? err.message : 'No se pudo guardar el perfil')
     } finally {
       setSaving(false)
     }
   }
+
+  const showPublicLink =
+    published.isPublic &&
+    Boolean(published.slug) &&
+    profile.isPublic === published.isPublic &&
+    profile.slug === published.slug
 
   const handleWallet = async (platform: 'apple' | 'google') => {
     setWalletLoading(platform)
@@ -120,7 +188,14 @@ export function ProfileForm() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ platform: 'apple' }),
         })
-        if (!res.ok) throw new Error('Failed to generate pass')
+        if (!res.ok) {
+          const parsed = await readJson<{ error?: string }>(res)
+          throw new Error(
+            (parsed.ok && parsed.data?.error) ||
+              (!parsed.ok ? parsed.error : null) ||
+              'No se pudo generar la tarjeta',
+          )
+        }
         const blob = await res.blob()
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
@@ -134,12 +209,18 @@ export function ProfileForm() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ platform: 'google' }),
         })
-        if (!res.ok) throw new Error('Failed to generate pass')
-        const data = await res.json()
-        window.open(data.saveLink, '_blank')
+        const parsed = await readJson<{ saveLink?: string; error?: string }>(res)
+        if (!res.ok || !parsed.ok || !parsed.data?.saveLink) {
+          throw new Error(
+            (parsed.ok && parsed.data?.error) ||
+              (!parsed.ok ? parsed.error : null) ||
+              'No se pudo generar la tarjeta',
+          )
+        }
+        window.open(parsed.data.saveLink, '_blank')
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to generate wallet pass')
+      setError(err instanceof Error ? err.message : 'No se pudo generar la tarjeta')
     } finally {
       setWalletLoading(null)
     }
@@ -191,11 +272,15 @@ export function ProfileForm() {
           <div>
             <label className={labelClass}>Correo</label>
             <input
-              className={readOnlyInputClass}
+              className={inputClass}
+              type="email"
               value={profile.email}
-              readOnly
-              title="Administrado por tu cuenta de Google"
+              onChange={(e) => handleChange('email', e.target.value)}
+              placeholder="tu@email.com"
             />
+            <p className="mt-1 text-2xs text-muted font-mono">
+              Contacto público (por defecto tu Gmail de inicio de sesión).
+            </p>
           </div>
         </div>
 
@@ -237,7 +322,7 @@ export function ProfileForm() {
               className={inputClass}
               value={profile.website}
               onChange={(e) => handleChange('website', e.target.value)}
-              placeholder="https://yoursite.com"
+              placeholder="hola.com"
             />
           </div>
         </div>
@@ -272,6 +357,78 @@ export function ProfileForm() {
           </div>
         </div>
 
+        <div className="rounded-lg border border-border bg-elevated/40 px-4 py-3 space-y-3">
+          <label className="flex items-start gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={profile.isPublic}
+              onChange={(e) => {
+                const next = e.target.checked
+                setProfile((prev) => ({
+                  ...prev,
+                  isPublic: next,
+                  slug: next && !prev.slug && prev.name ? slugifyProfile(prev.name) : prev.slug,
+                }))
+                setSaved(false)
+              }}
+              className="mt-0.5 size-4 rounded border-border accent-[var(--accent)]"
+            />
+            <span>
+              <span className="block text-sm text-primary font-medium">Perfil público</span>
+              <span className="block text-xs text-muted mt-0.5">
+                Aparece en /personas. Desactivado por defecto. No publica tu correo ni teléfono.
+              </span>
+            </span>
+          </label>
+
+          {profile.isPublic && (
+            <div>
+              <label className={labelClass} htmlFor="profile-slug">Slug público</label>
+              <div className="mt-1 flex items-center gap-2">
+                <span className="text-xs font-mono text-muted shrink-0">/perfil/</span>
+                <input
+                  id="profile-slug"
+                  className={inputClass.replace('mt-1 ', '')}
+                  value={profile.slug}
+                  onChange={(e) => handleChange('slug', slugifyProfile(e.target.value))}
+                  placeholder="tu-nombre"
+                  required
+                />
+              </div>
+              <p className="mt-1 text-2xs text-muted font-mono">
+                Obligatorio. Solo minúsculas, números y guiones. Guarda para publicar.
+              </p>
+              {showPublicLink ? (
+                <Link
+                  href={`/perfil/${published.slug}`}
+                  target="_blank"
+                  className="inline-flex items-center gap-1 mt-1.5 text-xs font-mono text-accent hover:underline"
+                >
+                  Ver perfil público
+                  <ExternalLink className="w-3 h-3" />
+                </Link>
+              ) : (
+                <p className="mt-1.5 text-2xs text-muted font-mono">
+                  Guarda el perfil para publicar el enlace en /perfil/{profile.slug || '…'}
+                </p>
+              )}
+            </div>
+          )}
+
+          <label className="flex items-start gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={profile.newsletterEnabled}
+              onChange={(e) => handleChange('newsletterEnabled', e.target.checked)}
+              className="mt-0.5 size-4 rounded border-border accent-[var(--accent)]"
+            />
+            <span>
+              <span className="block text-sm text-primary font-medium">{NEWSLETTER.profileLabel}</span>
+              <span className="block text-xs text-muted mt-0.5">{NEWSLETTER.profileHint}</span>
+            </span>
+          </label>
+        </div>
+
         {/* Save Button */}
         <div className="flex items-center justify-end gap-3">
           {error && (
@@ -282,14 +439,14 @@ export function ProfileForm() {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-mono font-medium bg-accent text-accent-foreground rounded-md hover:bg-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className={btn({ variant: "accent", size: "md" })}
           >
             {saving ? (
               <Loader2 className="w-4 h-4 animate-spin" />
             ) : saved ? (
               <CheckCircle className="w-4 h-4" />
             ) : (
-              <Save className="w-4 h-4" />
+              <Save className="w-3.5 h-3.5" />
             )}
             {saving ? 'Guardando...' : saved ? 'Guardado' : 'Guardar perfil'}
           </button>
@@ -509,6 +666,22 @@ export function ProfileForm() {
             </span>
           )}
         </div>
+      </div>
+
+      {/* Account / session */}
+      <div className="border-t border-border pt-8">
+        <h2 className="text-lg font-semibold text-primary mb-2">Cuenta</h2>
+        <p className="text-sm text-muted mb-4">
+          Sesión iniciada con Google{session?.user?.email ? ` (${session.user.email})` : ''}.
+        </p>
+        <button
+          type="button"
+          onClick={() => signOut()}
+          className={btn({ variant: 'danger', size: 'md' })}
+        >
+          <LogOut className="w-3.5 h-3.5" />
+          Cerrar sesión
+        </button>
       </div>
     </div>
   )

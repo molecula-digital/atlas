@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback, useMemo, memo } from "react";
 import { MapPin, Search, ChevronsDown, Plus } from "lucide-react";
+import { btn } from "@/components/ui/button-styles";
 
 interface City {
   id: string;
@@ -181,7 +182,7 @@ export default function CityList({
             <div className="pt-3 mt-2 border-t border-border space-y-1.5">
               <a
                 href="/dashboard"
-                className="flex items-center justify-center gap-2 w-full text-center text-xs font-mono font-semibold px-3 py-3 min-h-11 rounded-lg border border-dashed border-accent/40 text-accent hover:bg-accent/10 transition-colors"
+                className={btn({ variant: "accent", size: "md" }, "w-full border-dashed")}
               >
                 <Plus className="w-3.5 h-3.5" />
                 REGISTRAR PERFIL/STARTUP

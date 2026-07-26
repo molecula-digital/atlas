@@ -17,7 +17,7 @@ function getQrValue(userId: string): string {
 export async function POST(request: NextRequest) {
   const session = await getServerSession()
   if (!session) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
   }
 
   const limited = withRateLimit(request, { limit: 20, windowMs: 15 * 60 * 1000, keyPrefix: 'user-wallet' }, session.user.id)
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
   const platform = body.platform as string
 
   if (!['apple', 'google'].includes(platform)) {
-    return NextResponse.json({ error: 'Invalid platform. Use "apple" or "google".' }, { status: 400 })
+    return NextResponse.json({ error: 'Plataforma inválida. Usa "apple" o "google".' }, { status: 400 })
   }
 
   const [dbProfile] = await db
@@ -36,17 +36,20 @@ export async function POST(request: NextRequest) {
     .where(eq(profiles.userId, session.user.id))
 
   if (!dbProfile) {
-    return NextResponse.json({ error: 'Profile not found. Save your profile first.' }, { status: 400 })
+    return NextResponse.json({ error: 'Perfil no encontrado. Guarda tu perfil primero.' }, { status: 400 })
   }
 
   const profile = {
     ...dbProfile,
     name: session.user.name,
-    email: session.user.email,
+    email: dbProfile.email || session.user.email,
     photo: session.user.image ?? null,
   }
 
-  const qrValue = getQrValue(session.user.id)
+  const qrValue =
+    dbProfile.isPublic && dbProfile.slug
+      ? `${SITE_URL}/perfil/${dbProfile.slug}`
+      : getQrValue(session.user.id)
 
   if (platform === 'apple') {
     const buffer = await generateApplePass(profile, qrValue)
