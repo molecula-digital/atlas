@@ -12,10 +12,14 @@ import {
   Ticket,
   Maximize2,
   Link2,
+  Info,
+  LayoutList,
+  Zap,
 } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import type { TechEvent } from '@/lib/events'
 import { getEventPath } from '@/lib/events'
-import { btn } from '@/components/ui/button-styles'
+import { btn, type BtnSize } from '@/components/ui/button-styles'
 import { AddToCalendar } from './AddToCalendar'
 
 interface EventDetailViewProps {
@@ -25,6 +29,54 @@ interface EventDetailViewProps {
   showLocation?: boolean
   /** Dismisses the containing dialog, when rendered inside one. */
   onClose?: () => void
+}
+
+/* Card chrome shared with the entry detail pages. */
+const CARD = 'bg-card/90 backdrop-blur-sm border border-border rounded-lg p-6'
+const CARD_TITLE =
+  'font-mono text-xs text-muted uppercase tracking-wider mb-4 flex items-center gap-2'
+
+function Card({
+  title,
+  Icon,
+  children,
+}: {
+  title: string
+  Icon: LucideIcon
+  children: React.ReactNode
+}) {
+  return (
+    <section className={CARD}>
+      <h2 className={CARD_TITLE}>
+        <Icon className="w-4 h-4 text-accent" />
+        {title}
+      </h2>
+      {children}
+    </section>
+  )
+}
+
+/** Label-above-value row, matching the entry sidebar's Detalles card. */
+function DetailRow({
+  label,
+  Icon,
+  children,
+}: {
+  label: string
+  Icon: LucideIcon
+  children: React.ReactNode
+}) {
+  return (
+    <div className="space-y-1.5">
+      <span className="text-sm text-muted flex items-center gap-1.5">
+        <Icon className="w-3.5 h-3.5 text-muted shrink-0" />
+        {label}
+      </span>
+      <span className="block text-sm font-mono text-primary break-words">
+        {children}
+      </span>
+    </div>
+  )
 }
 
 function EventFullPageLink({ slug, onClose }: { slug: string; onClose?: () => void }) {
@@ -55,14 +107,18 @@ export function EventDetailView({
 }: EventDetailViewProps) {
   const hasImage = !!event.image
   const isPage = variant === 'page'
+  const schedule =
+    event.startTime && event.endTime
+      ? `${event.startTime}–${event.endTime}`
+      : event.startTime || event.endTime
 
-  const body = (
+  const hero = (
     <>
       {hasImage && (
         <div
           className={
             isPage
-              ? 'relative mb-6 h-56 md:h-72 overflow-hidden rounded-lg bg-black/10'
+              ? 'relative h-56 md:h-72 overflow-hidden rounded-lg border border-border bg-black/10'
               : 'relative h-48 overflow-hidden shrink-0 bg-black/10'
           }
         >
@@ -89,8 +145,14 @@ export function EventDetailView({
           )}
         </div>
       )}
+    </>
+  )
 
-      <div className={isPage ? 'space-y-4' : 'px-5 pb-5 space-y-3'}>
+  const body = (
+    <>
+      {hero}
+
+      <div className="px-5 pb-5 space-y-3">
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
           {event.organizer && (
             <span className="inline-flex items-center gap-1.5 text-xs font-mono text-muted">
@@ -98,12 +160,10 @@ export function EventDetailView({
               {event.organizer}
             </span>
           )}
-          {(event.startTime || event.endTime) && (
+          {schedule && (
             <span className="inline-flex items-center gap-1.5 text-xs font-mono text-muted">
               <Clock size={12} />
-              {event.startTime && event.endTime
-                ? `${event.startTime}–${event.endTime}`
-                : event.startTime || event.endTime}
+              {schedule}
             </span>
           )}
         </div>
@@ -131,22 +191,21 @@ export function EventDetailView({
     </>
   )
 
-  const footer = (
-    <div
-      className={
-        isPage
-          ? 'flex flex-col sm:flex-row sm:items-center flex-wrap gap-2 pt-4 border-t border-border'
-          : 'flex flex-col sm:flex-row sm:items-center flex-wrap gap-2 px-5 py-4 border-t border-border shrink-0'
-      }
-    >
+  // On the full page the actions sit inside their own card, so they get the
+  // larger size — at `md` on a bare background they were easy to miss.
+  const size: BtnSize = isPage ? 'lg' : 'md'
+  const iconSize = isPage ? 15 : 13
+
+  const actions = (
+    <>
       {event.registerUrl && (
         <a
           href={event.registerUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className={btn({ variant: 'accent', size: 'md' })}
+          className={btn({ variant: 'accent', size })}
         >
-          <Ticket size={13} />
+          <Ticket size={iconSize} />
           Registrarse
         </a>
       )}
@@ -155,9 +214,9 @@ export function EventDetailView({
           href={event.url}
           target="_blank"
           rel="noopener noreferrer"
-          className={btn({ size: 'md' })}
+          className={btn({ size })}
         >
-          <ExternalLink size={13} />
+          <ExternalLink size={iconSize} />
           Sitio web
         </a>
       )}
@@ -166,33 +225,74 @@ export function EventDetailView({
           href={event.mapsUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className={btn({ size: 'md' })}
+          className={btn({ size })}
         >
-          <Map size={13} />
+          <Map size={iconSize} />
           Google Maps
         </a>
       )}
-      <AddToCalendar event={event} />
+      <AddToCalendar event={event} size={size} />
       {event.meetLink && (
         <a
           href={event.meetLink}
           target="_blank"
           rel="noopener noreferrer"
-          className={btn({ size: 'md' })}
+          className={btn({ size })}
         >
-          <Video size={13} />
+          <Video size={iconSize} />
           Meet/Zoom
         </a>
       )}
       {!isPage && <EventFullPageLink slug={event.slug} onClose={onClose} />}
-    </div>
+    </>
   )
 
   if (isPage) {
+    const hasDetails =
+      !!event.organizer || !!schedule || (showLocation && !!event.location)
+
     return (
-      <div className="space-y-6">
-        {body}
-        {footer}
+      <div className="space-y-4">
+        {hero}
+
+        <Card title="Acciones" Icon={Zap}>
+          <div className="flex flex-wrap gap-2">{actions}</div>
+        </Card>
+
+        {hasDetails && (
+          <Card title="Detalles" Icon={LayoutList}>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {event.organizer && (
+                <DetailRow label="Organiza" Icon={Users}>
+                  {event.organizer}
+                </DetailRow>
+              )}
+              {schedule && (
+                <DetailRow label="Horario" Icon={Clock}>
+                  {schedule}
+                </DetailRow>
+              )}
+              {showLocation && event.location && (
+                <DetailRow label="Ubicación" Icon={MapPin}>
+                  {event.location}
+                  {event.isInPerson && (
+                    <span className="ml-2 inline-block text-2xs font-mono font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded bg-accent/15 text-accent">
+                      Presencial
+                    </span>
+                  )}
+                </DetailRow>
+              )}
+            </div>
+          </Card>
+        )}
+
+        {event.description && (
+          <Card title="Acerca de" Icon={Info}>
+            <p className="text-secondary whitespace-pre-line text-sm leading-relaxed">
+              {event.description}
+            </p>
+          </Card>
+        )}
       </div>
     )
   }
@@ -200,7 +300,9 @@ export function EventDetailView({
   return (
     <div className="flex flex-col min-h-0 flex-1">
       <div className="overflow-y-auto flex-1 min-h-0">{body}</div>
-      {footer}
+      <div className="flex flex-col sm:flex-row sm:items-center flex-wrap gap-2 px-5 py-4 border-t border-border shrink-0">
+        {actions}
+      </div>
     </div>
   )
 }
