@@ -61,7 +61,7 @@ export default async function EventDetailPage({
   const showLocationPanel = Boolean(event.location && event.mapsUrl)
 
   return (
-    <article className="py-4">
+    <article>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

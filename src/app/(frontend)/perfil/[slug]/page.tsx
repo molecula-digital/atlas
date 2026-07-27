@@ -70,7 +70,7 @@ export default async function PublicProfilePage({ params }: PageProps) {
   ].filter(Boolean) as Array<{ href: string; label: string; icon: 'globe' | 'linkedin' | 'x' | 'github' }>
 
   return (
-    <div className="py-10">
+    <div>
       <Breadcrumb
         items={[
           { label: 'Inicio', href: '/' },

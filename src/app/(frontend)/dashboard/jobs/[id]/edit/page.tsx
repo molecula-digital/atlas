@@ -142,7 +142,7 @@ export default function EditJobPage() {
 
   return (
     <AuthGuard>
-      <section className="py-8">
+      <section>
         <div className="max-w-2xl mx-auto">
           <Breadcrumb
             items={[

@@ -41,7 +41,14 @@ export default function FrontendLayout({ children }: { children: React.ReactNode
             <div className="relative z-10 flex flex-col flex-1">
               <InfoBanner />
               <Header contentContainerClassName={contentContainerClassName} />
-              <main id="main" className="flex-1 px-4 md:px-6 lg:px-8">
+              {/*
+                Page padding lives here, not on the pages. Horizontal gutters and
+                max-width were centralized earlier; vertical padding was left to
+                each page and drifted to four different values. Keeping it in one
+                place is what stops that happening again — pages should not set
+                their own py-* on the outermost element.
+              */}
+              <main id="main" className="flex-1 px-4 md:px-6 lg:px-8 py-4">
                 <div className={contentContainerClassName}>
                   {children}
                 </div>

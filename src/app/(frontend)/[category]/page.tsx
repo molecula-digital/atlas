@@ -42,7 +42,7 @@ export default async function CategoryPage({
   if (!entryType) notFound()
 
   return (
-    <section className="py-4">
+    <section>
       <DirectoryFilter cities={staticCities} initialType={entryType} pageSize={12} />
     </section>
   )

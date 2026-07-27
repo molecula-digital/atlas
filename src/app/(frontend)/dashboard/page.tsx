@@ -42,7 +42,7 @@ function DashboardContent() {
   const firstName = user?.name?.split(' ')[0] || 'Usuario'
 
   return (
-    <section className="py-8">
+    <section>
       <div className="max-w-4xl mx-auto">
         {/* Welcome header */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-8">

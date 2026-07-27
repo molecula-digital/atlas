@@ -44,7 +44,7 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ slu
   const authorName = (article.author as { displayName?: string; email: string } | null)?.displayName || (article.author as { email: string } | null)?.email
 
   return (
-    <article className="py-8">
+    <article>
       <script type="application/ld+json" dangerouslySetInnerHTML={{
         __html: safeJsonLd({
           '@context': 'https://schema.org',

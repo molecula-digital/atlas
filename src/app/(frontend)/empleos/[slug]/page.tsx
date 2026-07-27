@@ -82,7 +82,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
     `${job.title}${entryName ? ` en ${entryName}` : ''}${job.city ? ` — ${getCityName(job.city as string)}, Sinaloa` : ''}`
 
   return (
-    <article className="py-8">
+    <article>
       <script type="application/ld+json" dangerouslySetInnerHTML={{
         __html: safeJsonLd({
           '@context': 'https://schema.org',

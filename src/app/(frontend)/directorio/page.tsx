@@ -18,7 +18,7 @@ const staticCities = SINALOA_CITIES.map((m) => ({ id: m.id, name: m.name, count:
 
 export default function DirectoryPage() {
   return (
-    <section className="py-4">
+    <section>
       <DirectoryFilter cities={staticCities} pageSize={12} />
     </section>
   )

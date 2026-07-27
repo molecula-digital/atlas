@@ -63,7 +63,7 @@ export default function NewJobPage() {
 
   return (
     <AuthGuard>
-      <section className="py-8">
+      <section>
         <div className="max-w-2xl mx-auto">
           <Breadcrumb items={[
             { label: 'Dashboard', href: '/dashboard' },
