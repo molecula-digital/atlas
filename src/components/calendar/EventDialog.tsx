@@ -53,7 +53,6 @@ export function EventDialog({
   // The hook refreshes its onBack ref every render, so this closure always sees
   // the current showFullImage — back closes the lightbox before the dialog.
   const { dismiss } = useDialogBackNavigation(open, close, {
-    url: getEventPath(event.slug),
     onBack: () => {
       if (showFullImage) {
         setShowFullImage(false)

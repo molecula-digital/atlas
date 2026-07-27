@@ -55,7 +55,7 @@ export default async function EventDetailPage({
   const canonical = `${SITE_URL}/eventos/${event.slug}`
 
   return (
-    <article className="py-8 px-4">
+    <article className="py-8">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
