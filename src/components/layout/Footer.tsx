@@ -10,7 +10,7 @@ export function Footer() {
   const categories = ENTRY_TYPES.map((type) => ({ type, ...ENTRY_TYPE_CONFIG[type] }))
 
   return (
-    <footer className="border-t border-border bg-card mt-8">
+    <footer className="relative z-10 border-t border-border bg-card">
       <div className="mx-auto w-full max-w-[calc(70rem+2rem)] px-4 py-10 md:max-w-[calc(70rem+5rem)] md:px-10 lg:max-w-[calc(70rem+6rem)] lg:px-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>

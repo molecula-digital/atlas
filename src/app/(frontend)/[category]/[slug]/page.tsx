@@ -187,8 +187,7 @@ export default async function EntryDetailPage({
   ].filter((l) => l.url !== undefined) as { label: string; url: string; icon: string }[]
 
   /* ---------- Layout mode ---------- */
-  const isCompactLayout = links.length === 0 && !coverUrl
-  const isSparseEntry = !coverUrl && !logoUrl && !entry.body && tags.length === 0 && technologies.length === 0
+  const isCompactLayout = false
 
   const pageUrl = `${SITE_URL}/${config.slug}/${entry.slug}`
 
@@ -262,17 +261,17 @@ export default async function EntryDetailPage({
         className={
           isCompactLayout
             ? 'max-w-3xl mx-auto'
-            : 'xl:grid xl:grid-cols-[1fr_20rem] xl:gap-5'
+            : 'xl:grid xl:grid-cols-[minmax(0,1fr)_23rem] xl:gap-4'
         }
       >
         {/* ============================================================ */}
         {/*  Main column                                                 */}
         {/* ============================================================ */}
         <div className={`space-y-8${!isCompactLayout ? ' max-w-3xl mx-auto lg:max-w-none' : ''}`}>
-          {/* Cover image with aspect-video */}
-          {coverUrl && (
-            <div className="relative">
+          {/* Cover image, with a consistent fallback hero for entries without one. */}
+          <div className="relative">
               <div className="group relative aspect-video rounded-lg overflow-hidden bg-elevated">
+                {coverUrl ? (
                 <Image
                   src={coverUrl}
                   alt={entry.name as string}
@@ -281,9 +280,24 @@ export default async function EntryDetailPage({
                   sizes="(max-width: 768px) 100vw, 1200px"
                   priority
                 />
+                ) : (
+                  <div className="flex h-full items-center justify-center bg-gradient-to-br from-accent/25 via-elevated to-card">
+                    {logoUrl ? (
+                      <Image
+                        src={logoUrl}
+                        alt={`${entry.name as string} logo`}
+                        width={160}
+                        height={160}
+                        className="max-h-32 max-w-[55%] object-contain drop-shadow-lg"
+                      />
+                    ) : (
+                      <EntryIcon className="h-16 w-16 text-accent" strokeWidth={1.25} />
+                    )}
+                  </div>
+                )}
               </div>
               {/* Logo overlapping cover at bottom-left */}
-              {logoUrl && (
+              {coverUrl && logoUrl && (
                 <div className="absolute -bottom-7 left-5">
                   <Image
                     src={logoUrl}
@@ -294,27 +308,11 @@ export default async function EntryDetailPage({
                   />
                 </div>
               )}
-            </div>
-          )}
+          </div>
 
           {/* Header */}
-          <div className={`${coverUrl && logoUrl ? 'space-y-4 pt-4' : 'space-y-4'}${isSparseEntry ? ' rounded-lg border border-border bg-card/90 p-6 backdrop-blur-sm' : ''}`}>
+          <div className={coverUrl && logoUrl ? 'space-y-4 pt-4' : 'space-y-4'}>
             <div className="flex items-center gap-3">
-              {/* Logo inline when no cover image */}
-              {!coverUrl && logoUrl && (
-                <Image
-                  src={logoUrl}
-                  alt={entry.name as string}
-                  width={56}
-                  height={56}
-                  className="object-contain rounded-xl border border-border bg-card shadow-sm shrink-0"
-                />
-              )}
-              {!coverUrl && !logoUrl && isSparseEntry && (
-                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border border-accent/20 bg-accent/10">
-                  <EntryIcon className="h-6 w-6 text-accent" />
-                </div>
-              )}
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <EntryBadge entryType={entry.entryType as AtlasEntryType} />
@@ -470,7 +468,7 @@ export default async function EntryDetailPage({
         {!isCompactLayout && (
           <div className="space-y-4 mt-8 xl:mt-0 max-w-3xl mx-auto lg:max-w-none">
             {/* Details card */}
-            <div className="bg-card/90 backdrop-blur-sm border border-border rounded-lg p-5">
+            <div className="bg-card/90 backdrop-blur-sm border border-border rounded-lg p-4">
               <h2 className="font-mono text-xs text-muted uppercase tracking-wider mb-4 flex items-center gap-2">
                 <LayoutList className="w-4 h-4 text-accent" />
                 Detalles
@@ -506,7 +504,7 @@ export default async function EntryDetailPage({
 
             {/* Links card */}
             {links.length > 0 && (
-              <div className="bg-card/90 backdrop-blur-sm border border-border rounded-lg p-5">
+              <div className="bg-card/90 backdrop-blur-sm border border-border rounded-lg p-4">
                 <h2 className="font-mono text-xs text-muted uppercase tracking-wider mb-4 flex items-center gap-2">
                   <LinkIcon className="w-4 h-4 text-accent" />
                   Enlaces
@@ -532,11 +530,11 @@ export default async function EntryDetailPage({
       </div>
 
       <div className={!isCompactLayout ? 'max-w-3xl mx-auto lg:max-w-none' : ''}>
-        <WhatsAppCta />
+        <WhatsAppCta className="pt-6 pb-2" />
 
         {/* Suggestions */}
         {suggestions.length > 0 && (
-          <section className="mt-12">
+          <section className="mt-6">
             <h2 className="text-lg font-bold text-primary mb-4">Mira mas</h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {suggestions.map((s) => (

@@ -1,10 +1,11 @@
 import { MessageCircle } from 'lucide-react'
 import { WHATSAPP_URL } from '@/config'
 import { btn } from '@/components/ui/button-styles'
+import { cn } from '@/lib/utils'
 
-export function WhatsAppCta() {
+export function WhatsAppCta({ className }: { className?: string }) {
   return (
-    <section className="py-8">
+    <section className={cn('py-8', className)}>
       <div className="max-w-280 mx-auto">
         <div className="bg-card border border-border rounded-lg p-6 md:p-8 flex flex-col lg:flex-row items-center gap-4 lg:gap-8">
           <div className="flex items-center gap-3 shrink-0">
