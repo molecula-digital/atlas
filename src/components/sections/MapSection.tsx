@@ -69,7 +69,9 @@ export default function MapSection({
     return () => window.removeEventListener("click", handler);
   }, []);
 
-  const activeCityCount = Object.keys(cityCounts).length;
+  // Municipalities that actually have entries — counting keys alone would also
+  // count any city that happened to be present with a zero count.
+  const activeCityCount = Object.values(cityCounts).filter((n) => n > 0).length;
 
   return (
     <section id="map" className="py-8">
@@ -121,7 +123,7 @@ export default function MapSection({
                   <div className="flex items-center gap-1.5">
                     <span className="h-2 w-2 animate-pulse rounded-full bg-accent" />
                     <span className="font-mono text-xs text-accent">
-                      {activeCityCount} municipios
+                      {activeCityCount}/{SINALOA_CITIES.length} municipios
                     </span>
                   </div>
                 </div>
