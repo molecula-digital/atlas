@@ -1,14 +1,16 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowRight } from 'lucide-react'
+import { MapPin } from 'lucide-react'
 import { EntryBadge } from '@/components/entries/EntryBadge'
-import { getEntryUrl, type AtlasEntryType } from '@/config'
+import { getEntryUrl, getCityName, type AtlasEntryType } from '@/config'
 
 export interface EntryStripProps {
   slug: string
   name: string
   entryType: AtlasEntryType
   logo?: { url: string; alt?: string } | null
+  tagline?: string | null
+  city?: string
   href?: string
 }
 
@@ -17,6 +19,8 @@ export function EntryStrip({
   name,
   entryType,
   logo,
+  tagline,
+  city,
   href: hrefOverride,
 }: EntryStripProps) {
   const href = hrefOverride ?? getEntryUrl(entryType, slug)
@@ -25,19 +29,19 @@ export function EntryStrip({
   return (
     <Link
       href={href}
-      className="group flex w-full items-center gap-3 rounded-lg border border-border bg-card p-3 text-left transition-all duration-200 hover:border-[var(--color-accent)]/40 hover:shadow-sm"
+      className="group flex w-full items-center gap-2.5 rounded-lg border border-border bg-card p-2.5 text-left transition-all duration-200 hover:border-[var(--color-accent)]/40 hover:shadow-sm"
     >
-      <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-accent/20 bg-accent/10">
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-accent/20 bg-accent/10">
         {logoUrl ? (
           <Image
             src={logoUrl}
             alt={logo?.alt ?? `${name} logo`}
-            width={40}
-            height={40}
-            className="h-10 w-10 object-contain"
+            width={32}
+            height={32}
+            className="h-8 w-8 object-contain"
           />
         ) : (
-          <span className="text-base font-sans font-bold text-accent">
+          <span className="text-sm font-sans font-bold text-accent">
             {name.charAt(0)}
           </span>
         )}
@@ -52,9 +56,25 @@ export function EntryStrip({
             <EntryBadge entryType={entryType} />
           </span>
         </div>
+        {(tagline || city) && (
+          <div className="mt-0.5 flex items-center gap-2 overflow-hidden">
+            {tagline && (
+              <span className="min-w-0 truncate text-xs font-mono text-muted">
+                {tagline}
+              </span>
+            )}
+            {tagline && city && (
+              <span className="shrink-0 text-xs text-muted">·</span>
+            )}
+            {city && (
+              <span className="inline-flex shrink-0 items-center gap-1 text-2xs font-mono text-muted">
+                <MapPin className="h-2.5 w-2.5" />
+                {getCityName(city)}
+              </span>
+            )}
+          </div>
+        )}
       </div>
-
-      <ArrowRight className="h-4 w-4 shrink-0 text-muted transition-colors group-hover:text-accent" />
     </Link>
   )
 }

@@ -43,6 +43,26 @@ export const getEntryBySlug = cache(async (slug: string) => {
   return result.docs[0] ?? null
 })
 
+const CARD_SELECT = {
+  slug: true,
+  name: true,
+  tagline: true,
+  entryType: true,
+  logo: true,
+  coverImage: true,
+  city: true,
+  tags: true,
+} as const
+
+const STRIP_SELECT = {
+  slug: true,
+  name: true,
+  tagline: true,
+  entryType: true,
+  logo: true,
+  city: true,
+} as const
+
 export const getFeaturedEntries = cache(async () => {
   const payload = await getPayloadClient()
   return payload.find({
@@ -51,18 +71,11 @@ export const getFeaturedEntries = cache(async () => {
       _status: { equals: 'published' },
       featured: { equals: true },
     },
-    limit: 10,
+    limit: 6,
     sort: 'name',
+    select: CARD_SELECT,
   })
 })
-
-/** Card-only field selection for listings */
-const STRIP_SELECT = {
-  slug: true,
-  name: true,
-  entryType: true,
-  logo: true,
-} as const
 
 export const getLatestEntries = cache(async (limit = 4, excludeSlugs: string[] = []) => {
   const payload = await getPayloadClient()
@@ -168,17 +181,6 @@ export const getUpcomingEvents = cache(async (limit = 5) => {
     sort: 'date',
   })
 })
-
-const CARD_SELECT = {
-  slug: true,
-  name: true,
-  tagline: true,
-  entryType: true,
-  logo: true,
-  coverImage: true,
-  city: true,
-  tags: true,
-} as const
 
 /**
  * Get up to 3 suggested entries for an entry detail page.

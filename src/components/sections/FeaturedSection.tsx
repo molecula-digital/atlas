@@ -1,13 +1,17 @@
 import Link from 'next/link'
 import { EntryStrip } from '@/components/entries/EntryStrip'
+import { FeaturedEntryTile } from '@/components/entries/FeaturedEntryTile'
 import { type AtlasEntryType } from '@/config'
 import { SectionTitle } from '@/components/ui/SectionTitle'
 
 interface FeaturedEntry {
   slug: string
   name: string
+  tagline?: string | null
   entryType: AtlasEntryType
   logo?: { url: string; alt?: string } | null
+  coverImage?: { url: string; alt?: string } | null
+  city: string
 }
 
 interface FeaturedSectionProps {
@@ -50,25 +54,28 @@ export function FeaturedSection({ entries, latestEntries }: FeaturedSectionProps
         </div>
 
         <div className="rounded-xl border-2 border-accent/25 bg-card/50 p-4 shadow-sm sm:p-6">
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:gap-8">
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:items-stretch lg:gap-8">
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
               {displayEntries.map((entry) => (
-                <EntryStrip
+                <FeaturedEntryTile
                   key={entry.slug}
                   slug={entry.slug}
                   name={entry.name}
+                  tagline={entry.tagline}
                   entryType={entry.entryType}
                   logo={entry.logo}
+                  coverImage={entry.coverImage}
+                  city={entry.city}
                 />
               ))}
             </div>
 
             {displayLatest.length > 0 && (
-              <div className="flex flex-col gap-3 lg:border-l lg:border-border lg:pl-6 xl:pl-8">
-                <h3 className="text-sm font-mono font-semibold uppercase tracking-wide text-muted">
+              <div className="flex min-h-0 flex-col gap-3 lg:border-l lg:border-border lg:pl-6 xl:pl-8">
+                <h3 className="shrink-0 text-sm font-mono font-semibold uppercase tracking-wide text-muted">
                   Últimos registros
                 </h3>
-                <div className="flex flex-col gap-3">
+                <div className="flex min-h-0 flex-1 flex-col justify-between gap-2 overflow-hidden">
                   {displayLatest.map((entry) => (
                     <EntryStrip
                       key={entry.slug}
@@ -76,6 +83,8 @@ export function FeaturedSection({ entries, latestEntries }: FeaturedSectionProps
                       name={entry.name}
                       entryType={entry.entryType}
                       logo={entry.logo}
+                      tagline={entry.tagline}
+                      city={entry.city}
                     />
                   ))}
                 </div>
