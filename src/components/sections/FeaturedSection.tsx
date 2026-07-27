@@ -27,7 +27,7 @@ export function FeaturedSection({ entries, latestEntries }: FeaturedSectionProps
 
   return (
     <section className="py-4">
-      <div>
+      <div className="min-w-0">
         <div className="mb-6 flex items-center justify-between">
           <SectionTitle description="Startups y organizaciones destacadas del ecosistema">
             Destacados
@@ -53,9 +53,9 @@ export function FeaturedSection({ entries, latestEntries }: FeaturedSectionProps
           </Link>
         </div>
 
-        <div className="rounded-xl border-2 border-accent/25 bg-card/50 p-4 shadow-sm sm:p-6">
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:items-stretch lg:gap-8">
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="overflow-hidden rounded-xl border-2 border-accent/25 bg-card/50 p-4 shadow-sm sm:p-6">
+          <div className="flex min-w-0 flex-col gap-6 xl:grid xl:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] xl:items-stretch xl:gap-8">
+            <div className="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-2 2xl:grid-cols-3">
               {displayEntries.map((entry) => (
                 <FeaturedEntryTile
                   key={entry.slug}
@@ -71,11 +71,11 @@ export function FeaturedSection({ entries, latestEntries }: FeaturedSectionProps
             </div>
 
             {displayLatest.length > 0 && (
-              <div className="flex min-h-0 flex-col gap-3 lg:border-l lg:border-border lg:pl-6 xl:pl-8">
+              <div className="flex min-w-0 flex-col gap-3 xl:border-l xl:border-border xl:pl-8">
                 <h3 className="shrink-0 text-sm font-mono font-semibold uppercase tracking-wide text-muted">
                   Últimos registros
                 </h3>
-                <div className="flex min-h-0 flex-1 flex-col justify-between gap-2 overflow-hidden">
+                <div className="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 xl:flex xl:min-h-0 xl:flex-1 xl:flex-col xl:justify-between xl:gap-2">
                   {displayLatest.map((entry) => (
                     <EntryStrip
                       key={entry.slug}
