@@ -2,25 +2,30 @@
 
 import { useState, useEffect } from 'react'
 import { useTheme } from 'next-themes'
-import { Sun, Moon, Monitor, Check } from 'lucide-react'
+import { Sun, Moon, Contrast, Check } from 'lucide-react'
 import { useDisclosure } from '@/hooks/useDisclosure'
 
+// `Contrast` — a half-filled disc — stands in for "follow the system", which
+// reads as light/dark duality rather than a device.
 const OPTIONS = [
   { value: 'light', label: 'Claro', Icon: Sun },
   { value: 'dark', label: 'Oscuro', Icon: Moon },
-  { value: 'system', label: 'Sistema', Icon: Monitor },
+  { value: 'system', label: 'Sistema', Icon: Contrast },
 ] as const
 
 export default function ThemeToggle({ className = '' }: { className?: string }) {
-  const { theme, setTheme, resolvedTheme } = useTheme()
+  const { theme, setTheme } = useTheme()
   const { open, setOpen, ref, toggle } = useDisclosure()
   const [mounted, setMounted] = useState(false)
+  // Bumped on every pick; remounting the icon under a new key replays the
+  // CSS animation. Starts at 0 so the first paint stays still.
+  const [swapCount, setSwapCount] = useState(0)
 
   useEffect(() => setMounted(true), [])
 
   const ActiveIcon = mounted
-    ? (OPTIONS.find((o) => o.value === theme)?.Icon ?? Monitor)
-    : Monitor
+    ? (OPTIONS.find((o) => o.value === theme)?.Icon ?? Contrast)
+    : Contrast
 
   return (
     <div ref={ref} className={`relative ${className}`}>
@@ -32,7 +37,10 @@ export default function ThemeToggle({ className = '' }: { className?: string }) 
         aria-expanded={open}
         className="p-1 min-h-8 min-w-8 flex items-center justify-center text-secondary hover:text-accent transition-all duration-200 rounded hover:bg-elevated"
       >
-        <ActiveIcon className="w-3 h-3" />
+        <ActiveIcon
+          key={swapCount}
+          className={`w-3 h-3 ${swapCount ? 'animate-theme-icon' : ''}`}
+        />
       </button>
 
       {open && (
@@ -41,7 +49,11 @@ export default function ThemeToggle({ className = '' }: { className?: string }) 
             <button
               key={value}
               type="button"
-              onClick={() => { setTheme(value); setOpen(false) }}
+              onClick={() => {
+                setTheme(value)
+                setOpen(false)
+                setSwapCount((n) => n + 1)
+              }}
               className="w-full flex items-center gap-2.5 rounded-md px-3 py-2 text-xs font-mono text-secondary hover:text-accent hover:bg-elevated transition-colors"
             >
               <Icon className="w-4 h-4" />
