@@ -33,7 +33,7 @@ export default async function HomePage() {
 
   const featured = featuredResult.docs
   const latestResult = await getLatestEntries(
-    4,
+    5,
     featured.map((entry) => entry.slug),
   )
   const latest = latestResult.docs

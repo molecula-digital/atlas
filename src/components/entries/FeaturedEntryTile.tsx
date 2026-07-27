@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { MapPin } from 'lucide-react'
 import { EntryBadge } from '@/components/entries/EntryBadge'
+import { ClampedText } from '@/components/ui/ClampedText'
 import { getEntryUrl, getCityName, type AtlasEntryType } from '@/config'
 
 export interface FeaturedEntryTileProps {
@@ -83,7 +84,7 @@ export function FeaturedEntryTile({
           {name}
         </h3>
         {tagline && (
-          <p className="line-clamp-2 text-xs text-secondary">{tagline}</p>
+          <ClampedText text={tagline} className="line-clamp-2 text-xs text-secondary" />
         )}
         <div className="mt-auto flex flex-col gap-1.5 pt-1 sm:flex-row sm:items-center sm:justify-between sm:gap-2">
           <p className="flex min-w-0 items-center gap-1 text-2xs font-mono text-muted">

@@ -9,7 +9,7 @@ import {
   CarouselPrevious,
   CarouselNext,
 } from "@/components/ui/Carousel";
-import { EntryCard } from "@/components/entries/EntryCard";
+import { FeaturedEntryTile } from "@/components/entries/FeaturedEntryTile";
 import type { AtlasEntryType } from "@/config";
 
 interface CarouselEntry {
@@ -20,7 +20,6 @@ interface CarouselEntry {
   logo?: { url: string; alt?: string } | null;
   coverImage?: { url: string; alt?: string } | null;
   city: string;
-  tags?: Array<{ tag: string }> | string[];
 }
 
 export default function FeaturedCarousel({ entries }: { entries: CarouselEntry[] }) {
@@ -41,21 +40,21 @@ export default function FeaturedCarousel({ entries }: { entries: CarouselEntry[]
       plugins={plugins}
       className="w-full"
     >
-      <CarouselContent className="-ml-3">
+      <CarouselContent className="-ml-3 items-stretch">
         {entries.map((entry) => (
+          // Widths keep the tile near ~260px across the whole range, always with a peek of the next one
           <CarouselItem
             key={entry.slug}
-            className="pl-3 basis-[80%] xs:basis-[65%]"
+            className="pl-3 basis-[80%] xs:basis-[62%] sm:basis-1/2 md:basis-[38%]"
           >
-            <EntryCard
+            <FeaturedEntryTile
               slug={entry.slug}
               name={entry.name}
-              tagline={entry.tagline ?? undefined}
+              tagline={entry.tagline}
               entryType={entry.entryType}
               logo={entry.logo}
               coverImage={entry.coverImage}
               city={entry.city}
-              tags={entry.tags}
             />
           </CarouselItem>
         ))}

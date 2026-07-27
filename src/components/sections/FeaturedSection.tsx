@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { EntryStrip } from '@/components/entries/EntryStrip'
 import { FeaturedEntryTile } from '@/components/entries/FeaturedEntryTile'
+import FeaturedCarousel from '@/components/entries/FeaturedCarousel'
 import { type AtlasEntryType } from '@/config'
 import { SectionTitle } from '@/components/ui/SectionTitle'
 
@@ -23,7 +24,9 @@ export function FeaturedSection({ entries, latestEntries }: FeaturedSectionProps
   if (entries.length === 0) return null
 
   const displayEntries = entries.slice(0, 6)
-  const displayLatest = latestEntries.slice(0, 4)
+  // Five fills the xl sidebar next to two rows of tiles; the fifth is dropped when the
+  // list sits below the tiles as a 2-up grid and four is the even number.
+  const displayLatest = latestEntries.slice(0, 5)
 
   return (
     <section className="py-4">
@@ -55,19 +58,28 @@ export function FeaturedSection({ entries, latestEntries }: FeaturedSectionProps
 
         <div className="overflow-hidden rounded-xl border-2 border-accent/25 bg-card/50 p-4 shadow-sm sm:p-6">
           <div className="flex min-w-0 flex-col gap-6 xl:grid xl:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] xl:items-stretch xl:gap-8">
-            <div className="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-2 2xl:grid-cols-3">
-              {displayEntries.map((entry) => (
-                <FeaturedEntryTile
-                  key={entry.slug}
-                  slug={entry.slug}
-                  name={entry.name}
-                  tagline={entry.tagline}
-                  entryType={entry.entryType}
-                  logo={entry.logo}
-                  coverImage={entry.coverImage}
-                  city={entry.city}
-                />
-              ))}
+            <div className="min-w-0">
+              {/* Scroller up to lg — six stacked tiles turned the panel into a tower on phones */}
+              <div className="lg:hidden">
+                <FeaturedCarousel entries={displayEntries} />
+              </div>
+
+              {/* Three across from lg up, so the six tiles always land in two rows and the
+                  sidebar never has a three-row column to stretch against */}
+              <div className="hidden min-w-0 gap-3 lg:grid lg:grid-cols-3">
+                {displayEntries.map((entry) => (
+                  <FeaturedEntryTile
+                    key={entry.slug}
+                    slug={entry.slug}
+                    name={entry.name}
+                    tagline={entry.tagline}
+                    entryType={entry.entryType}
+                    logo={entry.logo}
+                    coverImage={entry.coverImage}
+                    city={entry.city}
+                  />
+                ))}
+              </div>
             </div>
 
             {displayLatest.length > 0 && (
@@ -75,8 +87,10 @@ export function FeaturedSection({ entries, latestEntries }: FeaturedSectionProps
                 <h3 className="shrink-0 text-sm font-mono font-semibold uppercase tracking-wide text-muted">
                   Últimos registros
                 </h3>
-                <div className="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 xl:flex xl:min-h-0 xl:flex-1 xl:flex-col xl:justify-between xl:gap-2">
-                  {displayLatest.map((entry) => (
+                {/* Fixed gap instead of justify-between: spread-to-fill turned any height
+                    difference with the tiles into gaping holes between strips */}
+                <div className="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2 xl:flex xl:flex-col">
+                  {displayLatest.map((entry, index) => (
                     <EntryStrip
                       key={entry.slug}
                       slug={entry.slug}
@@ -85,6 +99,7 @@ export function FeaturedSection({ entries, latestEntries }: FeaturedSectionProps
                       logo={entry.logo}
                       tagline={entry.tagline}
                       city={entry.city}
+                      className={index >= 4 ? 'hidden xl:flex' : undefined}
                     />
                   ))}
                 </div>

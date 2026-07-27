@@ -2,7 +2,9 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { MapPin } from 'lucide-react'
 import { EntryBadge } from '@/components/entries/EntryBadge'
+import { ClampedText } from '@/components/ui/ClampedText'
 import { getEntryUrl, getCityName, type AtlasEntryType } from '@/config'
+import { cn } from '@/lib/utils'
 
 export interface EntryStripProps {
   slug: string
@@ -12,6 +14,7 @@ export interface EntryStripProps {
   tagline?: string | null
   city?: string
   href?: string
+  className?: string
 }
 
 export function EntryStrip({
@@ -22,6 +25,7 @@ export function EntryStrip({
   tagline,
   city,
   href: hrefOverride,
+  className,
 }: EntryStripProps) {
   const href = hrefOverride ?? getEntryUrl(entryType, slug)
   const logoUrl = typeof logo === 'object' && logo?.url ? logo.url : null
@@ -29,7 +33,10 @@ export function EntryStrip({
   return (
     <Link
       href={href}
-      className="group flex w-full min-w-0 items-center gap-2.5 rounded-lg border border-border bg-card p-2.5 text-left transition-all duration-200 hover:border-[var(--color-accent)]/40 hover:shadow-sm"
+      className={cn(
+        'group flex w-full min-w-0 items-center gap-2.5 rounded-lg border border-border bg-card p-2.5 text-left transition-all duration-200 hover:border-[var(--color-accent)]/40 hover:shadow-sm',
+        className,
+      )}
     >
       <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-accent/20 bg-accent/10">
         {logoUrl ? (
@@ -59,9 +66,10 @@ export function EntryStrip({
         {(tagline || city) && (
           <div className="mt-0.5 flex min-w-0 flex-col gap-0.5 sm:flex-row sm:items-center sm:gap-2">
             {tagline && (
-              <span className="min-w-0 truncate text-xs font-mono text-muted">
-                {tagline}
-              </span>
+              <ClampedText
+                text={tagline}
+                className="min-w-0 truncate text-xs font-mono text-muted"
+              />
             )}
             {tagline && city && (
               <span className="hidden shrink-0 text-xs text-muted sm:inline">·</span>
