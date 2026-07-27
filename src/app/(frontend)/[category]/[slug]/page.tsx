@@ -261,7 +261,7 @@ export default async function EntryDetailPage({
         className={
           isCompactLayout
             ? 'max-w-3xl mx-auto'
-            : 'lg:grid lg:grid-cols-[minmax(0,1fr)_28rem] lg:gap-1 xl:grid-cols-[minmax(0,1fr)_30rem]'
+            : 'lg:grid lg:grid-cols-[minmax(0,1fr)_14rem] lg:gap-4 xl:grid-cols-[minmax(0,1fr)_15rem]'
         }
       >
         {/* ============================================================ */}
