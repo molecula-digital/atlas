@@ -261,7 +261,7 @@ export default async function EntryDetailPage({
         className={
           isCompactLayout
             ? 'max-w-3xl mx-auto'
-            : 'xl:grid xl:grid-cols-[minmax(0,1fr)_26rem] xl:gap-2'
+            : 'xl:grid xl:grid-cols-[minmax(0,1fr)_30rem] xl:gap-2'
         }
       >
         {/* ============================================================ */}
