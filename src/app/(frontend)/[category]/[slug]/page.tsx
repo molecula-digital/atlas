@@ -261,7 +261,7 @@ export default async function EntryDetailPage({
         className={
           isCompactLayout
             ? 'max-w-3xl mx-auto'
-            : 'xl:grid xl:grid-cols-[minmax(0,1fr)_23rem] xl:gap-4'
+            : 'xl:grid xl:grid-cols-[minmax(0,1fr)_26rem] xl:gap-2'
         }
       >
         {/* ============================================================ */}
@@ -281,18 +281,41 @@ export default async function EntryDetailPage({
                   priority
                 />
                 ) : (
-                  <div className="flex h-full items-center justify-center bg-gradient-to-br from-accent/25 via-elevated to-card">
-                    {logoUrl ? (
-                      <Image
-                        src={logoUrl}
-                        alt={`${entry.name as string} logo`}
-                        width={160}
-                        height={160}
-                        className="max-h-32 max-w-[55%] object-contain drop-shadow-lg"
-                      />
-                    ) : (
-                      <EntryIcon className="h-16 w-16 text-accent" strokeWidth={1.25} />
-                    )}
+                  <div className="relative flex h-full overflow-hidden bg-gradient-to-br from-accent/25 via-elevated to-card p-6 sm:p-8">
+                    <div className="absolute inset-0 opacity-25 [background-image:linear-gradient(to_right,color-mix(in_srgb,var(--color-accent)_35%,transparent)_1px,transparent_1px),linear-gradient(to_bottom,color-mix(in_srgb,var(--color-accent)_35%,transparent)_1px,transparent_1px)] [background-size:28px_28px]" />
+                    <div className="relative flex w-full flex-col justify-between">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl border border-accent/25 bg-card/80 p-3 shadow-sm backdrop-blur-sm">
+                          {logoUrl ? (
+                            <Image
+                              src={logoUrl}
+                              alt={`${entry.name as string} logo`}
+                              width={64}
+                              height={64}
+                              className="h-full w-full object-contain"
+                            />
+                          ) : (
+                            <EntryIcon className="h-7 w-7 text-accent" strokeWidth={1.5} />
+                          )}
+                        </div>
+                        <EntryBadge entryType={entry.entryType as AtlasEntryType} />
+                      </div>
+                      <div className="max-w-2xl">
+                        <h1 className="terminal-title text-2xl font-bold text-primary sm:text-3xl">
+                          {entry.name as string}
+                        </h1>
+                        {entry.tagline && (
+                          <p className="mt-3 text-base text-secondary sm:text-lg">
+                            {entry.tagline as string}
+                          </p>
+                        )}
+                        <p className="mt-4 flex items-center gap-1.5 text-xs font-mono text-muted">
+                          <MapPin className="h-3.5 w-3.5 text-accent" />
+                          {entry.city === 'global' ? 'Global' : getCityName(entry.city as string)}
+                          {entry.state ? `, ${entry.state as string}` : ''}
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
@@ -312,24 +335,28 @@ export default async function EntryDetailPage({
 
           {/* Header */}
           <div className={coverUrl && logoUrl ? 'space-y-4 pt-4' : 'space-y-4'}>
-            <div className="flex items-center gap-3">
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <EntryBadge entryType={entry.entryType as AtlasEntryType} />
-                  {entry.verified && (
-                    <span className="inline-flex items-center gap-1 text-xs font-mono text-accent">
-                      <BadgeCheck className="w-3 h-3" />
-                      Verificado
-                    </span>
-                  )}
+            {coverUrl ? (
+              <div className="flex items-center gap-3">
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <EntryBadge entryType={entry.entryType as AtlasEntryType} />
+                    {entry.verified && (
+                      <span className="inline-flex items-center gap-1 text-xs font-mono text-accent">
+                        <BadgeCheck className="w-3 h-3" />
+                        Verificado
+                      </span>
+                    )}
+                  </div>
+                  <h1 className="terminal-title text-2xl md:text-3xl font-sans font-bold text-primary">
+                    {entry.name as string}
+                  </h1>
                 </div>
-                <h1 className="terminal-title text-2xl md:text-3xl font-sans font-bold text-primary">
-                  {entry.name as string}
-                </h1>
               </div>
-            </div>
+            ) : (
+              <h1 className="sr-only">{entry.name as string}</h1>
+            )}
 
-            {entry.tagline && (
+            {coverUrl && entry.tagline && (
               <p className="text-lg text-secondary">{entry.tagline as string}</p>
             )}
 
