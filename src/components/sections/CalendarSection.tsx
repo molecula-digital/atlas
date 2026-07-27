@@ -1,17 +1,23 @@
 'use client'
 
 import EventCalendar from '@/components/calendar/EventCalendar'
-import EventDetailModal from '@/components/calendar/EventDetailModal'
-import AddToCalendarButton from '@/components/calendar/AddToCalendarButton'
+import { SectionTitle } from '@/components/ui/SectionTitle'
 
 export function CalendarSection() {
   return (
-    <section id="calendario" className="py-4 px-4">
-      <div className="max-w-7xl mx-auto">
-        <EventCalendar />
+    <section id="calendario" className="py-8 px-4">
+      <div className="max-w-280 mx-auto space-y-8">
+        <SectionTitle
+          align="center"
+          description="Explora el mes y descubre meetups, talleres y conferencias en Sinaloa"
+        >
+          Calendario de eventos
+        </SectionTitle>
+
+        <div className="bg-card border border-border rounded-xl overflow-hidden shadow-sm">
+          <EventCalendar />
+        </div>
       </div>
-      <EventDetailModal />
-      <AddToCalendarButton />
     </section>
   )
 }

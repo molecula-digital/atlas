@@ -115,6 +115,19 @@ export const getPublishedEvents = cache(async (limit = 100) => {
   })
 })
 
+export const getEventBySlug = cache(async (slug: string) => {
+  const payload = await getPayloadClient()
+  const result = await payload.find({
+    collection: 'events',
+    where: {
+      slug: { equals: slug },
+      _status: { equals: 'published' },
+    },
+    limit: 1,
+  })
+  return result.docs[0] ?? null
+})
+
 export const getUpcomingEvents = cache(async (limit = 5) => {
   const payload = await getPayloadClient()
   return payload.find({

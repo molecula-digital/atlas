@@ -2,6 +2,7 @@ import { cache } from 'react'
 import { db } from '@/db'
 import { sql } from 'drizzle-orm'
 import { CITY_IDS, emptyTypeCounts, type AtlasEntryType } from '@/config'
+import { countPublicProfiles } from '@/lib/public-profile'
 
 interface EntryCountRow {
   [key: string]: unknown
@@ -51,6 +52,21 @@ export const getEntryCounts = cache(async (): Promise<EntryCounts> => {
       byCityAndType[city][entry_type as AtlasEntryType] =
         (byCityAndType[city][entry_type as AtlasEntryType] || 0) + count
     }
+  }
+
+  // /personas merges public user profiles into the `person` type, so the counts
+  // have to include them or the hero under-reports what the directory shows.
+  // They carry no city, so only the type total and grand total move.
+  try {
+    const publicProfileCount = await countPublicProfiles()
+    if (publicProfileCount > 0) {
+      byType.person = (byType.person || 0) + publicProfileCount
+      total += publicProfileCount
+    }
+  } catch (err) {
+    // Matches the directory route: if app.profiles is unavailable (e.g. pending
+    // migration), fall back to Payload-only counts rather than failing the page.
+    console.error('Public profile count unavailable; reporting entry counts only:', err)
   }
 
   return { byType, byCity, byCityAndType, total }

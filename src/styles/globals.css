@@ -25,30 +25,31 @@
 }
 
 html {
-  font-size: 16px;
+  font-size: 15px;
   scroll-behavior: smooth;
+  scroll-padding-top: 4rem;
 }
 
 /* Theme CSS Custom Properties */
 :root {
-  /* Light theme (default) */
-  --color-background: #f3f2ef;
-  --color-primary: #18181b;
-  --color-secondary: #3f3f46;
-  --color-accent: #1a7a4f;
-  --color-muted: #71717a;
-  --color-border: #d4d4d8;
-  --color-card: #ffffff;
-  --color-elevated: #f3f2ef;
+  /* Light theme (default) — warm neutrals with a subtle brand-green canvas. */
+  --color-accent: #4B7F52;
+  --color-background: color-mix(in srgb, var(--color-accent) 2%, #e9e6e0);
+  --color-primary: #1c1917;
+  --color-secondary: #44403c;
+  --color-muted: #78716c;
+  --color-border: #d9d4ca;
+  --color-card: #fdfcfa;
+  --color-elevated: #f2efe9;
   --color-accent-foreground: #ffffff;
 }
 
 :root.dark {
   /* Dark theme */
-  --color-background: #101010;
+  --color-accent: #7DD181;
+  --color-background: color-mix(in srgb, var(--color-accent) 2%, #060606);
   --color-primary: #ffffff;
   --color-secondary: #a1a1a1;
-  --color-accent: #42ab7a;
   --color-muted: #6b6b6b;
   --color-border: #2f2f2f;
   --color-card: #0a0a0a;
@@ -66,6 +67,171 @@ html {
 
 .animate-wink {
   animation: wink 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Terminal-inspired headings */
+.terminal-title::before {
+  content: ">";
+  margin-right: 0.42em;
+  color: var(--color-accent);
+  font-family: var(--font-mono), "JetBrains Mono", ui-monospace, monospace;
+  font-weight: 700;
+  text-shadow:
+    0 0 0.35rem color-mix(in srgb, var(--color-accent) 70%, transparent),
+    0 0 1rem color-mix(in srgb, var(--color-accent) 35%, transparent);
+}
+
+.terminal-glow {
+  text-shadow:
+    0 0 0.35rem color-mix(in srgb, var(--color-accent) 65%, transparent),
+    0 0 1.25rem color-mix(in srgb, var(--color-accent) 30%, transparent);
+}
+
+/* Printed dot-screen texture over the hero map. */
+.map-dither::after {
+  position: absolute;
+  z-index: 20;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background-image: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--color-primary) 30%, transparent) 0.65px,
+    transparent 0.8px
+  );
+  background-size: 4px 4px;
+  opacity: 0.28;
+  mix-blend-mode: multiply;
+  -webkit-mask-image: linear-gradient(to bottom right, black 5%, transparent 82%);
+  mask-image: linear-gradient(to bottom right, black 5%, transparent 82%);
+}
+
+:root.dark .map-dither::after {
+  mix-blend-mode: screen;
+  opacity: 0.2;
+}
+
+/* Map "radar ping" over municipalities with entries */
+@keyframes map-ping-ring {
+  0% {
+    transform: scale(0.5);
+    opacity: 0.85;
+  }
+  70% {
+    transform: scale(3);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+
+@keyframes map-ping-dot {
+  0%,
+  100% {
+    opacity: 0.9;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* fill-box keeps the scale centered on each circle instead of the SVG origin */
+.map-ping-ring,
+.map-ping-dot {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.map-ping-ring {
+  animation: map-ping-ring 2.6s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.map-ping-dot {
+  animation: map-ping-dot 2.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .map-ping-ring {
+    animation: none;
+    opacity: 0.4;
+  }
+
+  .map-ping-dot {
+    animation: none;
+  }
+}
+
+/* Community photo marquee — light edge fade (keeps scroll soft without extra inset) */
+.community-photo-marquee {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 1.5%,
+    black 98.5%,
+    transparent
+  );
+}
+
+/* Community / newsletter CTA — neon grid panel */
+.tron-panel {
+  isolation: isolate;
+}
+
+.tron-grid {
+  background-color: #050806;
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--color-accent) 28%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--color-accent) 22%, transparent) 1px, transparent 1px);
+  background-size: 28px 28px, 28px 28px;
+  mask-image: radial-gradient(ellipse 85% 80% at 50% 45%, black 20%, transparent 78%);
+}
+
+/* Radix tooltip entrance (no animation plugin in this project) */
+@keyframes tooltip-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.tooltip-content[data-state='delayed-open'],
+.tooltip-content[data-state='instant-open'] {
+  animation: tooltip-in 120ms ease-out both;
+}
+
+/* Radix dialog entrance (no animation plugin in this project) */
+@keyframes dialog-overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes dialog-content-in {
+  from {
+    opacity: 0;
+    scale: 0.98;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+.dialog-overlay[data-state='open'] {
+  animation: dialog-overlay-in 150ms ease-out both;
+}
+
+.dialog-content[data-state='open'] {
+  animation: dialog-content-in 150ms ease-out both;
 }
 
 /* Directory filter animations */
@@ -104,27 +270,4 @@ html {
 }
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
-}
-
-/* Add to Calendar Button – ::part() overrides for sizing */
-add-to-calendar-button::part(atcb-button) {
-  font-size: 0.75rem;
-  line-height: 1rem;
-  padding: 0.5rem 0.75rem !important;
-  margin: 0 !important;
-  box-sizing: border-box !important;
-  transition: background-color 0.15s ease, color 0.15s ease;
-}
-
-add-to-calendar-button::part(atcb-button):hover {
-  border-color: var(--color-border) !important;
-}
-
-add-to-calendar-button::part(atcb-button):focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 2px;
-}
-
-add-to-calendar-button::part(atcb-button-wrapper) {
-  padding: 0 !important;
 }

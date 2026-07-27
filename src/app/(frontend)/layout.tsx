@@ -21,7 +21,7 @@ const spaceGrotesk = Space_Grotesk({
 
 export default function FrontendLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es-MX" className={`${jetbrainsMono.variable} ${spaceGrotesk.variable}`} suppressHydrationWarning>
+    <html lang="es-MX" className={`${jetbrainsMono.variable} ${spaceGrotesk.variable}`} data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         {process.env.NODE_ENV === 'production' && (
           <Script
@@ -34,8 +34,8 @@ export default function FrontendLayout({ children }: { children: React.ReactNode
       </head>
       <body className="bg-background">
         <ThemeProvider>
-          <div className="font-sans w-full min-h-screen flex flex-col text-secondary selection:bg-accent selection:text-accent-foreground relative overflow-hidden">
-            <MatrixBackground movementDirection="up-left" movementSpeed={0.04} highlight={false} />
+          <div className="font-sans w-full min-h-screen flex flex-col text-secondary selection:bg-accent selection:text-accent-foreground relative overflow-x-clip">
+            <MatrixBackground boxSize={26} highlight={false} />
             <div className="relative z-10 flex flex-col flex-1">
               <InfoBanner />
               <Header />

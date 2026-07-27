@@ -6,6 +6,7 @@ import { AuthGuard } from '@/components/auth/AuthGuard'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import { CITY_SELECT_OPTIONS, JOB_TYPE_OPTIONS, MODALITY_OPTIONS } from '@/config'
 import { XCircle, ArrowLeft, Save, CheckCircle } from 'lucide-react'
+import { btn } from '@/components/ui/button-styles'
 
 interface JobData {
   id: string
@@ -177,7 +178,7 @@ export default function EditJobPage() {
               <div className="flex items-center gap-3 mb-6">
                 <button
                   onClick={() => router.push('/dashboard')}
-                  className="p-1.5 rounded-md hover:bg-elevated transition-colors text-muted hover:text-primary"
+                  className={btn({ variant: "ghost", size: "md", icon: true })}
                 >
                   <ArrowLeft className="w-4 h-4" />
                 </button>
@@ -324,9 +325,9 @@ export default function EditJobPage() {
                     <button
                       type="submit"
                       disabled={saving || !title.trim() || !type || !modality || !contactUrl.trim()}
-                      className="flex items-center gap-2 px-4 py-2 text-sm font-mono font-medium bg-accent text-accent-foreground rounded-md hover:bg-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className={btn({ variant: "accent", size: "md" })}
                     >
-                      <Save className="w-4 h-4" />
+                      <Save className="w-3.5 h-3.5" />
                       {saving ? 'Guardando...' : 'Guardar cambios'}
                     </button>
                   </div>

@@ -18,6 +18,12 @@ export async function fetchPaginated<T>(
     }
   }
   const res = await fetch(url.toString())
-  if (!res.ok) throw new Error(`API error: ${res.status}`)
-  return res.json()
+  const text = await res.text()
+  if (!res.ok) {
+    throw new Error(`API error: ${res.status}`)
+  }
+  if (!text.trim()) {
+    throw new Error('Respuesta vacía del servidor')
+  }
+  return JSON.parse(text) as PaginatedResponse<T>
 }

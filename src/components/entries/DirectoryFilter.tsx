@@ -18,6 +18,7 @@ import { PaginatedView } from '@/components/ui/PaginatedView'
 import { EntryCardSkeleton } from './EntryCardSkeleton'
 import type { Entry, Media } from '@/payload-types'
 import { EntryCard } from './EntryCard'
+import { btn } from '@/components/ui/button-styles'
 
 /* ── Types ── */
 
@@ -64,9 +65,10 @@ function getSortFromURL(): SortOption {
   return SORT_OPTIONS.some((o) => o.value === s) ? (s as SortOption) : DEFAULT_SORT
 }
 
-function renderEntryItem(entry: Entry) {
+function renderEntryItem(entry: Entry & { kind?: string; href?: string; userId?: string }) {
   const logo = typeof entry.logo === 'object' && entry.logo !== null ? entry.logo as Media : null
   const coverImage = typeof entry.coverImage === 'object' && entry.coverImage !== null ? entry.coverImage as Media : null
+  const isUserProfile = entry.kind === 'user-profile'
 
   return (
     <div className="entry-item animate-in h-full">
@@ -75,10 +77,12 @@ function renderEntryItem(entry: Entry) {
         name={entry.name}
         tagline={entry.tagline ?? undefined}
         entryType={entry.entryType}
-        logo={logo && logo.url ? { url: logo.url, alt: logo.alt } : null}
-        coverImage={coverImage && coverImage.url ? { url: coverImage.url, alt: coverImage.alt } : null}
+        logo={logo && logo.url ? { url: logo.url, alt: logo.alt ?? undefined } : null}
+        coverImage={coverImage && coverImage.url ? { url: coverImage.url, alt: coverImage.alt ?? undefined } : null}
         city={entry.city}
         tags={entry.tags ?? undefined}
+        href={isUserProfile ? entry.href : undefined}
+        hideCity={isUserProfile}
       />
     </div>
   )
@@ -305,7 +309,7 @@ export default function DirectoryFilter({
       </nav>
 
       {/* Heading */}
-      <h1 className="text-3xl md:text-4xl font-sans font-bold text-primary">{heading}</h1>
+      <h1 className="terminal-title text-3xl md:text-4xl font-sans font-bold text-primary">{heading}</h1>
       <p className="mt-2 text-secondary mb-6">
         Explora el directorio del ecosistema tech.
       </p>
@@ -314,7 +318,7 @@ export default function DirectoryFilter({
       <div className="lg:hidden mb-6">
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="w-full flex items-center justify-between gap-2 px-4 py-3 bg-card/90 backdrop-blur-sm border border-border rounded-lg text-sm font-mono text-primary cursor-pointer"
+          className={btn({ size: "md" }, "w-full justify-between backdrop-blur-sm")}
         >
           <span className="flex items-center gap-2">
             <SlidersHorizontal className="w-4 h-4 text-muted" />

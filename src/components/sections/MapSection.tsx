@@ -2,11 +2,9 @@
 
 import { useState, useEffect, useMemo, useCallback } from "react";
 import dynamic from 'next/dynamic'
-import {
-  SINALOA_CITIES,
-  emptyTypeCounts,
-} from "@/config";
+import { SINALOA_CITIES, emptyTypeCounts } from "@/config";
 import type { AtlasEntryType } from "@/config";
+import { SectionTitle } from "@/components/ui/SectionTitle";
 import CityList from "@/components/maps/CityList";
 import CityStats from "@/components/maps/CityStats";
 import { MapPin, Globe } from "lucide-react";
@@ -75,18 +73,26 @@ export default function MapSection({
 
   return (
     <section id="map" className="py-8 px-4">
-      <div className="max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-9 gap-4">
-          {/* Left: Cities (4 cols) */}
-          <div className="lg:col-span-4 space-y-4">
+      <div className="max-w-280 mx-auto">
+        <div className="mb-6">
+          <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.18em] text-muted">
+            atlas://mapa/datos
+          </p>
+          <SectionTitle>El ecosistema, municipio por municipio</SectionTitle>
+        </div>
+
+        <div className="grid items-center gap-4 lg:grid-cols-9">
+          {/* Left: Cities (4 cols) — vertically centered against the map */}
+          <div className="space-y-4 lg:col-span-4">
             <div>
-              <div className="flex items-center gap-2 mb-1">
-                <MapPin className="w-5 h-5 text-accent" />
-                <h2 className="text-xl md:text-2xl font-sans font-bold text-primary">
-                  Mira por municipio
-                </h2>
+              <div className="mb-1 flex items-center gap-2">
+                <MapPin className="h-5 w-5 text-accent" />
+                <h3 className="font-mono text-sm font-bold uppercase text-primary">
+                  <span className="text-accent terminal-glow" aria-hidden="true">{'>'}</span>{' '}
+                  Selecciona municipio
+                </h3>
               </div>
-              <p className="text-sm text-secondary pl-7">
+              <p className="pl-7 text-sm text-secondary">
                 Selecciona un municipio para ver su ecosistema tech
               </p>
             </div>
@@ -102,28 +108,28 @@ export default function MapSection({
           </div>
 
           {/* Right: Map (5 cols) */}
-          <div className="lg:col-span-5 flex">
-            <div className="bg-card border border-border rounded-lg p-5 flex flex-col w-full">
+          <div className="flex lg:col-span-5">
+            <div className="flex w-full flex-col rounded-lg border border-border bg-card p-5">
               <div className="mb-4">
-                <div className="flex flex-wrap items-center justify-between gap-2 mb-0.5">
+                <div className="mb-0.5 flex flex-wrap items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
-                    <Globe className="w-5 h-5 text-accent" />
-                    <h2 className="text-lg font-sans font-bold text-primary">
-                      Mapa del ecosistema
-                    </h2>
+                    <Globe className="h-5 w-5 text-accent" />
+                    <h3 className="font-mono text-sm font-bold uppercase text-primary">
+                      <span className="text-accent terminal-glow">{'>'}</span> Sinaloa.geo
+                    </h3>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-                    <span className="text-xs font-mono text-accent">
+                    <span className="h-2 w-2 animate-pulse rounded-full bg-accent" />
+                    <span className="font-mono text-xs text-accent">
                       {activeCityCount} municipios
                     </span>
                   </div>
                 </div>
-                <p className="text-sm text-secondary pl-7">
+                <p className="pl-7 text-sm text-secondary">
                   Distribución del talento tech en Sinaloa
                 </p>
               </div>
-              <div className="flex-1 min-h-100 bg-elevated border border-border rounded-lg overflow-hidden">
+              <div className="min-h-100 flex-1 overflow-hidden rounded-lg border border-border bg-elevated">
                 <SinaloaMap cityCounts={cityCounts} selectedCity={selectedId} />
               </div>
             </div>

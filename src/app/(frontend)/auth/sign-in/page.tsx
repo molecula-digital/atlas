@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { LogIn } from 'lucide-react'
 import { SignInButton } from '@/components/auth/SignInButton'
 
 export const metadata: Metadata = {
@@ -9,17 +10,25 @@ export const metadata: Metadata = {
 
 export default function SignInPage() {
   return (
-    <section className="py-20 px-4">
-      <div className="max-w-sm mx-auto text-center">
-        <h1 className="text-2xl font-bold text-primary mb-2">Iniciar sesion</h1>
-        <p className="text-sm text-muted mb-8">
-          Inicia sesion para administrar tus registros y publicar empleos.
-        </p>
-        <SignInButton />
-        <p className="text-2xs text-muted mt-6">
-          Al iniciar sesion, aceptas nuestros terminos de uso.
-        </p>
+    <div className="flex flex-col items-center text-center">
+      <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-full border border-accent/30 bg-accent/10">
+        <LogIn className="h-5 w-5 text-accent" />
       </div>
-    </section>
+
+      <h1 className="font-sans text-xl font-bold uppercase tracking-tight text-primary">
+        Iniciar sesion
+      </h1>
+      <p className="mt-2 text-xs leading-relaxed text-muted">
+        Inicia sesion para administrar tus registros y publicar empleos.
+      </p>
+
+      <div className="mt-6 w-full">
+        <SignInButton />
+      </div>
+
+      <p className="mt-6 font-mono text-2xs text-muted">
+        Al iniciar sesion, aceptas nuestros terminos de uso.
+      </p>
+    </div>
   )
 }

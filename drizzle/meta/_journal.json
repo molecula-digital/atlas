@@ -8,6 +8,34 @@
       "when": 1774997149549,
       "tag": "0000_perpetual_gorilla_man",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1784929241626,
+      "tag": "0001_worthless_infant_terrible",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1784930030515,
+      "tag": "0002_careless_felicia_hardy",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1784930247344,
+      "tag": "0003_nervous_sleeper",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1784932269008,
+      "tag": "0004_daffy_kingpin",
+      "breakpoints": true
     }
   ]
 }

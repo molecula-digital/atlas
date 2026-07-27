@@ -28,6 +28,7 @@ type CarouselContextProps = {
   scrollNext: () => void;
   canScrollPrev: boolean;
   canScrollNext: boolean;
+  mounted: boolean;
 } & CarouselProps;
 
 const CarouselContext = React.createContext<CarouselContextProps | null>(null);
@@ -58,8 +59,14 @@ function Carousel({
     },
     plugins,
   );
-  const [canScrollPrev, setCanScrollPrev] = React.useState(false);
-  const [canScrollNext, setCanScrollNext] = React.useState(false);
+  const loop = opts?.loop ?? false;
+  const [canScrollPrev, setCanScrollPrev] = React.useState(loop);
+  const [canScrollNext, setCanScrollNext] = React.useState(loop);
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const onSelect = React.useCallback((api: CarouselApi) => {
     if (!api) return;
@@ -117,6 +124,7 @@ function Carousel({
         scrollNext,
         canScrollPrev,
         canScrollNext,
+        mounted,
       }}
     >
       <div
@@ -178,7 +186,7 @@ function CarouselPrevious({
   size = "icon-sm",
   ...props
 }: React.ComponentProps<typeof Button>) {
-  const { orientation, scrollPrev, canScrollPrev } = useCarousel();
+  const { orientation, scrollPrev, canScrollPrev, mounted } = useCarousel();
 
   return (
     <Button
@@ -192,9 +200,9 @@ function CarouselPrevious({
           : "-top-12 left-1/2 -translate-x-1/2 rotate-90",
         className,
       )}
-      disabled={!canScrollPrev}
-      onClick={scrollPrev}
       {...props}
+      onClick={scrollPrev}
+      disabled={mounted ? !canScrollPrev : false}
     >
       <ChevronLeftIcon className="cn-rtl-flip" />
       <span className="sr-only">Previous slide</span>
@@ -208,7 +216,7 @@ function CarouselNext({
   size = "icon-sm",
   ...props
 }: React.ComponentProps<typeof Button>) {
-  const { orientation, scrollNext, canScrollNext } = useCarousel();
+  const { orientation, scrollNext, canScrollNext, mounted } = useCarousel();
 
   return (
     <Button
@@ -222,9 +230,9 @@ function CarouselNext({
           : "-bottom-12 left-1/2 -translate-x-1/2 rotate-90",
         className,
       )}
-      disabled={!canScrollNext}
-      onClick={scrollNext}
       {...props}
+      onClick={scrollNext}
+      disabled={mounted ? !canScrollNext : false}
     >
       <ChevronRightIcon className="cn-rtl-flip" />
       <span className="sr-only">Next slide</span>

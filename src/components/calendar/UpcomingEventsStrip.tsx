@@ -12,26 +12,26 @@ import {
 } from "@/components/ui/Carousel";
 import { useEventsData } from "@/hooks/useEventsData";
 import type { TechEvent } from "@/hooks/useEventsData";
-import { openEventDetail } from "@/lib/event-bus";
 import EventTypeBadge from "./EventTypeBadge";
+import { EventDialog } from "./EventDialog";
+
+// Fixed table instead of toLocaleDateString — ICU output differs between Node and
+// browsers ("sept" vs "sep"), which shows up as a hydration mismatch.
+const MONTH_ABBR = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
 
 function formatDateBadge(dateStr: string): { day: string; month: string } {
-  const [y, m, d] = dateStr.split("-").map(Number);
-  const date = new Date(y, m - 1, d);
+  const [, m, d] = dateStr.split("-").map(Number);
   return {
     day: String(d),
-    month: date
-      .toLocaleDateString("es-MX", { month: "short" })
-      .replace(".", ""),
+    month: MONTH_ABBR[(m - 1) % 12] ?? "",
   };
 }
 
 function EventCard({ ev }: { ev: TechEvent }) {
   const { day, month } = formatDateBadge(ev.date);
   return (
-    <button
-      type="button"
-      onClick={() => openEventDetail(ev)}
+    <EventDialog
+      event={ev}
       className="w-full h-full bg-card border border-border rounded-lg p-3 flex items-center gap-3 text-left transition-all duration-200 hover:border-[var(--color-accent)]/40 hover:shadow-sm cursor-pointer group"
     >
       {/* Date badge */}
@@ -76,7 +76,7 @@ function EventCard({ ev }: { ev: TechEvent }) {
 
       {/* Arrow */}
       <ArrowRight className="w-4 h-4 text-muted group-hover:text-accent transition-colors shrink-0" />
-    </button>
+    </EventDialog>
   );
 }
 
@@ -115,7 +115,7 @@ export default function UpcomingEventsStrip() {
     )
     .slice(0, 3);
 
-  const isLoading = status === "loading" && events.length === 0;
+  const isLoading = (status === "loading" || status === "idle") && events.length === 0;
 
   if (!isLoading && upcoming.length === 0) return null;
 

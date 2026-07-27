@@ -1,6 +1,7 @@
 'use client'
 
 import { signIn } from '@/lib/auth-client'
+import { btn } from '@/components/ui/button-styles'
 
 interface SignInButtonProps {
   callbackURL?: string
@@ -30,7 +31,7 @@ export function SignInButton({ callbackURL = '/dashboard', compact = false }: Si
     return (
       <button
         onClick={handleSignIn}
-        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono text-secondary hover:text-primary rounded-md hover:bg-elevated transition-colors"
+        className={btn({ variant: "ghost", size: "sm" })}
       >
         <GoogleLogo className="w-3.5 h-3.5" />
         Iniciar sesión
@@ -41,7 +42,7 @@ export function SignInButton({ callbackURL = '/dashboard', compact = false }: Si
   return (
     <button
       onClick={handleSignIn}
-      className="flex items-center justify-center gap-3 w-full px-6 py-3 bg-card border border-border rounded-lg hover:bg-elevated hover:border-accent/30 transition-all text-sm text-primary font-medium shadow-sm"
+      className={btn({ size: "md" }, "w-full")}
     >
       <GoogleLogo className="w-5 h-5" />
       Continuar con Google

@@ -53,15 +53,6 @@ El panel de administracion de Payload esta disponible en `/admin`.
 
 Las imagenes (logos, portadas) se suben a almacenamiento S3 compatible (Cloudflare R2 en produccion, MinIO en desarrollo local).
 
-## Wallet passes
-
-Los usuarios autenticados pueden generar un **pase digital** con su perfil del directorio, compatible con:
-
-- **Apple Wallet** — genera un archivo `.pkpass` descargable
-- **Google Wallet** — genera un link para agregar el pase
-
-Requiere configurar los certificados de Apple y la service account de Google (ver variables de entorno).
-
 ## Variables de entorno
 
 Copia `.env.example` y configura segun tu entorno:
@@ -86,13 +77,6 @@ Copia `.env.example` y configura segun tu entorno:
 | `S3_ACCESS_KEY_ID` / `S3_SECRET_ACCESS_KEY` | Credenciales de acceso al bucket |
 | `S3_REGION` | Region (`us-east-1` para MinIO, `auto` para R2) |
 | `MEDIA_URL` | URL publica donde se sirven las imagenes |
-
-**Wallet passes (opcional):**
-
-| Variable | Descripcion |
-|---|---|
-| `APPLE_PASS_*` | Certificados para Apple Wallet. Guia: [Apple Developer — Wallet](https://developer.apple.com/documentation/walletpasses) |
-| `GOOGLE_WALLET_*` | Service account y IDs para Google Wallet. Guia: [Google Wallet API](https://developers.google.com/wallet/generic/web/prerequisites) |
 
 ## Docker
 

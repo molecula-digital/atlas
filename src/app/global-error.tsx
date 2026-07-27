@@ -104,10 +104,10 @@ export default function GlobalError({
                 fontWeight: 500,
                 fontFamily:
                   '"JetBrains Mono", ui-monospace, SFMono-Regular, monospace',
-                backgroundColor: '#42ab7a',
-                color: '#f5f8f7',
-                border: 'none',
-                borderRadius: 6,
+                backgroundColor: 'transparent',
+                color: '#42ab7a',
+                border: '1px solid rgba(66, 171, 122, 0.6)',
+                borderRadius: 4,
                 cursor: 'pointer',
               }}
             >
@@ -121,8 +121,9 @@ export default function GlobalError({
                 fontFamily:
                   '"JetBrains Mono", ui-monospace, SFMono-Regular, monospace',
                 color: '#a1a1a1',
+                backgroundColor: 'transparent',
                 border: '1px solid #2f2f2f',
-                borderRadius: 6,
+                borderRadius: 4,
                 textDecoration: 'none',
                 display: 'inline-flex',
                 alignItems: 'center',

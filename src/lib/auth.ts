@@ -3,6 +3,7 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { nextCookies } from 'better-auth/next-js'
 import { db } from '@/db'
 import * as authSchema from '@/db/schema/auth'
+import { claimAnonymousSubscription } from '@/lib/newsletter'
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -22,6 +23,19 @@ export const auth = betterAuth({
     cookieCache: {
       enabled: true,
       maxAge: 60 * 5, // 5 minutes
+    },
+  },
+  databaseHooks: {
+    user: {
+      create: {
+        after: async (createdUser) => {
+          try {
+            await claimAnonymousSubscription(createdUser.id, createdUser.email)
+          } catch (err) {
+            console.error('Failed to claim anonymous newsletter subscriber:', err)
+          }
+        },
+      },
     },
   },
   plugins: [nextCookies()],

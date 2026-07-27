@@ -17,6 +17,7 @@ import {
   isStartupLike,
   type AtlasEntryType,
 } from '@/config'
+import { btn } from '@/components/ui/button-styles'
 
 const cities = [
   { id: 'global', name: 'Global (sin ubicacion especifica)' },
@@ -359,7 +360,7 @@ export function EditEntryForm() {
               <div className="flex items-center gap-3 mb-6">
                 <button
                   onClick={() => router.push('/dashboard')}
-                  className="p-1.5 rounded-md hover:bg-elevated transition-colors text-muted hover:text-primary"
+                  className={btn({ variant: "ghost", size: "md", icon: true })}
                 >
                   <ArrowLeft className="w-4 h-4" />
                 </button>
@@ -425,7 +426,7 @@ export function EditEntryForm() {
                               setLogoPreview(URL.createObjectURL(file))
                             }
                           }}
-                          className="w-full text-sm text-muted font-mono file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border file:border-border file:text-sm file:font-mono file:font-semibold file:bg-card file:text-primary hover:file:border-accent file:transition-colors file:cursor-pointer"
+                          className="w-full text-xs text-muted font-mono file:mr-3 file:py-1 file:px-2.5 file:rounded file:border file:border-border file:text-xs file:font-mono file:font-semibold file:bg-transparent file:text-primary hover:file:border-accent hover:file:text-accent file:transition-colors file:cursor-pointer"
                         />
                         {logoRef.current?.files?.[0] && logoPreview && (
                           <div className="mt-2 relative w-20 h-20">
@@ -436,7 +437,7 @@ export function EditEntryForm() {
                                 setLogoPreview(entry?.logo && typeof entry.logo === 'object' && 'url' in entry.logo ? entry.logo.url || null : null)
                                 if (logoRef.current) logoRef.current.value = ''
                               }}
-                              className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center hover:bg-red-600 transition-colors"
+                              className="absolute -top-2 -right-2 w-5 h-5 rounded-full border border-red-500/70 bg-transparent text-red-500 backdrop-blur-sm flex items-center justify-center hover:border-red-500 hover:bg-red-500/10 transition-colors cursor-pointer"
                             >
                               <X className="w-3 h-3" />
                             </button>
@@ -460,7 +461,7 @@ export function EditEntryForm() {
                               setCoverPreview(URL.createObjectURL(file))
                             }
                           }}
-                          className="w-full text-sm text-muted font-mono file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border file:border-border file:text-sm file:font-mono file:font-semibold file:bg-card file:text-primary hover:file:border-accent file:transition-colors file:cursor-pointer"
+                          className="w-full text-xs text-muted font-mono file:mr-3 file:py-1 file:px-2.5 file:rounded file:border file:border-border file:text-xs file:font-mono file:font-semibold file:bg-transparent file:text-primary hover:file:border-accent hover:file:text-accent file:transition-colors file:cursor-pointer"
                         />
                         {coverRef.current?.files?.[0] && coverPreview && (
                           <div className="mt-2 relative">
@@ -471,7 +472,7 @@ export function EditEntryForm() {
                                 setCoverPreview(entry?.coverImage && typeof entry.coverImage === 'object' && 'url' in entry.coverImage ? entry.coverImage.url || null : null)
                                 if (coverRef.current) coverRef.current.value = ''
                               }}
-                              className="absolute top-2 right-2 w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center hover:bg-red-600 transition-colors"
+                              className="absolute top-2 right-2 w-6 h-6 rounded-full border border-red-500/70 bg-transparent text-red-500 backdrop-blur-sm flex items-center justify-center hover:border-red-500 hover:bg-red-500/10 transition-colors cursor-pointer"
                             >
                               <X className="w-3 h-3" />
                             </button>
@@ -854,7 +855,7 @@ export function EditEntryForm() {
                         type="button"
                         onClick={addTag}
                         disabled={tags.length >= 10}
-                        className="px-3 py-2 rounded-lg border border-border bg-card text-muted hover:text-accent hover:border-accent transition-colors disabled:opacity-40"
+                        className={btn({ size: "lg", icon: true })}
                       >
                         <Plus className="w-4 h-4" />
                       </button>
@@ -893,9 +894,9 @@ export function EditEntryForm() {
                     <button
                       type="submit"
                       disabled={saving || uploadingImages || !name.trim() || !city}
-                      className="flex items-center gap-2 px-4 py-2 text-sm font-mono font-medium bg-accent text-accent-foreground rounded-md hover:bg-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className={btn({ variant: "accent", size: "md" })}
                     >
-                      <Save className="w-4 h-4" />
+                      <Save className="w-3.5 h-3.5" />
                       {uploadingImages ? 'Subiendo imagenes...' : saving ? 'Guardando...' : 'Guardar cambios'}
                     </button>
                   </div>

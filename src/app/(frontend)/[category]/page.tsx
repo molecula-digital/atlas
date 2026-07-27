@@ -43,7 +43,7 @@ export default async function CategoryPage({
 
   return (
     <section className="py-4 px-4">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-280 mx-auto">
         <DirectoryFilter cities={staticCities} initialType={entryType} pageSize={12} />
       </div>
     </section>

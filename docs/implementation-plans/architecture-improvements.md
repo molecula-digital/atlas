@@ -308,7 +308,6 @@ Convert the entire submission to `FormData` instead of JSON. This avoids a separ
 - `src/app/api/jobs/route.ts`
 - `src/app/api/events/route.ts`
 - `src/app/api/user/profile/route.ts`
-- `src/app/api/user/wallet/route.ts`
 - `src/app/api/user/entries/route.ts`
 - `src/app/api/user/jobs/route.ts`
 - `src/app/api/auth/[...all]/route.ts` (if applicable — better-auth may handle its own)
@@ -326,7 +325,7 @@ Use **`@upstash/ratelimit`** with an Upstash Redis instance. This is the most co
 | Category | Endpoints | Limit | Window |
 |---|---|---|---|
 | Write (authenticated) | `POST /api/submissions/entries`, `POST /api/submissions/jobs`, `PATCH /api/submissions/*` | 10 requests | 15 minutes |
-| Write (profile) | `PATCH /api/user/profile`, `POST /api/user/wallet` | 20 requests | 15 minutes |
+| Write (profile) | `PATCH /api/user/profile` | 20 requests | 15 minutes |
 | Read (public) | `GET /api/entries`, `GET /api/entries/counts`, `GET /api/news`, `GET /api/jobs`, `GET /api/events` | 60 requests | 1 minute |
 | Read (authenticated) | `GET /api/user/entries`, `GET /api/user/jobs` | 30 requests | 1 minute |
 | File upload | `POST /api/media/upload` | 5 requests | 15 minutes |

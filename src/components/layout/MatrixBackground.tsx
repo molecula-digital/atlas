@@ -19,14 +19,17 @@ interface MatrixBackgroundProps {
   boxSize?: number
   movementDirection?: MovementDirection
   movementSpeed?: number
+  /** Movement is opt-in — the grid renders static unless this is enabled. */
+  animate?: boolean
 }
 
 export function MatrixBackground({
   highlight = true,
   highlightColor = 'rgba(20, 184, 166, 0.3)',
-  boxSize = 50,
+  boxSize = 28,
   movementDirection = 'none',
   movementSpeed = 0.5,
+  animate = false,
 }: MatrixBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
@@ -37,8 +40,8 @@ export function MatrixBackground({
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    const darkEdgeColor = 'rgba(63, 63, 70, 0.3)'
-    const lightEdgeColor = 'rgba(200, 200, 200, 0.25)'
+    const darkEdgeColor = 'rgba(63, 63, 70, 0.22)'
+    const lightEdgeColor = 'rgba(120, 120, 120, 0.22)'
 
     function getEdgeColor() {
       return document.documentElement.classList.contains('dark')
@@ -51,6 +54,11 @@ export function MatrixBackground({
     const offset = { x: 0, y: 0 }
     let animationId: number
     let isRunning = true
+
+    // Movement logic is kept intact but only runs when explicitly enabled.
+    const isMoving = animate && movementDirection !== 'none'
+    // Only keep a render loop alive when something can actually change.
+    const needsLoop = isMoving || highlight
 
     function resize() {
       if (!canvas) return
@@ -100,7 +108,7 @@ export function MatrixBackground({
         }
       }
 
-      if (movementDirection !== 'none') {
+      if (isMoving) {
         const moveUp = movementDirection.includes('up')
         const moveDown = movementDirection.includes('down')
         const moveLeft = movementDirection.includes('left')
@@ -124,7 +132,12 @@ export function MatrixBackground({
         }
       }
 
-      animationId = requestAnimationFrame(draw)
+      if (needsLoop) animationId = requestAnimationFrame(draw)
+    }
+
+    function handleResize() {
+      resize()
+      draw()
     }
 
     function handleMouseMove(e: MouseEvent) {
@@ -138,24 +151,37 @@ export function MatrixBackground({
     }
 
     resize()
-    window.addEventListener('resize', resize)
-    window.addEventListener('mousemove', handleMouseMove)
-    document.addEventListener('mouseleave', handleMouseLeave)
+    window.addEventListener('resize', handleResize)
+    if (highlight) {
+      window.addEventListener('mousemove', handleMouseMove)
+      document.addEventListener('mouseleave', handleMouseLeave)
+    }
+
+    // Static grids need an explicit repaint when the theme flips.
+    const themeObserver = needsLoop
+      ? null
+      : new MutationObserver(() => draw())
+    themeObserver?.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    })
+
     draw()
 
     return () => {
       isRunning = false
       cancelAnimationFrame(animationId)
-      window.removeEventListener('resize', resize)
+      themeObserver?.disconnect()
+      window.removeEventListener('resize', handleResize)
       window.removeEventListener('mousemove', handleMouseMove)
       document.removeEventListener('mouseleave', handleMouseLeave)
     }
-  }, [highlight, highlightColor, boxSize, movementDirection, movementSpeed])
+  }, [highlight, highlightColor, boxSize, movementDirection, movementSpeed, animate])
 
   return (
     <canvas
       ref={canvasRef}
-      className="absolute inset-0 -z-10 pointer-events-none opacity-50"
+      className="absolute inset-0 -z-10 pointer-events-none opacity-25"
       aria-hidden="true"
     />
   )

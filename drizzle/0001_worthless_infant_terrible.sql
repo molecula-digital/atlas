@@ -1,0 +1,1 @@
+ALTER TABLE "app"."profiles" ADD COLUMN "newsletter_enabled" boolean DEFAULT false NOT NULL;

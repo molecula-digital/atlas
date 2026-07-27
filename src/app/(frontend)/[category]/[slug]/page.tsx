@@ -45,6 +45,7 @@ import { ENTRY_TYPE_ICON_MAP } from '@/lib/icons'
 import { SocialLinkIcon } from '@/components/icons/SocialIcons'
 import { isStartupLike } from '@/config'
 import { WhatsAppCta } from '@/components/sections/WhatsAppCta'
+import { btn } from '@/components/ui/button-styles'
 
 export async function generateStaticParams() {
   const result = await getPublishedEntries()
@@ -192,7 +193,7 @@ export default async function EntryDetailPage({
   const pageUrl = `${SITE_URL}/${config.slug}/${entry.slug}`
 
   return (
-    <article className="max-w-7xl mx-auto px-4 py-4">
+    <article className="max-w-280 mx-auto px-4 py-4">
       <script type="application/ld+json" dangerouslySetInnerHTML={{
         __html: safeJsonLd({
           '@context': 'https://schema.org',
@@ -319,7 +320,7 @@ export default async function EntryDetailPage({
                     </span>
                   )}
                 </div>
-                <h1 className="text-2xl md:text-3xl font-sans font-bold text-primary">
+                <h1 className="terminal-title text-2xl md:text-3xl font-sans font-bold text-primary">
                   {entry.name as string}
                 </h1>
               </div>
@@ -334,7 +335,7 @@ export default async function EntryDetailPage({
               {entry.website && (
                 <ExternalLink
                   href={track(entry.website as string)!}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-accent text-accent-foreground font-mono font-semibold text-sm rounded-lg hover:bg-accent/90 transition-colors"
+                  className={btn({ variant: "accent", size: "md" })}
                 >
                   Visitar sitio
                   <ExternalLinkIcon className="w-4 h-4" />

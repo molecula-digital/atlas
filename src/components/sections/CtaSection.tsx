@@ -1,11 +1,12 @@
 import Link from 'next/link'
+import { btn } from '@/components/ui/button-styles'
 
 export function CtaSection() {
   return (
     <section className="py-4 px-4">
       <div className="max-w-3xl mx-auto text-center">
         <div className="bg-card border border-border rounded-lg p-8 md:p-12 space-y-6">
-          <h2 className="text-2xl md:text-3xl font-sans font-bold text-primary uppercase">
+          <h2 className="terminal-title text-2xl md:text-3xl font-sans font-bold text-primary uppercase">
             Pon a Sinaloa en el mapa
           </h2>
           <p className="text-secondary max-w-lg mx-auto">
@@ -14,13 +15,10 @@ export function CtaSection() {
             directorio y conecta con el ecosistema.
           </p>
           <div className="flex flex-wrap justify-center gap-3">
-            <Link
-              href="/dashboard"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-background font-mono font-semibold text-sm rounded-lg hover:bg-primary/90 transition-colors"
-            >
+            <Link href="/dashboard" className={btn({ variant: 'accent', size: 'md' })}>
               Registrarme
               <svg
-                className="w-4 h-4"
+                className="w-3.5 h-3.5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -33,10 +31,7 @@ export function CtaSection() {
                 />
               </svg>
             </Link>
-            <Link
-              href="/directorio"
-              className="inline-flex items-center gap-2 px-6 py-3 border border-border text-primary font-mono font-semibold text-sm rounded-lg hover:border-accent/50 hover:text-accent transition-colors"
-            >
+            <Link href="/directorio" className={btn({ size: 'md' })}>
               Explorar directorio
             </Link>
           </div>

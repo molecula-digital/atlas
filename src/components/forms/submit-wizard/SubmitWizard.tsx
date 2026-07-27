@@ -15,6 +15,7 @@ import StepBasicInfo from "./StepBasicInfo";
 import StepDetails from "./StepDetails";
 import StepLinks from "./StepLinks";
 import StepReview from "./StepReview";
+import { btn } from "@/components/ui/button-styles";
 
 interface Props {
   cities: CityOption[];
@@ -48,7 +49,7 @@ export default function SubmitWizard({ cities }: Props) {
         </p>
         <a
           href="/directorio"
-          className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-accent-foreground font-mono font-semibold text-sm rounded-lg hover:bg-accent/90 transition-colors mt-4"
+          className={btn({ variant: "accent", size: "md" }, "mt-4")}
         >
           VER DIRECTORIO
         </a>
@@ -68,7 +69,7 @@ export default function SubmitWizard({ cities }: Props) {
         </p>
         <button
           onClick={clearResult}
-          className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-accent-foreground font-mono font-semibold text-sm rounded-lg hover:bg-accent/90 transition-colors mt-4"
+          className={btn({ variant: "accent", size: "md" }, "mt-4")}
         >
           INTENTAR DE NUEVO
         </button>
@@ -123,9 +124,9 @@ export default function SubmitWizard({ cities }: Props) {
           <button
             type="button"
             onClick={prevStep}
-            className="inline-flex items-center gap-2 px-4 py-2.5 border border-border text-primary font-mono font-semibold text-xs rounded-lg hover:border-accent/50 hover:text-accent transition-colors"
+            className={btn({ size: "md" })}
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-3.5 h-3.5" />
             ANTERIOR
           </button>
         ) : (
@@ -137,26 +138,26 @@ export default function SubmitWizard({ cities }: Props) {
             type="button"
             onClick={nextStep}
             disabled={!canAdvance}
-            className="inline-flex items-center gap-2 px-6 py-2.5 bg-accent text-accent-foreground font-mono font-semibold text-xs rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            className={btn({ variant: "accent", size: "md" })}
           >
             SIGUIENTE
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-3.5 h-3.5" />
           </button>
         ) : (
           <button
             type="button"
             onClick={submit}
             disabled={state.submitting}
-            className="inline-flex items-center gap-2 px-6 py-2.5 bg-accent text-accent-foreground font-mono font-semibold text-xs rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-70"
+            className={btn({ variant: "accent", size: "md" })}
           >
             {state.uploadingImages ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
                 SUBIENDO IMÁGENES...
               </>
             ) : state.submitting ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
                 ENVIANDO...
               </>
             ) : (

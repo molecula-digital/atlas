@@ -6,6 +6,7 @@ import { timeAgo, expirationLabel } from '@/lib/utils'
 import { Clock, CheckCircle, XCircle, Briefcase, ExternalLink, Plus, Pencil } from 'lucide-react'
 import { useUserResource } from '@/hooks/useUserResource'
 import { EmptyState } from '@/components/ui/EmptyState'
+import { btn } from '@/components/ui/button-styles'
 
 interface Job {
   id: string
@@ -62,7 +63,7 @@ export function MyJobs() {
         action={
           <Link
             href="/dashboard/jobs/new"
-            className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-mono font-medium bg-accent text-accent-foreground rounded-md hover:bg-accent/90 transition-colors"
+            className={btn({ variant: "accent", size: "md" })}
           >
             <Plus className="w-3.5 h-3.5" />
             Publicar empleo
@@ -142,7 +143,7 @@ export function MyJobs() {
                 {job._status === 'draft' && (
                   <Link
                     href={`/dashboard/jobs/${job.id}/edit`}
-                    className="flex items-center gap-1 px-3 py-1.5 text-xs font-mono text-secondary hover:text-primary border border-border rounded-md hover:bg-elevated transition-colors"
+                    className={btn({ size: "sm" })}
                   >
                     <Pencil className="w-3 h-3" /> Editar
                   </Link>
@@ -150,7 +151,7 @@ export function MyJobs() {
                 {job._status === 'published' && !isExpired && (
                   <Link
                     href={`/empleos/${job.slug}`}
-                    className="flex items-center gap-1 px-3 py-1.5 text-xs font-mono text-secondary hover:text-primary border border-border rounded-md hover:bg-elevated transition-colors"
+                    className={btn({ size: "sm" })}
                   >
                     <ExternalLink className="w-3 h-3" /> Ver
                   </Link>
@@ -165,7 +166,7 @@ export function MyJobs() {
       <div className="text-center pt-2">
         <Link
           href="/dashboard/jobs/new"
-          className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-mono font-medium bg-accent text-accent-foreground rounded-md hover:bg-accent/90 transition-colors"
+          className={btn({ variant: "accent", size: "md" })}
         >
           <Plus className="w-3.5 h-3.5" />
           Publicar empleo

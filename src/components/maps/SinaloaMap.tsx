@@ -16,6 +16,7 @@ import MapControls from "./MapControls";
 
 const TOPO_URL = "/topo/Sinaloa_municipios.json";
 const ACCENT = "var(--color-accent)";
+const DITHER_PATTERN_ID = "sinaloa-map-dither";
 
 // Pre-projected TopoJSON bounding box (Mexican CRS, meters)
 const BOUNDS = {
@@ -44,6 +45,10 @@ interface SinaloaMapProps {
   linkOnClick?: boolean;
   /** Externally selected city id to highlight on the map. */
   selectedCity?: string | null;
+  /** Overlay a halftone dot pattern clipped to the municipality shapes. */
+  dither?: boolean;
+  /** Pulse a marker over every municipality that has entries. */
+  pulseActive?: boolean;
 }
 
 /** Captures geographies into a ref via useEffect instead of during render. */
@@ -92,10 +97,13 @@ export default function SinaloaMap({
   cityCounts = {},
   linkOnClick = false,
   selectedCity = null,
+  dither = false,
+  pulseActive = false,
 }: SinaloaMapProps) {
   const width = compact ? 380 : 800;
   const height = compact ? 450 : 800;
   const padding = compact ? 5 : 40;
+  const markerRadius = compact ? 2.5 : 5;
 
   const {
     scale,
@@ -280,6 +288,18 @@ export default function SinaloaMap({
           projectionConfig={{}}
           style={{ width: "100%", height: "100%" }}
         >
+          {dither && (
+            <defs>
+              <pattern
+                id={DITHER_PATTERN_ID}
+                width="3.5"
+                height="3.5"
+                patternUnits="userSpaceOnUse"
+              >
+                <circle cx="0.9" cy="0.9" r="0.85" fill={ACCENT} />
+              </pattern>
+            </defs>
+          )}
           <Geographies geography={TOPO_URL}>
             {({ geographies }) => (
               <>
@@ -330,6 +350,56 @@ export default function SinaloaMap({
                     />
                   );
                 })}
+
+                {/* Halftone pass — clipped to the shapes, never eats pointer events */}
+                {dither && (
+                  <g pointerEvents="none" opacity={0.5}>
+                    {geographies.map((geo) => (
+                      <path
+                        key={`dither-${geo.rsmKey}`}
+                        d={pathGenerator(geo as any) ?? undefined}
+                        fill={`url(#${DITHER_PATTERN_ID})`}
+                      />
+                    ))}
+                  </g>
+                )}
+
+                {/* Radar ping over municipalities that actually have entries */}
+                {pulseActive && (
+                  <g pointerEvents="none">
+                    {geographies.map((geo, i) => {
+                      const geoId = geo.properties?.id as string | undefined;
+                      if (!geoId || !cityCounts[geoId]) return null;
+                      const [cx, cy] = pathGenerator.centroid(geo as any);
+                      if (!Number.isFinite(cx) || !Number.isFinite(cy))
+                        return null;
+                      // Stagger so the pings read as a scan, not a heartbeat
+                      const delay = `${(i % 6) * 0.45}s`;
+                      return (
+                        <g key={`ping-${geo.rsmKey}`}>
+                          <circle
+                            className="map-ping-ring"
+                            cx={cx}
+                            cy={cy}
+                            r={markerRadius}
+                            fill="none"
+                            stroke={ACCENT}
+                            strokeWidth={compact ? 0.8 : 1.5}
+                            style={{ animationDelay: delay }}
+                          />
+                          <circle
+                            className="map-ping-dot"
+                            cx={cx}
+                            cy={cy}
+                            r={markerRadius * 0.55}
+                            fill={ACCENT}
+                            style={{ animationDelay: delay }}
+                          />
+                        </g>
+                      );
+                    })}
+                  </g>
+                )}
               </>
             )}
           </Geographies>

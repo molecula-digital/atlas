@@ -240,26 +240,31 @@ export const BUSINESS_MODEL_OPTIONS = [
 
 export const FAQS = [
   {
+    icon: 'Sparkles',
     question: '¿Por qué existe Tech Atlas?',
     answer:
       'Porque Sinaloa es mucho más que lo que sale en las noticias. Queremos una carta de presentación para el mundo: que se vea el talento, la innovación, la creatividad y todo lo que se está construyendo aquí. No todo tiene que ser una nota roja. Tech Atlas existe para contar esa otra historia.',
   },
   {
+    icon: 'Compass',
     question: '¿Qué es Tech Atlas?',
     answer:
       'Tech Atlas es un directorio abierto del ecosistema tecnológico de Sinaloa. Reúne startups, consultorías, comunidades, empresas y profesionales tech que están construyendo desde nuestro estado.',
   },
   {
+    icon: 'UserPlus',
     question: '¿Cómo puedo registrarme?',
     answer:
       'Puedes registrarte de forma gratuita desde la sección "Agregar registro". Solo necesitas llenar un formulario con la información básica de tu startup, consultoría, comunidad o perfil profesional.',
   },
   {
+    icon: 'Gift',
     question: '¿Es gratuito aparecer en el directorio?',
     answer:
       'Sí, Tech Atlas es completamente gratuito y de código abierto. Cualquier startup, empresa o profesional tech de Sinaloa puede registrarse sin costo.',
   },
   {
+    icon: 'Users',
     question: '¿Quién puede registrarse?',
     answer:
       'Startups, consultorías de tecnología, comunidades tech, empresas establecidas y profesionales independientes del sector tecnológico en Sinaloa. Si estás construyendo algo relacionado con tecnología desde nuestro estado, tienes un lugar aquí.',
@@ -285,6 +290,23 @@ export const ATLAS_CATEGORIES: AtlasCategory[] = DISPLAY_CATEGORIES.map((type) =
 }))
 
 export const WHATSAPP_URL = 'https://chat.whatsapp.com/G9ddxpZ7NUtEOT0M6UzUkY?mode=gi_t'
+
+export const NEWSLETTER = {
+  title: 'Newsletter',
+  description: 'Noticias, eventos y proyectos del ecosistema tech de Sinaloa. Un correo al mes.',
+  placeholder: 'tu@email.com',
+  cta: 'Suscribirme',
+  success: 'Listo — te avisaremos cuando haya novedades.',
+  error: 'No se pudo suscribir. Intenta de nuevo.',
+  invalidEmail: 'Ingresa un email válido.',
+  profileLabel: 'Recibir el newsletter (máx. 1 al mes)',
+  profileHint: 'Resumen del ecosistema tech de Sinaloa. Desactivado por defecto.',
+  unsubscribeTitle: 'Cancelar suscripción',
+  unsubscribeDescription: 'Deja de recibir el newsletter de Tech Atlas.',
+  unsubscribeSuccess: 'Tu suscripción fue cancelada.',
+  unsubscribeCta: 'Cancelar suscripción',
+  unsubscribeEmailPlaceholder: 'tu@email.com',
+} as const
 
 
 export const SOCIAL_LINKS = [
