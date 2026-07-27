@@ -64,11 +64,20 @@ const STRIP_SELECT = {
   logo: true,
 } as const
 
-export const getLatestEntries = cache(async (limit = 4) => {
+export const getLatestEntries = cache(async (limit = 4, excludeSlugs: string[] = []) => {
   const payload = await getPayloadClient()
+  const where: {
+    _status: { equals: 'published' }
+    slug?: { not_in: string[] }
+  } = { _status: { equals: 'published' } }
+
+  if (excludeSlugs.length > 0) {
+    where.slug = { not_in: excludeSlugs }
+  }
+
   return payload.find({
     collection: 'entries',
-    where: { _status: { equals: 'published' } },
+    where,
     limit,
     sort: '-publishDate',
     select: STRIP_SELECT,

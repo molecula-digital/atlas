@@ -26,13 +26,16 @@ export const metadata: Metadata = {
 }
 
 export default async function HomePage() {
-  const [counts, featuredResult, latestResult] = await Promise.all([
+  const [counts, featuredResult] = await Promise.all([
     getEntryCounts(),
     getFeaturedEntries(),
-    getLatestEntries(4),
   ])
 
   const featured = featuredResult.docs
+  const latestResult = await getLatestEntries(
+    4,
+    featured.map((entry) => entry.slug),
+  )
   const latest = latestResult.docs
   const totalEntries = Math.floor(counts.total / 5) * 5
   const homeDescription = `Explora ${totalEntries}+ startups, consultorías, comunidades y talento tech en Sinaloa.`
