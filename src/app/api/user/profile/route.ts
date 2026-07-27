@@ -198,15 +198,20 @@ export async function PUT(request: NextRequest) {
 
   const validated = parsed.data
   const contactEmail = (validated.email || session.user.email).trim().toLowerCase()
-  const slug = validated.slug.trim() ? slugifyProfile(validated.slug) : null
+  const requestedSlug = validated.slug.trim() ? slugifyProfile(validated.slug) : null
   const website = normalizeWebsite(validated.website)
 
-  if (validated.isPublic && !slug) {
+  if (validated.isPublic && !requestedSlug) {
     return NextResponse.json(
       { error: 'El slug es obligatorio para un perfil público' },
       { status: 400 },
     )
   }
+
+  // A private profile releases its slug. Holding it would reserve the name in the
+  // unique index indefinitely, so nobody else could claim a slug pointing at a
+  // profile that is not publicly reachable.
+  const slug = validated.isPublic ? requestedSlug : null
 
   try {
     if (slug) {

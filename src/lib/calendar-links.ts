@@ -63,11 +63,43 @@ function getTimeZoneOffsetMinutes(utcDate: Date, timeZone: string): number {
   return (asUtc - utcDate.getTime()) / 60_000
 }
 
+/**
+ * Parses the time strings carried on a TechEvent.
+ *
+ * `formatTimeField` in lib/events.ts renders Payload's timestamps as 12-hour
+ * display strings ("6:30 PM"), but passes non-ISO values through untouched, so
+ * legacy 24-hour data ("18:30") still reaches here. Both have to be handled —
+ * naive `split(':')` reads "6:30 PM" as 06:00.
+ *
+ * Returns null when the value is absent or unrecognised, which callers treat as
+ * an all-day event rather than guessing at a wrong time.
+ */
+function parseClockTime(time: string | undefined): { hour: number; minute: number } | null {
+  if (!time) return null
+  const value = time.trim()
+
+  const twelveHour = value.match(/^(\d{1,2})(?::(\d{2}))?\s*([AaPp])\.?[Mm]\.?$/)
+  if (twelveHour) {
+    const hour = (Number(twelveHour[1]) % 12) + (twelveHour[3].toLowerCase() === 'p' ? 12 : 0)
+    const minute = Number(twelveHour[2] ?? 0)
+    if (hour <= 23 && minute <= 59) return { hour, minute }
+    return null
+  }
+
+  const twentyFourHour = value.match(/^(\d{1,2}):(\d{2})/)
+  if (twentyFourHour) {
+    const hour = Number(twentyFourHour[1])
+    const minute = Number(twentyFourHour[2])
+    if (hour <= 23 && minute <= 59) return { hour, minute }
+  }
+
+  return null
+}
+
 /** Converts a wall-clock time in `EVENT_TZ` to the equivalent UTC instant. */
-function zonedToUtc(date: string, time: string): Date {
+function zonedToUtc(date: string, hour: number, minute: number): Date {
   const [year, month, day] = date.split('-').map(Number)
-  const [hour, minute] = time.split(':').map(Number)
-  const naive = Date.UTC(year, month - 1, day, hour || 0, minute || 0)
+  const naive = Date.UTC(year, month - 1, day, hour, minute)
   // Two passes: the first offset can be wrong when the guess lands on the far
   // side of a DST transition, the second settles it.
   let utc = naive - getTimeZoneOffsetMinutes(new Date(naive), EVENT_TZ) * 60_000
@@ -107,7 +139,9 @@ interface Range {
 }
 
 function getRange(event: CalendarEvent): Range {
-  if (!event.startTime) {
+  const startClock = parseClockTime(event.startTime)
+
+  if (!startClock) {
     return {
       allDay: true,
       start: toDateStamp(event.date),
@@ -116,10 +150,17 @@ function getRange(event: CalendarEvent): Range {
     }
   }
 
-  const start = zonedToUtc(event.date, event.startTime)
-  const end = event.endTime
-    ? zonedToUtc(event.date, event.endTime)
+  const start = zonedToUtc(event.date, startClock.hour, startClock.minute)
+  const endClock = parseClockTime(event.endTime)
+  let end = endClock
+    ? zonedToUtc(event.date, endClock.hour, endClock.minute)
     : new Date(start.getTime() + DEFAULT_DURATION_MINUTES * 60_000)
+
+  // An end at or before the start means the event runs past midnight — the
+  // stored end time is a wall clock with no date of its own.
+  if (end.getTime() <= start.getTime()) {
+    end = new Date(end.getTime() + 24 * 60 * 60_000)
+  }
 
   return { allDay: false, start: toUtcStamp(start), end: toUtcStamp(end) }
 }
