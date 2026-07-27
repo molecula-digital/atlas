@@ -68,7 +68,7 @@ function UnsubscribeForm() {
   }
 
   return (
-    <div className="max-w-md mx-auto">
+    <div>
       <h1 className="terminal-title text-2xl font-sans font-bold text-primary mb-2">
         {NEWSLETTER.unsubscribeTitle}
       </h1>
@@ -135,15 +135,18 @@ function UnsubscribeForm() {
 }
 
 export default function UnsubscribePage() {
+  // Centered on the page like the auth shell — the form is short enough that
+  // top-aligning it under the header leaves it stranded. The wrapper sits
+  // outside Suspense so the fallback occupies the same box and nothing jumps.
   return (
-    <Suspense
-      fallback={
-        <div className="max-w-md mx-auto text-sm text-muted font-mono">
-          Cargando…
-        </div>
-      }
-    >
-      <UnsubscribeForm />
-    </Suspense>
+    <section className="flex min-h-[calc(100vh-12rem)] items-center justify-center">
+      <div className="w-full max-w-md">
+        <Suspense
+          fallback={<p className="text-sm text-muted font-mono">Cargando…</p>}
+        >
+          <UnsubscribeForm />
+        </Suspense>
+      </div>
+    </section>
   )
 }
