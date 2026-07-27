@@ -261,7 +261,7 @@ export default async function EntryDetailPage({
         className={
           isCompactLayout
             ? 'max-w-3xl mx-auto'
-            : 'lg:grid lg:grid-cols-[minmax(0,1fr)_14rem] lg:gap-4 xl:grid-cols-[minmax(0,1fr)_15rem]'
+            : 'lg:grid lg:grid-cols-[minmax(0,1fr)_16rem] lg:gap-4 xl:grid-cols-[minmax(0,1fr)_17rem]'
         }
       >
         {/* ============================================================ */}
@@ -276,7 +276,7 @@ export default async function EntryDetailPage({
                   src={coverUrl}
                   alt={entry.name as string}
                   fill
-                  className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                  className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02]"
                   sizes="(max-width: 768px) 100vw, 1200px"
                   priority
                 />
