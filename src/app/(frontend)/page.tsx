@@ -92,8 +92,8 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <FeaturedSection entries={featured as any} />
       <CommunitySection />
+      <FeaturedSection entries={featured as any} />
       <MapSection cityCounts={counts.byCity} cityTypeCounts={counts.byCityAndType} />
       <CalendarSection />
       <FaqSection />
