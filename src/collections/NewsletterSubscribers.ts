@@ -1,7 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { randomUUID } from 'crypto'
 import { isAdminOrEditor } from '../access/roles'
-import { buildNewsletterCsv } from '../lib/newsletter'
+import { buildNewsletterCsv } from '../lib/newsletter-csv'
 
 export const NewsletterSubscribers: CollectionConfig = {
   slug: 'newsletter-subscribers',
