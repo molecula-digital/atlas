@@ -10,6 +10,7 @@ export type PublicProfile = {
   photo: string | null
   title: string | null
   company: string | null
+  bio: string | null
   website: string | null
   linkedin: string | null
   x: string | null
@@ -29,6 +30,7 @@ export async function getPublicProfileBySlug(slug: string): Promise<PublicProfil
       photo: user.image,
       title: profiles.title,
       company: profiles.company,
+      bio: profiles.bio,
       website: profiles.website,
       linkedin: profiles.linkedin,
       x: profiles.x,
@@ -51,6 +53,7 @@ export async function getPublicProfileBySlug(slug: string): Promise<PublicProfil
     photo: row.photo,
     title: row.title,
     company: row.company,
+    bio: row.bio,
     website: row.website,
     linkedin: row.linkedin,
     x: row.x,
@@ -84,6 +87,7 @@ export async function listPublicProfiles(
       photo: user.image,
       title: profiles.title,
       company: profiles.company,
+      bio: profiles.bio,
       website: profiles.website,
       linkedin: profiles.linkedin,
       x: profiles.x,
@@ -106,6 +110,7 @@ export async function listPublicProfiles(
       photo: row.photo,
       title: row.title,
       company: row.company,
+      bio: row.bio,
       website: row.website,
       linkedin: row.linkedin,
       x: row.x,

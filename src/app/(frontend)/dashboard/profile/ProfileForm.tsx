@@ -6,13 +6,14 @@ import Link from 'next/link'
 import { Save, Loader2, CheckCircle, AlertCircle, ExternalLink, LogOut } from 'lucide-react'
 import { btn } from '@/components/ui/button-styles'
 import { NEWSLETTER } from '@/config'
-import { slugifyProfile } from '@/lib/profile-fields'
+import { PROFILE_BIO_MAX_LENGTH, slugifyProfile } from '@/lib/profile-fields'
 import { readJson } from '@/lib/read-json'
 
 interface ProfileData {
   name: string
   title: string
   company: string
+  bio: string
   email: string
   phone: string
   website: string
@@ -29,6 +30,7 @@ const emptyProfile: ProfileData = {
   name: '',
   title: '',
   company: '',
+  bio: '',
   email: '',
   phone: '',
   website: '',
@@ -50,6 +52,7 @@ function parseProfilePayload(data: Record<string, unknown>): ProfileData {
     name: String(data.name || ''),
     title: String(data.title || ''),
     company: String(data.company || ''),
+    bio: String(data.bio || ''),
     email: String(data.email || ''),
     phone: String(data.phone || ''),
     website: String(data.website || ''),
@@ -122,6 +125,7 @@ export function ProfileForm() {
           slug: profile.slug,
           title: profile.title,
           company: profile.company,
+          bio: profile.bio,
           phone: profile.phone,
           website: profile.website,
           linkedin: profile.linkedin,
@@ -246,6 +250,25 @@ export function ProfileForm() {
               placeholder="ej. Atlas Tech"
             />
           </div>
+        </div>
+
+        <div>
+          <label className={labelClass} htmlFor="profile-bio">Sobre ti</label>
+          <textarea
+            id="profile-bio"
+            className={`${inputClass} min-h-28 resize-y leading-relaxed`}
+            value={profile.bio}
+            onChange={(e) => handleChange('bio', e.target.value)}
+            placeholder="Cuéntale a la comunidad en qué trabajas, qué tecnologías usas o en qué te gustaría colaborar."
+            maxLength={PROFILE_BIO_MAX_LENGTH}
+            rows={4}
+          />
+          <p className="mt-1 flex items-center justify-between gap-2 text-2xs text-muted font-mono">
+            <span>Se muestra en tu perfil público.</span>
+            <span className={profile.bio.length >= PROFILE_BIO_MAX_LENGTH ? 'text-accent' : ''}>
+              {profile.bio.length}/{PROFILE_BIO_MAX_LENGTH}
+            </span>
+          </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

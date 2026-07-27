@@ -36,6 +36,13 @@
       "when": 1784932269008,
       "tag": "0004_daffy_kingpin",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1785173106759,
+      "tag": "0005_pale_silver_fox",
+      "breakpoints": true
     }
   ]
 }

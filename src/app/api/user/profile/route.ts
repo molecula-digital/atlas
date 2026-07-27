@@ -9,8 +9,10 @@ import { syncSubscriptionForEmails } from '@/lib/newsletter'
 import {
   isValidProfileSlug,
   isValidWebsiteInput,
+  normalizeBio,
   normalizeWebsite,
   slugifyProfile,
+  PROFILE_BIO_MAX_LENGTH,
 } from '@/lib/profile-fields'
 
 const FIELD_LABELS: Record<string, string> = {
@@ -18,6 +20,7 @@ const FIELD_LABELS: Record<string, string> = {
   slug: 'slug',
   title: 'cargo',
   company: 'empresa',
+  bio: 'biografía',
   phone: 'teléfono',
   website: 'sitio web',
   linkedin: 'LinkedIn',
@@ -39,6 +42,12 @@ const profileSchema = z
       .default(''),
     title: z.string().max(100, 'El cargo es demasiado largo').optional().default(''),
     company: z.string().max(100, 'La empresa es demasiado larga').optional().default(''),
+    // Generous raw cap; the normalized length is what actually gets enforced below.
+    bio: z
+      .string()
+      .max(PROFILE_BIO_MAX_LENGTH * 4, 'La biografía es demasiado larga')
+      .optional()
+      .default(''),
     phone: z.string().max(20, 'El teléfono es demasiado largo').optional().default(''),
     website: z.string().max(200, 'El sitio web es demasiado largo').optional().default(''),
     linkedin: z.string().max(200, 'LinkedIn es demasiado largo').optional().default(''),
@@ -57,6 +66,15 @@ const profileSchema = z
           message: 'Ingresa un correo válido',
         })
       }
+    }
+
+    const bio = normalizeBio(data.bio)
+    if (bio && bio.length > PROFILE_BIO_MAX_LENGTH) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['bio'],
+        message: `Máximo ${PROFILE_BIO_MAX_LENGTH} caracteres`,
+      })
     }
 
     if (data.website.trim() && !isValidWebsiteInput(data.website)) {
@@ -112,6 +130,7 @@ function toClientProfile(
     slug: profile.slug ?? '',
     title: profile.title ?? '',
     company: profile.company ?? '',
+    bio: profile.bio ?? '',
     phone: profile.phone ?? '',
     website: profile.website ?? '',
     linkedin: profile.linkedin ?? '',
@@ -147,6 +166,7 @@ export async function GET() {
         slug: '',
         title: '',
         company: '',
+        bio: '',
         phone: '',
         website: '',
         linkedin: '',
@@ -235,6 +255,7 @@ export async function PUT(request: NextRequest) {
       slug,
       title: validated.title || null,
       company: validated.company || null,
+      bio: normalizeBio(validated.bio),
       phone: validated.phone || null,
       website,
       linkedin: validated.linkedin || null,

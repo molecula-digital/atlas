@@ -1,6 +1,9 @@
-/** Shared profile field helpers (slug + website normalization). */
+/** Shared profile field helpers (slug, website and bio normalization). */
 
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
+
+/** Characters allowed in the free-text profile bio. */
+export const PROFILE_BIO_MAX_LENGTH = 600
 
 export function slugifyProfile(value: string): string {
   return value
@@ -39,4 +42,28 @@ export function isValidWebsiteInput(value: string): boolean {
   const trimmed = value.trim()
   if (!trimmed) return true
   return normalizeWebsite(trimmed) !== null
+}
+
+/**
+ * Free-text bio shown on the public profile.
+ *
+ * Paragraph breaks survive because people write bios in a textarea, but runs of
+ * spaces and blank lines are collapsed so a paste out of a CV cannot stretch the
+ * profile card. Returns null for empty input, keeping the column NULL rather
+ * than storing an empty string.
+ */
+export function normalizeBio(value: string): string | null {
+  const cleaned = value
+    .replace(/\r\n?/g, '\n')
+    .replace(/[^\S\n]+/g, ' ')
+    .replace(/ ?\n ?/g, '\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim()
+
+  return cleaned || null
+}
+
+export function isValidBioInput(value: string): boolean {
+  const normalized = normalizeBio(value)
+  return normalized === null || normalized.length <= PROFILE_BIO_MAX_LENGTH
 }

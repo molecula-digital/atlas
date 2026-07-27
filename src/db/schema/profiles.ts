@@ -15,6 +15,8 @@ export const profiles = appSchema.table(
     slug: text('slug'),
     title: text('title'),
     company: text('company'),
+    /** Free-text blurb shown on the public profile. */
+    bio: text('bio'),
     phone: text('phone'),
     website: text('website'),
     linkedin: text('linkedin'),
