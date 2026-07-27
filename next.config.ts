@@ -4,15 +4,6 @@ import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   output: 'standalone',
-  outputFileTracingIncludes: {
-    // Next's standalone trace can omit sharp's optional libvips package on
-    // Alpine. Both packages are required by the linux-musl native binding.
-    '/*': [
-      './node_modules/sharp/**/*',
-      './node_modules/@img/sharp-linuxmusl-x64/**/*',
-      './node_modules/@img/sharp-libvips-linuxmusl-x64/**/*',
-    ],
-  },
   images: {
     remotePatterns: [
       {
