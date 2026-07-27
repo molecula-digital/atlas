@@ -271,26 +271,3 @@ html {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
-
-/* Add to Calendar Button – ::part() overrides for sizing */
-add-to-calendar-button::part(atcb-button) {
-  font-size: 0.75rem;
-  line-height: 1rem;
-  padding: 0.5rem 0.75rem !important;
-  margin: 0 !important;
-  box-sizing: border-box !important;
-  transition: background-color 0.15s ease, color 0.15s ease;
-}
-
-add-to-calendar-button::part(atcb-button):hover {
-  border-color: var(--color-border) !important;
-}
-
-add-to-calendar-button::part(atcb-button):focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 2px;
-}
-
-add-to-calendar-button::part(atcb-button-wrapper) {
-  padding: 0 !important;
-}

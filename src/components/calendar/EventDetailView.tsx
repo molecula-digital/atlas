@@ -15,16 +15,18 @@ import {
 } from 'lucide-react'
 import type { TechEvent } from '@/lib/events'
 import { getEventPath } from '@/lib/events'
-import { closeEventDetail } from '@/lib/event-bus'
 import { btn } from '@/components/ui/button-styles'
+import { AddToCalendar } from './AddToCalendar'
 
 interface EventDetailViewProps {
   event: TechEvent
   variant?: 'modal' | 'page'
   onExpandImage?: () => void
+  /** Dismisses the containing dialog, when rendered inside one. */
+  onClose?: () => void
 }
 
-function EventFullPageLink({ slug }: { slug: string }) {
+function EventFullPageLink({ slug, onClose }: { slug: string; onClose?: () => void }) {
   const router = useRouter()
 
   return (
@@ -32,7 +34,7 @@ function EventFullPageLink({ slug }: { slug: string }) {
       href={getEventPath(slug)}
       onClick={(e) => {
         e.preventDefault()
-        closeEventDetail()
+        onClose?.()
         router.push(getEventPath(slug))
       }}
       className={btn({ variant: 'ghost', size: 'md' })}
@@ -47,6 +49,7 @@ export function EventDetailView({
   event,
   variant = 'modal',
   onExpandImage,
+  onClose,
 }: EventDetailViewProps) {
   const hasImage = !!event.image
   const isPage = variant === 'page'
@@ -167,17 +170,7 @@ export function EventDetailView({
           Google Maps
         </a>
       )}
-      <div
-        id="atcb-mount"
-        data-event={JSON.stringify({
-          name: event.title,
-          description: event.description,
-          startDate: event.date,
-          startTime: event.startTime,
-          endTime: event.endTime,
-          location: event.location,
-        })}
-      />
+      <AddToCalendar event={event} />
       {event.meetLink && (
         <a
           href={event.meetLink}
@@ -189,7 +182,7 @@ export function EventDetailView({
           Meet/Zoom
         </a>
       )}
-      {!isPage && <EventFullPageLink slug={event.slug} />}
+      {!isPage && <EventFullPageLink slug={event.slug} onClose={onClose} />}
     </div>
   )
 

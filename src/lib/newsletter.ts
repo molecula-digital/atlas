@@ -111,7 +111,7 @@ export async function unsubscribeNewsletter(opts: { email?: string; token?: stri
   const payload = await getPayloadClient()
   const now = new Date().toISOString()
 
-  let subscriber =
+  const subscriber =
     (opts.token ? await findSubscriberByToken(payload, opts.token) : null) ??
     (opts.email ? await findSubscriberByEmail(payload, opts.email) : null)
 
@@ -154,11 +154,72 @@ export async function removeAnonymousSubscriber(email: string) {
   })
 }
 
+/**
+ * Moves an anonymous subscription onto a freshly created account.
+ *
+ * The anonymous row is deleted either way so the join set stays clean, but an
+ * active subscription is carried over to the profile flag first — otherwise
+ * signing up would silently unsubscribe someone who had already opted in.
+ */
+export async function claimAnonymousSubscription(userId: string, email: string) {
+  const payload = await getPayloadClient()
+  const existing = await findSubscriberByEmail(payload, email)
+  if (!existing) return
+
+  if (existing.status === 'subscribed') {
+    await setProfileNewsletterEnabled(userId, true)
+  }
+
+  await payload.delete({
+    collection: 'newsletter-subscribers',
+    id: existing.id,
+    overrideAccess: true,
+  })
+}
+
+/**
+ * Clears anonymous rows for every address tied to an account.
+ *
+ * A profile's contact email can differ from the Google login, and the public
+ * signup form keys on whichever address was typed — so both have to be checked
+ * or a stale anonymous row keeps delivering after the profile toggle says no.
+ */
+export async function syncSubscriptionForEmails(
+  enabled: boolean,
+  emails: (string | null | undefined)[],
+) {
+  const unique = [...new Set(emails.filter(Boolean).map((e) => normalizeEmail(e as string)))]
+
+  for (const email of unique) {
+    if (enabled) {
+      await removeAnonymousSubscriber(email)
+    } else {
+      await unsubscribeAnonymousSubscriber(email)
+    }
+  }
+}
+
+/** Marks an anonymous row unsubscribed without touching profile state. */
+async function unsubscribeAnonymousSubscriber(email: string) {
+  const payload = await getPayloadClient()
+  const existing = await findSubscriberByEmail(payload, email)
+  if (!existing || existing.status !== 'subscribed') return
+
+  await payload.update({
+    collection: 'newsletter-subscribers',
+    id: existing.id,
+    data: { status: 'unsubscribed', unsubscribedAt: new Date().toISOString() },
+    overrideAccess: true,
+  })
+}
+
 export async function buildNewsletterCsv(payload: Payload): Promise<string> {
   const anonymous = await payload.find({
     collection: 'newsletter-subscribers',
     where: { status: { equals: 'subscribed' } },
-    limit: 10000,
+    // limit: 0 disables the cap — a non-zero limit still applies under
+    // `pagination: false` and would silently truncate the export.
+    limit: 0,
     pagination: false,
     overrideAccess: true,
   })

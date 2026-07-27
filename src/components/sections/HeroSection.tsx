@@ -71,10 +71,31 @@ export function HeroSection({ cityCounts = {}, typeCounts = {} }: HeroSectionPro
               </Link>
             </div>
 
+            <div className="flex flex-col items-center gap-3 text-center lg:flex-row lg:justify-start lg:text-left">
+              <Dialog>
+                <DialogTrigger asChild>
+                  <button className="group inline-flex cursor-pointer items-center gap-2 text-xs text-muted transition-colors hover:text-accent">
+                    <Mail className="h-4 w-4 shrink-0 text-accent" />
+                    Newsletter — novedades una vez al mes
+                    <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                  </button>
+                </DialogTrigger>
+                <DialogContent showCloseButton>
+                  <DialogHeader>
+                    <DialogTitle>Newsletter de Tech Atlas</DialogTitle>
+                    <DialogDescription>
+                      Noticias, eventos y proyectos del ecosistema tech de Sinaloa. Un correo al mes.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <NewsletterSignup source="homepage" variant="section" />
+                </DialogContent>
+              </Dialog>
+            </div>
+
           </div>
         </div>
 
-        <div className="hidden lg:block self-start pt-8">
+        <div className="hidden lg:block self-start pt-12">
           <div className="bg-card border border-border rounded-lg p-3 flex flex-col gap-3 h-[31rem] shadow-[0_16px_50px_rgba(0,0,0,0.08)]">
             {/* Map header */}
             <div className="flex items-center justify-between">
@@ -124,28 +145,6 @@ export function HeroSection({ cityCounts = {}, typeCounts = {} }: HeroSectionPro
         ))}
       </div>
 
-      <div className="mx-auto mt-5 flex max-w-280 items-center gap-3">
-        <span className="h-px flex-1 bg-border" />
-        <Dialog>
-          <DialogTrigger asChild>
-            <button className="group inline-flex items-center gap-2 rounded-full border border-border px-3 py-1.5 font-mono text-xs font-semibold text-secondary transition-colors hover:border-accent/60 hover:bg-accent/10 hover:text-accent">
-              <Mail className="h-3.5 w-3.5 text-accent" />
-              Newsletter
-              <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-            </button>
-          </DialogTrigger>
-          <DialogContent showCloseButton>
-            <DialogHeader>
-              <DialogTitle>Newsletter de Tech Atlas</DialogTitle>
-              <DialogDescription>
-                Noticias, eventos y proyectos del ecosistema tech de Sinaloa. Un correo al mes.
-              </DialogDescription>
-            </DialogHeader>
-            <NewsletterSignup source="homepage" variant="section" />
-          </DialogContent>
-        </Dialog>
-        <span className="h-px flex-1 bg-border" />
-      </div>
     </section>
   )
 }

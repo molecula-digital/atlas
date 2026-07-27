@@ -1,11 +1,12 @@
 'use client'
 
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
 import { useEventsData } from "@/hooks/useEventsData";
-import { EVENT_DETAIL_EVENT, getEventHref, handleEventClick } from "@/lib/event-bus";
+import type { TechEvent } from "@/hooks/useEventsData";
 import { cn } from "@/lib/utils";
 import UpcomingEventsSidebar from "./UpcomingEventsSidebar";
+import { EventDialog } from "./EventDialog";
 import { btn } from "@/components/ui/button-styles";
 
 const WEEKDAYS = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
@@ -102,19 +103,13 @@ export default function EventCalendar() {
     setMonth(n.getMonth());
   }
 
-  useEffect(() => {
-    const handler = (e: Event) => {
-      const detail = (e as CustomEvent).detail;
-      if (detail?.date) {
-        const [y, m] = (detail.date as string).split("-").map(Number);
-        if (y && m) {
-          setYear(y);
-          setMonth(m - 1);
-        }
-      }
-    };
-    window.addEventListener(EVENT_DETAIL_EVENT, handler);
-    return () => window.removeEventListener(EVENT_DETAIL_EVENT, handler);
+  /** Jump the grid to the month of an event opened from the sidebar. */
+  const showEventMonth = useCallback((ev: TechEvent) => {
+    const [y, m] = ev.date.split("-").map(Number);
+    if (y && m) {
+      setYear(y);
+      setMonth(m - 1);
+    }
   }, []);
 
   const isLoading = (status === "loading" || status === "idle") && events.length === 0;
@@ -223,15 +218,14 @@ export default function EventCalendar() {
 
                     <div className="mt-0.5 md:mt-1 space-y-0.5 flex-1 min-h-0">
                       {dayEvents.slice(0, MAX_PILLS).map((ev, j) => (
-                        <a
+                        <EventDialog
                           key={`${j}-${ev.date}-${ev.title}`}
-                          href={getEventHref(ev)}
-                          onClick={(e) => handleEventClick(ev, e)}
+                          event={ev}
                           className="block w-full text-left truncate rounded-sm px-1 py-0.5 text-[9px] md:text-2xs font-mono text-accent bg-accent/10 border-l-2 border-accent hover:bg-accent/15 transition-colors"
                           title={ev.title}
                         >
                           {ev.title}
-                        </a>
+                        </EventDialog>
                       ))}
                       {overflow > 0 && (
                         <span className="block text-[9px] md:text-2xs font-mono text-muted px-1">
@@ -247,7 +241,12 @@ export default function EventCalendar() {
         )}
       </div>
 
-      <UpcomingEventsSidebar events={events} status={status} refetch={refetch} />
+      <UpcomingEventsSidebar
+        events={events}
+        status={status}
+        refetch={refetch}
+        onEventSelect={showEventMonth}
+      />
     </div>
   );
 }

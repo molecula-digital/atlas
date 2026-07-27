@@ -12,8 +12,8 @@ import {
 } from "lucide-react";
 import EventTypeBadge from "./EventTypeBadge";
 import type { TechEvent } from "@/hooks/useEventsData";
-import { getEventHref, handleEventClick } from "@/lib/event-bus";
 import { btn } from "@/components/ui/button-styles";
+import { EventDialog } from "./EventDialog";
 
 const MONTH_ABBR = [
   "ene", "feb", "mar", "abr", "may", "jun",
@@ -34,10 +34,13 @@ export default function UpcomingEventsSidebar({
   events,
   status,
   refetch,
+  onEventSelect,
 }: {
   events: TechEvent[];
   status: string;
   refetch: () => void;
+  /** Lets the parent calendar jump to the month of the opened event. */
+  onEventSelect?: (event: TechEvent) => void;
 }) {
   const [page, setPage] = useState(0);
 
@@ -93,10 +96,10 @@ export default function UpcomingEventsSidebar({
           pageEvents.map((ev, i) => {
             const { day, month } = formatDateBadge(ev.date);
             return (
-              <a
+              <EventDialog
                 key={`${i}-${ev.date}-${ev.title}`}
-                href={getEventHref(ev)}
-                onClick={(e) => handleEventClick(ev, e)}
+                event={ev}
+                onOpen={onEventSelect}
                 aria-label={`Ver detalles: ${ev.title}`}
                 className="w-full text-left rounded-lg border border-border bg-card p-3 flex items-start gap-3 transition-all duration-200 hover:border-accent/40 hover:bg-accent/5 group cursor-pointer"
               >
@@ -154,7 +157,7 @@ export default function UpcomingEventsSidebar({
                 </div>
 
                 <ArrowRight className="w-4 h-4 shrink-0 mt-1 text-muted group-hover:text-accent transition-colors" />
-              </a>
+              </EventDialog>
             );
           })
         ) : (

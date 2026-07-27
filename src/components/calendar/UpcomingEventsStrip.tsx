@@ -12,8 +12,8 @@ import {
 } from "@/components/ui/Carousel";
 import { useEventsData } from "@/hooks/useEventsData";
 import type { TechEvent } from "@/hooks/useEventsData";
-import { getEventHref, handleEventClick } from "@/lib/event-bus";
 import EventTypeBadge from "./EventTypeBadge";
+import { EventDialog } from "./EventDialog";
 
 // Fixed table instead of toLocaleDateString — ICU output differs between Node and
 // browsers ("sept" vs "sep"), which shows up as a hydration mismatch.
@@ -30,9 +30,8 @@ function formatDateBadge(dateStr: string): { day: string; month: string } {
 function EventCard({ ev }: { ev: TechEvent }) {
   const { day, month } = formatDateBadge(ev.date);
   return (
-    <a
-      href={getEventHref(ev)}
-      onClick={(e) => handleEventClick(ev, e)}
+    <EventDialog
+      event={ev}
       className="w-full h-full bg-card border border-border rounded-lg p-3 flex items-center gap-3 text-left transition-all duration-200 hover:border-[var(--color-accent)]/40 hover:shadow-sm cursor-pointer group"
     >
       {/* Date badge */}
@@ -77,7 +76,7 @@ function EventCard({ ev }: { ev: TechEvent }) {
 
       {/* Arrow */}
       <ArrowRight className="w-4 h-4 text-muted group-hover:text-accent transition-colors shrink-0" />
-    </a>
+    </EventDialog>
   );
 }
 

@@ -136,7 +136,7 @@ export function NewsletterSignup({
           <button
             type="submit"
             disabled={status === 'loading'}
-            className="flex w-10 shrink-0 items-center justify-center border-l border-border text-accent transition-colors hover:bg-accent hover:text-accent-foreground disabled:cursor-not-allowed"
+            className="flex w-10 shrink-0 cursor-pointer items-center justify-center border-l border-border text-accent transition-colors hover:bg-accent hover:text-accent-foreground disabled:cursor-not-allowed"
             aria-label={NEWSLETTER.cta}
           >
             {status === 'loading' ? (

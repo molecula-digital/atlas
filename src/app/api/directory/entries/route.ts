@@ -111,10 +111,13 @@ export async function GET(request: NextRequest) {
           : 'date-desc'
       ) as PublicProfileSort
 
+      // limit: 0 is what actually disables the cap — `pagination: false` alone
+      // still applies a non-zero limit, which would silently drop person entries
+      // past the cap from the merged result and its pagination.
       const entriesResult = await payload.find({
         collection: 'entries',
         where,
-        limit: 500,
+        limit: 0,
         pagination: false,
         sort,
       })

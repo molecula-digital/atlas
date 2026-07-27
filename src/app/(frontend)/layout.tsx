@@ -6,8 +6,6 @@ import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { InfoBanner } from '@/components/layout/InfoBanner'
 import { MatrixBackground } from '@/components/layout/MatrixBackground'
-import EventDetailModal from '@/components/calendar/EventDetailModal'
-import AddToCalendarButton from '@/components/calendar/AddToCalendarButton'
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
@@ -47,8 +45,6 @@ export default function FrontendLayout({ children }: { children: React.ReactNode
               <Footer />
             </div>
           </div>
-          <EventDetailModal />
-          <AddToCalendarButton />
         </ThemeProvider>
       </body>
     </html>

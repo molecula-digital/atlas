@@ -9,7 +9,7 @@ export const profiles = appSchema.table(
     userId: text('user_id')
       .primaryKey()
       .references(() => user.id, { onDelete: 'cascade' }),
-    /** Contact email shown on wallet/public profile; defaults to Google signup email. */
+    /** Contact email shown on the public profile; defaults to Google signup email. */
     email: text('email'),
     /** Public URL slug (/perfil/[slug]); required when isPublic. */
     slug: text('slug'),

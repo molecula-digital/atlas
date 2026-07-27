@@ -5,7 +5,7 @@ import { profiles } from '@/db/schema/profiles'
 import { and, eq, ne } from 'drizzle-orm'
 import { z } from 'zod'
 import { withRateLimit } from '@/lib/rate-limit'
-import { removeAnonymousSubscriber } from '@/lib/newsletter'
+import { syncSubscriptionForEmails } from '@/lib/newsletter'
 import {
   isValidProfileSlug,
   isValidWebsiteInput,
@@ -249,12 +249,16 @@ export async function PUT(request: NextRequest) {
       })
       .returning()
 
-    if (validated.newsletterEnabled && session.user.email) {
-      try {
-        await removeAnonymousSubscriber(session.user.email)
-      } catch (err) {
-        console.error('Failed to clean anonymous newsletter subscriber:', err)
-      }
+    // Reconcile both addresses in both directions: the anonymous list keys on
+    // whichever address was typed into the signup form, which may be the contact
+    // email rather than the Google login.
+    try {
+      await syncSubscriptionForEmails(validated.newsletterEnabled, [
+        session.user.email,
+        contactEmail,
+      ])
+    } catch (err) {
+      console.error('Failed to sync anonymous newsletter subscriber:', err)
     }
 
     return NextResponse.json(toClientProfile(profile, session.user))

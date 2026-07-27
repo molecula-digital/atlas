@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, isNotNull } from 'drizzle-orm'
+import { and, asc, desc, eq, isNotNull, sql } from 'drizzle-orm'
 import { db } from '@/db'
 import { profiles } from '@/db/schema/profiles'
 import { user } from '@/db/schema/auth'
@@ -114,6 +114,22 @@ export async function listPublicProfiles(
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,
     }))
+}
+
+/**
+ * How many public user profiles the /personas directory will show.
+ *
+ * Must stay in step with the filter in listPublicProfiles — the directory merges
+ * these into the `person` type, so counts that ignore them under-report.
+ */
+export async function countPublicProfiles(): Promise<number> {
+  const [row] = await db
+    .select({ count: sql<number>`count(*)::int` })
+    .from(profiles)
+    .innerJoin(user, eq(profiles.userId, user.id))
+    .where(and(eq(profiles.isPublic, true), isNotNull(profiles.slug)))
+
+  return row?.count ?? 0
 }
 
 /** Shape compatible with directory EntryCard rendering. */
