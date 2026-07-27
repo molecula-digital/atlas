@@ -1,7 +1,7 @@
 import { cache } from 'react'
 import { db } from '@/db'
 import { sql } from 'drizzle-orm'
-import { CITY_IDS, emptyTypeCounts, type AtlasEntryType } from '@/config'
+import { emptyTypeCounts, type AtlasEntryType } from '@/config'
 import { countPublicProfiles } from '@/lib/public-profile'
 
 interface EntryCountRow {
@@ -38,20 +38,17 @@ export const getEntryCounts = cache(async (): Promise<EntryCounts> => {
     // Aggregate by type
     byType[entry_type] = (byType[entry_type] || 0) + count
 
-    // Aggregate by city, distributing "global" entries across all cities
-    if (city === 'global') {
-      for (const id of CITY_IDS) {
-        byCity[id] = (byCity[id] || 0) + count
-        if (!byCityAndType[id]) byCityAndType[id] = emptyTypeCounts()
-        byCityAndType[id][entry_type as AtlasEntryType] =
-          (byCityAndType[id][entry_type as AtlasEntryType] || 0) + count
-      }
-    } else {
-      byCity[city] = (byCity[city] || 0) + count
-      if (!byCityAndType[city]) byCityAndType[city] = emptyTypeCounts()
-      byCityAndType[city][entry_type as AtlasEntryType] =
-        (byCityAndType[city][entry_type as AtlasEntryType] || 0) + count
-    }
+    // "global" means the entry has no specific municipality (the dashboard
+    // labels it "Global (sin ubicación específica)"), so it belongs to no city
+    // bucket. Fanning it out across every city made all 18 municipalities
+    // report entries that the city-filtered directory — which matches `city`
+    // exactly — can never return. It still lands in byType and total.
+    if (city === 'global') continue
+
+    byCity[city] = (byCity[city] || 0) + count
+    if (!byCityAndType[city]) byCityAndType[city] = emptyTypeCounts()
+    byCityAndType[city][entry_type as AtlasEntryType] =
+      (byCityAndType[city][entry_type as AtlasEntryType] || 0) + count
   }
 
   // /personas merges public user profiles into the `person` type, so the counts
