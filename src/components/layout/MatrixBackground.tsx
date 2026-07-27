@@ -137,7 +137,9 @@ export function MatrixBackground({
 
     function handleResize() {
       resize()
-      draw()
+      // A live loop repaints on its own next frame; calling draw() here too
+      // would start a second requestAnimationFrame chain.
+      if (!needsLoop) draw()
     }
 
     function handleMouseMove(e: MouseEvent) {
@@ -152,6 +154,14 @@ export function MatrixBackground({
 
     resize()
     window.addEventListener('resize', handleResize)
+
+    // A client-side route change swaps the page content without firing a window
+    // resize, so the canvas would keep the previous page's height. Because a
+    // canvas is a replaced element, that stale height stays in its intrinsic
+    // size and adds scrollable overflow below the footer.
+    const parentObserver = new ResizeObserver(handleResize)
+    if (canvas.parentElement) parentObserver.observe(canvas.parentElement)
+
     if (highlight) {
       window.addEventListener('mousemove', handleMouseMove)
       document.addEventListener('mouseleave', handleMouseLeave)
@@ -171,6 +181,7 @@ export function MatrixBackground({
     return () => {
       isRunning = false
       cancelAnimationFrame(animationId)
+      parentObserver.disconnect()
       themeObserver?.disconnect()
       window.removeEventListener('resize', handleResize)
       window.removeEventListener('mousemove', handleMouseMove)
@@ -178,10 +189,12 @@ export function MatrixBackground({
     }
   }, [highlight, highlightColor, boxSize, movementDirection, movementSpeed, animate])
 
+  // h-full/w-full pin the CSS box to the parent; without them the width and
+  // height attributes act as the canvas's intrinsic size and can overflow the page.
   return (
     <canvas
       ref={canvasRef}
-      className="absolute inset-0 -z-10 pointer-events-none opacity-25"
+      className="absolute inset-0 h-full w-full -z-10 pointer-events-none opacity-25"
       aria-hidden="true"
     />
   )
