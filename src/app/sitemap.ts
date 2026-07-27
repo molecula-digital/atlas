@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next'
 import { getPayloadClient } from '@/lib/payload'
+import { listPublicProfiles } from '@/lib/public-profile'
 import { ENTRY_TYPE_CONFIG, SITE_URL, SINALOA_CITIES, type AtlasEntryType } from '@/config'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -79,5 +80,41 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.5,
   }))
 
-  return [...staticPages, ...categoryPages, ...cityPages, ...entryPages, ...newsPages, ...jobPages]
+  // Event detail pages. Unlike jobs, past events are not filtered out — the pages
+  // stay live and keep their archival value once the date has passed.
+  const events = await payload.find({
+    collection: 'events',
+    where: { _status: { equals: 'published' } },
+    limit: 500,
+    select: { slug: true, updatedAt: true },
+  })
+
+  const eventPages: MetadataRoute.Sitemap = events.docs.map((event) => ({
+    url: `${SITE_URL}/eventos/${event.slug}`,
+    lastModified: event.updatedAt ? new Date(event.updatedAt) : undefined,
+    changeFrequency: 'monthly' as const,
+    priority: 0.5,
+  }))
+
+  // Public user profiles. These live in Drizzle rather than Payload, and the
+  // helper already restricts to isPublic profiles with a slug.
+  const profiles = await listPublicProfiles()
+
+  const profilePages: MetadataRoute.Sitemap = profiles.map((profile) => ({
+    url: `${SITE_URL}/perfil/${profile.slug}`,
+    lastModified: profile.updatedAt,
+    changeFrequency: 'monthly' as const,
+    priority: 0.4,
+  }))
+
+  return [
+    ...staticPages,
+    ...categoryPages,
+    ...cityPages,
+    ...entryPages,
+    ...newsPages,
+    ...jobPages,
+    ...eventPages,
+    ...profilePages,
+  ]
 }
