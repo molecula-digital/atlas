@@ -17,7 +17,7 @@ export default function NewEntryPage() {
 
   return (
     <AuthGuard>
-      <section className="py-4 px-4">
+      <section className="py-4">
         <div className="max-w-2xl mx-auto">
           <Breadcrumb items={[
             { label: 'Dashboard', href: '/dashboard' },

@@ -69,7 +69,7 @@ export default async function PublicProfilePage({ params }: PageProps) {
   ].filter(Boolean) as Array<{ href: string; label: string; icon: 'globe' | 'linkedin' | 'x' | 'github' }>
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-10">
+    <div className="py-10">
       <Breadcrumb
         items={[
           { label: 'Inicio', href: '/' },
@@ -78,57 +78,59 @@ export default async function PublicProfilePage({ params }: PageProps) {
         ]}
       />
 
-      <div className="mt-8 flex flex-col sm:flex-row gap-6 items-start">
-        <div className="w-20 h-20 rounded-full overflow-hidden border border-border bg-elevated shrink-0 flex items-center justify-center text-2xl font-mono font-bold text-accent">
-          {profile.photo ? (
-            <Image
-              src={profile.photo}
-              alt={profile.name}
-              width={80}
-              height={80}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            profile.name.charAt(0).toUpperCase()
-          )}
+      <div className="mx-auto max-w-2xl">
+        <div className="mt-8 flex flex-col sm:flex-row gap-6 items-start">
+          <div className="w-20 h-20 rounded-full overflow-hidden border border-border bg-elevated shrink-0 flex items-center justify-center text-2xl font-mono font-bold text-accent">
+            {profile.photo ? (
+              <Image
+                src={profile.photo}
+                alt={profile.name}
+                width={80}
+                height={80}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              profile.name.charAt(0).toUpperCase()
+            )}
+          </div>
+
+          <div className="min-w-0 flex-1">
+            <h1 className="terminal-title text-2xl md:text-3xl font-sans font-bold text-primary">
+              {profile.name}
+            </h1>
+            {subtitle && (
+              <p className="mt-1 text-sm text-secondary font-mono">{subtitle}</p>
+            )}
+
+            {links.length > 0 && (
+              <ul className="mt-5 flex flex-wrap gap-2">
+                {links.map((link) => (
+                  <li key={link.href}>
+                    <a
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={btn({ variant: 'neutral', size: 'sm' })}
+                    >
+                      {link.icon === 'globe' && <Globe className="w-3.5 h-3.5" />}
+                      {link.icon === 'linkedin' && <LinkedInIcon className="w-3.5 h-3.5" />}
+                      {link.icon === 'x' && <XIcon className="w-3.5 h-3.5" />}
+                      {link.icon === 'github' && <GitHubIcon className="w-3.5 h-3.5" />}
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
 
-        <div className="min-w-0 flex-1">
-          <h1 className="terminal-title text-2xl md:text-3xl font-sans font-bold text-primary">
-            {profile.name}
-          </h1>
-          {subtitle && (
-            <p className="mt-1 text-sm text-secondary font-mono">{subtitle}</p>
-          )}
-
-          {links.length > 0 && (
-            <ul className="mt-5 flex flex-wrap gap-2">
-              {links.map((link) => (
-                <li key={link.href}>
-                  <a
-                    href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={btn({ variant: 'neutral', size: 'sm' })}
-                  >
-                    {link.icon === 'globe' && <Globe className="w-3.5 h-3.5" />}
-                    {link.icon === 'linkedin' && <LinkedInIcon className="w-3.5 h-3.5" />}
-                    {link.icon === 'x' && <XIcon className="w-3.5 h-3.5" />}
-                    {link.icon === 'github' && <GitHubIcon className="w-3.5 h-3.5" />}
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+        <p className="mt-10 text-xs text-muted font-mono">
+          <Link href="/dashboard/profile" className="hover:text-accent transition-colors">
+            ¿Este es tu perfil? Edítalo en el dashboard
+          </Link>
+        </p>
       </div>
-
-      <p className="mt-10 text-xs text-muted font-mono">
-        <Link href="/dashboard/profile" className="hover:text-accent transition-colors">
-          ¿Este es tu perfil? Edítalo en el dashboard
-        </Link>
-      </p>
     </div>
   )
 }

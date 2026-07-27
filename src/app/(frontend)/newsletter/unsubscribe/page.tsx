@@ -68,7 +68,7 @@ function UnsubscribeForm() {
   }
 
   return (
-    <div className="max-w-md mx-auto px-4 py-16">
+    <div className="max-w-md mx-auto py-16">
       <h1 className="terminal-title text-2xl font-sans font-bold text-primary mb-2">
         {NEWSLETTER.unsubscribeTitle}
       </h1>
@@ -138,7 +138,7 @@ export default function UnsubscribePage() {
   return (
     <Suspense
       fallback={
-        <div className="max-w-md mx-auto px-4 py-16 text-sm text-muted font-mono">
+        <div className="max-w-md mx-auto py-16 text-sm text-muted font-mono">
           Cargando…
         </div>
       }

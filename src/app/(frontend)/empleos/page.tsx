@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 
 export default function EmpleosPage() {
   return (
-    <section className="py-8 px-4">
+    <section className="py-8">
       <div className="max-w-4xl mx-auto">
         <SectionHeading>Empleos</SectionHeading>
         <h1 className="text-3xl font-bold text-primary mb-2">Bolsa de trabajo</h1>

@@ -82,7 +82,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
     `${job.title}${entryName ? ` en ${entryName}` : ''}${job.city ? ` — ${getCityName(job.city as string)}, Sinaloa` : ''}`
 
   return (
-    <article className="py-8 px-4">
+    <article className="py-8">
       <script type="application/ld+json" dangerouslySetInnerHTML={{
         __html: safeJsonLd({
           '@context': 'https://schema.org',
@@ -97,13 +97,13 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
           applicantLocationRequirements: job.city ? { '@type': 'State', name: 'Sinaloa' } : undefined,
         }),
       }} />
-      <div className="max-w-3xl mx-auto">
-        <Breadcrumb items={[
-          { label: 'Inicio', href: '/' },
-          { label: 'Empleos', href: '/empleos' },
-          { label: job.title as string },
-        ]} />
+      <Breadcrumb items={[
+        { label: 'Inicio', href: '/' },
+        { label: 'Empleos', href: '/empleos' },
+        { label: job.title as string },
+      ]} />
 
+      <div className="max-w-3xl mx-auto">
         {expired && (
           <div className="flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-lg px-4 py-3 mb-6">
             <AlertTriangle className="w-5 h-5 shrink-0" />

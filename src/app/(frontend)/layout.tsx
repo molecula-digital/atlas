@@ -19,6 +19,8 @@ const spaceGrotesk = Space_Grotesk({
   display: 'swap',
 })
 
+const contentContainerClassName = 'mx-auto w-full max-w-280'
+
 export default function FrontendLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es-MX" className={`${jetbrainsMono.variable} ${spaceGrotesk.variable}`} data-scroll-behavior="smooth" suppressHydrationWarning>
@@ -38,13 +40,13 @@ export default function FrontendLayout({ children }: { children: React.ReactNode
             <MatrixBackground boxSize={26} highlight={false} />
             <div className="relative z-10 flex flex-col flex-1">
               <InfoBanner />
-              <Header />
+              <Header contentContainerClassName={contentContainerClassName} />
               <main id="main" className="flex-1 px-4 md:px-6 lg:px-8">
-                <div className="mx-auto w-full max-w-280">
+                <div className={contentContainerClassName}>
                   {children}
                 </div>
               </main>
-              <Footer />
+              <Footer contentContainerClassName={contentContainerClassName} />
             </div>
           </div>
         </ThemeProvider>

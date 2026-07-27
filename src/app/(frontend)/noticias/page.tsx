@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 
 export default function NoticiasPage() {
   return (
-    <section className="py-8 px-4">
+    <section className="py-8">
       <div className="max-w-4xl mx-auto">
         <SectionHeading>Noticias</SectionHeading>
         <h1 className="text-3xl font-bold text-primary mb-8">Noticias del ecosistema tech</h1>

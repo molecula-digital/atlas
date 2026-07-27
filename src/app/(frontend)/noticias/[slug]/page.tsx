@@ -44,7 +44,7 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ slu
   const authorName = (article.author as { displayName?: string; email: string } | null)?.displayName || (article.author as { email: string } | null)?.email
 
   return (
-    <article className="py-8 px-4">
+    <article className="py-8">
       <script type="application/ld+json" dangerouslySetInnerHTML={{
         __html: safeJsonLd({
           '@context': 'https://schema.org',
@@ -62,13 +62,13 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ slu
           },
         }),
       }} />
-      <div className="max-w-3xl mx-auto">
-        <Breadcrumb items={[
-          { label: 'Inicio', href: '/' },
-          { label: 'Noticias', href: '/noticias' },
-          { label: article.title as string },
-        ]} />
+      <Breadcrumb items={[
+        { label: 'Inicio', href: '/' },
+        { label: 'Noticias', href: '/noticias' },
+        { label: article.title as string },
+      ]} />
 
+      <div className="max-w-3xl mx-auto">
         {coverUrl && (
           <div className="relative rounded-lg overflow-hidden mb-6 h-64">
             <Image src={coverUrl} alt={article.title as string} fill className="object-cover" sizes="(max-width: 768px) 100vw, 768px" priority />

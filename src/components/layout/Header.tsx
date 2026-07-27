@@ -16,7 +16,11 @@ import { AtlasLogo } from '@/components/layout/AtlasLogo'
 const NAV_LINK = "flex items-center gap-1 px-2 py-1 text-[10px] font-mono text-secondary hover:text-accent rounded hover:bg-elevated transition-colors"
 const MOBILE_LINK = "flex items-center gap-2 py-3 text-lg font-mono font-semibold text-primary hover:text-accent transition-colors"
 
-export function Header() {
+export function Header({
+  contentContainerClassName = 'mx-auto w-full',
+}: {
+  contentContainerClassName?: string
+}) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const dropdown = useDisclosure()
   const pathname = usePathname()
@@ -37,80 +41,82 @@ export function Header() {
             Ir al contenido
           </a>
 
-          <div className="mx-auto flex h-8 w-full max-w-[calc(70rem+2rem)] items-center justify-between px-4 md:max-w-[calc(70rem+5rem)] md:px-10 lg:max-w-[calc(70rem+6rem)] lg:px-12">
-            <div className="flex min-w-0 items-center gap-3">
-              <Link href="/" className="flex items-center shrink-0" aria-label="Tech Atlas — inicio">
-                <AtlasLogo className="h-4 w-auto" priority />
-              </Link>
+          <div className="px-4 md:px-6 lg:px-8">
+            <div className={`${contentContainerClassName} flex h-8 items-center justify-between`}>
+              <div className="flex min-w-0 items-center gap-3">
+                <Link href="/" className="flex items-center shrink-0" aria-label="Tech Atlas — inicio">
+                  <AtlasLogo className="h-4 w-auto" priority />
+                </Link>
 
-              <nav className="hidden lg:flex items-center gap-0.5">
-                <div className="relative" ref={dropdown.ref}>
-                  <button onClick={dropdown.toggle} className={NAV_LINK}>
-                    <FolderOpen className="w-3 h-3" />
-                    Directorio
-                    <svg className={`w-2.5 h-2.5 transition-transform ${dropdown.open ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-                  {dropdown.open && (
-                    <div className="absolute top-full left-0 mt-1 w-56 bg-card border border-border rounded-lg shadow-lg p-1 z-50">
-                      <Link href="/directorio" className="block rounded-md px-3 py-2 text-xs font-mono text-secondary hover:text-accent hover:bg-elevated transition-colors">
-                        Ver todo
-                      </Link>
-                      <div className="h-px bg-border my-1" />
-                      {categories.map((cat) => {
-                        const Icon = ENTRY_TYPE_ICON_MAP[cat.icon]
-                        return (
-                          <Link key={cat.type} href={`/${cat.slug}`} className="flex items-center gap-2 rounded-md px-3 py-2 text-xs font-mono text-secondary hover:text-accent hover:bg-elevated transition-colors">
-                            {Icon && <Icon className="w-4 h-4" />}
-                            {cat.labelPlural}
-                          </Link>
-                        )
-                      })}
-                    </div>
+                <nav className="hidden lg:flex items-center gap-0.5">
+                  <div className="relative" ref={dropdown.ref}>
+                    <button onClick={dropdown.toggle} className={NAV_LINK}>
+                      <FolderOpen className="w-3 h-3" />
+                      Directorio
+                      <svg className={`w-2.5 h-2.5 transition-transform ${dropdown.open ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    {dropdown.open && (
+                      <div className="absolute top-full left-0 mt-1 w-56 bg-card border border-border rounded-lg shadow-lg p-1 z-50">
+                        <Link href="/directorio" className="block rounded-md px-3 py-2 text-xs font-mono text-secondary hover:text-accent hover:bg-elevated transition-colors">
+                          Ver todo
+                        </Link>
+                        <div className="h-px bg-border my-1" />
+                        {categories.map((cat) => {
+                          const Icon = ENTRY_TYPE_ICON_MAP[cat.icon]
+                          return (
+                            <Link key={cat.type} href={`/${cat.slug}`} className="flex items-center gap-2 rounded-md px-3 py-2 text-xs font-mono text-secondary hover:text-accent hover:bg-elevated transition-colors">
+                              {Icon && <Icon className="w-4 h-4" />}
+                              {cat.labelPlural}
+                            </Link>
+                          )
+                        })}
+                      </div>
+                    )}
+                  </div>
+
+                  <Link href="/eventos" className={NAV_LINK}><CalendarDays className="w-3 h-3" />Eventos</Link>
+                  <Link href="/noticias" className={NAV_LINK}><Newspaper className="w-3 h-3" />Noticias</Link>
+                  <Link href="/empleos" className={NAV_LINK}><Briefcase className="w-3 h-3" />Empleos</Link>
+                  <Link href="/#map" className={NAV_LINK}><Map className="w-3 h-3" />Mapa</Link>
+                </nav>
+              </div>
+
+              <div className="hidden lg:flex items-center gap-0.5">
+                <a
+                  href="https://github.com/ojoanalogo/atlas-tech"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1 px-2 py-1 font-mono text-[10px] text-secondary transition-colors hover:text-accent"
+                  aria-label="Ver Tech Atlas en GitHub"
+                >
+                  <GitHubIcon className="w-3 h-3" />
+                  GitHub
+                </a>
+                <ThemeToggle />
+                <Link href="/dashboard" className={btn({ variant: 'accent', size: 'xs' }, 'ml-1')}>
+                  {session ? (
+                    <><LayoutDashboard className="w-3 h-3" /> Dashboard</>
+                  ) : (
+                    <><Plus className="w-3 h-3" /> Crear cuenta</>
                   )}
-                </div>
+                </Link>
+              </div>
 
-                <Link href="/eventos" className={NAV_LINK}><CalendarDays className="w-3 h-3" />Eventos</Link>
-                <Link href="/noticias" className={NAV_LINK}><Newspaper className="w-3 h-3" />Noticias</Link>
-                <Link href="/empleos" className={NAV_LINK}><Briefcase className="w-3 h-3" />Empleos</Link>
-                <Link href="/#map" className={NAV_LINK}><Map className="w-3 h-3" />Mapa</Link>
-              </nav>
-            </div>
-
-            <div className="hidden lg:flex items-center gap-0.5">
-              <a
-                href="https://github.com/ojoanalogo/atlas-tech"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1 px-2 py-1 font-mono text-[10px] text-secondary transition-colors hover:text-accent"
-                aria-label="Ver Tech Atlas en GitHub"
-              >
-                <GitHubIcon className="w-3 h-3" />
-                GitHub
-              </a>
-              <ThemeToggle />
-              <Link href="/dashboard" className={btn({ variant: 'accent', size: 'xs' }, 'ml-1')}>
-                {session ? (
-                  <><LayoutDashboard className="w-3 h-3" /> Dashboard</>
-                ) : (
-                  <><Plus className="w-3 h-3" /> Crear cuenta</>
-                )}
-              </Link>
-            </div>
-
-            {/* Mobile toggle */}
-            <div className="flex lg:hidden items-center gap-1">
-              <ThemeToggle />
-              <button
-                onClick={() => setMobileOpen(!mobileOpen)}
-                className="relative p-1.5 text-secondary hover:text-primary w-8 h-8 flex items-center justify-center"
-                aria-label={mobileOpen ? 'Cerrar menú' : 'Abrir menú'}
-                aria-expanded={mobileOpen}
-              >
-                <Menu className={`w-4 h-4 absolute transition-all duration-300 ${mobileOpen ? 'opacity-0 rotate-90 scale-75' : 'opacity-100 rotate-0 scale-100'}`} />
-                <X className={`w-4 h-4 absolute transition-all duration-300 ${mobileOpen ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-90 scale-75'}`} />
-              </button>
+              {/* Mobile toggle */}
+              <div className="flex lg:hidden items-center gap-1">
+                <ThemeToggle />
+                <button
+                  onClick={() => setMobileOpen(!mobileOpen)}
+                  className="relative p-1.5 text-secondary hover:text-primary w-8 h-8 flex items-center justify-center"
+                  aria-label={mobileOpen ? 'Cerrar menú' : 'Abrir menú'}
+                  aria-expanded={mobileOpen}
+                >
+                  <Menu className={`w-4 h-4 absolute transition-all duration-300 ${mobileOpen ? 'opacity-0 rotate-90 scale-75' : 'opacity-100 rotate-0 scale-100'}`} />
+                  <X className={`w-4 h-4 absolute transition-all duration-300 ${mobileOpen ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-90 scale-75'}`} />
+                </button>
+              </div>
             </div>
           </div>
         </header>
