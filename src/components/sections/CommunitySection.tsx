@@ -7,8 +7,8 @@ export async function CommunitySection() {
   const photos = await getCommunityPhotos()
 
   return (
-    <section id="comunidad" className="py-8">
-      <div className="space-y-8">
+    <section id="comunidad" className="py-4">
+      <div className="space-y-4">
         <SectionTitle description="Meetups, talleres y la gente del ecosistema tech de Sinaloa.">
           La comunidad
         </SectionTitle>

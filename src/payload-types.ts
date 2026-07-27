@@ -317,8 +317,7 @@ export interface Entry {
   businessModel?: ('B2B' | 'B2C' | 'B2B2C' | 'Marketplace' | 'SaaS' | 'Freemium' | 'Open Source' | 'Otro') | null;
   memberCount?: number | null;
   meetupFrequency?:
-    | ('Permanente (online)' | 'Semanal' | 'Quincenal' | 'Mensual' | 'Trimestral' | 'Por evento' | 'Otro')
-    | null;
+    ('Permanente (online)' | 'Semanal' | 'Quincenal' | 'Mensual' | 'Trimestral' | 'Por evento' | 'Otro') | null;
   discord?: string | null;
   telegram?: string | null;
   role?: string | null;
