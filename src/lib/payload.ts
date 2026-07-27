@@ -56,6 +56,34 @@ export const getFeaturedEntries = cache(async () => {
   })
 })
 
+/** Card-only field selection for listings */
+const STRIP_SELECT = {
+  slug: true,
+  name: true,
+  entryType: true,
+  logo: true,
+} as const
+
+export const getLatestEntries = cache(async (limit = 4, excludeSlugs: string[] = []) => {
+  const payload = await getPayloadClient()
+  const where: {
+    _status: { equals: 'published' }
+    slug?: { not_in: string[] }
+  } = { _status: { equals: 'published' } }
+
+  if (excludeSlugs.length > 0) {
+    where.slug = { not_in: excludeSlugs }
+  }
+
+  return payload.find({
+    collection: 'entries',
+    where,
+    limit,
+    sort: '-publishDate',
+    select: STRIP_SELECT,
+  })
+})
+
 export const getPublishedNews = cache(async (limit = 20) => {
   const payload = await getPayloadClient()
   return payload.find({
@@ -141,7 +169,6 @@ export const getUpcomingEvents = cache(async (limit = 5) => {
   })
 })
 
-/** Card-only field selection for suggestions */
 const CARD_SELECT = {
   slug: true,
   name: true,

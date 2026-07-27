@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { getFeaturedEntries } from '@/lib/payload'
+import { getFeaturedEntries, getLatestEntries } from '@/lib/payload'
 import { getEntryCounts } from '@/lib/entry-counts'
 import { FAQS, SITE_URL, SITE_DESCRIPTION } from '@/config'
 
@@ -32,6 +32,11 @@ export default async function HomePage() {
   ])
 
   const featured = featuredResult.docs
+  const latestResult = await getLatestEntries(
+    4,
+    featured.map((entry) => entry.slug),
+  )
+  const latest = latestResult.docs
   const totalEntries = Math.floor(counts.total / 5) * 5
   const homeDescription = `Explora ${totalEntries}+ startups, consultorías, comunidades y talento tech en Sinaloa.`
 
@@ -91,7 +96,7 @@ export default async function HomePage() {
       </section>
 
       <CommunitySection />
-      <FeaturedSection entries={featured as any} />
+      <FeaturedSection entries={featured as any} latestEntries={latest as any} />
       <MapSection cityCounts={counts.byCity} cityTypeCounts={counts.byCityAndType} />
       <CalendarSection />
       <FaqSection />
