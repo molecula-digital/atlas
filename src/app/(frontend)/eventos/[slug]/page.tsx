@@ -98,7 +98,7 @@ export default async function EventDetailPage({
           }),
         }}
       />
-      <div className="max-w-280 mx-auto">
+      <div>
         <Breadcrumb
           items={[
             { label: 'Inicio', href: '/' },

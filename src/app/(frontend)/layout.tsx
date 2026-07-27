@@ -40,7 +40,9 @@ export default function FrontendLayout({ children }: { children: React.ReactNode
               <InfoBanner />
               <Header />
               <main id="main" className="flex-1 px-4 md:px-6 lg:px-8">
-                {children}
+                <div className="mx-auto w-full max-w-280">
+                  {children}
+                </div>
               </main>
               <Footer />
             </div>

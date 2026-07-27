@@ -6,7 +6,7 @@ import { SectionTitle } from '@/components/ui/SectionTitle'
 export function CalendarSection() {
   return (
     <section id="calendario" className="py-8">
-      <div className="max-w-280 mx-auto space-y-8">
+      <div className="space-y-8">
         <SectionTitle
           align="center"
           description="Explora el mes y descubre meetups, talleres y conferencias en Sinaloa"

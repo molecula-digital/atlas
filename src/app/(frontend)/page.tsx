@@ -87,9 +87,7 @@ export default async function HomePage() {
       <HeroSection cityCounts={counts.byCity} typeCounts={counts.byType} />
 
       <section className="py-4">
-        <div className="max-w-280 mx-auto">
-          <UpcomingEventsStrip />
-        </div>
+        <UpcomingEventsStrip />
       </section>
 
       <CommunitySection />

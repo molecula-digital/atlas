@@ -192,7 +192,7 @@ export default async function EntryDetailPage({
   const pageUrl = `${SITE_URL}/${config.slug}/${entry.slug}`
 
   return (
-    <article className="max-w-280 mx-auto py-4">
+    <article className="py-4">
       <script type="application/ld+json" dangerouslySetInnerHTML={{
         __html: safeJsonLd({
           '@context': 'https://schema.org',

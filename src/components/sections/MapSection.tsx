@@ -73,7 +73,7 @@ export default function MapSection({
 
   return (
     <section id="map" className="py-8">
-      <div className="max-w-280 mx-auto">
+      <div>
         <div className="mb-6">
           <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.18em] text-muted">
             atlas://mapa/datos

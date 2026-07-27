@@ -3,7 +3,7 @@ import { CalendarDays } from 'lucide-react'
 export function EventsHeroSection() {
   return (
     <section id="eventos-hero" className="py-8">
-      <div className="max-w-280 mx-auto space-y-6">
+      <div className="space-y-6">
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 border border-accent/20">
           <CalendarDays className="w-3.5 h-3.5 text-accent" />
           <span className="text-xs font-mono font-semibold text-accent tracking-wide">

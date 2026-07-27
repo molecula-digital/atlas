@@ -26,7 +26,7 @@ export function FeaturedSection({ entries }: FeaturedSectionProps) {
 
   return (
     <section className="py-4">
-      <div className="max-w-280 mx-auto">
+      <div>
         <div className="flex items-center justify-between mb-10">
           <SectionTitle description="Startups y organizaciones destacadas del ecosistema">
             Destacados

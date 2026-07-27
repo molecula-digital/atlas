@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils'
 export function WhatsAppCta({ className }: { className?: string }) {
   return (
     <section className={cn('py-8', className)}>
-      <div className="max-w-280 mx-auto">
+      <div>
         <div className="bg-card border border-border rounded-lg p-6 md:p-8 flex flex-col lg:flex-row items-center gap-4 lg:gap-8">
           <div className="flex items-center gap-3 shrink-0">
             <div className="w-10 h-10 rounded-full bg-accent/10 border border-accent/20 flex items-center justify-center">

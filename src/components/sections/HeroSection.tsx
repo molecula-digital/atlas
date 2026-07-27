@@ -33,7 +33,7 @@ export function HeroSection({ cityCounts = {}, typeCounts = {} }: HeroSectionPro
 
   return (
     <section id="hero" className="py-6 lg:py-8">
-      <div className="max-w-280 mx-auto grid gap-8 lg:min-h-[34rem] lg:grid-cols-[minmax(0,1fr)_28rem] lg:gap-12 xl:grid-cols-[minmax(0,1fr)_31rem]">
+      <div className="grid gap-8 lg:min-h-[34rem] lg:grid-cols-[minmax(0,1fr)_28rem] lg:gap-12 xl:grid-cols-[minmax(0,1fr)_31rem]">
         <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
           <div className="mt-14 space-y-6 lg:mt-auto">
             <a
@@ -119,7 +119,7 @@ export function HeroSection({ cityCounts = {}, typeCounts = {} }: HeroSectionPro
       </div>
 
       {/* Ecosystem stats */}
-      <div className="max-w-280 mx-auto mt-8 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-3 lg:grid-cols-6">
+      <div className="mt-8 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-3 lg:grid-cols-6">
         {ecosystemStats.map(({ type, label, description, slug, Icon, count }) => (
           <Tooltip key={type}>
             <TooltipTrigger asChild>

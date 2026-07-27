@@ -31,9 +31,7 @@ export default async function CityDirectoryPage({ params }: { params: Promise<{ 
 
   return (
     <section className="py-4">
-      <div className="max-w-280 mx-auto">
-        <DirectoryFilter cities={staticCities} initialCity={city} pageSize={12} />
-      </div>
+      <DirectoryFilter cities={staticCities} initialCity={city} pageSize={12} />
     </section>
   )
 }
