@@ -34,16 +34,18 @@ export default function FrontendLayout({ children }: { children: React.ReactNode
       </head>
       <body className="bg-background">
         <ThemeProvider>
-          <div className="font-sans w-full min-h-screen flex flex-col text-secondary selection:bg-accent selection:text-accent-foreground relative overflow-x-clip">
-            <MatrixBackground boxSize={26} highlight={false} />
-            <div className="relative z-10 flex flex-col flex-1">
-              <InfoBanner />
-              <Header />
-              <main id="main" className="flex-1 md:px-6 lg:px-8">
-                {children}
-              </main>
-              <Footer />
+          <div className="font-sans w-full min-h-screen flex flex-col text-secondary selection:bg-accent selection:text-accent-foreground overflow-x-clip">
+            <div className="relative flex flex-col flex-1">
+              <MatrixBackground boxSize={26} highlight={false} />
+              <div className="relative z-10 flex flex-col flex-1">
+                <InfoBanner />
+                <Header />
+                <main id="main" className="flex-1 md:px-6 lg:px-8">
+                  {children}
+                </main>
+              </div>
             </div>
+            <Footer />
           </div>
         </ThemeProvider>
       </body>
