@@ -6,6 +6,8 @@ import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import { SITE_URL } from '@/config'
 import { formatDateEs } from '@/lib/format'
 import { safeJsonLd } from '@/lib/utils'
+import { MapPin, ArrowUpRight } from 'lucide-react'
+import { btn } from '@/components/ui/button-styles'
 import EventDetailPageClient from './EventDetailPageClient'
 
 export const revalidate = 3600
@@ -98,58 +100,71 @@ export default async function EventDetailPage({
           }),
         }}
       />
-      <div>
-        <Breadcrumb
-          items={[
-            { label: 'Inicio', href: '/' },
-            { label: 'Eventos', href: '/eventos' },
-            { label: event.title },
-          ]}
-        />
+      <Breadcrumb
+        items={[
+          { label: 'Inicio', href: '/' },
+          { label: 'Eventos', href: '/eventos' },
+          { label: event.title },
+        ]}
+      />
 
-        <p className="text-sm font-mono text-muted mt-6 mb-2">
-          {formatDateEs(event.date)}
-        </p>
-        <h1 className="text-3xl md:text-4xl font-bold text-primary mb-6">
-          {event.title}
-        </h1>
+      <div
+        className={
+          mapEmbedUrl
+            ? 'grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_20rem] xl:grid-cols-[minmax(0,1fr)_22rem]'
+            : undefined
+        }
+      >
+        <div className="min-w-0">
+          <p className="mb-2 text-sm font-mono text-muted">
+            {formatDateEs(event.date)}
+          </p>
+          <h1 className="mb-6 text-3xl font-bold text-primary md:text-4xl">
+            {event.title}
+          </h1>
+          <EventDetailPageClient event={event} showLocation={!mapEmbedUrl} />
+        </div>
 
-        <div
-          className={
-            mapEmbedUrl
-              ? 'grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]'
-              : undefined
-          }
-        >
-          <EventDetailPageClient event={event} />
+        {mapEmbedUrl && (
+          <aside className="overflow-hidden rounded-xl border border-border bg-card/90 shadow-sm lg:sticky lg:top-14">
+            <div className="flex items-start gap-3 p-4">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-accent/20 bg-accent/10 text-accent">
+                <MapPin size={16} />
+              </span>
+              <div className="min-w-0">
+                <p className="text-2xs font-mono uppercase tracking-wider text-muted">
+                  Ubicación
+                </p>
+                <p className="mt-1 text-sm leading-snug text-primary">
+                  {event.location}
+                </p>
+              </div>
+            </div>
 
-          {mapEmbedUrl && (
-            <aside className="overflow-hidden rounded-lg border border-border bg-card/90">
+            <div className="h-52 border-y border-border bg-elevated">
               <iframe
                 src={mapEmbedUrl}
                 title={`Mapa de ${event.location}`}
-                className="aspect-[4/3] w-full border-0"
+                className="h-full w-full border-0"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
                 allowFullScreen
               />
-              <div className="border-t border-border p-4">
-                <p className="text-xs font-mono uppercase tracking-wider text-muted">
-                  Ubicación
-                </p>
-                <p className="mt-1 text-sm text-primary">{event.location}</p>
-                <a
-                  href={event.mapsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-3 inline-flex text-xs font-mono text-accent hover:underline"
-                >
-                  Abrir en Google Maps
-                </a>
-              </div>
-            </aside>
-          )}
-        </div>
+            </div>
+
+            <div className="p-3">
+              <a
+                href={event.mapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={btn({ size: 'md' }, 'w-full justify-center')}
+              >
+                Abrir en Google Maps
+                <ArrowUpRight size={13} />
+              </a>
+            </div>
+          </aside>
+        )}
       </div>
     </article>
   )

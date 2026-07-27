@@ -12,7 +12,13 @@ import {
   DialogTitle,
 } from '@/components/ui/Dialog'
 
-export default function EventDetailPageClient({ event }: { event: TechEvent }) {
+export default function EventDetailPageClient({
+  event,
+  showLocation = true,
+}: {
+  event: TechEvent
+  showLocation?: boolean
+}) {
   const [showFullImage, setShowFullImage] = useState(false)
   const hasImage = !!event.image
 
@@ -21,6 +27,7 @@ export default function EventDetailPageClient({ event }: { event: TechEvent }) {
       <EventDetailView
         event={event}
         variant="page"
+        showLocation={showLocation}
         onExpandImage={hasImage ? () => setShowFullImage(true) : undefined}
       />
 

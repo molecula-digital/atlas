@@ -22,6 +22,7 @@ interface EventDetailViewProps {
   event: TechEvent
   variant?: 'modal' | 'page'
   onExpandImage?: () => void
+  showLocation?: boolean
   /** Dismisses the containing dialog, when rendered inside one. */
   onClose?: () => void
 }
@@ -49,6 +50,7 @@ export function EventDetailView({
   event,
   variant = 'modal',
   onExpandImage,
+  showLocation = true,
   onClose,
 }: EventDetailViewProps) {
   const hasImage = !!event.image
@@ -106,7 +108,7 @@ export function EventDetailView({
           )}
         </div>
 
-        {event.location && (
+        {showLocation && event.location && (
           <div className="flex items-start gap-2 text-sm text-secondary">
             <MapPin size={14} className="shrink-0 mt-0.5 text-muted" />
             <span>
