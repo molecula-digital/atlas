@@ -53,9 +53,15 @@ export default async function EventDetailPage({
 
   const event = eventDocToTechEvent(doc)
   const canonical = `${SITE_URL}/eventos/${event.slug}`
+  const mapEmbedUrl = event.mapsUrl && event.location
+    ? `https://www.google.com/maps?${new URLSearchParams({
+        q: event.location,
+        output: 'embed',
+      }).toString()}`
+    : null
 
   return (
-    <article className="py-8">
+    <article className="py-4">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -92,7 +98,7 @@ export default async function EventDetailPage({
           }),
         }}
       />
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-280 mx-auto">
         <Breadcrumb
           items={[
             { label: 'Inicio', href: '/' },
@@ -108,7 +114,42 @@ export default async function EventDetailPage({
           {event.title}
         </h1>
 
-        <EventDetailPageClient event={event} />
+        <div
+          className={
+            mapEmbedUrl
+              ? 'grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]'
+              : undefined
+          }
+        >
+          <EventDetailPageClient event={event} />
+
+          {mapEmbedUrl && (
+            <aside className="overflow-hidden rounded-lg border border-border bg-card/90">
+              <iframe
+                src={mapEmbedUrl}
+                title={`Mapa de ${event.location}`}
+                className="aspect-[4/3] w-full border-0"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+              />
+              <div className="border-t border-border p-4">
+                <p className="text-xs font-mono uppercase tracking-wider text-muted">
+                  Ubicación
+                </p>
+                <p className="mt-1 text-sm text-primary">{event.location}</p>
+                <a
+                  href={event.mapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-3 inline-flex text-xs font-mono text-accent hover:underline"
+                >
+                  Abrir en Google Maps
+                </a>
+              </div>
+            </aside>
+          )}
+        </div>
       </div>
     </article>
   )
