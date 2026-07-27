@@ -261,7 +261,7 @@ export default async function EntryDetailPage({
         className={
           isCompactLayout
             ? 'max-w-3xl mx-auto'
-            : 'xl:grid xl:grid-cols-[minmax(0,1fr)_30rem] xl:gap-2'
+            : 'lg:grid lg:grid-cols-[minmax(0,1fr)_24rem] lg:gap-3 xl:grid-cols-[minmax(0,1fr)_26rem]'
         }
       >
         {/* ============================================================ */}
@@ -493,7 +493,7 @@ export default async function EntryDetailPage({
         {/*  Sidebar (only in full layout)                               */}
         {/* ============================================================ */}
         {!isCompactLayout && (
-          <div className="space-y-4 mt-8 xl:mt-0 max-w-3xl mx-auto lg:max-w-none">
+          <div className="space-y-4 mt-8 lg:mt-0 max-w-3xl mx-auto lg:max-w-none">
             {/* Details card */}
             <div className="bg-card/90 backdrop-blur-sm border border-border rounded-lg p-4">
               <h2 className="font-mono text-xs text-muted uppercase tracking-wider mb-4 flex items-center gap-2">
