@@ -30,7 +30,7 @@ export function FeaturedEntryTile({
   return (
     <Link
       href={href}
-      className="group flex h-full flex-col overflow-hidden rounded-lg border border-border bg-card transition-colors hover:border-accent/40"
+      className="group flex h-full min-w-0 flex-col overflow-hidden rounded-lg border border-border bg-card transition-colors hover:border-accent/40"
     >
       <div className="relative h-24 shrink-0 overflow-hidden bg-elevated">
         {coverUrl ? (
@@ -85,12 +85,12 @@ export function FeaturedEntryTile({
         {tagline && (
           <p className="line-clamp-2 text-xs text-secondary">{tagline}</p>
         )}
-        <div className="mt-auto flex items-center justify-between gap-2 pt-1">
+        <div className="mt-auto flex flex-col gap-1.5 pt-1 sm:flex-row sm:items-center sm:justify-between sm:gap-2">
           <p className="flex min-w-0 items-center gap-1 text-2xs font-mono text-muted">
             <MapPin className="h-3 w-3 shrink-0" />
             <span className="truncate">{getCityName(city)}</span>
           </p>
-          <EntryBadge entryType={entryType} className="shrink-0" />
+          <EntryBadge entryType={entryType} className="w-fit shrink-0" />
         </div>
       </div>
     </Link>

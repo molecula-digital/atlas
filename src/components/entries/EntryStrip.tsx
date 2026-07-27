@@ -29,7 +29,7 @@ export function EntryStrip({
   return (
     <Link
       href={href}
-      className="group flex w-full items-center gap-2.5 rounded-lg border border-border bg-card p-2.5 text-left transition-all duration-200 hover:border-[var(--color-accent)]/40 hover:shadow-sm"
+      className="group flex w-full min-w-0 items-center gap-2.5 rounded-lg border border-border bg-card p-2.5 text-left transition-all duration-200 hover:border-[var(--color-accent)]/40 hover:shadow-sm"
     >
       <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-accent/20 bg-accent/10">
         {logoUrl ? (
@@ -48,23 +48,23 @@ export function EntryStrip({
       </div>
 
       <div className="min-w-0 flex-1">
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-2">
           <span className="truncate text-sm font-sans font-semibold text-primary transition-colors group-hover:text-accent">
             {name}
           </span>
-          <span className="shrink-0">
+          <span className="w-fit shrink-0">
             <EntryBadge entryType={entryType} />
           </span>
         </div>
         {(tagline || city) && (
-          <div className="mt-0.5 flex items-center gap-2 overflow-hidden">
+          <div className="mt-0.5 flex min-w-0 flex-col gap-0.5 sm:flex-row sm:items-center sm:gap-2">
             {tagline && (
               <span className="min-w-0 truncate text-xs font-mono text-muted">
                 {tagline}
               </span>
             )}
             {tagline && city && (
-              <span className="shrink-0 text-xs text-muted">·</span>
+              <span className="hidden shrink-0 text-xs text-muted sm:inline">·</span>
             )}
             {city && (
               <span className="inline-flex shrink-0 items-center gap-1 text-2xs font-mono text-muted">
