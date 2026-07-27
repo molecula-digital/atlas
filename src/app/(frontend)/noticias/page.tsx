@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { SectionHeading } from '@/components/ui/SectionHeading'
+import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import NoticiasContent from './NoticiasContent'
 import { SITE_URL } from '@/config'
 
@@ -18,11 +18,9 @@ export const metadata: Metadata = {
 export default function NoticiasPage() {
   return (
     <section>
-      <div className="max-w-4xl mx-auto">
-        <SectionHeading>Noticias</SectionHeading>
-        <h1 className="text-3xl font-bold text-primary mb-8">Noticias del ecosistema tech</h1>
-        <NoticiasContent />
-      </div>
+      <Breadcrumb items={[{ label: 'Inicio', href: '/' }, { label: 'Noticias' }]} />
+      <h1 className="text-3xl font-bold text-primary mb-8">Noticias del ecosistema tech</h1>
+      <NoticiasContent />
     </section>
   )
 }

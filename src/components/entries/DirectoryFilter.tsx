@@ -14,6 +14,7 @@ import {
   type AtlasEntryType,
 } from '@/config'
 import { ENTRY_TYPE_ICON_MAP } from '@/lib/icons'
+import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import { PaginatedView } from '@/components/ui/PaginatedView'
 import { EntryCardSkeleton } from './EntryCardSkeleton'
 import type { Entry, Media } from '@/payload-types'
@@ -284,29 +285,17 @@ export default function DirectoryFilter({
 
   return (
     <div id="directory-top">
-      {/* Breadcrumb */}
-      <nav className="text-xs font-mono text-muted mb-4">
-        <a href="/" className="hover:text-accent transition-colors">
-          INICIO
-        </a>
-        <span className="mx-2">/</span>
-        {activeCityName || activeTypeName ? (
-          <>
-            <button
-              onClick={clearFilters}
-              className="hover:text-accent transition-colors cursor-pointer"
-            >
-              DIRECTORIO
-            </button>
-            <span className="mx-2">/</span>
-            <span className="text-accent">
-              {(activeCityName || activeTypeName || '').toUpperCase()}
-            </span>
-          </>
-        ) : (
-          <span className="text-primary">DIRECTORIO</span>
-        )}
-      </nav>
+      <Breadcrumb
+        items={
+          activeCityName || activeTypeName
+            ? [
+                { label: 'Inicio', href: '/' },
+                { label: 'Directorio', onClick: clearFilters },
+                { label: activeCityName || activeTypeName || '' },
+              ]
+            : [{ label: 'Inicio', href: '/' }, { label: 'Directorio' }]
+        }
+      />
 
       {/* Heading */}
       <h1 className="terminal-title text-3xl md:text-4xl font-sans font-bold text-primary">{heading}</h1>
