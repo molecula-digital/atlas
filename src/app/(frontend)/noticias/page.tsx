@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
-import { Breadcrumb } from '@/components/ui/Breadcrumb'
+import { Newspaper } from 'lucide-react'
+import { PageHero } from '@/components/ui/PageHero'
 import NoticiasContent from './NoticiasContent'
 import { SITE_URL } from '@/config'
 
@@ -18,8 +19,12 @@ export const metadata: Metadata = {
 export default function NoticiasPage() {
   return (
     <section>
-      <Breadcrumb items={[{ label: 'Inicio', href: '/' }, { label: 'Noticias' }]} />
-      <h1 className="text-3xl font-bold text-primary mb-8">Noticias del ecosistema tech</h1>
+      <PageHero
+        icon={Newspaper}
+        title={<>Noticias del<br />ecosistema tech</>}
+        description="Lanzamientos, convocatorias y movimientos del ecosistema tecnológico de Sinaloa, en un solo lugar."
+        breadcrumb={[{ label: 'Inicio', href: '/' }, { label: 'Noticias' }]}
+      />
       <NoticiasContent />
     </section>
   )

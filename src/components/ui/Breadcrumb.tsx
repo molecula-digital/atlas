@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { Fragment } from 'react'
 
-interface BreadcrumbItem {
+export interface BreadcrumbItem {
   label: string
   href?: string
   /**

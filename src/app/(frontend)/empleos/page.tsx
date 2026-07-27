@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
-import { Breadcrumb } from '@/components/ui/Breadcrumb'
+import { Briefcase } from 'lucide-react'
+import { PageHero } from '@/components/ui/PageHero'
 import EmpleosContent from './EmpleosContent'
 import { SITE_URL } from '@/config'
 
@@ -18,9 +19,12 @@ export const metadata: Metadata = {
 export default function EmpleosPage() {
   return (
     <section>
-      <Breadcrumb items={[{ label: 'Inicio', href: '/' }, { label: 'Empleos' }]} />
-      <h1 className="text-3xl font-bold text-primary mb-2">Bolsa de trabajo</h1>
-      <p className="text-secondary text-sm mb-8">Oportunidades en el ecosistema tech de Sinaloa.</p>
+      <PageHero
+        icon={Briefcase}
+        title={<>Bolsa<br />de trabajo</>}
+        description="Vacantes, prácticas y proyectos freelance en el ecosistema tech de Sinaloa. Encuentra tu siguiente oportunidad."
+        breadcrumb={[{ label: 'Inicio', href: '/' }, { label: 'Empleos' }]}
+      />
       <EmpleosContent />
     </section>
   )

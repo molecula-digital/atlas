@@ -1,5 +1,6 @@
 'use client'
 
+import { CalendarRange } from 'lucide-react'
 import EventCalendar from '@/components/calendar/EventCalendar'
 import { SectionTitle } from '@/components/ui/SectionTitle'
 
@@ -8,6 +9,7 @@ export function CalendarSection() {
     <section id="calendario" className="py-8">
       <div className="space-y-8">
         <SectionTitle
+          icon={CalendarRange}
           align="center"
           description="Explora el mes y descubre meetups, talleres y conferencias en Sinaloa"
         >

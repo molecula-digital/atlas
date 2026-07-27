@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
+import { CalendarDays } from 'lucide-react'
 import { CalendarSection } from '@/components/sections/CalendarSection'
-import { EventsHeroSection } from '@/components/sections/EventsHeroSection'
+import { PageHero } from '@/components/ui/PageHero'
 import { SITE_URL } from '@/config'
 
 export const metadata: Metadata = {
@@ -27,7 +28,12 @@ export default function EventosPage() {
           url: `${SITE_URL}/eventos`,
         }),
       }} />
-      <EventsHeroSection />
+      <PageHero
+        icon={CalendarDays}
+        title={<>Eventos tech<br />en Sinaloa</>}
+        description="Meetups, talleres, hackatones y conferencias. Conecta con la comunidad tecnológica de Sinaloa y no te pierdas ni un solo evento."
+        breadcrumb={[{ label: 'Inicio', href: '/' }, { label: 'Eventos' }]}
+      />
       <CalendarSection />
     </>
   )

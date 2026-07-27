@@ -98,6 +98,13 @@ html {
     0 0 1rem color-mix(in srgb, var(--color-accent) 35%, transparent);
 }
 
+/* Neon halo for icons standing in for the terminal `>` on headings. */
+.icon-glow {
+  filter:
+    drop-shadow(0 0 0.3rem color-mix(in srgb, var(--color-accent) 55%, transparent))
+    drop-shadow(0 0 0.85rem color-mix(in srgb, var(--color-accent) 30%, transparent));
+}
+
 .terminal-glow {
   text-shadow:
     0 0 0.35rem color-mix(in srgb, var(--color-accent) 65%, transparent),
