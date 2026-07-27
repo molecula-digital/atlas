@@ -54385,7 +54385,7 @@
           "type": "Polygon",
           "properties": {
             "name": "El Fuerte",
-            "id": "el_fuerte"
+            "id": "el-fuerte"
           }
         },
         {
@@ -54396,7 +54396,7 @@
         {
           "arcs": [[-5, 7, 8]],
           "type": "Polygon",
-          "properties": { "name": "San Ignacio", "id": "san_ignacio" }
+          "properties": { "name": "San Ignacio", "id": "san-ignacio" }
         },
         {
           "arcs": [[9, 10]],
@@ -54494,7 +54494,7 @@
         {
           "arcs": [[46, -24, -1, 47]],
           "type": "Polygon",
-          "properties": { "name": "Sinaloa", "id": "sinaloa" }
+          "properties": { "name": "Sinaloa", "id": "sinaloa-de-leyva" }
         },
         {
           "arcs": [[48, -25, -47]],
