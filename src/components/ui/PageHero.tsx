@@ -11,7 +11,8 @@ interface PageHeroProps {
 
 /**
  * Header shared by the listing routes (eventos, noticias, empleos): breadcrumb,
- * oversized uppercase title with an accent icon, and a mono standfirst.
+ * then a centered uppercase title with an accent icon and a mono standfirst.
+ * The breadcrumb stays left-aligned — it is navigation, not part of the hero.
  * Bottom padding only — top spacing comes from the layout, like every route.
  */
 export function PageHero({ icon: Icon, title, description, breadcrumb }: PageHeroProps) {
@@ -19,8 +20,8 @@ export function PageHero({ icon: Icon, title, description, breadcrumb }: PageHer
     <section className="pb-8">
       <Breadcrumb items={breadcrumb} />
 
-      <div className="space-y-6">
-        <h1 className="flex items-start gap-[0.3em] text-4xl md:text-5xl lg:text-hero font-sans font-bold text-primary leading-[1.1] tracking-tight uppercase">
+      <div className="space-y-5 text-center">
+        <h1 className="flex items-start justify-center gap-[0.3em] text-3xl md:text-4xl lg:text-5xl font-sans font-bold text-primary leading-[1.1] tracking-tight uppercase">
           {/* Sized in em so the icon tracks the title at every breakpoint. */}
           <Icon
             className="icon-glow size-[0.8em] shrink-0 translate-y-[0.14em] text-accent"
@@ -30,7 +31,7 @@ export function PageHero({ icon: Icon, title, description, breadcrumb }: PageHer
           <span>{title}</span>
         </h1>
 
-        <p className="text-sm md:text-base font-mono text-muted leading-relaxed max-w-125">
+        <p className="text-sm md:text-base font-mono text-muted leading-relaxed max-w-125 mx-auto">
           {description}
         </p>
       </div>
