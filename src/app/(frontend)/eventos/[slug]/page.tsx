@@ -8,6 +8,7 @@ import { formatDateEs } from '@/lib/format'
 import { safeJsonLd } from '@/lib/utils'
 import { MapPin, ArrowUpRight } from 'lucide-react'
 import { btn } from '@/components/ui/button-styles'
+import { resolveMapEmbedUrl } from '@/lib/maps'
 import EventDetailPageClient from './EventDetailPageClient'
 
 export const revalidate = 3600
@@ -55,12 +56,9 @@ export default async function EventDetailPage({
 
   const event = eventDocToTechEvent(doc)
   const canonical = `${SITE_URL}/eventos/${event.slug}`
-  const mapEmbedUrl = event.mapsUrl && event.location
-    ? `https://www.google.com/maps?${new URLSearchParams({
-        q: event.location,
-        output: 'embed',
-      }).toString()}`
-    : null
+  // Derived from the pasted Maps link, never from the free-text location.
+  const mapEmbedUrl = event.location ? await resolveMapEmbedUrl(event.mapsUrl) : null
+  const showLocationPanel = Boolean(event.location && event.mapsUrl)
 
   return (
     <article className="py-4">
@@ -110,7 +108,7 @@ export default async function EventDetailPage({
 
       <div
         className={
-          mapEmbedUrl
+          showLocationPanel
             ? 'grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_20rem] xl:grid-cols-[minmax(0,1fr)_22rem]'
             : undefined
         }
@@ -122,10 +120,10 @@ export default async function EventDetailPage({
           <h1 className="mb-6 text-3xl font-bold text-primary md:text-4xl">
             {event.title}
           </h1>
-          <EventDetailPageClient event={event} showLocation={!mapEmbedUrl} />
+          <EventDetailPageClient event={event} showLocation={!showLocationPanel} />
         </div>
 
-        {mapEmbedUrl && (
+        {showLocationPanel && (
           <aside className="overflow-hidden rounded-xl border border-border bg-card/90 shadow-sm lg:sticky lg:top-14">
             <div className="flex items-start gap-3 p-4">
               <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-accent/20 bg-accent/10 text-accent">
@@ -141,18 +139,20 @@ export default async function EventDetailPage({
               </div>
             </div>
 
-            <div className="h-52 border-y border-border bg-elevated">
-              <iframe
-                src={mapEmbedUrl}
-                title={`Mapa de ${event.location}`}
-                className="h-full w-full border-0"
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                allowFullScreen
-              />
-            </div>
+            {mapEmbedUrl && (
+              <div className="h-52 border-y border-border bg-elevated">
+                <iframe
+                  src={mapEmbedUrl}
+                  title={`Mapa de ${event.location}`}
+                  className="h-full w-full border-0"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  allowFullScreen
+                />
+              </div>
+            )}
 
-            <div className="p-3">
+            <div className={mapEmbedUrl ? 'p-3' : 'border-t border-border p-3'}>
               <a
                 href={event.mapsUrl}
                 target="_blank"
