@@ -32,7 +32,7 @@ export function HeroSection({ cityCounts = {}, typeCounts = {} }: HeroSectionPro
   }))
 
   return (
-    <section id="hero" className="px-4 py-6 lg:py-8">
+    <section id="hero" className="py-6 lg:py-8">
       <div className="max-w-280 mx-auto grid gap-8 lg:min-h-[34rem] lg:grid-cols-[minmax(0,1fr)_28rem] lg:gap-12 xl:grid-cols-[minmax(0,1fr)_31rem]">
         <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
           <div className="mt-14 space-y-6 lg:mt-auto">

@@ -13,7 +13,7 @@ const FAQ_ICON_MAP: Record<string, LucideIcon> = {
 
 export function FaqSection() {
   return (
-    <section className="py-4 px-4">
+    <section className="py-4">
       <div className="max-w-3xl mx-auto">
         <SectionTitle
           align="center"

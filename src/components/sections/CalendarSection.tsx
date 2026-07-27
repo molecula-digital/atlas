@@ -5,7 +5,7 @@ import { SectionTitle } from '@/components/ui/SectionTitle'
 
 export function CalendarSection() {
   return (
-    <section id="calendario" className="py-8 px-4">
+    <section id="calendario" className="py-8">
       <div className="max-w-280 mx-auto space-y-8">
         <SectionTitle
           align="center"

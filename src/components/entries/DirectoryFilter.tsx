@@ -344,7 +344,7 @@ export default function DirectoryFilter({
       </div>
 
       {/* Desktop: sidebar + content grid */}
-      <div className="grid lg:grid-cols-[220px_1fr] gap-6">
+      <div className="grid lg:grid-cols-[240px_1fr] gap-6">
         {/* Desktop sidebar */}
         <aside className="hidden lg:block bg-card/90 backdrop-blur-sm border border-border rounded-lg p-4 h-fit lg:max-h-[calc(100vh-12rem)] lg:overflow-y-auto space-y-4">
           {sidebarContent}

@@ -4,7 +4,7 @@ import { TronPanel } from '@/components/ui/TronPanel'
 
 export function NewsletterSection() {
   return (
-    <section className="px-4 py-12">
+    <section className="py-12">
       <div className="mx-auto max-w-3xl overflow-hidden rounded-xl border border-accent/30 bg-card">
         <div className="grid md:grid-cols-3">
           <TronPanel>

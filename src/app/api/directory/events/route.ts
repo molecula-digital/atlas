@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server'
 import { withRateLimit } from '@/lib/rate-limit'
 
 export async function GET(request: NextRequest) {
-  const limited = withRateLimit(request, { limit: 60, windowMs: 60 * 1000, keyPrefix: 'api-events' })
+  const limited = await withRateLimit(request, { limit: 60, windowMs: 60 * 1000, keyPrefix: 'api-events' })
   if (limited) return limited
 
   try {

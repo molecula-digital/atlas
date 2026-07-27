@@ -5,7 +5,7 @@ import { SectionTitle } from '@/components/ui/SectionTitle'
 
 export function CombinedCtaSection() {
   return (
-    <section className="py-4 px-4">
+    <section className="py-4">
       <div className="max-w-5xl mx-auto">
         {/* Section header */}
         <SectionTitle

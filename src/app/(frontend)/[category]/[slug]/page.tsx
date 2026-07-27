@@ -15,7 +15,6 @@ import {
 import { extractImageUrl } from '@/lib/format'
 import { EntryBadge } from '@/components/entries/EntryBadge'
 import { EntryCard } from '@/components/entries/EntryCard'
-import { Tag } from '@/components/ui/Tag'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import ShareButton from '@/components/ui/ShareButton'
 import { ExternalLink } from '@/components/ui/ExternalLink'
@@ -189,11 +188,12 @@ export default async function EntryDetailPage({
 
   /* ---------- Layout mode ---------- */
   const isCompactLayout = links.length === 0 && !coverUrl
+  const isSparseEntry = !coverUrl && !logoUrl && !entry.body && tags.length === 0 && technologies.length === 0
 
   const pageUrl = `${SITE_URL}/${config.slug}/${entry.slug}`
 
   return (
-    <article className="max-w-280 mx-auto px-4 py-4">
+    <article className="max-w-280 mx-auto py-4">
       <script type="application/ld+json" dangerouslySetInnerHTML={{
         __html: safeJsonLd({
           '@context': 'https://schema.org',
@@ -262,7 +262,7 @@ export default async function EntryDetailPage({
         className={
           isCompactLayout
             ? 'max-w-3xl mx-auto'
-            : 'xl:grid xl:grid-cols-[1fr_20rem] xl:gap-8'
+            : 'xl:grid xl:grid-cols-[1fr_20rem] xl:gap-5'
         }
       >
         {/* ============================================================ */}
@@ -272,12 +272,12 @@ export default async function EntryDetailPage({
           {/* Cover image with aspect-video */}
           {coverUrl && (
             <div className="relative">
-              <div className="relative aspect-video rounded-lg overflow-hidden bg-elevated">
+              <div className="group relative aspect-video rounded-lg overflow-hidden bg-elevated">
                 <Image
                   src={coverUrl}
                   alt={entry.name as string}
                   fill
-                  className="object-cover"
+                  className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
                   sizes="(max-width: 768px) 100vw, 1200px"
                   priority
                 />
@@ -298,7 +298,7 @@ export default async function EntryDetailPage({
           )}
 
           {/* Header */}
-          <div className={coverUrl && logoUrl ? 'space-y-4 pt-4' : 'space-y-4'}>
+          <div className={`${coverUrl && logoUrl ? 'space-y-4 pt-4' : 'space-y-4'}${isSparseEntry ? ' rounded-lg border border-border bg-card/90 p-6 backdrop-blur-sm' : ''}`}>
             <div className="flex items-center gap-3">
               {/* Logo inline when no cover image */}
               {!coverUrl && logoUrl && (
@@ -309,6 +309,11 @@ export default async function EntryDetailPage({
                   height={56}
                   className="object-contain rounded-xl border border-border bg-card shadow-sm shrink-0"
                 />
+              )}
+              {!coverUrl && !logoUrl && isSparseEntry && (
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border border-accent/20 bg-accent/10">
+                  <EntryIcon className="h-6 w-6 text-accent" />
+                </div>
               )}
               <div>
                 <div className="flex items-center gap-2 mb-1">
@@ -470,25 +475,25 @@ export default async function EntryDetailPage({
                 <LayoutList className="w-4 h-4 text-accent" />
                 Detalles
               </h2>
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {/* Location always shown */}
-                <div className="flex items-center justify-between">
+                <div className="space-y-1.5">
                   <span className="text-sm text-muted flex items-center gap-1.5">
                     <MapPin className="w-3.5 h-3.5 text-muted" />
                     Ubicacion
                   </span>
-                  <span className="text-sm font-mono text-primary">
+                  <span className="block text-sm font-mono text-primary break-words">
                     {entry.city === 'global' ? 'Global' : getCityName(entry.city as string)}
                     {entry.state ? `, ${entry.state as string}` : ''}
                   </span>
                 </div>
                 {details.map((detail) => (
-                  <div key={detail.label} className="flex items-start justify-between gap-3">
+                  <div key={detail.label} className="space-y-1.5">
                     <span className="text-sm text-muted flex items-center gap-1.5 shrink-0">
                       <detail.Icon className="w-3.5 h-3.5 text-muted shrink-0" />
                       {detail.label}
                     </span>
-                    <span className="text-sm font-mono text-primary flex items-center gap-1.5 text-right">
+                    <span className="flex items-center gap-1.5 text-sm font-mono text-primary break-words">
                       {detail.ValueIcon && (
                         <detail.ValueIcon className="w-3.5 h-3.5 text-accent shrink-0" />
                       )}

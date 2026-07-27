@@ -25,7 +25,7 @@ export function FeaturedSection({ entries }: FeaturedSectionProps) {
   const displayEntries = entries.slice(0, 6)
 
   return (
-    <section className="py-4 px-4">
+    <section className="py-4">
       <div className="max-w-280 mx-auto">
         <div className="flex items-center justify-between mb-10">
           <SectionTitle description="Startups y organizaciones destacadas del ecosistema">

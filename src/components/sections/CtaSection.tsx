@@ -3,7 +3,7 @@ import { btn } from '@/components/ui/button-styles'
 
 export function CtaSection() {
   return (
-    <section className="py-4 px-4">
+    <section className="py-4">
       <div className="max-w-3xl mx-auto text-center">
         <div className="bg-card border border-border rounded-lg p-8 md:p-12 space-y-6">
           <h2 className="terminal-title text-2xl md:text-3xl font-sans font-bold text-primary uppercase">

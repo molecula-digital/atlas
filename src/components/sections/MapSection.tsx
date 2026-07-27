@@ -72,7 +72,7 @@ export default function MapSection({
   const activeCityCount = Object.keys(cityCounts).length;
 
   return (
-    <section id="map" className="py-8 px-4">
+    <section id="map" className="py-8">
       <div className="max-w-280 mx-auto">
         <div className="mb-6">
           <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.18em] text-muted">

@@ -39,7 +39,7 @@ function sortMerged(docs: DirectoryDoc[], sortKey: string): DirectoryDoc[] {
 }
 
 export async function GET(request: NextRequest) {
-  const limited = withRateLimit(request, { limit: 60, windowMs: 60 * 1000, keyPrefix: 'api-entries' })
+  const limited = await withRateLimit(request, { limit: 60, windowMs: 60 * 1000, keyPrefix: 'api-entries' })
   if (limited) return limited
 
   try {
