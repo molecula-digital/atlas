@@ -261,13 +261,13 @@ export default async function EntryDetailPage({
         className={
           isCompactLayout
             ? 'max-w-3xl mx-auto'
-            : 'lg:grid lg:grid-cols-[minmax(0,1fr)_24rem] lg:gap-3 xl:grid-cols-[minmax(0,1fr)_26rem]'
+            : 'lg:grid lg:grid-cols-[minmax(0,1fr)_28rem] lg:gap-1 xl:grid-cols-[minmax(0,1fr)_30rem]'
         }
       >
         {/* ============================================================ */}
         {/*  Main column                                                 */}
         {/* ============================================================ */}
-        <div className={`space-y-8${!isCompactLayout ? ' max-w-3xl mx-auto lg:max-w-none' : ''}`}>
+        <div className={`space-y-8${!isCompactLayout ? ' max-w-3xl mx-auto lg:mx-0 lg:max-w-none' : ''}`}>
           {/* Cover image, with a consistent fallback hero for entries without one. */}
           <div className="relative">
               <div className="group relative aspect-video rounded-lg overflow-hidden bg-elevated">
@@ -493,7 +493,7 @@ export default async function EntryDetailPage({
         {/*  Sidebar (only in full layout)                               */}
         {/* ============================================================ */}
         {!isCompactLayout && (
-          <div className="space-y-4 mt-8 lg:mt-0 max-w-3xl mx-auto lg:max-w-none">
+          <div className="space-y-4 mt-8 lg:mt-0 max-w-3xl mx-auto lg:mx-0 lg:max-w-none">
             {/* Details card */}
             <div className="bg-card/90 backdrop-blur-sm border border-border rounded-lg p-4">
               <h2 className="font-mono text-xs text-muted uppercase tracking-wider mb-4 flex items-center gap-2">
