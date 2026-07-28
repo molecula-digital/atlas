@@ -1,15 +1,15 @@
 import { cn } from '@/lib/utils'
 
-interface CardProps {
-  children: React.ReactNode
-  className?: string
-  as?: keyof React.JSX.IntrinsicElements
+type CardProps = React.HTMLAttributes<HTMLElement> & {
+  as?: 'div' | 'section' | 'article' | 'aside'
 }
 
-export function Card({ children, className, as: Tag = 'div' }: CardProps) {
+/** Content surface chrome. Callers override padding via className. */
+export function Card({ as: Component = 'div', className, ...props }: CardProps) {
   return (
-    <Tag className={cn('bg-card/90 backdrop-blur-sm border border-border rounded-lg p-6', className)}>
-      {children}
-    </Tag>
+    <Component
+      className={cn('bg-card/90 backdrop-blur-sm border border-border rounded-lg p-6', className)}
+      {...props}
+    />
   )
 }

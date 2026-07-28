@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useEffect, useCallback, useMemo, type ReactNode } from 'react'
+import { type ReactNode } from 'react'
 import { ChevronLeft, ChevronRight, SearchX } from 'lucide-react'
-import { fetchPaginated, type PaginatedResponse } from '@/lib/api'
-import { btn } from '@/components/ui/button-styles'
+import { usePaginatedData } from '@/hooks/usePaginatedData'
+import { buttonVariants } from '@/components/ui/button-variants'
+import { EmptyState } from '@/components/ui/EmptyState'
 
 interface PaginatedViewProps<T> {
   endpoint: string
@@ -30,61 +31,14 @@ export function PaginatedView<T extends { id: string | number }>({
   pageSize = 18,
   scrollTargetId,
 }: PaginatedViewProps<T>) {
-  const [data, setData] = useState<PaginatedResponse<T> | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [currentPage, setCurrentPage] = useState(() => {
-    if (typeof window === 'undefined') return 1
-    const p = parseInt(new URLSearchParams(window.location.search).get('page') || '1', 10)
-    return p > 0 ? p : 1
+  const { data, loading, setPage } = usePaginatedData<T>({
+    endpoint,
+    params,
+    pageSize,
+    scrollTargetId,
   })
 
   const effectiveSkeletonCount = skeletonCount ?? pageSize
-
-  // Stabilize params reference to avoid infinite re-fetch loops
-  const paramsKey = useMemo(() => JSON.stringify(params ?? {}), [params])
-
-  const fetchData = useCallback(
-    async (page: number) => {
-      setLoading(true)
-      try {
-        const stableParams = JSON.parse(paramsKey) as Record<string, string>
-        const result = await fetchPaginated<T>(endpoint, {
-          ...stableParams,
-          page: String(page),
-          limit: String(pageSize),
-        })
-        setData(result)
-      } catch (err) {
-        console.error('PaginatedView fetch error:', err)
-        setData(null)
-      } finally {
-        setLoading(false)
-      }
-    },
-    [endpoint, paramsKey, pageSize],
-  )
-
-  // Reset to page 1 when params change
-  useEffect(() => {
-    setCurrentPage(1)
-  }, [paramsKey])
-
-  useEffect(() => {
-    fetchData(currentPage)
-  }, [fetchData, currentPage])
-
-  function handlePageChange(page: number) {
-    setCurrentPage(page)
-    const url = new URL(window.location.href)
-    if (page <= 1) url.searchParams.delete('page')
-    else url.searchParams.set('page', String(page))
-    window.history.pushState({}, '', url.pathname + url.search)
-    if (scrollTargetId) {
-      document.getElementById(scrollTargetId)?.scrollIntoView({ behavior: 'smooth' })
-    } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    }
-  }
 
   // Skeleton loading state
   if (loading) {
@@ -101,12 +55,7 @@ export function PaginatedView<T extends { id: string | number }>({
 
   // Empty state
   if (!data || data.docs.length === 0) {
-    return (
-      <div className="text-center py-20">
-        <SearchX className="w-12 h-12 mx-auto mb-4 text-muted opacity-40" strokeWidth={1.5} />
-        <p className="text-muted font-mono text-sm">{emptyMessage}</p>
-      </div>
-    )
+    return <EmptyState icon={SearchX} title={emptyMessage} />
   }
 
   const wrapperClass =
@@ -122,7 +71,7 @@ export function PaginatedView<T extends { id: string | number }>({
       <Pagination
         currentPage={data.page}
         totalPages={data.totalPages}
-        onPageChange={handlePageChange}
+        onPageChange={setPage}
       />
     </div>
   )
@@ -150,9 +99,9 @@ function Pagination({
     }
   }
 
-  const active = btn({ variant: 'accent', size: 'md' }, 'min-w-7')
-  const inactive = btn({ variant: 'ghost', size: 'md' }, 'min-w-7')
-  const disabled = btn({ variant: 'ghost', size: 'md' }, 'min-w-7 text-muted/40 pointer-events-none')
+  const active = buttonVariants({ variant: 'accent', size: 'md', className: 'min-w-7' })
+  const inactive = buttonVariants({ variant: 'ghost', size: 'md', className: 'min-w-7' })
+  const disabled = buttonVariants({ variant: 'ghost', size: 'md', className: 'min-w-7 text-muted/40 pointer-events-none' })
 
   return (
     <nav aria-label="Paginación" className="flex items-center justify-center gap-1 mt-8">

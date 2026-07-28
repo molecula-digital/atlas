@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Loader2, CheckCircle, AlertCircle } from 'lucide-react'
 import { NEWSLETTER } from '@/config'
-import { btn } from '@/components/ui/button-styles'
+import { buttonVariants } from '@/components/ui/button-variants'
 
 function UnsubscribeForm() {
   const searchParams = useSearchParams()
@@ -112,7 +112,7 @@ function UnsubscribeForm() {
               <button
                 type="submit"
                 disabled={status === 'loading'}
-                className={btn({ variant: 'neutral', size: 'md' })}
+                className={buttonVariants({ variant: 'neutral', size: 'md' })}
               >
                 {status === 'loading' ? (
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />

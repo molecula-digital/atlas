@@ -5,7 +5,7 @@ import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { btn } from "@/components/ui/button-styles";
+import { buttonVariants } from '@/components/ui/button-variants';
 
 function Dialog({
   ...props
@@ -71,7 +71,7 @@ function DialogContent({
         {children}
         {showCloseButton && (
           <DialogPrimitive.Close
-            className={btn({ variant: "ghost", size: "md", icon: true }, "absolute top-4 right-4")}
+            className={buttonVariants({ variant: "ghost", size: "icon-md", className: "absolute top-4 right-4" })}
             aria-label="Cerrar"
           >
             <X size={18} className="text-muted" />

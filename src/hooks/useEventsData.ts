@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import type { Event } from '@/payload-types'
 import {
   eventDocToTechEvent,
@@ -21,7 +21,7 @@ export interface UseEventsDataResult {
 
 export function useEventsData(): UseEventsDataResult {
   const [events, setEvents] = useState<TechEvent[]>([])
-  const [eventsByDate, setEventsByDate] = useState<Record<string, TechEvent[]>>({})
+  const eventsByDate = useMemo(() => groupEventsByDate(events), [events])
   // Start idle so SSR HTML matches the first client render (avoids disabled/spinner mismatches).
   // Fetch kicks off in useEffect and flips to loading.
   const [status, setStatus] = useState<Status>('idle')
@@ -34,7 +34,6 @@ export function useEventsData(): UseEventsDataResult {
       const data: { docs: Event[] } = await res.json()
       const docs: TechEvent[] = (data.docs || []).map(eventDocToTechEvent)
       setEvents(docs)
-      setEventsByDate(groupEventsByDate(docs))
       setStatus('fresh')
     } catch {
       setStatus('error')

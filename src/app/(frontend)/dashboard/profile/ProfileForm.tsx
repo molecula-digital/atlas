@@ -1,181 +1,31 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
-import { useSession, authClient, signOut } from '@/lib/auth-client'
+import { signOut } from '@/lib/auth-client'
 import Link from 'next/link'
 import { Save, Loader2, CheckCircle, AlertCircle, ExternalLink, LogOut } from 'lucide-react'
-import { btn } from '@/components/ui/button-styles'
+import { buttonVariants } from '@/components/ui/button-variants'
 import { NEWSLETTER } from '@/config'
 import { PROFILE_BIO_MAX_LENGTH, slugifyProfile } from '@/lib/profile-fields'
-import { readJson } from '@/lib/read-json'
-
-interface ProfileData {
-  name: string
-  title: string
-  company: string
-  bio: string
-  email: string
-  phone: string
-  website: string
-  photo: string
-  linkedin: string
-  x: string
-  github: string
-  slug: string
-  newsletterEnabled: boolean
-  isPublic: boolean
-}
-
-const emptyProfile: ProfileData = {
-  name: '',
-  title: '',
-  company: '',
-  bio: '',
-  email: '',
-  phone: '',
-  website: '',
-  photo: '',
-  linkedin: '',
-  x: '',
-  github: '',
-  slug: '',
-  newsletterEnabled: false,
-  isPublic: false,
-}
+import { useProfileForm } from './useProfileForm'
 
 const inputClass =
   'mt-1 w-full px-3 py-2 rounded-lg border border-border bg-card text-primary font-mono text-base sm:text-sm placeholder:text-muted/50 focus:outline-hidden focus:border-accent transition-colors'
 const labelClass = 'text-xs font-mono text-muted uppercase tracking-wider'
 
-function parseProfilePayload(data: Record<string, unknown>): ProfileData {
-  return {
-    name: String(data.name || ''),
-    title: String(data.title || ''),
-    company: String(data.company || ''),
-    bio: String(data.bio || ''),
-    email: String(data.email || ''),
-    phone: String(data.phone || ''),
-    website: String(data.website || ''),
-    photo: String(data.photo || ''),
-    linkedin: String(data.linkedin || ''),
-    x: String(data.x || ''),
-    github: String(data.github || ''),
-    slug: String(data.slug || ''),
-    newsletterEnabled: Boolean(data.newsletterEnabled),
-    isPublic: Boolean(data.isPublic),
-  }
-}
-
 export function ProfileForm() {
-  const { data: session } = useSession()
-  const [profile, setProfile] = useState<ProfileData>(emptyProfile)
-  const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
-  const [saved, setSaved] = useState(false)
-  /** Last persisted public state — link only shows when this is live. */
-  const [published, setPublished] = useState<{ isPublic: boolean; slug: string }>({
-    isPublic: false,
-    slug: '',
-  })
-  const [error, setError] = useState<string | null>(null)
-
-  const fetchProfile = useCallback(async () => {
-    try {
-      const res = await fetch('/api/user/profile')
-      const parsed = await readJson<Record<string, unknown>>(res)
-      if (!res.ok || !parsed.ok || !parsed.data) {
-        return
-      }
-      const data = parsed.data
-      const next = parseProfilePayload(data)
-      setProfile(next)
-      setPublished({
-        isPublic: next.isPublic,
-        slug: next.isPublic ? next.slug : '',
-      })
-    } catch {
-      // No profile yet — use empty form
-    } finally {
-      setLoading(false)
-    }
-  }, [])
-
-  useEffect(() => {
-    if (session) fetchProfile()
-  }, [session, fetchProfile])
-
-  const handleChange = (field: keyof ProfileData, value: string | boolean) => {
-    setProfile((prev) => ({ ...prev, [field]: value }))
-    setSaved(false)
-  }
-
-  const handleSave = async () => {
-    setError(null)
-    setSaving(true)
-    try {
-      if (profile.name && profile.name !== session?.user?.name) {
-        await authClient.updateUser({ name: profile.name })
-      }
-
-      const res = await fetch('/api/user/profile', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: profile.email,
-          slug: profile.slug,
-          title: profile.title,
-          company: profile.company,
-          bio: profile.bio,
-          phone: profile.phone,
-          website: profile.website,
-          linkedin: profile.linkedin,
-          x: profile.x,
-          github: profile.github,
-          newsletterEnabled: profile.newsletterEnabled,
-          isPublic: profile.isPublic,
-        }),
-      })
-
-      const parsed = await readJson<Record<string, unknown>>(res)
-      if (!res.ok || !parsed.ok || !parsed.data) {
-        const msg =
-          (parsed.ok && parsed.data && typeof parsed.data.error === 'string'
-            ? parsed.data.error
-            : null) ||
-          (!parsed.ok ? parsed.error : null) ||
-          'No se pudo guardar'
-        throw new Error(msg)
-      }
-
-      const savedProfile = parsed.data
-      if (typeof savedProfile.error === 'string') {
-        throw new Error(savedProfile.error)
-      }
-
-      const next = parseProfilePayload({
-        ...savedProfile,
-        name: profile.name || session?.user?.name || '',
-        photo: profile.photo || session?.user?.image || '',
-        email: savedProfile.email || profile.email,
-      })
-      setProfile(next)
-      setPublished({
-        isPublic: next.isPublic,
-        slug: next.isPublic ? next.slug : '',
-      })
-      setSaved(true)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'No se pudo guardar el perfil')
-    } finally {
-      setSaving(false)
-    }
-  }
-
-  const showPublicLink =
-    published.isPublic &&
-    Boolean(published.slug) &&
-    profile.isPublic === published.isPublic &&
-    profile.slug === published.slug
+  const {
+    session,
+    profile,
+    setField,
+    setPublic,
+    loading,
+    saving,
+    saved,
+    error,
+    save,
+    showPublicLink,
+    publishedSlug,
+  } = useProfileForm()
 
   if (loading) {
     return (
@@ -212,7 +62,7 @@ export function ProfileForm() {
             <input
               className={inputClass}
               value={profile.name}
-              onChange={(e) => handleChange('name', e.target.value)}
+              onChange={(e) => setField('name', e.target.value)}
               placeholder="Tu nombre completo"
             />
           </div>
@@ -222,7 +72,7 @@ export function ProfileForm() {
               className={inputClass}
               type="email"
               value={profile.email}
-              onChange={(e) => handleChange('email', e.target.value)}
+              onChange={(e) => setField('email', e.target.value)}
               placeholder="tu@email.com"
             />
             <p className="mt-1 text-2xs text-muted font-mono">
@@ -237,7 +87,7 @@ export function ProfileForm() {
             <input
               className={inputClass}
               value={profile.title}
-              onChange={(e) => handleChange('title', e.target.value)}
+              onChange={(e) => setField('title', e.target.value)}
               placeholder="ej. Ingeniero de Software"
             />
           </div>
@@ -246,7 +96,7 @@ export function ProfileForm() {
             <input
               className={inputClass}
               value={profile.company}
-              onChange={(e) => handleChange('company', e.target.value)}
+              onChange={(e) => setField('company', e.target.value)}
               placeholder="ej. Atlas Tech"
             />
           </div>
@@ -258,7 +108,7 @@ export function ProfileForm() {
             id="profile-bio"
             className={`${inputClass} min-h-28 resize-y leading-relaxed`}
             value={profile.bio}
-            onChange={(e) => handleChange('bio', e.target.value)}
+            onChange={(e) => setField('bio', e.target.value)}
             placeholder="Cuéntale a la comunidad en qué trabajas, qué tecnologías usas o en qué te gustaría colaborar."
             maxLength={PROFILE_BIO_MAX_LENGTH}
             rows={4}
@@ -278,7 +128,7 @@ export function ProfileForm() {
               className={inputClass}
               type="tel"
               value={profile.phone}
-              onChange={(e) => handleChange('phone', e.target.value)}
+              onChange={(e) => setField('phone', e.target.value)}
               placeholder="+52 667 123 4567"
             />
           </div>
@@ -287,7 +137,7 @@ export function ProfileForm() {
             <input
               className={inputClass}
               value={profile.website}
-              onChange={(e) => handleChange('website', e.target.value)}
+              onChange={(e) => setField('website', e.target.value)}
               placeholder="hola.com"
             />
           </div>
@@ -299,7 +149,7 @@ export function ProfileForm() {
             <input
               className={inputClass}
               value={profile.linkedin}
-              onChange={(e) => handleChange('linkedin', e.target.value)}
+              onChange={(e) => setField('linkedin', e.target.value)}
               placeholder="linkedin.com/in/you"
             />
           </div>
@@ -308,7 +158,7 @@ export function ProfileForm() {
             <input
               className={inputClass}
               value={profile.x}
-              onChange={(e) => handleChange('x', e.target.value)}
+              onChange={(e) => setField('x', e.target.value)}
               placeholder="@handle"
             />
           </div>
@@ -317,7 +167,7 @@ export function ProfileForm() {
             <input
               className={inputClass}
               value={profile.github}
-              onChange={(e) => handleChange('github', e.target.value)}
+              onChange={(e) => setField('github', e.target.value)}
               placeholder="username"
             />
           </div>
@@ -328,15 +178,7 @@ export function ProfileForm() {
             <input
               type="checkbox"
               checked={profile.isPublic}
-              onChange={(e) => {
-                const next = e.target.checked
-                setProfile((prev) => ({
-                  ...prev,
-                  isPublic: next,
-                  slug: next && !prev.slug && prev.name ? slugifyProfile(prev.name) : prev.slug,
-                }))
-                setSaved(false)
-              }}
+              onChange={(e) => setPublic(e.target.checked)}
               className="mt-0.5 size-4 rounded border-border accent-[var(--accent)]"
             />
             <span>
@@ -356,7 +198,7 @@ export function ProfileForm() {
                   id="profile-slug"
                   className={inputClass.replace('mt-1 ', '')}
                   value={profile.slug}
-                  onChange={(e) => handleChange('slug', slugifyProfile(e.target.value))}
+                  onChange={(e) => setField('slug', slugifyProfile(e.target.value))}
                   placeholder="tu-nombre"
                   required
                 />
@@ -366,7 +208,7 @@ export function ProfileForm() {
               </p>
               {showPublicLink ? (
                 <Link
-                  href={`/perfil/${published.slug}`}
+                  href={`/perfil/${publishedSlug}`}
                   target="_blank"
                   className="inline-flex items-center gap-1 mt-1.5 text-xs font-mono text-accent hover:underline"
                 >
@@ -385,7 +227,7 @@ export function ProfileForm() {
             <input
               type="checkbox"
               checked={profile.newsletterEnabled}
-              onChange={(e) => handleChange('newsletterEnabled', e.target.checked)}
+              onChange={(e) => setField('newsletterEnabled', e.target.checked)}
               className="mt-0.5 size-4 rounded border-border accent-[var(--accent)]"
             />
             <span>
@@ -403,9 +245,9 @@ export function ProfileForm() {
             </span>
           )}
           <button
-            onClick={handleSave}
+            onClick={save}
             disabled={saving}
-            className={btn({ variant: "accent", size: "md" })}
+            className={buttonVariants({ variant: "accent", size: "md" })}
           >
             {saving ? (
               <Loader2 className="w-4 h-4 animate-spin" />
@@ -428,7 +270,7 @@ export function ProfileForm() {
         <button
           type="button"
           onClick={() => signOut()}
-          className={btn({ variant: 'danger', size: 'md' })}
+          className={buttonVariants({ variant: 'danger', size: 'md' })}
         >
           <LogOut className="w-3.5 h-3.5" />
           Cerrar sesión

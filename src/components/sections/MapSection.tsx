@@ -1,5 +1,7 @@
 'use client'
 
+import { SectionBlock } from '@/components/layout/SectionBlock'
+
 import { useState, useEffect, useMemo, useCallback } from "react";
 import dynamic from 'next/dynamic'
 import { SINALOA_CITIES, emptyTypeCounts } from "@/config";
@@ -74,7 +76,7 @@ export default function MapSection({
   const activeCityCount = Object.values(cityCounts).filter((n) => n > 0).length;
 
   return (
-    <section id="map" className="py-8">
+    <SectionBlock id="map">
       <div>
         <div className="mb-6">
           <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.18em] text-muted">
@@ -138,6 +140,6 @@ export default function MapSection({
           </div>
         </div>
       </div>
-    </section>
+    </SectionBlock>
   );
 }

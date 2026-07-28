@@ -16,6 +16,7 @@ import { extractImageUrl } from '@/lib/format'
 import { EntryBadge } from '@/components/entries/EntryBadge'
 import { EntryCard } from '@/components/entries/EntryCard'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
+import { Card } from '@/components/ui/Card'
 import ShareButton from '@/components/ui/ShareButton'
 import { ExternalLink } from '@/components/ui/ExternalLink'
 import {
@@ -44,7 +45,7 @@ import { ENTRY_TYPE_ICON_MAP } from '@/lib/icons'
 import { SocialLinkIcon } from '@/components/icons/SocialIcons'
 import { isStartupLike } from '@/config'
 import { WhatsAppCta } from '@/components/sections/WhatsAppCta'
-import { btn } from '@/components/ui/button-styles'
+import { buttonVariants } from '@/components/ui/button-variants'
 
 export async function generateStaticParams() {
   const result = await getPublishedEntries()
@@ -365,7 +366,7 @@ export default async function EntryDetailPage({
               {entry.website && (
                 <ExternalLink
                   href={track(entry.website as string)!}
-                  className={btn({ variant: "accent", size: "md" })}
+                  className={buttonVariants({ variant: "accent", size: "md" })}
                 >
                   Visitar sitio
                   <ExternalLinkIcon className="w-4 h-4" />
@@ -436,7 +437,7 @@ export default async function EntryDetailPage({
 
           {/* About / Body */}
           {entry.body && (
-            <div className="bg-card/90 backdrop-blur-sm border border-border rounded-lg p-6">
+            <Card>
               <h2 className="font-mono text-xs text-muted uppercase tracking-wider mb-4 flex items-center gap-2">
                 <Info className="w-4 h-4 text-accent" />
                 Acerca de
@@ -444,12 +445,12 @@ export default async function EntryDetailPage({
               <div className="prose prose-sm dark:prose-invert prose-p:text-secondary prose-headings:text-primary prose-a:text-accent max-w-none">
                 <Markdown>{entry.body as string}</Markdown>
               </div>
-            </div>
+            </Card>
           )}
 
           {/* Tags */}
           {tags.length > 0 && (
-            <div className="bg-card/90 backdrop-blur-sm border border-border rounded-lg p-6">
+            <Card>
               <h2 className="font-mono text-xs text-muted uppercase tracking-wider mb-4 flex items-center gap-2">
                 <TagIcon className="w-4 h-4 text-accent" />
                 Etiquetas
@@ -464,12 +465,12 @@ export default async function EntryDetailPage({
                   </span>
                 ))}
               </div>
-            </div>
+            </Card>
           )}
 
           {/* Technologies */}
           {technologies.length > 0 && (
-            <div className="bg-card/90 backdrop-blur-sm border border-border rounded-lg p-6">
+            <Card>
               <h2 className="font-mono text-xs text-muted uppercase tracking-wider mb-4 flex items-center gap-2">
                 <Cpu className="w-4 h-4 text-accent" />
                 Tecnologias
@@ -484,7 +485,7 @@ export default async function EntryDetailPage({
                   </span>
                 ))}
               </div>
-            </div>
+            </Card>
           )}
 
         </div>
@@ -495,7 +496,7 @@ export default async function EntryDetailPage({
         {!isCompactLayout && (
           <div className="space-y-4 mt-8 lg:mt-0 max-w-3xl mx-auto lg:mx-0 lg:max-w-none">
             {/* Details card */}
-            <div className="bg-card/90 backdrop-blur-sm border border-border rounded-lg p-4">
+            <Card className="p-4">
               <h2 className="font-mono text-xs text-muted uppercase tracking-wider mb-4 flex items-center gap-2">
                 <LayoutList className="w-4 h-4 text-accent" />
                 Detalles
@@ -527,11 +528,11 @@ export default async function EntryDetailPage({
                   </div>
                 ))}
               </div>
-            </div>
+            </Card>
 
             {/* Links card */}
             {links.length > 0 && (
-              <div className="bg-card/90 backdrop-blur-sm border border-border rounded-lg p-4">
+              <Card className="p-4">
                 <h2 className="font-mono text-xs text-muted uppercase tracking-wider mb-4 flex items-center gap-2">
                   <LinkIcon className="w-4 h-4 text-accent" />
                   Enlaces
@@ -550,14 +551,14 @@ export default async function EntryDetailPage({
                     </a>
                   ))}
                 </div>
-              </div>
+              </Card>
             )}
           </div>
         )}
       </div>
 
       <div className={!isCompactLayout ? 'max-w-3xl mx-auto lg:max-w-none' : ''}>
-        <WhatsAppCta className="pt-6 pb-2" />
+        <WhatsAppCta className="mt-6" />
 
         {/* Suggestions */}
         {suggestions.length > 0 && (

@@ -30,7 +30,7 @@ export function PageHero({ icon: Icon, title, description, breadcrumb }: PageHer
           <span>{title}</span>
         </h1>
 
-        <p className="text-sm md:text-base font-mono text-muted leading-relaxed max-w-125">
+        <p className="text-sm md:text-base font-mono text-muted leading-relaxed max-w-180">
           {description}
         </p>
       </div>

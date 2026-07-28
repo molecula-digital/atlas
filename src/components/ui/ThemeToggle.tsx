@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useTheme } from 'next-themes'
 import { Sun, Moon, Contrast, Check } from 'lucide-react'
 import { useDisclosure } from '@/hooks/useDisclosure'
+import { cn } from '@/lib/utils'
 
 // `Contrast` — a half-filled disc — stands in for "follow the system", which
 // reads as light/dark duality rather than a device.
@@ -28,18 +29,27 @@ export default function ThemeToggle({ className = '' }: { className?: string }) 
     : Contrast
 
   return (
-    <div ref={ref} className={`relative ${className}`}>
+    <div ref={ref} className={cn('relative', className)}>
       <button
         type="button"
         onClick={(e) => { e.stopPropagation(); toggle() }}
         aria-label="Cambiar tema"
         aria-haspopup="true"
         aria-expanded={open}
-        className="p-1 min-h-8 min-w-8 flex items-center justify-center text-secondary hover:text-accent transition-all duration-200 rounded hover:bg-elevated"
+        className="group relative flex min-h-8 min-w-8 items-center justify-center text-secondary hover:text-accent transition-colors duration-200"
       >
+        {/*
+          The header row is h-8 and so is this button, so a background on the
+          button itself would run edge to edge. The hover fill is inset instead,
+          which keeps the full 32px tap target.
+        */}
+        <span
+          aria-hidden
+          className="absolute inset-1 rounded transition-colors duration-200 group-hover:bg-elevated"
+        />
         <ActiveIcon
           key={swapCount}
-          className={`w-3 h-3 ${swapCount ? 'animate-theme-icon' : ''}`}
+          className={cn('relative w-3 h-3', swapCount && 'animate-theme-icon')}
         />
       </button>
 

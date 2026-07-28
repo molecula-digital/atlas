@@ -15,7 +15,7 @@ import StepBasicInfo from "./StepBasicInfo";
 import StepDetails from "./StepDetails";
 import StepLinks from "./StepLinks";
 import StepReview from "./StepReview";
-import { btn } from "@/components/ui/button-styles";
+import { buttonVariants } from '@/components/ui/button-variants';
 
 interface Props {
   cities: CityOption[];
@@ -49,7 +49,7 @@ export default function SubmitWizard({ cities }: Props) {
         </p>
         <a
           href="/directorio"
-          className={btn({ variant: "accent", size: "md" }, "mt-4")}
+          className={buttonVariants({ variant: "accent", size: "md", className: "mt-4" })}
         >
           VER DIRECTORIO
         </a>
@@ -69,7 +69,7 @@ export default function SubmitWizard({ cities }: Props) {
         </p>
         <button
           onClick={clearResult}
-          className={btn({ variant: "accent", size: "md" }, "mt-4")}
+          className={buttonVariants({ variant: "accent", size: "md", className: "mt-4" })}
         >
           INTENTAR DE NUEVO
         </button>
@@ -124,7 +124,7 @@ export default function SubmitWizard({ cities }: Props) {
           <button
             type="button"
             onClick={prevStep}
-            className={btn({ size: "md" })}
+            className={buttonVariants({ size: "md" })}
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             ANTERIOR
@@ -138,7 +138,7 @@ export default function SubmitWizard({ cities }: Props) {
             type="button"
             onClick={nextStep}
             disabled={!canAdvance}
-            className={btn({ variant: "accent", size: "md" })}
+            className={buttonVariants({ variant: "accent", size: "md" })}
           >
             SIGUIENTE
             <ArrowRight className="w-3.5 h-3.5" />
@@ -148,7 +148,7 @@ export default function SubmitWizard({ cities }: Props) {
             type="button"
             onClick={submit}
             disabled={state.submitting}
-            className={btn({ variant: "accent", size: "md" })}
+            className={buttonVariants({ variant: "accent", size: "md" })}
           >
             {state.uploadingImages ? (
               <>

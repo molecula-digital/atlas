@@ -1,3 +1,4 @@
+import { SectionBlock } from '@/components/layout/SectionBlock'
 import { SectionTitle } from '@/components/ui/SectionTitle'
 import { CommunityPhotosCarousel } from '@/components/community/CommunityPhotosCarousel'
 import { getCommunityPhotos } from '@/lib/community-photos'
@@ -7,7 +8,7 @@ export async function CommunitySection() {
   const photos = await getCommunityPhotos()
 
   return (
-    <section id="comunidad" className="py-4">
+    <SectionBlock id="comunidad">
       <div className="space-y-4">
         <SectionTitle description="Meetups, talleres y la gente del ecosistema tech de Sinaloa.">
           La comunidad
@@ -17,6 +18,6 @@ export async function CommunitySection() {
 
         <WhatsAppCta />
       </div>
-    </section>
+    </SectionBlock>
   )
 }

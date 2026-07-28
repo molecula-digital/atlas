@@ -1,11 +1,12 @@
+import { SectionBlock } from '@/components/layout/SectionBlock'
 import Link from 'next/link'
 import { Plus, ArrowRight } from 'lucide-react'
-import { btn } from '@/components/ui/button-styles'
+import { buttonVariants } from '@/components/ui/button-variants'
 import { SectionTitle } from '@/components/ui/SectionTitle'
 
 export function CombinedCtaSection() {
   return (
-    <section className="py-4">
+    <SectionBlock>
       <div className="max-w-5xl mx-auto">
         {/* Section header */}
         <SectionTitle
@@ -30,7 +31,7 @@ export function CombinedCtaSection() {
             </p>
             <Link
               href="/dashboard"
-              className={btn({ variant: 'accent', size: 'md' }, 'mt-4 w-fit')}
+              className={buttonVariants({ variant: 'accent', size: 'md', className: 'mt-4 w-fit' })}
             >
               Agregar registro
               <ArrowRight className="w-3 h-3" />
@@ -47,6 +48,6 @@ export function CombinedCtaSection() {
           para ver quién ya está aquí.
         </p>
       </div>
-    </section>
+    </SectionBlock>
   )
 }

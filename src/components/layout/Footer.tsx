@@ -4,19 +4,15 @@ import { ENTRY_TYPE_CONFIG, ENTRY_TYPES, SOCIAL_LINKS, SITE_TITLE, NEWSLETTER, W
 import { GitHubIcon } from '@/components/icons/SocialIcons'
 import { AtlasLogo } from '@/components/layout/AtlasLogo'
 import { NewsletterSignup } from '@/components/newsletter/NewsletterSignup'
-import { btn } from '@/components/ui/button-styles'
+import { buttonVariants } from '@/components/ui/button-variants'
+import { SiteFrame } from '@/components/layout/SiteFrame'
 
-export function Footer({
-  contentContainerClassName = 'mx-auto w-full',
-}: {
-  contentContainerClassName?: string
-}) {
+export function Footer() {
   const categories = ENTRY_TYPES.map((type) => ({ type, ...ENTRY_TYPE_CONFIG[type] }))
 
   return (
     <footer className="relative z-10 border-t border-border bg-card">
-      <div className="px-4 md:px-6 lg:px-8">
-        <div className={`${contentContainerClassName} py-10`}>
+      <SiteFrame className="py-10">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <Link href="/" className="inline-flex items-center mb-3" aria-label="Tech Atlas — inicio">
@@ -30,7 +26,7 @@ export function Footer({
                   href={WHATSAPP_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={btn({ variant: 'accent', size: 'sm' }, 'uppercase')}
+                  className={buttonVariants({ variant: 'accent', size: 'sm', className: 'uppercase' })}
                 >
                   <MessageCircle className="w-3.5 h-3.5" />
                   Comunidad WhatsApp
@@ -41,7 +37,7 @@ export function Footer({
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={btn({ variant: 'accent', size: 'sm' }, 'uppercase')}
+                    className={buttonVariants({ variant: 'accent', size: 'sm', className: 'uppercase' })}
                     aria-label={`${SITE_TITLE} en ${link.label}`}
                   >
                     {link.platform === 'github' && <GitHubIcon className="w-3.5 h-3.5" />}
@@ -79,8 +75,7 @@ export function Footer({
             <p className="text-2xs text-muted font-mono">&copy; {new Date().getFullYear()} {SITE_TITLE}. Hecho en Sinaloa.</p>
             <p className="text-2xs text-muted font-mono">Hecho con open source</p>
           </div>
-        </div>
-      </div>
+      </SiteFrame>
     </footer>
   )
 }

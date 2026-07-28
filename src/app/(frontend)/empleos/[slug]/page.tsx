@@ -7,11 +7,11 @@ import { getCityName, JOB_TYPE_LABELS, MODALITY_LABELS, SITE_URL, ENTRY_TYPE_CON
 import type { AtlasEntryType } from '@/config'
 import { flattenArray, safeJsonLd } from '@/lib/utils'
 import { formatDateEs } from '@/lib/format'
-import { Tag } from '@/components/ui/Tag'
+import { Badge } from '@/components/ui/Badge'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import { ExternalLink } from '@/components/ui/ExternalLink'
 import { MapPin, Clock, Briefcase, ExternalLink as LinkIcon, AlertTriangle } from 'lucide-react'
-import { btn } from '@/components/ui/button-styles'
+import { buttonVariants } from '@/components/ui/button-variants'
 
 export const revalidate = 3600
 
@@ -148,7 +148,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
 
         {tags.length > 0 && (
           <div className="flex flex-wrap gap-1 mb-6">
-            {tags.map((tag) => <Tag key={tag}>{tag}</Tag>)}
+            {tags.map((tag) => <Badge key={tag}>{tag}</Badge>)}
           </div>
         )}
 
@@ -161,7 +161,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
             <p className="text-sm text-primary font-medium mb-3">Interesado en esta oportunidad?</p>
             <ExternalLink
               href={job.contactUrl as string}
-              className={btn({ variant: "accent", size: "md" })}
+              className={buttonVariants({ variant: "accent", size: "md" })}
             >
               <LinkIcon className="w-4 h-4" /> Aplicar
             </ExternalLink>

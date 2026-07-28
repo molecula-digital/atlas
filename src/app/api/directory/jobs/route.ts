@@ -1,6 +1,7 @@
 import { getPayloadClient } from '@/lib/payload'
 import { NextResponse, type NextRequest } from 'next/server'
 import { withRateLimit } from '@/lib/rate-limit'
+import { parsePagination, toPaginatedResponse } from '@/lib/api-route'
 
 export async function GET(request: NextRequest) {
   const limited = await withRateLimit(request, { limit: 60, windowMs: 60 * 1000, keyPrefix: 'api-jobs' })
@@ -8,8 +9,7 @@ export async function GET(request: NextRequest) {
 
   try {
     const { searchParams } = request.nextUrl
-    const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10))
-    const limit = Math.min(Math.max(1, parseInt(searchParams.get('limit') || '12', 10)), 100)
+    const { page, limit } = parsePagination(searchParams)
     const sortParam = searchParams.get('sort') || 'date-desc'
     const sort = sortParam === 'date-asc' ? 'createdAt' : '-createdAt'
 
@@ -25,14 +25,7 @@ export async function GET(request: NextRequest) {
       sort,
     })
 
-    return NextResponse.json({
-      docs: result.docs,
-      totalDocs: result.totalDocs,
-      totalPages: result.totalPages,
-      page: result.page,
-      hasNextPage: result.hasNextPage,
-      hasPrevPage: result.hasPrevPage,
-    })
+    return NextResponse.json(toPaginatedResponse(result))
   } catch (error) {
     console.error('Jobs API failed:', error)
     return NextResponse.json({ error: 'Failed to fetch jobs' }, { status: 500 })

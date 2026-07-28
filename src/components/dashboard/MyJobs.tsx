@@ -3,10 +3,10 @@
 import Link from 'next/link'
 import { getCityName, JOB_TYPE_LABELS, MODALITY_LABELS } from '@/config'
 import { timeAgo, expirationLabel } from '@/lib/utils'
-import { Clock, CheckCircle, XCircle, Briefcase, ExternalLink, Plus, Pencil } from 'lucide-react'
+import { Clock, CheckCircle, XCircle, Briefcase, ExternalLink, Plus, Pencil, AlertTriangle } from 'lucide-react'
 import { useUserResource } from '@/hooks/useUserResource'
 import { EmptyState } from '@/components/ui/EmptyState'
-import { btn } from '@/components/ui/button-styles'
+import { buttonVariants } from '@/components/ui/button-variants'
 
 interface Job {
   id: string
@@ -22,7 +22,7 @@ interface Job {
 }
 
 export function MyJobs() {
-  const { data: jobs, loading } = useUserResource<Job>('/api/user/jobs')
+  const { data: jobs, loading, error } = useUserResource<Job>('/api/user/jobs')
 
   if (loading) {
     return (
@@ -54,6 +54,16 @@ export function MyJobs() {
     )
   }
 
+  if (error) {
+    return (
+      <EmptyState
+        icon={AlertTriangle}
+        title="No pudimos cargar tus empleos"
+        subtitle={error}
+      />
+    )
+  }
+
   if (jobs.length === 0) {
     return (
       <EmptyState
@@ -63,7 +73,7 @@ export function MyJobs() {
         action={
           <Link
             href="/dashboard/jobs/new"
-            className={btn({ variant: "accent", size: "md" })}
+            className={buttonVariants({ variant: "accent", size: "md" })}
           >
             <Plus className="w-3.5 h-3.5" />
             Publicar empleo
@@ -143,7 +153,7 @@ export function MyJobs() {
                 {job._status === 'draft' && (
                   <Link
                     href={`/dashboard/jobs/${job.id}/edit`}
-                    className={btn({ size: "sm" })}
+                    className={buttonVariants({ size: "sm" })}
                   >
                     <Pencil className="w-3 h-3" /> Editar
                   </Link>
@@ -151,7 +161,7 @@ export function MyJobs() {
                 {job._status === 'published' && !isExpired && (
                   <Link
                     href={`/empleos/${job.slug}`}
-                    className={btn({ size: "sm" })}
+                    className={buttonVariants({ size: "sm" })}
                   >
                     <ExternalLink className="w-3 h-3" /> Ver
                   </Link>
@@ -166,7 +176,7 @@ export function MyJobs() {
       <div className="text-center pt-2">
         <Link
           href="/dashboard/jobs/new"
-          className={btn({ variant: "accent", size: "md" })}
+          className={buttonVariants({ variant: "accent", size: "md" })}
         >
           <Plus className="w-3.5 h-3.5" />
           Publicar empleo

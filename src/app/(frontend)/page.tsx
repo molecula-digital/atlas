@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { SectionBlock } from '@/components/layout/SectionBlock'
 import { getFeaturedEntries, getLatestEntries } from '@/lib/payload'
 import { getEntryCounts } from '@/lib/entry-counts'
 import { FAQS, SITE_URL, SITE_DESCRIPTION } from '@/config'
@@ -91,9 +92,9 @@ export default async function HomePage() {
 
       <HeroSection cityCounts={counts.byCity} typeCounts={counts.byType} />
 
-      <section className="py-4">
+      <SectionBlock>
         <UpcomingEventsStrip />
-      </section>
+      </SectionBlock>
 
       <CommunitySection />
       <FeaturedSection entries={featured as any} latestEntries={latest as any} />

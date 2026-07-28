@@ -1,5 +1,5 @@
 import React from "react";
-import { btn } from "@/components/ui/button-styles";
+import { buttonVariants } from '@/components/ui/button-variants';
 import { ENTRY_TYPE_CONFIG } from "@/config";
 import type { AtlasEntryType } from "@/config";
 import {
@@ -77,7 +77,7 @@ function StatsContent({
         <button
           type="button"
           onClick={onClose}
-          className={btn({ variant: "ghost", size: "md", icon: true })}
+          className={buttonVariants({ variant: "ghost", size: "icon-md" })}
           aria-label="Cerrar resumen"
         >
           <X className="w-4 h-4" />
@@ -112,7 +112,7 @@ function StatsContent({
       </div>
       <a
         href={`/directorio/${id}`}
-        className={btn({ variant: 'accent', size: 'md' }, 'mt-3 w-full')}
+        className={buttonVariants({ variant: 'accent', size: 'md', className: 'mt-3 w-full' })}
       >
         VER COMUNIDAD
         <ArrowRight className="w-3.5 h-3.5" />
@@ -151,7 +151,7 @@ function StatsEmpty({ name, onClose }: { name: string; onClose: () => void }) {
         <button
           type="button"
           onClick={onClose}
-          className={btn({ variant: "ghost", size: "md", icon: true })}
+          className={buttonVariants({ variant: "ghost", size: "icon-md" })}
           aria-label="Cerrar resumen"
         >
           <X className="w-4 h-4" />
@@ -171,7 +171,7 @@ function StatsEmpty({ name, onClose }: { name: string; onClose: () => void }) {
         </div>
         <a
           href="/dashboard"
-          className={btn({ variant: 'accent', size: 'md' }, 'w-full border-dashed')}
+          className={buttonVariants({ variant: 'accent', size: 'md', className: 'w-full border-dashed' })}
         >
           <Plus className="w-3.5 h-3.5" />
           REGISTRAR PERFIL/STARTUP

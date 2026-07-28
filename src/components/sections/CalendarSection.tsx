@@ -1,12 +1,14 @@
 'use client'
 
+import { SectionBlock } from '@/components/layout/SectionBlock'
+
 import { CalendarRange } from 'lucide-react'
 import EventCalendar from '@/components/calendar/EventCalendar'
 import { SectionTitle } from '@/components/ui/SectionTitle'
 
 export function CalendarSection() {
   return (
-    <section id="calendario" className="py-8">
+    <SectionBlock id="calendario">
       <div className="space-y-8">
         <SectionTitle
           icon={CalendarRange}
@@ -20,6 +22,6 @@ export function CalendarSection() {
           <EventCalendar />
         </div>
       </div>
-    </section>
+    </SectionBlock>
   )
 }

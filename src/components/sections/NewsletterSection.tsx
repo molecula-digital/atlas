@@ -1,10 +1,11 @@
+import { SectionBlock } from '@/components/layout/SectionBlock'
 import { Mail } from 'lucide-react'
 import { NewsletterSignup } from '@/components/newsletter/NewsletterSignup'
 import { TronPanel } from '@/components/ui/TronPanel'
 
 export function NewsletterSection() {
   return (
-    <section className="py-12">
+    <SectionBlock>
       <div className="mx-auto max-w-3xl overflow-hidden rounded-xl border border-accent/30 bg-card">
         <div className="grid md:grid-cols-3">
           <TronPanel>
@@ -24,6 +25,6 @@ export function NewsletterSection() {
           </div>
         </div>
       </div>
-    </section>
+    </SectionBlock>
   )
 }

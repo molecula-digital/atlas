@@ -7,7 +7,7 @@ import type { TechEvent } from "@/hooks/useEventsData";
 import { cn } from "@/lib/utils";
 import UpcomingEventsSidebar from "./UpcomingEventsSidebar";
 import { EventDialog } from "./EventDialog";
-import { btn } from "@/components/ui/button-styles";
+import { buttonVariants } from '@/components/ui/button-variants';
 
 const WEEKDAYS = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
 const MONTH_NAMES = [
@@ -120,7 +120,7 @@ export default function EventCalendar() {
         <div className="flex items-center justify-between gap-3 mb-5">
           <button
             onClick={prevMonth}
-            className={btn({ size: "md", icon: true })}
+            className={buttonVariants({ size: "icon-md" })}
             aria-label="Mes anterior"
           >
             <ChevronLeft className="w-4 h-4" />
@@ -136,7 +136,7 @@ export default function EventCalendar() {
             {!isCurrentMonth && (
               <button
                 onClick={jumpToCurrentMonth}
-                className={btn({ variant: "accent", size: "sm" })}
+                className={buttonVariants({ variant: "accent", size: "sm" })}
                 aria-label="Saltar a mes actual"
               >
                 <CalendarDays className="w-3 h-3" />
@@ -147,7 +147,7 @@ export default function EventCalendar() {
 
           <button
             onClick={nextMonth}
-            className={btn({ size: "md", icon: true })}
+            className={buttonVariants({ size: "icon-md" })}
             aria-label="Mes siguiente"
           >
             <ChevronRight className="w-4 h-4" />

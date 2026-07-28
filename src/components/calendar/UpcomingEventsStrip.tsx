@@ -12,39 +12,19 @@ import {
 } from "@/components/ui/Carousel";
 import { useEventsData } from "@/hooks/useEventsData";
 import type { TechEvent } from "@/hooks/useEventsData";
-import { getEventPath } from "@/lib/events";
+import { getEventPath, selectUpcomingEvents } from "@/lib/events";
+import { EventDateBadge } from "./EventDateBadge";
 import EventTypeBadge from "./EventTypeBadge";
 
-// Fixed table instead of toLocaleDateString — ICU output differs between Node and
-// browsers ("sept" vs "sep"), which shows up as a hydration mismatch.
-const MONTH_ABBR = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
-
-function formatDateBadge(dateStr: string): { day: string; month: string } {
-  const [, m, d] = dateStr.split("-").map(Number);
-  return {
-    day: String(d),
-    month: MONTH_ABBR[(m - 1) % 12] ?? "",
-  };
-}
-
 function EventCard({ ev }: { ev: TechEvent }) {
-  const { day, month } = formatDateBadge(ev.date);
   return (
     <a
       href={getEventPath(ev.slug)}
       target="_blank"
       rel="noopener noreferrer"
-      className="w-full h-full bg-card border border-border rounded-lg p-3 flex items-center gap-3 text-left transition-all duration-200 hover:border-[var(--color-accent)]/40 hover:shadow-sm cursor-pointer group"
+      className="w-full h-full bg-card border border-border rounded-lg p-3 flex items-center gap-3 text-left transition-all duration-200 hover:border-accent/40 hover:shadow-sm cursor-pointer group"
     >
-      {/* Date badge */}
-      <div className="w-12 h-12 rounded-lg bg-accent/10 border border-accent/20 flex flex-col items-center justify-center shrink-0">
-        <span className="text-base font-sans font-bold text-accent leading-none">
-          {day}
-        </span>
-        <span className="text-2xs font-mono font-semibold text-accent uppercase leading-tight">
-          {month}
-        </span>
-      </div>
+      <EventDateBadge date={ev.date} />
 
       {/* Info */}
       <div className="flex-1 min-w-0">
@@ -69,7 +49,7 @@ function EventCard({ ev }: { ev: TechEvent }) {
           )}
         </div>
         {ev.location && (
-          <span className="inline-flex items-center gap-1 text-2xs font-mono text-[var(--color-muted)] mt-0.5 truncate max-w-full">
+          <span className="inline-flex items-center gap-1 text-2xs font-mono text-muted mt-0.5 truncate max-w-full">
             <MapPin className="w-2.5 h-2.5 shrink-0" />
             {ev.location}
           </span>
@@ -109,13 +89,7 @@ export default function UpcomingEventsStrip() {
   );
 
   const todayStr = new Date().toISOString().slice(0, 10);
-  const upcoming = events
-    .filter((ev) => ev.date >= todayStr)
-    .sort(
-      (a, b) =>
-        a.date.localeCompare(b.date) || a.startTime.localeCompare(b.startTime),
-    )
-    .slice(0, 3);
+  const upcoming = selectUpcomingEvents(events, todayStr).slice(0, 3);
 
   const isLoading = (status === "loading" || status === "idle") && events.length === 0;
 
@@ -174,11 +148,11 @@ export default function UpcomingEventsStrip() {
           <div className="flex items-center justify-center gap-2 mt-4">
             <CarouselPrevious
               className="static translate-y-0 min-h-11 min-w-11"
-              size="icon"
+              size="icon-sm"
             />
             <CarouselNext
               className="static translate-y-0 min-h-11 min-w-11"
-              size="icon"
+              size="icon-sm"
             />
           </div>
         </Carousel>

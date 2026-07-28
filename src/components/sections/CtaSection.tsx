@@ -1,9 +1,10 @@
+import { SectionBlock } from '@/components/layout/SectionBlock'
 import Link from 'next/link'
-import { btn } from '@/components/ui/button-styles'
+import { buttonVariants } from '@/components/ui/button-variants'
 
 export function CtaSection() {
   return (
-    <section className="py-4">
+    <SectionBlock>
       <div className="max-w-3xl mx-auto text-center">
         <div className="bg-card border border-border rounded-lg p-8 md:p-12 space-y-6">
           <h2 className="terminal-title text-2xl md:text-3xl font-sans font-bold text-primary uppercase">
@@ -15,7 +16,7 @@ export function CtaSection() {
             directorio y conecta con el ecosistema.
           </p>
           <div className="flex flex-wrap justify-center gap-3">
-            <Link href="/dashboard" className={btn({ variant: 'accent', size: 'md' })}>
+            <Link href="/dashboard" className={buttonVariants({ variant: 'accent', size: 'md' })}>
               Registrarme
               <svg
                 className="w-3.5 h-3.5"
@@ -31,12 +32,12 @@ export function CtaSection() {
                 />
               </svg>
             </Link>
-            <Link href="/directorio" className={btn({ size: 'md' })}>
+            <Link href="/directorio" className={buttonVariants({ size: 'md' })}>
               Explorar directorio
             </Link>
           </div>
         </div>
       </div>
-    </section>
+    </SectionBlock>
   )
 }

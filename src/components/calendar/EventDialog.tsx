@@ -6,7 +6,7 @@ import { X } from 'lucide-react'
 import type { TechEvent } from '@/lib/events'
 import { getEventPath } from '@/lib/events'
 import { useDialogBackNavigation } from '@/hooks/useDialogBackNavigation'
-import { btn } from '@/components/ui/button-styles'
+import { buttonVariants } from '@/components/ui/button-variants'
 import {
   Dialog,
   DialogClose,
@@ -96,7 +96,7 @@ export function EventDialog({
           <div className="px-5 pt-5 pb-3 shrink-0 flex items-start justify-between gap-3">
             <DialogTitle className="pr-2">{event.title}</DialogTitle>
             <DialogClose
-              className={btn({ variant: 'ghost', size: 'md', icon: true }, 'shrink-0')}
+              className={buttonVariants({ variant: 'ghost', size: 'icon-md', className: 'shrink-0' })}
               aria-label="Cerrar"
             >
               <X size={18} className="text-muted" />

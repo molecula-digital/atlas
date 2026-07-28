@@ -6,7 +6,7 @@ import { PaginatedView } from '@/components/ui/PaginatedView'
 import { JobCardSkeleton } from '@/components/entries/JobCardSkeleton'
 import { getCityName, JOB_TYPE_LABELS, MODALITY_LABELS } from '@/config'
 import { flattenArray } from '@/lib/utils'
-import { Tag } from '@/components/ui/Tag'
+import { Badge } from '@/components/ui/Badge'
 import type { Job } from '@/payload-types'
 
 function JobCard({ job }: { job: Job }) {
@@ -29,7 +29,7 @@ function JobCard({ job }: { job: Job }) {
           </div>
           {tags.length > 0 && (
             <div className="flex flex-wrap gap-1 mt-2">
-              {tags.slice(0, 4).map((tag) => <Tag key={tag} className="text-[10px]">{tag}</Tag>)}
+              {tags.slice(0, 4).map((tag) => <Badge key={tag} className="text-[10px]">{tag}</Badge>)}
             </div>
           )}
         </div>

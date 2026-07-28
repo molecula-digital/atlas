@@ -1,5 +1,10 @@
 import { useReducer, useRef, useCallback } from "react";
 import type { AtlasEntryType } from "@/config";
+import {
+  toEntrySubmission,
+  uploadEntryImage,
+  type EntryFormValues,
+} from "@/lib/entry-submission";
 
 export interface WizardState {
   step: number;
@@ -37,10 +42,6 @@ export interface WizardState {
   telegram: string;
   tags: string[];
   tagInput: string;
-  // Step 4: Contact (submitter info)
-  submitterName: string;
-  submitterEmail: string;
-  submitterPhone: string;
   // Step 5: Submission
   submitting: boolean;
   uploadingImages: boolean;
@@ -99,9 +100,6 @@ const initialState: WizardState = {
   telegram: "",
   tags: [],
   tagInput: "",
-  submitterName: "",
-  submitterEmail: "",
-  submitterPhone: "",
   submitting: false,
   uploadingImages: false,
   uploadError: null,
@@ -141,50 +139,38 @@ function wizardReducer(state: WizardState, action: WizardAction): WizardState {
   }
 }
 
-function csvToArray(value: string): string[] | undefined {
-  const arr = value
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean);
-  return arr.length > 0 ? arr : undefined;
-}
-
-function buildPayload(state: WizardState) {
+/** The wizard's flat state, as the shared entry payload builder wants it. */
+function toFormValues(state: WizardState): EntryFormValues {
   return {
-    entryType: state.entryType,
     name: state.name,
-    tagline: state.tagline || undefined,
-    body: state.description.trim() || undefined,
+    tagline: state.tagline,
+    body: state.description,
     city: state.city,
-    website: state.website || undefined,
-    x: state.x || undefined,
-    instagram: state.instagram || undefined,
-    linkedin: state.linkedin || undefined,
-    github: state.github || undefined,
-    youtube: state.youtube || undefined,
-    discord: state.discord || undefined,
-    telegram: state.telegram || undefined,
-    tags: state.tags.length > 0 ? state.tags.map((t) => ({ tag: t })) : undefined,
-    foundedYear: state.foundedYear ? Number(state.foundedYear) : undefined,
-    stage: state.stage || undefined,
-    teamSize: state.teamSize || undefined,
-    sector: state.sector || undefined,
-    technologies: csvToArray(state.technologies)?.map((t) => ({ technology: t })),
-    hiringUrl: state.hiringUrl || undefined,
-    memberCount: state.memberCount ? Number(state.memberCount) : undefined,
-    meetupFrequency: state.meetupFrequency || undefined,
-    businessModel: state.businessModel || undefined,
-    role: state.role || undefined,
-    company: state.company || undefined,
-    email: state.email || undefined,
-    portfolio: state.portfolio || undefined,
-    availableForHire: state.availableForHire || undefined,
-    availableForMentoring: state.availableForMentoring || undefined,
-    submitter: {
-      name: state.submitterName,
-      email: state.submitterEmail,
-      phone: state.submitterPhone || undefined,
-    },
+    website: state.website,
+    x: state.x,
+    instagram: state.instagram,
+    linkedin: state.linkedin,
+    github: state.github,
+    youtube: state.youtube,
+    discord: state.discord,
+    telegram: state.telegram,
+    tags: state.tags,
+    foundedYear: state.foundedYear,
+    stage: state.stage,
+    teamSize: state.teamSize,
+    sector: state.sector,
+    technologies: state.technologies,
+    hiring: state.hiring,
+    hiringUrl: state.hiringUrl,
+    businessModel: state.businessModel,
+    memberCount: state.memberCount,
+    meetupFrequency: state.meetupFrequency,
+    role: state.role,
+    company: state.company,
+    email: state.email,
+    portfolio: state.portfolio,
+    availableForHire: state.availableForHire,
+    availableForMentoring: state.availableForMentoring,
   };
 }
 
@@ -198,29 +184,9 @@ function canAdvance(state: WizardState): boolean {
         state.description.trim() !== "" &&
         state.city !== ""
       );
-    case 4:
-      return (
-        state.submitterName.trim() !== "" &&
-        state.submitterEmail.trim() !== ""
-      );
     default:
       return true;
   }
-}
-
-async function uploadImage(file: File): Promise<string> {
-  const formData = new FormData();
-  formData.append("file", file);
-  const res = await fetch("/api/media/upload", {
-    method: "POST",
-    body: formData,
-  });
-  if (!res.ok) {
-    const data = await res.json().catch(() => ({}));
-    throw new Error(data.error || "Error al subir imagen");
-  }
-  const data = await res.json();
-  return data.id;
 }
 
 export function useWizardState() {
@@ -255,17 +221,17 @@ export function useWizardState() {
     const hasImages = Boolean(logoFile || coverFile);
 
     // Phase 1: Upload images (if any)
-    let logoId: string | undefined;
-    let coverImageId: string | undefined;
+    let logoId: number | undefined;
+    let coverImageId: number | undefined;
 
     if (hasImages) {
       dispatch({ type: "UPLOAD_IMAGES_START" });
       try {
         if (logoFile) {
-          logoId = await uploadImage(logoFile);
+          logoId = await uploadEntryImage(logoFile);
         }
         if (coverFile) {
-          coverImageId = await uploadImage(coverFile);
+          coverImageId = await uploadEntryImage(coverFile);
         }
       } catch (err) {
         const message =
@@ -279,7 +245,8 @@ export function useWizardState() {
     dispatch({ type: "SUBMIT_START" });
     try {
       const entryPayload = {
-        ...buildPayload(state),
+        entryType: state.entryType,
+        ...toEntrySubmission(toFormValues(state), state.entryType as AtlasEntryType),
         ...(logoId ? { logo: logoId } : {}),
         ...(coverImageId ? { coverImage: coverImageId } : {}),
       };

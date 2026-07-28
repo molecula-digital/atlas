@@ -2,7 +2,7 @@
 
 import { AlertTriangle } from 'lucide-react'
 import Link from 'next/link'
-import { btn } from '@/components/ui/button-styles'
+import { buttonVariants } from '@/components/ui/button-variants'
 
 interface ErrorFallbackProps {
   error: Error & { digest?: string }
@@ -43,10 +43,10 @@ export function ErrorFallback({
         )}
 
         <div className="flex items-center gap-3">
-          <button onClick={reset} className={btn({ variant: 'accent', size: 'md' })}>
+          <button onClick={reset} className={buttonVariants({ variant: 'accent', size: 'md' })}>
             Reintentar
           </button>
-          <Link href="/" className={btn({ size: 'md' })}>
+          <Link href="/" className={buttonVariants({ size: 'md' })}>
             Volver al inicio
           </Link>
         </div>

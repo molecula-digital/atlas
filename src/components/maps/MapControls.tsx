@@ -1,6 +1,6 @@
 import React from "react";
 import { ZoomIn, ZoomOut, RotateCcw, Lock, Unlock } from "lucide-react";
-import { btn } from "@/components/ui/button-styles";
+import { buttonVariants } from '@/components/ui/button-variants';
 
 interface MapControlsProps {
   interactionEnabled: boolean;
@@ -24,7 +24,7 @@ export default function MapControls({
         <button
           type="button"
           onClick={() => onToggleLock()}
-          className={btn({ size: "md" }, "absolute bottom-4 left-1/2 -translate-x-1/2 z-10 text-muted backdrop-blur-sm")}
+          className={buttonVariants({ size: "md", className: "absolute bottom-4 left-1/2 -translate-x-1/2 z-10 text-muted backdrop-blur-sm" })}
         >
           <Lock size={12} />
           Toca para interactuar
@@ -35,10 +35,7 @@ export default function MapControls({
       <div className="absolute bottom-4 right-4 flex flex-col gap-1.5">
         <button
           onClick={onToggleLock}
-          className={btn(
-            { variant: interactionEnabled ? "accent" : "neutral", size: "lg", icon: true },
-            "rounded-lg",
-          )}
+          className={buttonVariants({ variant: interactionEnabled ? "accent" : "neutral", size: "icon-lg", className: "rounded-lg", })}
           aria-label={
             interactionEnabled ? "Bloquear mapa" : "Desbloquear mapa"
           }
@@ -51,7 +48,7 @@ export default function MapControls({
         <button
           onClick={onZoomIn}
           disabled={!interactionEnabled}
-          className={btn({ size: "lg", icon: true }, "rounded-lg")}
+          className={buttonVariants({ size: "icon-lg", className: "rounded-lg" })}
           aria-label="Acercar"
         >
           <ZoomIn size={16} />
@@ -59,7 +56,7 @@ export default function MapControls({
         <button
           onClick={onZoomOut}
           disabled={!interactionEnabled}
-          className={btn({ size: "lg", icon: true }, "rounded-lg")}
+          className={buttonVariants({ size: "icon-lg", className: "rounded-lg" })}
           aria-label="Alejar"
         >
           <ZoomOut size={16} />
@@ -67,7 +64,7 @@ export default function MapControls({
         <button
           onClick={onReset}
           disabled={!interactionEnabled}
-          className={btn({ size: "lg", icon: true }, "rounded-lg")}
+          className={buttonVariants({ size: "icon-lg", className: "rounded-lg" })}
           aria-label="Resetear zoom"
         >
           <RotateCcw size={16} />

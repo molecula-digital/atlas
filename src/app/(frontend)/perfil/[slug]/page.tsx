@@ -6,7 +6,8 @@ import { Globe, UserRound } from 'lucide-react'
 import { SITE_TITLE, SITE_URL } from '@/config'
 import { getPublicProfileBySlug } from '@/lib/public-profile'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
-import { btn } from '@/components/ui/button-styles'
+import { Card } from '@/components/ui/Card'
+import { buttonVariants } from '@/components/ui/button-variants'
 import { GitHubIcon, LinkedInIcon, XIcon } from '@/components/icons/SocialIcons'
 
 type PageProps = { params: Promise<{ slug: string }> }
@@ -80,7 +81,7 @@ export default async function PublicProfilePage({ params }: PageProps) {
       />
 
       <div className="mx-auto mt-8 max-w-2xl">
-        <div className="bg-card/90 backdrop-blur-sm border border-border rounded-lg shadow-sm p-6 sm:p-8">
+        <Card className="shadow-sm sm:p-8">
           <div className="flex flex-col sm:flex-row gap-6 items-center sm:items-start text-center sm:text-left">
             <div className="w-20 h-20 rounded-full overflow-hidden border border-border bg-elevated shrink-0 flex items-center justify-center text-2xl font-mono font-bold text-accent">
               {profile.photo ? (
@@ -112,7 +113,7 @@ export default async function PublicProfilePage({ params }: PageProps) {
                         href={link.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className={btn({ variant: 'neutral', size: 'sm' })}
+                        className={buttonVariants({ variant: 'neutral', size: 'sm' })}
                       >
                         {link.icon === 'globe' && <Globe className="w-3.5 h-3.5" />}
                         {link.icon === 'linkedin' && <LinkedInIcon className="w-3.5 h-3.5" />}
@@ -138,7 +139,7 @@ export default async function PublicProfilePage({ params }: PageProps) {
               </p>
             </div>
           )}
-        </div>
+        </Card>
 
         <p className="mt-6 text-center text-xs text-muted font-mono">
           <Link href="/dashboard/profile" className="hover:text-accent transition-colors">

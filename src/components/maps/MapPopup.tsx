@@ -1,5 +1,5 @@
 import React from "react";
-import { btn } from "@/components/ui/button-styles";
+import { buttonVariants } from '@/components/ui/button-variants';
 
 function clamp(value: number, min: number, max: number) {
   return Math.max(min, Math.min(max, value));
@@ -36,10 +36,10 @@ export default function MapPopup({
         zIndex: 20,
         width: 200,
       }}
-      className="bg-[var(--color-card)] border border-[var(--color-border)] rounded-lg shadow-xl overflow-hidden"
+      className="bg-card border border-border rounded-lg shadow-xl overflow-hidden"
     >
       {/* Header */}
-      <div className="px-3 py-2 border-b border-[var(--color-border)] flex items-center justify-between">
+      <div className="px-3 py-2 border-b border-border flex items-center justify-between">
         <span className="text-sm font-mono font-bold text-accent">
           {popup.name}
         </span>
@@ -48,7 +48,7 @@ export default function MapPopup({
             e.stopPropagation();
             onClose();
           }}
-          className="text-[var(--color-muted)] hover:text-[var(--color-primary)] transition-colors text-xs leading-none"
+          className="text-muted hover:text-primary transition-colors text-xs leading-none"
           aria-label="Cerrar"
         >
           ✕
@@ -59,28 +59,28 @@ export default function MapPopup({
       {popup.count > 0 ? (
         <div className="px-3 py-2.5 space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-mono text-[var(--color-muted)]">
+            <span className="text-xs font-mono text-muted">
               Registros
             </span>
-            <span className="text-xs font-mono font-bold text-[var(--color-primary)]">
+            <span className="text-xs font-mono font-bold text-primary">
               {popup.count}
             </span>
           </div>
           <a
             href={`/directorio/${popup.id}`}
-            className={btn({ variant: "accent", size: "sm" }, "w-full")}
+            className={buttonVariants({ variant: "accent", size: "sm", className: "w-full" })}
           >
             VER COMUNIDAD →
           </a>
         </div>
       ) : (
         <div className="px-3 py-2.5 space-y-2 text-center">
-          <p className="text-xs text-[var(--color-muted)] font-mono">
+          <p className="text-xs text-muted font-mono">
             Aún no hay registros
           </p>
           <a
             href="/dashboard"
-            className={btn({ variant: "accent", size: "sm" }, "w-full border-dashed")}
+            className={buttonVariants({ variant: "accent", size: "sm", className: "w-full border-dashed" })}
           >
             REGISTRAR →
           </a>
