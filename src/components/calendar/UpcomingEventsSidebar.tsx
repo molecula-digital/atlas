@@ -14,19 +14,8 @@ import EventTypeBadge from "./EventTypeBadge";
 import type { TechEvent } from "@/hooks/useEventsData";
 import { buttonVariants } from '@/components/ui/Button';
 import { EventDialog } from "./EventDialog";
-
-const MONTH_ABBR = [
-  "ene", "feb", "mar", "abr", "may", "jun",
-  "jul", "ago", "sep", "oct", "nov", "dic",
-];
-
-function formatDateBadge(dateStr: string): { day: string; month: string } {
-  const [, m, d] = dateStr.split("-").map(Number);
-  return {
-    day: String(d),
-    month: MONTH_ABBR[(m - 1) % 12] ?? "",
-  };
-}
+import { EventDateBadge } from "./EventDateBadge";
+import { selectUpcomingEvents } from "@/lib/events";
 
 const PAGE_SIZE = 3;
 
@@ -45,12 +34,7 @@ export default function UpcomingEventsSidebar({
   const [page, setPage] = useState(0);
 
   const todayStr = new Date().toISOString().slice(0, 10);
-  const upcoming = events
-    .filter((ev) => ev.date >= todayStr)
-    .sort(
-      (a, b) =>
-        a.date.localeCompare(b.date) || a.startTime.localeCompare(b.startTime),
-    );
+  const upcoming = selectUpcomingEvents(events, todayStr);
 
   const totalPages = Math.ceil(upcoming.length / PAGE_SIZE);
   const pageEvents = upcoming.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
@@ -94,7 +78,6 @@ export default function UpcomingEventsSidebar({
           ))
         ) : pageEvents.length > 0 ? (
           pageEvents.map((ev, i) => {
-            const { day, month } = formatDateBadge(ev.date);
             return (
               <EventDialog
                 key={`${i}-${ev.date}-${ev.title}`}
@@ -103,14 +86,7 @@ export default function UpcomingEventsSidebar({
                 aria-label={`Ver detalles: ${ev.title}`}
                 className="w-full text-left rounded-lg border border-border bg-card p-3 flex items-start gap-3 transition-all duration-200 hover:border-accent/40 hover:bg-accent/5 group cursor-pointer"
               >
-                <div className="w-12 h-12 rounded-lg bg-accent/10 border border-accent/20 flex flex-col items-center justify-center shrink-0">
-                  <span className="text-base font-sans font-bold text-accent leading-none">
-                    {day}
-                  </span>
-                  <span className="text-2xs font-mono font-semibold text-accent uppercase leading-tight">
-                    {month}
-                  </span>
-                </div>
+                <EventDateBadge date={ev.date} />
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start gap-2">

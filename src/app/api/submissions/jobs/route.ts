@@ -29,7 +29,14 @@ export async function GET(request: NextRequest) {
 
   try {
     const payload = await getPayloadClient()
-    const job = await payload.findByID({ collection: 'jobs', id, draft: true })
+
+    // A missing id makes findByID throw; that is a 404, not a server error.
+    let job
+    try {
+      job = await payload.findByID({ collection: 'jobs', id, draft: true })
+    } catch {
+      return NextResponse.json({ error: 'Not found' }, { status: 404 })
+    }
 
     if (!job || job.postedBy !== session.user.id) {
       return NextResponse.json({ error: 'Not found' }, { status: 404 })

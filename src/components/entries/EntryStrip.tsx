@@ -34,7 +34,7 @@ export function EntryStrip({
     <Link
       href={href}
       className={cn(
-        'group flex w-full min-w-0 items-center gap-2.5 rounded-lg border border-border bg-card p-2.5 text-left transition-all duration-200 hover:border-[var(--color-accent)]/40 hover:shadow-sm',
+        'group flex w-full min-w-0 items-center gap-2.5 rounded-lg border border-border bg-card p-2.5 text-left transition-all duration-200 hover:border-accent/40 hover:shadow-sm',
         className,
       )}
     >

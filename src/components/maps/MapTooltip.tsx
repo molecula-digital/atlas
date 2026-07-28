@@ -21,13 +21,13 @@ export default function MapTooltip({ tooltip }: MapTooltipProps) {
         pointerEvents: "none",
         zIndex: 10,
       }}
-      className="bg-[var(--color-elevated)] border border-[var(--color-border)] rounded px-2.5 py-1.5 shadow-lg"
+      className="bg-elevated border border-border rounded px-2.5 py-1.5 shadow-lg"
     >
       <div className="text-xs font-mono font-semibold text-accent">
         {tooltip.name}
       </div>
       {tooltip.count > 0 && (
-        <div className="text-2xs font-mono text-[var(--color-muted)]">
+        <div className="text-2xs font-mono text-muted">
           {tooltip.count} {tooltip.count === 1 ? "registro" : "registros"}
         </div>
       )}

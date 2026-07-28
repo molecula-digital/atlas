@@ -91,6 +91,30 @@ export function eventDocToTechEvent(doc: Event): TechEvent {
   }
 }
 
+// Fixed table instead of toLocaleDateString — ICU output differs between Node and
+// browsers ("sept" vs "sep"), which shows up as a hydration mismatch.
+const MONTH_ABBR = [
+  'ene', 'feb', 'mar', 'abr', 'may', 'jun',
+  'jul', 'ago', 'sep', 'oct', 'nov', 'dic',
+]
+
+export function formatEventDateBadge(dateStr: string): { day: string; month: string } {
+  const [, m, d] = dateStr.split('-').map(Number)
+  return {
+    day: String(d),
+    month: MONTH_ABBR[(m - 1) % 12] ?? '',
+  }
+}
+
+/** Events from `today` onward, soonest first. Pass the day explicitly so it stays pure. */
+export function selectUpcomingEvents(events: TechEvent[], today: string): TechEvent[] {
+  return events
+    .filter((ev) => ev.date >= today)
+    .sort(
+      (a, b) => a.date.localeCompare(b.date) || a.startTime.localeCompare(b.startTime),
+    )
+}
+
 export function groupEventsByDate(events: TechEvent[]): Record<string, TechEvent[]> {
   const map: Record<string, TechEvent[]> = {}
   for (const ev of events) {

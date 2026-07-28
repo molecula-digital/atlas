@@ -3,6 +3,7 @@ import { db } from '@/db'
 import { sql } from 'drizzle-orm'
 import { NextResponse, type NextRequest } from 'next/server'
 import { withRateLimit } from '@/lib/rate-limit'
+import { parsePagination, toPaginatedResponse } from '@/lib/api-route'
 import type { Where } from 'payload'
 import {
   listPublicProfiles,
@@ -44,8 +45,7 @@ export async function GET(request: NextRequest) {
 
   try {
     const { searchParams } = request.nextUrl
-    const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10))
-    const limit = Math.min(Math.max(1, parseInt(searchParams.get('limit') || '18', 10)), 100)
+    const { page, limit } = parsePagination(searchParams, { defaultLimit: 18 })
     const sortKey = searchParams.get('sort') || 'date-desc'
     const sort = SORT_MAP[sortKey] || '-publishDate'
     const entryType = searchParams.get('entryType')
@@ -178,14 +178,7 @@ export async function GET(request: NextRequest) {
       sort,
     })
 
-    return NextResponse.json({
-      docs: result.docs,
-      totalDocs: result.totalDocs,
-      totalPages: result.totalPages,
-      page: result.page,
-      hasNextPage: result.hasNextPage,
-      hasPrevPage: result.hasPrevPage,
-    })
+    return NextResponse.json(toPaginatedResponse(result))
   } catch (error) {
     console.error('Entries API failed:', error)
     return NextResponse.json({ error: 'Failed to fetch entries' }, { status: 500 })
