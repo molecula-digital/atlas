@@ -1,6 +1,5 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { AuthGuard } from '@/components/auth/AuthGuard'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
@@ -8,138 +7,29 @@ import { Card } from '@/components/ui/Card'
 import { CITY_SELECT_OPTIONS, JOB_TYPE_OPTIONS, MODALITY_OPTIONS } from '@/config'
 import { XCircle, ArrowLeft, Save, CheckCircle } from 'lucide-react'
 import { buttonVariants } from '@/components/ui/Button'
-
-interface JobData {
-  id: string
-  title: string
-  slug: string
-  description?: { root?: { children?: Array<{ children?: Array<{ text?: string }> }> } }
-  type: string
-  modality: string
-  city?: string
-  compensation?: string
-  tags?: { tag: string; id?: string }[]
-  contactUrl: string
-  entry?: string
-  _status: 'draft' | 'published'
-  moderationNote?: string
-}
+import { useJobEditor } from './useJobEditor'
 
 const inputClass =
   'w-full px-3 py-2 bg-background border border-border rounded-md text-base sm:text-sm text-primary'
-const selectClass =
-  'w-full px-3 py-2 bg-background border border-border rounded-md text-base sm:text-sm text-primary'
+const selectClass = inputClass
 const labelClass = 'block text-xs font-mono text-muted mb-1'
-
-/** Extract plain text from Lexical rich-text JSON */
-function extractPlainText(description?: JobData['description']): string {
-  if (!description?.root?.children) return ''
-  return description.root.children
-    .map((paragraph) =>
-      paragraph.children?.map((child) => child.text || '').join('') ?? '',
-    )
-    .join('\n')
-}
 
 export default function EditJobPage() {
   const params = useParams()
   const router = useRouter()
   const id = params.id as string
 
-  const [job, setJob] = useState<JobData | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [saving, setSaving] = useState(false)
-  const [saved, setSaved] = useState(false)
-
-  // Form fields
-  const [title, setTitle] = useState('')
-  const [type, setType] = useState('')
-  const [modality, setModality] = useState('')
-  const [city, setCity] = useState('')
-  const [compensation, setCompensation] = useState('')
-  const [contactUrl, setContactUrl] = useState('')
-  const [description, setDescription] = useState('')
-
-  // Fetch job
-  useEffect(() => {
-    async function fetchJob() {
-      try {
-        const res = await fetch(`/api/submissions/jobs?id=${id}`)
-        if (!res.ok) {
-          const data = await res.json().catch(() => ({}))
-          setError(data.error || 'No se pudo cargar el empleo')
-          return
-        }
-        const data: JobData = await res.json()
-        setJob(data)
-
-        // Populate form
-        setTitle(data.title || '')
-        setType(data.type || '')
-        setModality(data.modality || '')
-        setCity(data.city || '')
-        setCompensation(data.compensation || '')
-        setContactUrl(data.contactUrl || '')
-        setDescription(extractPlainText(data.description))
-      } catch {
-        setError('Error de conexion')
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    if (id) fetchJob()
-  }, [id])
-
-  const handleSave = useCallback(async () => {
-    if (!job) return
-    setSaving(true)
-    setSaved(false)
-
-    const body: Record<string, unknown> = {
-      id: job.id,
-      title,
-      type,
-      modality,
-      city: city || undefined,
-      compensation: compensation || undefined,
-      contactUrl,
-      description: {
-        root: {
-          type: 'root',
-          children: [{
-            type: 'paragraph',
-            children: [{ type: 'text', text: description, version: 1 }],
-            version: 1,
-          }],
-          direction: 'ltr',
-          format: '',
-          indent: 0,
-          version: 1,
-        },
-      },
-    }
-
-    try {
-      const res = await fetch('/api/submissions/jobs', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      })
-
-      if (res.ok) {
-        setSaved(true)
-      } else {
-        const data = await res.json().catch(() => ({}))
-        setError(data.error || 'Error al guardar')
-      }
-    } catch {
-      setError('Error de conexion al guardar')
-    } finally {
-      setSaving(false)
-    }
-  }, [job, title, type, modality, city, compensation, contactUrl, description])
+  const {
+    job,
+    values,
+    setField,
+    loading,
+    loadError,
+    saveError,
+    saving,
+    saved,
+    save,
+  } = useJobEditor(id)
 
   return (
     <AuthGuard>
@@ -160,21 +50,21 @@ export default function EditJobPage() {
             </div>
           )}
 
-          {error && !loading && (
-            <div className="bg-card border border-border rounded-lg p-8 text-center">
+          {loadError && !loading && (
+            <Card className="p-8 text-center">
               <XCircle className="w-8 h-8 text-red-500 mx-auto mb-3" />
               <p className="text-sm text-primary font-medium mb-2">Error</p>
-              <p className="text-xs text-muted font-mono mb-4">{error}</p>
+              <p className="text-xs text-muted font-mono mb-4">{loadError}</p>
               <button
                 onClick={() => router.push('/dashboard')}
                 className="text-xs font-mono text-accent hover:underline"
               >
                 Volver al dashboard
               </button>
-            </div>
+            </Card>
           )}
 
-          {!loading && !error && job && (
+          {!loading && !loadError && job && (
             <>
               <div className="flex items-center gap-3 mb-6">
                 <button
@@ -215,7 +105,7 @@ export default function EditJobPage() {
                 <form
                   onSubmit={(e) => {
                     e.preventDefault()
-                    handleSave()
+                    save()
                   }}
                   className="space-y-4"
                 >
@@ -224,8 +114,8 @@ export default function EditJobPage() {
                     <input
                       id="title"
                       required
-                      value={title}
-                      onChange={(e) => setTitle(e.target.value)}
+                      value={values.title}
+                      onChange={(e) => setField('title', e.target.value)}
                       className={inputClass}
                       placeholder="Ej: Frontend Developer"
                     />
@@ -237,8 +127,8 @@ export default function EditJobPage() {
                       <select
                         id="type"
                         required
-                        value={type}
-                        onChange={(e) => setType(e.target.value)}
+                        value={values.type}
+                        onChange={(e) => setField('type', e.target.value)}
                         className={selectClass}
                       >
                         {JOB_TYPE_OPTIONS.map((t) => (
@@ -251,8 +141,8 @@ export default function EditJobPage() {
                       <select
                         id="modality"
                         required
-                        value={modality}
-                        onChange={(e) => setModality(e.target.value)}
+                        value={values.modality}
+                        onChange={(e) => setField('modality', e.target.value)}
                         className={selectClass}
                       >
                         {MODALITY_OPTIONS.map((m) => (
@@ -267,8 +157,8 @@ export default function EditJobPage() {
                       <label htmlFor="city" className={labelClass}>Ciudad (si aplica)</label>
                       <select
                         id="city"
-                        value={city}
-                        onChange={(e) => setCity(e.target.value)}
+                        value={values.city}
+                        onChange={(e) => setField('city', e.target.value)}
                         className={selectClass}
                       >
                         <option value="">No aplica</option>
@@ -281,8 +171,8 @@ export default function EditJobPage() {
                       <label htmlFor="compensation" className={labelClass}>Compensacion</label>
                       <input
                         id="compensation"
-                        value={compensation}
-                        onChange={(e) => setCompensation(e.target.value)}
+                        value={values.compensation}
+                        onChange={(e) => setField('compensation', e.target.value)}
                         className={inputClass}
                         placeholder="Ej: $15k/mo, Equity, Voluntario"
                       />
@@ -294,8 +184,8 @@ export default function EditJobPage() {
                     <input
                       id="contactUrl"
                       required
-                      value={contactUrl}
-                      onChange={(e) => setContactUrl(e.target.value)}
+                      value={values.contactUrl}
+                      onChange={(e) => setField('contactUrl', e.target.value)}
                       className={inputClass}
                       placeholder="https://... o email@..."
                     />
@@ -307,12 +197,16 @@ export default function EditJobPage() {
                       id="description"
                       required
                       rows={6}
-                      value={description}
-                      onChange={(e) => setDescription(e.target.value)}
+                      value={values.description}
+                      onChange={(e) => setField('description', e.target.value)}
                       className={inputClass}
                       placeholder="Describe el puesto, requisitos, beneficios..."
                     />
                   </div>
+
+                  {saveError && (
+                    <p className="text-sm text-red-600" role="status">{saveError}</p>
+                  )}
 
                   {/* Submit */}
                   <div className="flex items-center justify-between pt-4 border-t border-border">
@@ -325,7 +219,13 @@ export default function EditJobPage() {
                     </button>
                     <button
                       type="submit"
-                      disabled={saving || !title.trim() || !type || !modality || !contactUrl.trim()}
+                      disabled={
+                        saving ||
+                        !values.title.trim() ||
+                        !values.type ||
+                        !values.modality ||
+                        !values.contactUrl.trim()
+                      }
                       className={buttonVariants({ variant: "accent", size: "md" })}
                     >
                       <Save className="w-3.5 h-3.5" />
