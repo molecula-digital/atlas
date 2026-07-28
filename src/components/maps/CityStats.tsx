@@ -1,5 +1,5 @@
 import React from "react";
-import { buttonVariants } from '@/components/ui/Button';
+import { buttonVariants } from '@/components/ui/button-variants';
 import { ENTRY_TYPE_CONFIG } from "@/config";
 import type { AtlasEntryType } from "@/config";
 import {

@@ -10,7 +10,7 @@ import { useSession } from '@/lib/auth-client'
 import { ENTRY_TYPE_CONFIG, ENTRY_TYPES } from '@/config'
 import { ENTRY_TYPE_ICON_MAP } from '@/lib/icons'
 import { useDisclosure } from '@/hooks/useDisclosure'
-import { buttonVariants } from '@/components/ui/Button'
+import { buttonVariants } from '@/components/ui/button-variants'
 import { AtlasLogo } from '@/components/layout/AtlasLogo'
 import { SiteFrame } from '@/components/layout/SiteFrame'
 

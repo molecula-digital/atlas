@@ -12,7 +12,7 @@ import {
   toCalendarEvent,
   yahooCalendarUrl,
 } from '@/lib/calendar-links'
-import { buttonVariants, type ButtonSize } from '@/components/ui/Button'
+import { buttonVariants, type ButtonSize } from '@/components/ui/button-variants'
 import {
   Dialog,
   DialogContent,

@@ -4,7 +4,7 @@ import { ENTRY_TYPE_CONFIG, ENTRY_TYPES, SOCIAL_LINKS, SITE_TITLE, NEWSLETTER, W
 import { GitHubIcon } from '@/components/icons/SocialIcons'
 import { AtlasLogo } from '@/components/layout/AtlasLogo'
 import { NewsletterSignup } from '@/components/newsletter/NewsletterSignup'
-import { buttonVariants } from '@/components/ui/Button'
+import { buttonVariants } from '@/components/ui/button-variants'
 import { SiteFrame } from '@/components/layout/SiteFrame'
 
 export function Footer() {

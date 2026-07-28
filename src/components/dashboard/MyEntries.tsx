@@ -8,7 +8,7 @@ import { timeAgo } from '@/lib/utils'
 import { CheckCircle, Clock, XCircle, Pencil, ExternalLink, Plus, FolderKanban, AlertTriangle } from 'lucide-react'
 import { useUserResource } from '@/hooks/useUserResource'
 import { EmptyState } from '@/components/ui/EmptyState'
-import { buttonVariants } from '@/components/ui/Button'
+import { buttonVariants } from '@/components/ui/button-variants'
 
 interface Entry {
   id: string

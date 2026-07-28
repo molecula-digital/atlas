@@ -7,7 +7,7 @@ import type { TechEvent } from "@/hooks/useEventsData";
 import { cn } from "@/lib/utils";
 import UpcomingEventsSidebar from "./UpcomingEventsSidebar";
 import { EventDialog } from "./EventDialog";
-import { buttonVariants } from '@/components/ui/Button';
+import { buttonVariants } from '@/components/ui/button-variants';
 
 const WEEKDAYS = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
 const MONTH_NAMES = [

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Share2, Check } from "lucide-react";
-import { buttonVariants } from '@/components/ui/Button';
+import { buttonVariants } from '@/components/ui/button-variants';
 
 export default function ShareButton({
   title,

@@ -7,7 +7,7 @@ import { SITE_URL } from '@/config'
 import { formatDateEs } from '@/lib/format'
 import { safeJsonLd } from '@/lib/utils'
 import { MapPin, ArrowUpRight } from 'lucide-react'
-import { buttonVariants } from '@/components/ui/Button'
+import { buttonVariants } from '@/components/ui/button-variants'
 import { resolveMapEmbedUrl } from '@/lib/maps'
 import EventDetailPageClient from './EventDetailPageClient'
 

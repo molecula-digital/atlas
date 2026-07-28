@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { FolderOpen, CalendarDays, Newspaper, Briefcase, ArrowLeft } from 'lucide-react'
-import { buttonVariants } from '@/components/ui/Button'
+import { buttonVariants } from '@/components/ui/button-variants'
 
 const LINES = [
   '> buscando página...',

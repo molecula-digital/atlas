@@ -4,7 +4,7 @@ import { SINALOA_CITIES, WHATSAPP_URL, ENTRY_TYPES, ENTRY_TYPE_CONFIG } from '@/
 import type { AtlasEntryType } from '@/config'
 import SinaloaMap from '@/components/maps/SinaloaMapLazy'
 import { ENTRY_TYPE_ICON_MAP } from '@/lib/icons'
-import { buttonVariants } from '@/components/ui/Button'
+import { buttonVariants } from '@/components/ui/button-variants'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip'
 import { NewsletterSignup } from '@/components/newsletter/NewsletterSignup'
 import {

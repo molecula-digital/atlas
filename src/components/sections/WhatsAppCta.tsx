@@ -1,6 +1,6 @@
 import { MessageCircle } from 'lucide-react'
 import { WHATSAPP_URL } from '@/config'
-import { buttonVariants } from '@/components/ui/Button'
+import { buttonVariants } from '@/components/ui/button-variants'
 
 /**
  * A content block, not a section — spacing belongs to whoever places it, so it

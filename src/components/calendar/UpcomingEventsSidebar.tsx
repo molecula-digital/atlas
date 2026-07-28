@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import EventTypeBadge from "./EventTypeBadge";
 import type { TechEvent } from "@/hooks/useEventsData";
-import { buttonVariants } from '@/components/ui/Button';
+import { buttonVariants } from '@/components/ui/button-variants';
 import { EventDialog } from "./EventDialog";
 import { EventDateBadge } from "./EventDateBadge";
 import { selectUpcomingEvents } from "@/lib/events";

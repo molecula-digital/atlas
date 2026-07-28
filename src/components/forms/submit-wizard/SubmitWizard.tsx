@@ -15,7 +15,7 @@ import StepBasicInfo from "./StepBasicInfo";
 import StepDetails from "./StepDetails";
 import StepLinks from "./StepLinks";
 import StepReview from "./StepReview";
-import { buttonVariants } from '@/components/ui/Button';
+import { buttonVariants } from '@/components/ui/button-variants';
 
 interface Props {
   cities: CityOption[];

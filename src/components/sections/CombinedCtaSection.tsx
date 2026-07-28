@@ -1,7 +1,7 @@
 import { SectionBlock } from '@/components/layout/SectionBlock'
 import Link from 'next/link'
 import { Plus, ArrowRight } from 'lucide-react'
-import { buttonVariants } from '@/components/ui/Button'
+import { buttonVariants } from '@/components/ui/button-variants'
 import { SectionTitle } from '@/components/ui/SectionTitle'
 
 export function CombinedCtaSection() {

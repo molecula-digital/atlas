@@ -1,6 +1,6 @@
 import React from "react";
 import { ZoomIn, ZoomOut, RotateCcw, Lock, Unlock } from "lucide-react";
-import { buttonVariants } from '@/components/ui/Button';
+import { buttonVariants } from '@/components/ui/button-variants';
 
 interface MapControlsProps {
   interactionEnabled: boolean;

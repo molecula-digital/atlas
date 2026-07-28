@@ -7,6 +7,7 @@ import {
   uploadEntryImage,
   type EntryFormValues,
 } from '@/lib/entry-submission'
+import { replaceObjectUrl, revokeObjectUrl } from '@/lib/object-url'
 
 export interface EntryData {
   id: string
@@ -102,6 +103,14 @@ export function useEntryEditor(id: string) {
   const logoRef = useRef<HTMLInputElement>(null)
   const coverRef = useRef<HTMLInputElement>(null)
 
+  // Mirrors of the previews, so unmount cleanup doesn't re-run on every change.
+  const logoPreviewRef = useRef<string | null>(null)
+  const coverPreviewRef = useRef<string | null>(null)
+  useEffect(() => {
+    logoPreviewRef.current = logoPreview
+    coverPreviewRef.current = coverPreview
+  }, [logoPreview, coverPreview])
+
   // Fetch entry
   useEffect(() => {
     async function fetchEntry() {
@@ -163,6 +172,45 @@ export function useEntryEditor(id: string) {
 
     if (id) fetchEntry()
   }, [id])
+
+  // Release any blob preview we still hold when the form goes away.
+  useEffect(() => () => {
+    revokeObjectUrl(logoPreviewRef.current)
+    revokeObjectUrl(coverPreviewRef.current)
+  }, [])
+
+  const selectLogo = useCallback((file?: File) => {
+    if (!file) return
+    setLogoPreview((prev) => replaceObjectUrl(prev, file))
+  }, [])
+
+  const selectCover = useCallback((file?: File) => {
+    if (!file) return
+    setCoverPreview((prev) => replaceObjectUrl(prev, file))
+  }, [])
+
+  /** Discards a newly picked file and falls back to the stored image. */
+  const resetLogo = useCallback(() => {
+    setLogoPreview((prev) => {
+      revokeObjectUrl(prev)
+      return entry?.logo && typeof entry.logo === 'object' && 'url' in entry.logo
+        ? entry.logo.url || null
+        : null
+    })
+    if (logoRef.current) logoRef.current.value = ''
+  }, [entry])
+
+  const resetCover = useCallback(() => {
+    setCoverPreview((prev) => {
+      revokeObjectUrl(prev)
+      return entry?.coverImage &&
+        typeof entry.coverImage === 'object' &&
+        'url' in entry.coverImage
+        ? entry.coverImage.url || null
+        : null
+    })
+    if (coverRef.current) coverRef.current.value = ''
+  }, [entry])
 
   const addTag = useCallback(() => {
     const t = tagInput.trim().toLowerCase()
@@ -278,8 +326,8 @@ export function useEntryEditor(id: string) {
     availableForHire, setAvailableForHire,
     availableForMentoring, setAvailableForMentoring,
     bodyMarkdown, setBodyMarkdown,
-    logoPreview, setLogoPreview,
-    coverPreview, setCoverPreview,
+    logoPreview, selectLogo, resetLogo,
+    coverPreview, selectCover, resetCover,
     uploadingImages, uploadError,
     logoRef, coverRef,
     handleSave,

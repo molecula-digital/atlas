@@ -6,7 +6,7 @@ import { timeAgo, expirationLabel } from '@/lib/utils'
 import { Clock, CheckCircle, XCircle, Briefcase, ExternalLink, Plus, Pencil, AlertTriangle } from 'lucide-react'
 import { useUserResource } from '@/hooks/useUserResource'
 import { EmptyState } from '@/components/ui/EmptyState'
-import { buttonVariants } from '@/components/ui/Button'
+import { buttonVariants } from '@/components/ui/button-variants'
 
 interface Job {
   id: string

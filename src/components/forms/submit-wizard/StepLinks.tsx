@@ -1,6 +1,6 @@
 import { X, Plus } from "lucide-react";
 import { TYPE_COPY, type StepProps } from "./types";
-import { buttonVariants } from '@/components/ui/Button'
+import { buttonVariants } from '@/components/ui/button-variants'
 
 export default function StepLinks({ state, setField }: StepProps) {
   const copy = state.entryType ? TYPE_COPY[state.entryType] : null;

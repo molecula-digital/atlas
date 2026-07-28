@@ -1,5 +1,5 @@
 import React from "react";
-import { buttonVariants } from '@/components/ui/Button';
+import { buttonVariants } from '@/components/ui/button-variants';
 
 function clamp(value: number, min: number, max: number) {
   return Math.max(min, Math.min(max, value));

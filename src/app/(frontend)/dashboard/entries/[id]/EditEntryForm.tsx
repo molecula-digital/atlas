@@ -16,7 +16,7 @@ import {
   ENTRY_TYPE_CONFIG,
   isStartupLike,
 } from '@/config'
-import { buttonVariants } from '@/components/ui/Button'
+import { buttonVariants } from '@/components/ui/button-variants'
 import { useEntryEditor } from './useEntryEditor'
 
 const cities = [
@@ -67,8 +67,8 @@ export function EditEntryForm() {
     availableForHire, setAvailableForHire,
     availableForMentoring, setAvailableForMentoring,
     bodyMarkdown, setBodyMarkdown,
-    logoPreview, setLogoPreview,
-    coverPreview, setCoverPreview,
+    logoPreview, selectLogo, resetLogo,
+    coverPreview, selectCover, resetCover,
     uploadingImages, uploadError,
     logoRef, coverRef,
     handleSave,
@@ -172,12 +172,7 @@ export function EditEntryForm() {
                           ref={logoRef}
                           type="file"
                           accept="image/jpeg,image/png,image/webp,image/gif"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0]
-                            if (file) {
-                              setLogoPreview(URL.createObjectURL(file))
-                            }
-                          }}
+                          onChange={(e) => selectLogo(e.target.files?.[0])}
                           className="w-full text-xs text-muted font-mono file:mr-3 file:py-1 file:px-2.5 file:rounded file:border file:border-border file:text-xs file:font-mono file:font-semibold file:bg-transparent file:text-primary hover:file:border-accent hover:file:text-accent file:transition-colors file:cursor-pointer"
                         />
                         {logoRef.current?.files?.[0] && logoPreview && (
@@ -185,10 +180,7 @@ export function EditEntryForm() {
                             <img src={logoPreview} alt="Logo preview" className="w-20 h-20 rounded-lg border border-border object-cover" />
                             <button
                               type="button"
-                              onClick={() => {
-                                setLogoPreview(entry?.logo && typeof entry.logo === 'object' && 'url' in entry.logo ? entry.logo.url || null : null)
-                                if (logoRef.current) logoRef.current.value = ''
-                              }}
+                              onClick={resetLogo}
                               className="absolute -top-2 -right-2 w-5 h-5 rounded-full border border-red-500/70 bg-transparent text-red-500 backdrop-blur-sm flex items-center justify-center hover:border-red-500 hover:bg-red-500/10 transition-colors cursor-pointer"
                             >
                               <X className="w-3 h-3" />
@@ -207,12 +199,7 @@ export function EditEntryForm() {
                           ref={coverRef}
                           type="file"
                           accept="image/jpeg,image/png,image/webp,image/gif"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0]
-                            if (file) {
-                              setCoverPreview(URL.createObjectURL(file))
-                            }
-                          }}
+                          onChange={(e) => selectCover(e.target.files?.[0])}
                           className="w-full text-xs text-muted font-mono file:mr-3 file:py-1 file:px-2.5 file:rounded file:border file:border-border file:text-xs file:font-mono file:font-semibold file:bg-transparent file:text-primary hover:file:border-accent hover:file:text-accent file:transition-colors file:cursor-pointer"
                         />
                         {coverRef.current?.files?.[0] && coverPreview && (
@@ -220,10 +207,7 @@ export function EditEntryForm() {
                             <img src={coverPreview} alt="Cover preview" className="w-full max-h-48 rounded-lg border border-border object-cover" />
                             <button
                               type="button"
-                              onClick={() => {
-                                setCoverPreview(entry?.coverImage && typeof entry.coverImage === 'object' && 'url' in entry.coverImage ? entry.coverImage.url || null : null)
-                                if (coverRef.current) coverRef.current.value = ''
-                              }}
+                              onClick={resetCover}
                               className="absolute top-2 right-2 w-6 h-6 rounded-full border border-red-500/70 bg-transparent text-red-500 backdrop-blur-sm flex items-center justify-center hover:border-red-500 hover:bg-red-500/10 transition-colors cursor-pointer"
                             >
                               <X className="w-3 h-3" />

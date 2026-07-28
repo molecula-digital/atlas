@@ -11,7 +11,7 @@ import { Badge } from '@/components/ui/Badge'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import { ExternalLink } from '@/components/ui/ExternalLink'
 import { MapPin, Clock, Briefcase, ExternalLink as LinkIcon, AlertTriangle } from 'lucide-react'
-import { buttonVariants } from '@/components/ui/Button'
+import { buttonVariants } from '@/components/ui/button-variants'
 
 export const revalidate = 3600
 

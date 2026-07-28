@@ -3,7 +3,7 @@
 import { signOut } from '@/lib/auth-client'
 import Link from 'next/link'
 import { Save, Loader2, CheckCircle, AlertCircle, ExternalLink, LogOut } from 'lucide-react'
-import { buttonVariants } from '@/components/ui/Button'
+import { buttonVariants } from '@/components/ui/button-variants'
 import { NEWSLETTER } from '@/config'
 import { PROFILE_BIO_MAX_LENGTH, slugifyProfile } from '@/lib/profile-fields'
 import { useProfileForm } from './useProfileForm'

@@ -2,7 +2,7 @@
 
 import { AlertTriangle } from 'lucide-react'
 import Link from 'next/link'
-import { buttonVariants } from '@/components/ui/Button'
+import { buttonVariants } from '@/components/ui/button-variants'
 
 interface ErrorFallbackProps {
   error: Error & { digest?: string }

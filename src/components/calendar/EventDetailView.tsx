@@ -19,7 +19,7 @@ import {
 import type { LucideIcon } from 'lucide-react'
 import type { TechEvent } from '@/lib/events'
 import { getEventPath } from '@/lib/events'
-import { buttonVariants, type ButtonSize } from '@/components/ui/Button'
+import { buttonVariants, type ButtonSize } from '@/components/ui/button-variants'
 import { Card } from '@/components/ui/Card'
 import EventTypeBadge from './EventTypeBadge'
 import { AddToCalendar } from './AddToCalendar'

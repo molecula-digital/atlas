@@ -1,6 +1,6 @@
 import { SectionBlock } from '@/components/layout/SectionBlock'
 import Link from 'next/link'
-import { buttonVariants } from '@/components/ui/Button'
+import { buttonVariants } from '@/components/ui/button-variants'
 
 export function CtaSection() {
   return (

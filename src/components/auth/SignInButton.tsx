@@ -1,7 +1,7 @@
 'use client'
 
 import { signIn } from '@/lib/auth-client'
-import { buttonVariants } from '@/components/ui/Button'
+import { buttonVariants } from '@/components/ui/button-variants'
 
 interface SignInButtonProps {
   callbackURL?: string

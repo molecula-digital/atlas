@@ -1,6 +1,7 @@
 import type { RefObject } from "react";
 import { X, Loader2, AlertCircle } from "lucide-react";
 import { ENTRY_TYPES, type StepProps, type CityOption } from "./types";
+import { replaceObjectUrl } from "@/lib/object-url";
 
 interface Props extends StepProps {
   cities: CityOption[];
@@ -12,13 +13,9 @@ function handleFilePreview(
   file: File | undefined,
   setField: (field: string, value: unknown) => void,
   field: string,
+  current: string | null,
 ) {
-  if (file) {
-    const url = URL.createObjectURL(file);
-    setField(field, url);
-  } else {
-    setField(field, null);
-  }
+  setField(field, replaceObjectUrl(current, file));
 }
 
 function SummaryRow({ label, value }: { label: string; value?: string }) {
@@ -48,7 +45,7 @@ export default function StepReview({ state, setField, cities, logoRef, coverRef 
             type="file"
             accept="image/*"
             onChange={(e) =>
-              handleFilePreview(e.target.files?.[0], setField, "logoPreview")
+              handleFilePreview(e.target.files?.[0], setField, "logoPreview", state.logoPreview)
             }
             className="w-full text-xs text-muted font-mono file:mr-3 file:py-1 file:px-2.5 file:rounded file:border file:border-border file:text-xs file:font-mono file:font-semibold file:bg-transparent file:text-primary hover:file:border-accent hover:file:text-accent file:transition-colors file:cursor-pointer"
           />
@@ -81,7 +78,7 @@ export default function StepReview({ state, setField, cities, logoRef, coverRef 
             type="file"
             accept="image/*"
             onChange={(e) =>
-              handleFilePreview(e.target.files?.[0], setField, "coverPreview")
+              handleFilePreview(e.target.files?.[0], setField, "coverPreview", state.coverPreview)
             }
             className="w-full text-xs text-muted font-mono file:mr-3 file:py-1 file:px-2.5 file:rounded file:border file:border-border file:text-xs file:font-mono file:font-semibold file:bg-transparent file:text-primary hover:file:border-accent hover:file:text-accent file:transition-colors file:cursor-pointer"
           />

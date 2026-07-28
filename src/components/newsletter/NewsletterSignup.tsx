@@ -2,7 +2,7 @@
 
 import { Loader2, CheckCircle, Mail } from 'lucide-react'
 import { NEWSLETTER } from '@/config'
-import { buttonVariants } from '@/components/ui/Button'
+import { buttonVariants } from '@/components/ui/button-variants'
 import { cn } from '@/lib/utils'
 import { useNewsletterSignup, type NewsletterSignupSource } from './useNewsletterSignup'
 

@@ -11,7 +11,7 @@ import {
   DialogTitle,
 } from '@/components/ui/Dialog'
 import { useDialogBackNavigation } from '@/hooks/useDialogBackNavigation'
-import { buttonVariants } from '@/components/ui/Button'
+import { buttonVariants } from '@/components/ui/button-variants'
 import { cn } from '@/lib/utils'
 
 export type LightboxImage = {

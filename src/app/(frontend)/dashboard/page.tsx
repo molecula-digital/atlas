@@ -9,7 +9,7 @@ import { MyEntries } from '@/components/dashboard/MyEntries'
 import { MyJobs } from '@/components/dashboard/MyJobs'
 import { Plus, Briefcase, User, FolderKanban } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import { buttonVariants } from '@/components/ui/Button'
+import { buttonVariants } from '@/components/ui/button-variants'
 
 type Tab = 'profile' | 'projects' | 'jobs'
 

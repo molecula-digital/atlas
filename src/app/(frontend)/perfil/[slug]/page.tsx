@@ -7,7 +7,7 @@ import { SITE_TITLE, SITE_URL } from '@/config'
 import { getPublicProfileBySlug } from '@/lib/public-profile'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import { Card } from '@/components/ui/Card'
-import { buttonVariants } from '@/components/ui/Button'
+import { buttonVariants } from '@/components/ui/button-variants'
 import { GitHubIcon, LinkedInIcon, XIcon } from '@/components/icons/SocialIcons'
 
 type PageProps = { params: Promise<{ slug: string }> }

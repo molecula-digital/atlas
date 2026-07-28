@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Loader2, CheckCircle, AlertCircle } from 'lucide-react'
 import { NEWSLETTER } from '@/config'
-import { buttonVariants } from '@/components/ui/Button'
+import { buttonVariants } from '@/components/ui/button-variants'
 
 function UnsubscribeForm() {
   const searchParams = useSearchParams()

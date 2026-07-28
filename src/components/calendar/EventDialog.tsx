@@ -6,7 +6,7 @@ import { X } from 'lucide-react'
 import type { TechEvent } from '@/lib/events'
 import { getEventPath } from '@/lib/events'
 import { useDialogBackNavigation } from '@/hooks/useDialogBackNavigation'
-import { buttonVariants } from '@/components/ui/Button'
+import { buttonVariants } from '@/components/ui/button-variants'
 import {
   Dialog,
   DialogClose,

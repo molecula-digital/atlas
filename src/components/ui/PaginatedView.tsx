@@ -3,7 +3,7 @@
 import { type ReactNode } from 'react'
 import { ChevronLeft, ChevronRight, SearchX } from 'lucide-react'
 import { usePaginatedData } from '@/hooks/usePaginatedData'
-import { buttonVariants } from '@/components/ui/Button'
+import { buttonVariants } from '@/components/ui/button-variants'
 import { EmptyState } from '@/components/ui/EmptyState'
 
 interface PaginatedViewProps<T> {
