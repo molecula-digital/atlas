@@ -1,6 +1,5 @@
 'use client'
 
-import { useEffect, useState, useCallback, useRef } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { AuthGuard } from '@/components/auth/AuthGuard'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
@@ -16,9 +15,9 @@ import {
   BUSINESS_MODEL_OPTIONS,
   ENTRY_TYPE_CONFIG,
   isStartupLike,
-  type AtlasEntryType,
 } from '@/config'
 import { buttonVariants } from '@/components/ui/Button'
+import { useEntryEditor } from './useEntryEditor'
 
 const cities = [
   { id: 'global', name: 'Global (sin ubicacion especifica)' },
@@ -32,296 +31,48 @@ const selectClass =
 const labelClass = 'text-xs font-mono text-muted uppercase tracking-wider'
 const checkboxClass = 'w-4 h-4 rounded border-border text-accent focus:ring-accent'
 
-interface EntryData {
-  id: string
-  entryType: AtlasEntryType
-  name: string
-  slug: string
-  tagline?: string
-  city: string
-  website?: string
-  x?: string
-  instagram?: string
-  linkedin?: string
-  github?: string
-  youtube?: string
-  discord?: string
-  telegram?: string
-  tags?: { tag: string; id?: string }[]
-  _status: 'draft' | 'published'
-  moderationNote?: string
-  // startup-like
-  foundedYear?: number
-  stage?: string
-  teamSize?: string
-  sector?: string
-  technologies?: { technology: string; id?: string }[]
-  hiringUrl?: string
-  businessModel?: string
-  // community
-  memberCount?: number
-  meetupFrequency?: string
-  // person
-  role?: string
-  company?: string
-  email?: string
-  portfolio?: string
-  availableForHire?: boolean
-  availableForMentoring?: boolean
-  body?: string | null
-  logo?: { id: number; url?: string; alt?: string } | number | null
-  coverImage?: { id: number; url?: string; alt?: string } | number | null
-}
-
 export function EditEntryForm() {
   const params = useParams()
   const router = useRouter()
   const id = params.id as string
 
-  const [entry, setEntry] = useState<EntryData | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [saving, setSaving] = useState(false)
-  const [saved, setSaved] = useState(false)
-
-  // Form fields
-  const [name, setName] = useState('')
-  const [tagline, setTagline] = useState('')
-  const [city, setCity] = useState('')
-  const [website, setWebsite] = useState('')
-  const [x, setX] = useState('')
-  const [instagram, setInstagram] = useState('')
-  const [linkedin, setLinkedin] = useState('')
-  const [github, setGithub] = useState('')
-  const [youtube, setYoutube] = useState('')
-  const [discord, setDiscord] = useState('')
-  const [telegram, setTelegram] = useState('')
-  const [tags, setTags] = useState<string[]>([])
-  const [tagInput, setTagInput] = useState('')
-  // startup-like
-  const [foundedYear, setFoundedYear] = useState('')
-  const [stage, setStage] = useState('')
-  const [teamSize, setTeamSize] = useState('')
-  const [sector, setSector] = useState('')
-  const [technologies, setTechnologies] = useState('')
-  const [hiring, setHiring] = useState(false)
-  const [hiringUrl, setHiringUrl] = useState('')
-  const [businessModel, setBusinessModel] = useState('')
-  // community
-  const [memberCount, setMemberCount] = useState('')
-  const [meetupFrequency, setMeetupFrequency] = useState('')
-  // person
-  const [role, setRole] = useState('')
-  const [company, setCompany] = useState('')
-  const [email, setEmail] = useState('')
-  const [portfolio, setPortfolio] = useState('')
-  const [availableForHire, setAvailableForHire] = useState(false)
-  const [availableForMentoring, setAvailableForMentoring] = useState(false)
-
-  // Body (markdown)
-  const [bodyMarkdown, setBodyMarkdown] = useState('')
-
-  // Images
-  const [logoPreview, setLogoPreview] = useState<string | null>(null)
-  const [coverPreview, setCoverPreview] = useState<string | null>(null)
-  const [uploadingImages, setUploadingImages] = useState(false)
-  const [uploadError, setUploadError] = useState<string | null>(null)
-  const logoRef = useRef<HTMLInputElement>(null)
-  const coverRef = useRef<HTMLInputElement>(null)
-
-  // Fetch entry
-  useEffect(() => {
-    async function fetchEntry() {
-      try {
-        const res = await fetch(`/api/submissions/entries?id=${id}`)
-        if (!res.ok) {
-          const data = await res.json().catch(() => ({}))
-          setError(data.error || 'No se pudo cargar la entrada')
-          return
-        }
-        const data: EntryData = await res.json()
-        setEntry(data)
-
-        // Populate form
-        setName(data.name || '')
-        setTagline(data.tagline || '')
-        setCity(data.city || '')
-        setWebsite(data.website || '')
-        setX(data.x || '')
-        setInstagram(data.instagram || '')
-        setLinkedin(data.linkedin || '')
-        setGithub(data.github || '')
-        setYoutube(data.youtube || '')
-        setDiscord(data.discord || '')
-        setTelegram(data.telegram || '')
-        setTags(data.tags?.map((t) => t.tag) || [])
-        setFoundedYear(data.foundedYear?.toString() || '')
-        setStage(data.stage || '')
-        setTeamSize(data.teamSize || '')
-        setSector(data.sector || '')
-        setTechnologies(data.technologies?.map((t) => t.technology).join(', ') || '')
-        setHiring(Boolean(data.hiringUrl))
-        setHiringUrl(data.hiringUrl || '')
-        setBusinessModel(data.businessModel || '')
-        setMemberCount(data.memberCount?.toString() || '')
-        setMeetupFrequency(data.meetupFrequency || '')
-        setRole(data.role || '')
-        setCompany(data.company || '')
-        setEmail(data.email || '')
-        setPortfolio(data.portfolio || '')
-        setAvailableForHire(data.availableForHire || false)
-        setAvailableForMentoring(data.availableForMentoring || false)
-
-        setBodyMarkdown(data.body || '')
-
-        // Set existing image previews
-        if (data.logo && typeof data.logo === 'object' && 'url' in data.logo) {
-          setLogoPreview(data.logo.url || null)
-        }
-        if (data.coverImage && typeof data.coverImage === 'object' && 'url' in data.coverImage) {
-          setCoverPreview(data.coverImage.url || null)
-        }
-      } catch {
-        setError('Error de conexion')
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    if (id) fetchEntry()
-  }, [id])
-
-  function csvToArray(value: string) {
-    return value
-      .split(',')
-      .map((s) => s.trim())
-      .filter(Boolean)
-  }
-
-  function addTag() {
-    const t = tagInput.trim().toLowerCase()
-    if (t && !tags.includes(t) && tags.length < 10) {
-      setTags([...tags, t])
-      setTagInput('')
-    }
-  }
-
-  function removeTag(tag: string) {
-    setTags(tags.filter((t) => t !== tag))
-  }
-
-  async function uploadImage(file: File): Promise<number> {
-    const formData = new FormData()
-    formData.append('file', file)
-    const res = await fetch('/api/media/upload', {
-      method: 'POST',
-      body: formData,
-    })
-    if (!res.ok) {
-      const data = await res.json().catch(() => ({}))
-      throw new Error(data.error || 'Error al subir imagen')
-    }
-    const data = await res.json()
-    return data.id
-  }
-
-  const handleSave = useCallback(async () => {
-    if (!entry) return
-    setSaving(true)
-    setSaved(false)
-    setUploadError(null)
-
-    // Upload new images if selected
-    let logoId: number | undefined
-    let coverImageId: number | undefined
-
-    const logoFile = logoRef.current?.files?.[0]
-    const coverFile = coverRef.current?.files?.[0]
-
-    if (logoFile || coverFile) {
-      setUploadingImages(true)
-      try {
-        if (logoFile) logoId = await uploadImage(logoFile)
-        if (coverFile) coverImageId = await uploadImage(coverFile)
-      } catch (err) {
-        const message = err instanceof Error ? err.message : 'Error al subir imagenes'
-        setUploadError(message)
-        setUploadingImages(false)
-        setSaving(false)
-        return
-      }
-      setUploadingImages(false)
-    }
-
-    const body: Record<string, unknown> = {
-      id: entry.id,
-      name,
-      tagline: tagline || undefined,
-      city,
-      website: website || undefined,
-      x: x || undefined,
-      instagram: instagram || undefined,
-      linkedin: linkedin || undefined,
-      github: github || undefined,
-      youtube: youtube || undefined,
-      tags: tags.length > 0 ? tags.map((t) => ({ tag: t })) : undefined,
-      body: bodyMarkdown.trim() || undefined,
-    }
-
-    if (logoId) body.logo = logoId
-    if (coverImageId) body.coverImage = coverImageId
-
-    if (isStartupLike(entry.entryType)) {
-      body.foundedYear = foundedYear ? Number(foundedYear) : undefined
-      body.stage = stage || undefined
-      body.teamSize = teamSize || undefined
-      body.sector = sector || undefined
-      const techArr = csvToArray(technologies)
-      body.technologies = techArr.length > 0 ? techArr.map((t) => ({ technology: t })) : undefined
-      body.hiringUrl = hiring && hiringUrl ? hiringUrl : undefined
-      body.businessModel = businessModel || undefined
-    }
-
-    if (entry.entryType === 'community') {
-      body.memberCount = memberCount ? Number(memberCount) : undefined
-      body.meetupFrequency = meetupFrequency || undefined
-      body.discord = discord || undefined
-      body.telegram = telegram || undefined
-    }
-
-    if (entry.entryType === 'person') {
-      body.role = role || undefined
-      body.company = company || undefined
-      body.email = email || undefined
-      body.portfolio = portfolio || undefined
-      body.availableForHire = availableForHire
-      body.availableForMentoring = availableForMentoring
-    }
-
-    try {
-      const res = await fetch('/api/submissions/entries', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      })
-
-      if (res.ok) {
-        setSaved(true)
-      } else {
-        const data = await res.json().catch(() => ({}))
-        setError(data.error || 'Error al guardar')
-      }
-    } catch {
-      setError('Error de conexion al guardar')
-    } finally {
-      setSaving(false)
-    }
-  }, [
-    entry, name, tagline, city, website, x, instagram, linkedin, github, youtube,
-    discord, telegram, tags, bodyMarkdown, foundedYear, stage, teamSize, sector,
-    technologies, hiring, hiringUrl, businessModel, memberCount, meetupFrequency,
-    role, company, email, portfolio, availableForHire, availableForMentoring,
-  ])
+  const {
+    entry, loading, error, saving, saved,
+    name, setName,
+    tagline, setTagline,
+    city, setCity,
+    website, setWebsite,
+    x, setX,
+    instagram, setInstagram,
+    linkedin, setLinkedin,
+    github, setGithub,
+    youtube, setYoutube,
+    discord, setDiscord,
+    telegram, setTelegram,
+    tags, tagInput, setTagInput, addTag, removeTag,
+    foundedYear, setFoundedYear,
+    stage, setStage,
+    teamSize, setTeamSize,
+    sector, setSector,
+    technologies, setTechnologies,
+    hiring, setHiring,
+    hiringUrl, setHiringUrl,
+    businessModel, setBusinessModel,
+    memberCount, setMemberCount,
+    meetupFrequency, setMeetupFrequency,
+    role, setRole,
+    company, setCompany,
+    email, setEmail,
+    portfolio, setPortfolio,
+    availableForHire, setAvailableForHire,
+    availableForMentoring, setAvailableForMentoring,
+    bodyMarkdown, setBodyMarkdown,
+    logoPreview, setLogoPreview,
+    coverPreview, setCoverPreview,
+    uploadingImages, uploadError,
+    logoRef, coverRef,
+    handleSave,
+  } = useEntryEditor(id)
 
   return (
     <AuthGuard>
