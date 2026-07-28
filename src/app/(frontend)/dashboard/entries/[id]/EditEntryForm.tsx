@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback, useRef } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { AuthGuard } from '@/components/auth/AuthGuard'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
+import { Card } from '@/components/ui/Card'
 import { EntryBadge } from '@/components/entries/EntryBadge'
 import { XCircle, X, Plus, ArrowLeft, Save, CheckCircle, Loader2 } from 'lucide-react'
 import {
@@ -397,7 +398,7 @@ export function EditEntryForm() {
                 </div>
               )}
 
-              <div className="bg-card/90 backdrop-blur-sm border border-border rounded-lg p-6 md:p-8">
+              <Card className="md:p-8">
                 <form
                   onSubmit={(e) => {
                     e.preventDefault()
@@ -901,7 +902,7 @@ export function EditEntryForm() {
                     </button>
                   </div>
                 </form>
-              </div>
+              </Card>
             </>
           )}
         </div>

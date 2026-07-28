@@ -15,6 +15,7 @@ import {
 } from '@/config'
 import { ENTRY_TYPE_ICON_MAP } from '@/lib/icons'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
+import { Card } from '@/components/ui/Card'
 import { PaginatedView } from '@/components/ui/PaginatedView'
 import { EntryCardSkeleton } from './EntryCardSkeleton'
 import type { Entry, Media } from '@/payload-types'
@@ -325,9 +326,9 @@ export default function DirectoryFilter({
 
         <div className={`collapse-grid ${mobileOpen ? 'open' : ''}`}>
           <div className="collapse-content">
-            <div className="mt-2 bg-card/90 backdrop-blur-sm border border-border rounded-lg p-4 space-y-4">
+            <Card className="mt-2 p-4 space-y-4">
               {sidebarContent}
-            </div>
+            </Card>
           </div>
         </div>
       </div>
@@ -335,9 +336,9 @@ export default function DirectoryFilter({
       {/* Desktop: sidebar + content grid */}
       <div className="grid lg:grid-cols-[240px_1fr] gap-6">
         {/* Desktop sidebar */}
-        <aside className="hidden lg:block bg-card/90 backdrop-blur-sm border border-border rounded-lg p-4 h-fit lg:max-h-[calc(100vh-12rem)] lg:overflow-y-auto space-y-4">
+        <Card as="aside" className="hidden lg:block p-4 h-fit lg:max-h-[calc(100vh-12rem)] lg:overflow-y-auto space-y-4">
           {sidebarContent}
-        </aside>
+        </Card>
 
         {/* Content area */}
         <PaginatedView<Entry>

@@ -1,13 +1,20 @@
-export default function EventTypeBadge({ isInPerson }: { isInPerson: boolean }) {
+import { Badge } from '@/components/ui/Badge'
+import { cn } from '@/lib/utils'
+
+export default function EventTypeBadge({
+  isInPerson,
+  className,
+}: {
+  isInPerson: boolean
+  className?: string
+}) {
   return (
-    <span
-      className={`text-2xs font-mono font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded whitespace-nowrap ${
-        isInPerson
-          ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
-          : "bg-blue-500/15 text-blue-600 dark:text-blue-400"
-      }`}
+    <Badge
+      tone={isInPerson ? 'success' : 'info'}
+      shape="square"
+      className={cn('font-semibold uppercase tracking-wider', className)}
     >
-      {isInPerson ? "Presencial" : "Virtual"}
-    </span>
-  );
+      {isInPerson ? 'Presencial' : 'Virtual'}
+    </Badge>
+  )
 }

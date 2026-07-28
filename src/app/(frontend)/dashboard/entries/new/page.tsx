@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { AuthGuard } from '@/components/auth/AuthGuard'
 import { SINALOA_CITIES } from '@/config'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
+import { Card } from '@/components/ui/Card'
 import SubmitWizard from '@/components/forms/submit-wizard'
 
 export const metadata: Metadata = {
@@ -30,9 +31,9 @@ export default function NewEntryPage() {
             Registra tu startup, consultora, comunidad o perfil en el directorio tech de Sinaloa.
           </p>
 
-          <div className="bg-card/90 backdrop-blur-sm border border-border rounded-lg p-6 md:p-8">
+          <Card className="md:p-8">
             <SubmitWizard cities={cities} />
-          </div>
+          </Card>
         </div>
       </section>
     </AuthGuard>

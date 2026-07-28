@@ -20,6 +20,8 @@ import type { LucideIcon } from 'lucide-react'
 import type { TechEvent } from '@/lib/events'
 import { getEventPath } from '@/lib/events'
 import { buttonVariants, type ButtonSize } from '@/components/ui/Button'
+import { Card } from '@/components/ui/Card'
+import EventTypeBadge from './EventTypeBadge'
 import { AddToCalendar } from './AddToCalendar'
 
 interface EventDetailViewProps {
@@ -31,12 +33,8 @@ interface EventDetailViewProps {
   onClose?: () => void
 }
 
-/* Card chrome shared with the entry detail pages. */
-const CARD = 'bg-card/90 backdrop-blur-sm border border-border rounded-lg p-6'
-const CARD_TITLE =
-  'font-mono text-xs text-muted uppercase tracking-wider mb-4 flex items-center gap-2'
-
-function Card({
+/** Titled section card — the entry detail pages use the same chrome. */
+function EventDetailCard({
   title,
   Icon,
   children,
@@ -46,13 +44,13 @@ function Card({
   children: React.ReactNode
 }) {
   return (
-    <section className={CARD}>
-      <h2 className={CARD_TITLE}>
+    <Card as="section">
+      <h2 className="font-mono text-xs text-muted uppercase tracking-wider mb-4 flex items-center gap-2">
         <Icon className="w-4 h-4 text-accent" />
         {title}
       </h2>
       {children}
-    </section>
+    </Card>
   )
 }
 
@@ -174,9 +172,7 @@ export function EventDetailView({
             <span>
               {event.location}
               {event.isInPerson && (
-                <span className="ml-2 inline-block text-2xs font-mono font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded bg-accent/15 text-accent">
-                  Presencial
-                </span>
+                <EventTypeBadge isInPerson className="ml-2" />
               )}
             </span>
           </div>
@@ -255,12 +251,12 @@ export function EventDetailView({
       <div className="space-y-4">
         {hero}
 
-        <Card title="Acciones" Icon={Zap}>
+        <EventDetailCard title="Acciones" Icon={Zap}>
           <div className="flex flex-wrap gap-2">{actions}</div>
-        </Card>
+        </EventDetailCard>
 
         {hasDetails && (
-          <Card title="Detalles" Icon={LayoutList}>
+          <EventDetailCard title="Detalles" Icon={LayoutList}>
             <div className="grid gap-4 sm:grid-cols-2">
               {event.organizer && (
                 <DetailRow label="Organiza" Icon={Users}>
@@ -276,22 +272,20 @@ export function EventDetailView({
                 <DetailRow label="Ubicación" Icon={MapPin}>
                   {event.location}
                   {event.isInPerson && (
-                    <span className="ml-2 inline-block text-2xs font-mono font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded bg-accent/15 text-accent">
-                      Presencial
-                    </span>
+                    <EventTypeBadge isInPerson className="ml-2" />
                   )}
                 </DetailRow>
               )}
             </div>
-          </Card>
+          </EventDetailCard>
         )}
 
         {event.description && (
-          <Card title="Acerca de" Icon={Info}>
+          <EventDetailCard title="Acerca de" Icon={Info}>
             <p className="text-secondary whitespace-pre-line text-sm leading-relaxed">
               {event.description}
             </p>
-          </Card>
+          </EventDetailCard>
         )}
       </div>
     )

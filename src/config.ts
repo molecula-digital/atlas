@@ -21,7 +21,6 @@ export interface EntryTypeConfig {
   label: string
   labelPlural: string
   description: string
-  badgeColor: string
   icon: string
   slug: string
 }
@@ -31,7 +30,6 @@ export const ENTRY_TYPE_CONFIG: Record<AtlasEntryType, EntryTypeConfig> = {
     label: 'Startup',
     labelPlural: 'Startups',
     description: 'Empresas emergentes de tecnología en Sinaloa',
-    badgeColor: 'bg-accent/10 text-accent border-accent/25',
     icon: 'rocket',
     slug: 'startups',
   },
@@ -39,7 +37,6 @@ export const ENTRY_TYPE_CONFIG: Record<AtlasEntryType, EntryTypeConfig> = {
     label: 'Comunidad',
     labelPlural: 'Comunidades',
     description: 'Grupos y comunidades de tecnología locales',
-    badgeColor: 'bg-accent/10 text-accent border-accent/25',
     icon: 'users',
     slug: 'comunidades',
   },
@@ -47,7 +44,6 @@ export const ENTRY_TYPE_CONFIG: Record<AtlasEntryType, EntryTypeConfig> = {
     label: 'Empresa',
     labelPlural: 'Empresas',
     description: 'Empresas establecidas de tecnología',
-    badgeColor: 'bg-accent/10 text-accent border-accent/25',
     icon: 'briefcase',
     slug: 'empresas',
   },
@@ -55,7 +51,6 @@ export const ENTRY_TYPE_CONFIG: Record<AtlasEntryType, EntryTypeConfig> = {
     label: 'Consultoría',
     labelPlural: 'Consultorías',
     description: 'Empresas de consultoría y servicios tecnológicos',
-    badgeColor: 'bg-accent/10 text-accent border-accent/25',
     icon: 'briefcase',
     slug: 'consultoras',
   },
@@ -63,7 +58,6 @@ export const ENTRY_TYPE_CONFIG: Record<AtlasEntryType, EntryTypeConfig> = {
     label: 'Centro de Investigación',
     labelPlural: 'Centros de Investigación',
     description: 'Centros de investigación y desarrollo tecnológico',
-    badgeColor: 'bg-accent/10 text-accent border-accent/25',
     icon: 'microscope',
     slug: 'centros-de-investigacion',
   },
@@ -71,7 +65,6 @@ export const ENTRY_TYPE_CONFIG: Record<AtlasEntryType, EntryTypeConfig> = {
     label: 'Persona',
     labelPlural: 'Personas',
     description: 'Talento tech destacado de la región',
-    badgeColor: 'bg-accent/10 text-accent border-accent/25',
     icon: 'user',
     slug: 'personas',
   },

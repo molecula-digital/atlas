@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { AuthGuard } from '@/components/auth/AuthGuard'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
+import { Card } from '@/components/ui/Card'
 import { CITY_SELECT_OPTIONS, JOB_TYPE_OPTIONS, MODALITY_OPTIONS } from '@/config'
 import { XCircle, ArrowLeft, Save, CheckCircle } from 'lucide-react'
 import { buttonVariants } from '@/components/ui/Button'
@@ -210,7 +211,7 @@ export default function EditJobPage() {
                 </div>
               )}
 
-              <div className="bg-card/90 backdrop-blur-sm border border-border rounded-lg p-6 md:p-8">
+              <Card className="md:p-8">
                 <form
                   onSubmit={(e) => {
                     e.preventDefault()
@@ -332,7 +333,7 @@ export default function EditJobPage() {
                     </button>
                   </div>
                 </form>
-              </div>
+              </Card>
             </>
           )}
         </div>
