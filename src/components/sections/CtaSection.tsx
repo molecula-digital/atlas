@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { btn } from '@/components/ui/button-styles'
+import { buttonVariants } from '@/components/ui/Button'
 
 export function CtaSection() {
   return (
@@ -15,7 +15,7 @@ export function CtaSection() {
             directorio y conecta con el ecosistema.
           </p>
           <div className="flex flex-wrap justify-center gap-3">
-            <Link href="/dashboard" className={btn({ variant: 'accent', size: 'md' })}>
+            <Link href="/dashboard" className={buttonVariants({ variant: 'accent', size: 'md' })}>
               Registrarme
               <svg
                 className="w-3.5 h-3.5"
@@ -31,7 +31,7 @@ export function CtaSection() {
                 />
               </svg>
             </Link>
-            <Link href="/directorio" className={btn({ size: 'md' })}>
+            <Link href="/directorio" className={buttonVariants({ size: 'md' })}>
               Explorar directorio
             </Link>
           </div>

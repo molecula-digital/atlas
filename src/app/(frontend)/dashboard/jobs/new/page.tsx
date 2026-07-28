@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { AuthGuard } from '@/components/auth/AuthGuard'
 import { CITY_SELECT_OPTIONS, JOB_TYPE_OPTIONS, MODALITY_OPTIONS } from '@/config'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
-import { btn } from '@/components/ui/button-styles'
+import { buttonVariants } from '@/components/ui/Button'
 
 export default function NewJobPage() {
   const router = useRouter()
@@ -123,7 +123,7 @@ export default function NewJobPage() {
             <button
               type="submit"
               disabled={submitting}
-              className={btn({ variant: "accent", size: "md" }, "w-full")}
+              className={buttonVariants({ variant: "accent", size: "md", className: "w-full" })}
             >
               {submitting ? 'Enviando...' : 'Enviar para revisión'}
             </button>

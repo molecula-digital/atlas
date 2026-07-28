@@ -6,7 +6,7 @@ import { Globe, UserRound } from 'lucide-react'
 import { SITE_TITLE, SITE_URL } from '@/config'
 import { getPublicProfileBySlug } from '@/lib/public-profile'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
-import { btn } from '@/components/ui/button-styles'
+import { buttonVariants } from '@/components/ui/Button'
 import { GitHubIcon, LinkedInIcon, XIcon } from '@/components/icons/SocialIcons'
 
 type PageProps = { params: Promise<{ slug: string }> }
@@ -112,7 +112,7 @@ export default async function PublicProfilePage({ params }: PageProps) {
                         href={link.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className={btn({ variant: 'neutral', size: 'sm' })}
+                        className={buttonVariants({ variant: 'neutral', size: 'sm' })}
                       >
                         {link.icon === 'globe' && <Globe className="w-3.5 h-3.5" />}
                         {link.icon === 'linkedin' && <LinkedInIcon className="w-3.5 h-3.5" />}

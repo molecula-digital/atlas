@@ -19,7 +19,7 @@ import { PaginatedView } from '@/components/ui/PaginatedView'
 import { EntryCardSkeleton } from './EntryCardSkeleton'
 import type { Entry, Media } from '@/payload-types'
 import { EntryCard } from './EntryCard'
-import { btn } from '@/components/ui/button-styles'
+import { buttonVariants } from '@/components/ui/Button'
 
 /* ── Types ── */
 
@@ -307,7 +307,7 @@ export default function DirectoryFilter({
       <div className="lg:hidden mb-6">
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className={btn({ size: "md" }, "w-full justify-between backdrop-blur-sm")}
+          className={buttonVariants({ size: "md", className: "w-full justify-between backdrop-blur-sm" })}
         >
           <span className="flex items-center gap-2">
             <SlidersHorizontal className="w-4 h-4 text-muted" />

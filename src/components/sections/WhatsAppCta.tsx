@@ -1,6 +1,6 @@
 import { MessageCircle } from 'lucide-react'
 import { WHATSAPP_URL } from '@/config'
-import { btn } from '@/components/ui/button-styles'
+import { buttonVariants } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
 
 export function WhatsAppCta({ className }: { className?: string }) {
@@ -28,7 +28,7 @@ export function WhatsAppCta({ className }: { className?: string }) {
             href={WHATSAPP_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className={btn({ variant: 'accent', size: 'md' }, 'shrink-0')}
+            className={buttonVariants({ variant: 'accent', size: 'md', className: 'shrink-0' })}
           >
             <MessageCircle className="w-3.5 h-3.5" />
             Unirme al grupo

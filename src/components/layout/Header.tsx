@@ -10,7 +10,7 @@ import { useSession } from '@/lib/auth-client'
 import { ENTRY_TYPE_CONFIG, ENTRY_TYPES } from '@/config'
 import { ENTRY_TYPE_ICON_MAP } from '@/lib/icons'
 import { useDisclosure } from '@/hooks/useDisclosure'
-import { btn } from '@/components/ui/button-styles'
+import { buttonVariants } from '@/components/ui/Button'
 import { AtlasLogo } from '@/components/layout/AtlasLogo'
 
 const NAV_LINK = "flex items-center gap-1 px-2 py-1 text-[10px] font-mono text-secondary hover:text-accent rounded hover:bg-elevated transition-colors"
@@ -95,7 +95,7 @@ export function Header({
                   GitHub
                 </a>
                 <ThemeToggle />
-                <Link href="/dashboard" className={btn({ variant: 'accent', size: 'xs' }, 'ml-1')}>
+                <Link href="/dashboard" className={buttonVariants({ variant: 'accent', size: 'xs', className: 'ml-1' })}>
                   {session ? (
                     <><LayoutDashboard className="w-3 h-3" /> Dashboard</>
                   ) : (
@@ -166,7 +166,7 @@ export function Header({
           </a>
 
           <div className="pt-4">
-            <Link href="/dashboard" className={btn({ variant: 'accent', size: 'lg' })}>
+            <Link href="/dashboard" className={buttonVariants({ variant: 'accent', size: 'lg' })}>
               {session ? (
                 <><LayoutDashboard className="w-4 h-4" /> Dashboard</>
               ) : (

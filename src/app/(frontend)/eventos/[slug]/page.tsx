@@ -7,7 +7,7 @@ import { SITE_URL } from '@/config'
 import { formatDateEs } from '@/lib/format'
 import { safeJsonLd } from '@/lib/utils'
 import { MapPin, ArrowUpRight } from 'lucide-react'
-import { btn } from '@/components/ui/button-styles'
+import { buttonVariants } from '@/components/ui/Button'
 import { resolveMapEmbedUrl } from '@/lib/maps'
 import EventDetailPageClient from './EventDetailPageClient'
 
@@ -157,7 +157,7 @@ export default async function EventDetailPage({
                 href={event.mapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={btn({ size: 'md' }, 'w-full justify-center')}
+                className={buttonVariants({ size: 'md', className: 'w-full justify-center' })}
               >
                 Abrir en Google Maps
                 <ArrowUpRight size={13} />

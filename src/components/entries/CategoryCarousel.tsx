@@ -76,11 +76,11 @@ export default function CategoryCarousel({
       <div className="flex items-center justify-center gap-2 mt-4">
         <CarouselPrevious
           className="static translate-y-0 min-h-11 min-w-11"
-          size="icon"
+          size="icon-sm"
         />
         <CarouselNext
           className="static translate-y-0 min-h-11 min-w-11"
-          size="icon"
+          size="icon-sm"
         />
       </div>
     </Carousel>

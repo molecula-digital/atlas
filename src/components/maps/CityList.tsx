@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback, useMemo, memo } from "react";
 import { MapPin, Search, ChevronsDown, Plus } from "lucide-react";
-import { btn } from "@/components/ui/button-styles";
+import { buttonVariants } from '@/components/ui/Button';
 
 interface City {
   id: string;
@@ -182,7 +182,7 @@ export default function CityList({
             <div className="pt-3 mt-2 border-t border-border space-y-1.5">
               <a
                 href="/dashboard"
-                className={btn({ variant: "accent", size: "md" }, "w-full border-dashed")}
+                className={buttonVariants({ variant: "accent", size: "md", className: "w-full border-dashed" })}
               >
                 <Plus className="w-3.5 h-3.5" />
                 REGISTRAR PERFIL/STARTUP

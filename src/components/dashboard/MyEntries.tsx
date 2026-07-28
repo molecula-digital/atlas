@@ -8,7 +8,7 @@ import { timeAgo } from '@/lib/utils'
 import { CheckCircle, Clock, XCircle, Pencil, ExternalLink, Plus, FolderKanban, AlertTriangle } from 'lucide-react'
 import { useUserResource } from '@/hooks/useUserResource'
 import { EmptyState } from '@/components/ui/EmptyState'
-import { btn } from '@/components/ui/button-styles'
+import { buttonVariants } from '@/components/ui/Button'
 
 interface Entry {
   id: string
@@ -73,7 +73,7 @@ export function MyEntries() {
         action={
           <Link
             href="/dashboard/entries/new"
-            className={btn({ variant: "accent", size: "md" })}
+            className={buttonVariants({ variant: "accent", size: "md" })}
           >
             <Plus className="w-3.5 h-3.5" />
             Agregar registro
@@ -146,14 +146,14 @@ export function MyEntries() {
               <div className="flex gap-2 shrink-0">
                 <Link
                   href={`/dashboard/entries/${entry.id}`}
-                  className={btn({ size: "sm" })}
+                  className={buttonVariants({ size: "sm" })}
                 >
                   <Pencil className="w-3 h-3" /> Editar
                 </Link>
                 {entry._status === 'published' && (
                   <Link
                     href={entryUrl}
-                    className={btn({ size: "sm" })}
+                    className={buttonVariants({ size: "sm" })}
                   >
                     <ExternalLink className="w-3 h-3" /> Ver
                   </Link>
@@ -168,7 +168,7 @@ export function MyEntries() {
       <div className="text-center pt-2">
         <Link
           href="/dashboard/entries/new"
-          className={btn({ variant: "accent", size: "md" })}
+          className={buttonVariants({ variant: "accent", size: "md" })}
         >
           <Plus className="w-3.5 h-3.5" />
           Agregar registro

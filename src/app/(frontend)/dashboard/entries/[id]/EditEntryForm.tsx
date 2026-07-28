@@ -17,7 +17,7 @@ import {
   isStartupLike,
   type AtlasEntryType,
 } from '@/config'
-import { btn } from '@/components/ui/button-styles'
+import { buttonVariants } from '@/components/ui/Button'
 
 const cities = [
   { id: 'global', name: 'Global (sin ubicacion especifica)' },
@@ -360,7 +360,7 @@ export function EditEntryForm() {
               <div className="flex items-center gap-3 mb-6">
                 <button
                   onClick={() => router.push('/dashboard')}
-                  className={btn({ variant: "ghost", size: "md", icon: true })}
+                  className={buttonVariants({ variant: "ghost", size: "icon-md" })}
                 >
                   <ArrowLeft className="w-4 h-4" />
                 </button>
@@ -855,7 +855,7 @@ export function EditEntryForm() {
                         type="button"
                         onClick={addTag}
                         disabled={tags.length >= 10}
-                        className={btn({ size: "lg", icon: true })}
+                        className={buttonVariants({ size: "icon-lg" })}
                       >
                         <Plus className="w-4 h-4" />
                       </button>
@@ -894,7 +894,7 @@ export function EditEntryForm() {
                     <button
                       type="submit"
                       disabled={saving || uploadingImages || !name.trim() || !city}
-                      className={btn({ variant: "accent", size: "md" })}
+                      className={buttonVariants({ variant: "accent", size: "md" })}
                     >
                       <Save className="w-3.5 h-3.5" />
                       {uploadingImages ? 'Subiendo imagenes...' : saving ? 'Guardando...' : 'Guardar cambios'}

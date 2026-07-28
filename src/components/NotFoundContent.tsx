@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { FolderOpen, CalendarDays, Newspaper, Briefcase, ArrowLeft } from 'lucide-react'
-import { btn } from '@/components/ui/button-styles'
+import { buttonVariants } from '@/components/ui/Button'
 
 const LINES = [
   '> buscando página...',
@@ -101,7 +101,7 @@ export function NotFoundContent() {
               <Link
                 key={href}
                 href={href}
-                className={btn({ size: 'md' }, 'justify-start')}
+                className={buttonVariants({ size: 'md', className: 'justify-start' })}
               >
                 <Icon className="w-3.5 h-3.5" />
                 {label}

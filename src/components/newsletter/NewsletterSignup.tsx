@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from 'react'
 import { Loader2, CheckCircle, Mail } from 'lucide-react'
 import { NEWSLETTER } from '@/config'
-import { btn } from '@/components/ui/button-styles'
+import { buttonVariants } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
 
 type NewsletterSignupVariant = 'compact' | 'section' | 'hero'
@@ -85,7 +85,7 @@ export function NewsletterSignup({
           <button
             type="submit"
             disabled={status === 'loading'}
-            className={btn({ variant: 'accent', size: 'md' }, 'shrink-0')}
+            className={buttonVariants({ variant: 'accent', size: 'md', className: 'shrink-0' })}
           >
             {status === 'loading' ? (
               <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -186,7 +186,7 @@ export function NewsletterSignup({
         <button
           type="submit"
           disabled={status === 'loading'}
-          className={btn({ variant: 'accent', size: 'sm' }, 'shrink-0')}
+          className={buttonVariants({ variant: 'accent', size: 'sm', className: 'shrink-0' })}
           aria-label={NEWSLETTER.cta}
         >
           {status === 'loading' ? (

@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { Plus, ArrowRight } from 'lucide-react'
-import { btn } from '@/components/ui/button-styles'
+import { buttonVariants } from '@/components/ui/Button'
 import { SectionTitle } from '@/components/ui/SectionTitle'
 
 export function CombinedCtaSection() {
@@ -30,7 +30,7 @@ export function CombinedCtaSection() {
             </p>
             <Link
               href="/dashboard"
-              className={btn({ variant: 'accent', size: 'md' }, 'mt-4 w-fit')}
+              className={buttonVariants({ variant: 'accent', size: 'md', className: 'mt-4 w-fit' })}
             >
               Agregar registro
               <ArrowRight className="w-3 h-3" />

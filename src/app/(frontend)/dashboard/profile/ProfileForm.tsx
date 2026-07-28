@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { useSession, authClient, signOut } from '@/lib/auth-client'
 import Link from 'next/link'
 import { Save, Loader2, CheckCircle, AlertCircle, ExternalLink, LogOut } from 'lucide-react'
-import { btn } from '@/components/ui/button-styles'
+import { buttonVariants } from '@/components/ui/Button'
 import { NEWSLETTER } from '@/config'
 import { PROFILE_BIO_MAX_LENGTH, slugifyProfile } from '@/lib/profile-fields'
 import { readJson } from '@/lib/read-json'
@@ -405,7 +405,7 @@ export function ProfileForm() {
           <button
             onClick={handleSave}
             disabled={saving}
-            className={btn({ variant: "accent", size: "md" })}
+            className={buttonVariants({ variant: "accent", size: "md" })}
           >
             {saving ? (
               <Loader2 className="w-4 h-4 animate-spin" />
@@ -428,7 +428,7 @@ export function ProfileForm() {
         <button
           type="button"
           onClick={() => signOut()}
-          className={btn({ variant: 'danger', size: 'md' })}
+          className={buttonVariants({ variant: 'danger', size: 'md' })}
         >
           <LogOut className="w-3.5 h-3.5" />
           Cerrar sesión

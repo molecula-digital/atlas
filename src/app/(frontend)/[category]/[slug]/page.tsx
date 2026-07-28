@@ -44,7 +44,7 @@ import { ENTRY_TYPE_ICON_MAP } from '@/lib/icons'
 import { SocialLinkIcon } from '@/components/icons/SocialIcons'
 import { isStartupLike } from '@/config'
 import { WhatsAppCta } from '@/components/sections/WhatsAppCta'
-import { btn } from '@/components/ui/button-styles'
+import { buttonVariants } from '@/components/ui/Button'
 
 export async function generateStaticParams() {
   const result = await getPublishedEntries()
@@ -365,7 +365,7 @@ export default async function EntryDetailPage({
               {entry.website && (
                 <ExternalLink
                   href={track(entry.website as string)!}
-                  className={btn({ variant: "accent", size: "md" })}
+                  className={buttonVariants({ variant: "accent", size: "md" })}
                 >
                   Visitar sitio
                   <ExternalLinkIcon className="w-4 h-4" />

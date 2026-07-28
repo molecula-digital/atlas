@@ -1,6 +1,6 @@
 import { X, Plus } from "lucide-react";
 import { TYPE_COPY, type StepProps } from "./types";
-import { btn } from "@/components/ui/button-styles"
+import { buttonVariants } from '@/components/ui/Button'
 
 export default function StepLinks({ state, setField }: StepProps) {
   const copy = state.entryType ? TYPE_COPY[state.entryType] : null;
@@ -161,7 +161,7 @@ export default function StepLinks({ state, setField }: StepProps) {
             type="button"
             onClick={addTag}
             disabled={state.tags.length >= 10}
-            className={btn({ size: "lg", icon: true })}
+            className={buttonVariants({ size: "icon-lg" })}
           >
             <Plus className="w-3.5 h-3.5" />
           </button>

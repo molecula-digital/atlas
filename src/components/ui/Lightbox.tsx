@@ -11,7 +11,7 @@ import {
   DialogTitle,
 } from '@/components/ui/Dialog'
 import { useDialogBackNavigation } from '@/hooks/useDialogBackNavigation'
-import { btn } from '@/components/ui/button-styles'
+import { buttonVariants } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
 
 export type LightboxImage = {
@@ -93,7 +93,7 @@ export function Lightbox({ images, index, onClose, onIndexChange }: LightboxProp
                   type="button"
                   onClick={goPrev}
                   className={cn(
-                    btn({ variant: 'ghost', size: 'md', icon: true }),
+                    buttonVariants({ variant: 'ghost', size: 'icon-md' }),
                     'absolute top-1/2 left-2 -translate-y-1/2 border-white/20 bg-black/40 text-white hover:bg-black/60 hover:text-white sm:left-3',
                   )}
                   aria-label="Foto anterior"
@@ -104,7 +104,7 @@ export function Lightbox({ images, index, onClose, onIndexChange }: LightboxProp
                   type="button"
                   onClick={goNext}
                   className={cn(
-                    btn({ variant: 'ghost', size: 'md', icon: true }),
+                    buttonVariants({ variant: 'ghost', size: 'icon-md' }),
                     'absolute top-1/2 right-2 -translate-y-1/2 border-white/20 bg-black/40 text-white hover:bg-black/60 hover:text-white sm:right-3',
                   )}
                   aria-label="Foto siguiente"

@@ -1,5 +1,5 @@
 import React from "react";
-import { btn } from "@/components/ui/button-styles";
+import { buttonVariants } from '@/components/ui/Button';
 
 function clamp(value: number, min: number, max: number) {
   return Math.max(min, Math.min(max, value));
@@ -68,7 +68,7 @@ export default function MapPopup({
           </div>
           <a
             href={`/directorio/${popup.id}`}
-            className={btn({ variant: "accent", size: "sm" }, "w-full")}
+            className={buttonVariants({ variant: "accent", size: "sm", className: "w-full" })}
           >
             VER COMUNIDAD →
           </a>
@@ -80,7 +80,7 @@ export default function MapPopup({
           </p>
           <a
             href="/dashboard"
-            className={btn({ variant: "accent", size: "sm" }, "w-full border-dashed")}
+            className={buttonVariants({ variant: "accent", size: "sm", className: "w-full border-dashed" })}
           >
             REGISTRAR →
           </a>

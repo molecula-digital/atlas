@@ -1,7 +1,7 @@
 'use client'
 
 import { signIn } from '@/lib/auth-client'
-import { btn } from '@/components/ui/button-styles'
+import { buttonVariants } from '@/components/ui/Button'
 
 interface SignInButtonProps {
   callbackURL?: string
@@ -31,7 +31,7 @@ export function SignInButton({ callbackURL = '/dashboard', compact = false }: Si
     return (
       <button
         onClick={handleSignIn}
-        className={btn({ variant: "ghost", size: "sm" })}
+        className={buttonVariants({ variant: "ghost", size: "sm" })}
       >
         <GoogleLogo className="w-3.5 h-3.5" />
         Iniciar sesión
@@ -42,7 +42,7 @@ export function SignInButton({ callbackURL = '/dashboard', compact = false }: Si
   return (
     <button
       onClick={handleSignIn}
-      className={btn({ size: "md" }, "w-full")}
+      className={buttonVariants({ size: "md", className: "w-full" })}
     >
       <GoogleLogo className="w-5 h-5" />
       Continuar con Google

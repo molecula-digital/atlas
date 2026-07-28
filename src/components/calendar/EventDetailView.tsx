@@ -19,7 +19,7 @@ import {
 import type { LucideIcon } from 'lucide-react'
 import type { TechEvent } from '@/lib/events'
 import { getEventPath } from '@/lib/events'
-import { btn, type BtnSize } from '@/components/ui/button-styles'
+import { buttonVariants, type ButtonSize } from '@/components/ui/Button'
 import { AddToCalendar } from './AddToCalendar'
 
 interface EventDetailViewProps {
@@ -90,7 +90,7 @@ function EventFullPageLink({ slug, onClose }: { slug: string; onClose?: () => vo
         onClose?.()
         router.push(getEventPath(slug))
       }}
-      className={btn({ variant: 'ghost', size: 'md' })}
+      className={buttonVariants({ variant: 'ghost', size: 'md' })}
     >
       <Link2 size={13} />
       Ver página completa
@@ -193,7 +193,7 @@ export function EventDetailView({
 
   // On the full page the actions sit inside their own card, so they get the
   // larger size — at `md` on a bare background they were easy to miss.
-  const size: BtnSize = isPage ? 'lg' : 'md'
+  const size: ButtonSize = isPage ? 'lg' : 'md'
   const iconSize = isPage ? 15 : 13
 
   const actions = (
@@ -203,7 +203,7 @@ export function EventDetailView({
           href={event.registerUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className={btn({ variant: 'accent', size })}
+          className={buttonVariants({ variant: 'accent', size })}
         >
           <Ticket size={iconSize} />
           Registrarse
@@ -214,7 +214,7 @@ export function EventDetailView({
           href={event.url}
           target="_blank"
           rel="noopener noreferrer"
-          className={btn({ size })}
+          className={buttonVariants({ size })}
         >
           <ExternalLink size={iconSize} />
           Sitio web
@@ -225,7 +225,7 @@ export function EventDetailView({
           href={event.mapsUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className={btn({ size })}
+          className={buttonVariants({ size })}
         >
           <Map size={iconSize} />
           Google Maps
@@ -237,7 +237,7 @@ export function EventDetailView({
           href={event.meetLink}
           target="_blank"
           rel="noopener noreferrer"
-          className={btn({ size })}
+          className={buttonVariants({ size })}
         >
           <Video size={iconSize} />
           Meet/Zoom

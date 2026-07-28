@@ -4,7 +4,7 @@ import { SINALOA_CITIES, WHATSAPP_URL, ENTRY_TYPES, ENTRY_TYPE_CONFIG } from '@/
 import type { AtlasEntryType } from '@/config'
 import SinaloaMap from '@/components/maps/SinaloaMapLazy'
 import { ENTRY_TYPE_ICON_MAP } from '@/lib/icons'
-import { btn } from '@/components/ui/button-styles'
+import { buttonVariants } from '@/components/ui/Button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip'
 import { NewsletterSignup } from '@/components/newsletter/NewsletterSignup'
 import {
@@ -61,11 +61,11 @@ export function HeroSection({ cityCounts = {}, typeCounts = {} }: HeroSectionPro
             </p>
 
             <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
-              <Link href="/directorio" className={btn({ variant: 'accent', size: 'md' }, 'uppercase')}>
+              <Link href="/directorio" className={buttonVariants({ variant: 'accent', size: 'md', className: 'uppercase' })}>
                 <Search className="w-3.5 h-3.5" />
                 Explorar directorio
               </Link>
-              <Link href="/dashboard" className={btn({ size: 'md' }, 'uppercase')}>
+              <Link href="/dashboard" className={buttonVariants({ size: 'md', className: 'uppercase' })}>
                 <Plus className="w-3.5 h-3.5" />
                 Crear perfil
               </Link>

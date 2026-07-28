@@ -4,7 +4,7 @@ import { ENTRY_TYPE_CONFIG, ENTRY_TYPES, SOCIAL_LINKS, SITE_TITLE, NEWSLETTER, W
 import { GitHubIcon } from '@/components/icons/SocialIcons'
 import { AtlasLogo } from '@/components/layout/AtlasLogo'
 import { NewsletterSignup } from '@/components/newsletter/NewsletterSignup'
-import { btn } from '@/components/ui/button-styles'
+import { buttonVariants } from '@/components/ui/Button'
 
 export function Footer({
   contentContainerClassName = 'mx-auto w-full',
@@ -30,7 +30,7 @@ export function Footer({
                   href={WHATSAPP_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={btn({ variant: 'accent', size: 'sm' }, 'uppercase')}
+                  className={buttonVariants({ variant: 'accent', size: 'sm', className: 'uppercase' })}
                 >
                   <MessageCircle className="w-3.5 h-3.5" />
                   Comunidad WhatsApp
@@ -41,7 +41,7 @@ export function Footer({
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={btn({ variant: 'accent', size: 'sm' }, 'uppercase')}
+                    className={buttonVariants({ variant: 'accent', size: 'sm', className: 'uppercase' })}
                     aria-label={`${SITE_TITLE} en ${link.label}`}
                   >
                     {link.platform === 'github' && <GitHubIcon className="w-3.5 h-3.5" />}

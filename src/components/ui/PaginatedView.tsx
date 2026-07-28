@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useMemo, type ReactNode } from 'react'
 import { ChevronLeft, ChevronRight, SearchX } from 'lucide-react'
 import { fetchPaginated, type PaginatedResponse } from '@/lib/api'
-import { btn } from '@/components/ui/button-styles'
+import { buttonVariants } from '@/components/ui/Button'
 
 interface PaginatedViewProps<T> {
   endpoint: string
@@ -150,9 +150,9 @@ function Pagination({
     }
   }
 
-  const active = btn({ variant: 'accent', size: 'md' }, 'min-w-7')
-  const inactive = btn({ variant: 'ghost', size: 'md' }, 'min-w-7')
-  const disabled = btn({ variant: 'ghost', size: 'md' }, 'min-w-7 text-muted/40 pointer-events-none')
+  const active = buttonVariants({ variant: 'accent', size: 'md', className: 'min-w-7' })
+  const inactive = buttonVariants({ variant: 'ghost', size: 'md', className: 'min-w-7' })
+  const disabled = buttonVariants({ variant: 'ghost', size: 'md', className: 'min-w-7 text-muted/40 pointer-events-none' })
 
   return (
     <nav aria-label="Paginación" className="flex items-center justify-center gap-1 mt-8">

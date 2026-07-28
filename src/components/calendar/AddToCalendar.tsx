@@ -12,7 +12,7 @@ import {
   toCalendarEvent,
   yahooCalendarUrl,
 } from '@/lib/calendar-links'
-import { btn, type BtnSize } from '@/components/ui/button-styles'
+import { buttonVariants, type ButtonSize } from '@/components/ui/Button'
 import {
   Dialog,
   DialogContent,
@@ -63,7 +63,7 @@ export function AddToCalendar({
   size = 'md',
 }: {
   event: TechEvent
-  size?: BtnSize
+  size?: ButtonSize
 }) {
   const [open, setOpen] = useState(false)
   const calEvent = toCalendarEvent(event, `${SITE_URL}${getEventPath(event.slug)}`)
@@ -87,7 +87,7 @@ export function AddToCalendar({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger className={btn({ size })}>
+      <DialogTrigger className={buttonVariants({ size })}>
         <CalendarPlus size={size === 'lg' ? 15 : 13} />
         Agregar a calendario
       </DialogTrigger>

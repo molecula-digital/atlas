@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import EventTypeBadge from "./EventTypeBadge";
 import type { TechEvent } from "@/hooks/useEventsData";
-import { btn } from "@/components/ui/button-styles";
+import { buttonVariants } from '@/components/ui/Button';
 import { EventDialog } from "./EventDialog";
 
 const MONTH_ABBR = [
@@ -73,7 +73,7 @@ export default function UpcomingEventsSidebar({
         <button
           onClick={refetch}
           disabled={status === "loading"}
-          className={btn({ variant: "ghost", size: "md", icon: true }, "text-muted shrink-0")}
+          className={buttonVariants({ variant: "ghost", size: "icon-md", className: "text-muted shrink-0" })}
           aria-label="Actualizar eventos"
           title="Actualizar eventos"
         >
@@ -148,7 +148,7 @@ export default function UpcomingEventsSidebar({
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={(e) => e.stopPropagation()}
-                      className={btn({ variant: "accent", size: "xs" }, "mt-2")}
+                      className={buttonVariants({ variant: "accent", size: "xs", className: "mt-2" })}
                     >
                       <Ticket className="w-3 h-3" />
                       Registrarse
@@ -183,7 +183,7 @@ export default function UpcomingEventsSidebar({
           <button
             onClick={() => setPage((p) => p - 1)}
             disabled={page === 0}
-            className={btn({ size: "md", icon: true })}
+            className={buttonVariants({ size: "icon-md" })}
             aria-label="Página anterior"
           >
             <ChevronLeft className="w-4 h-4" />
@@ -196,7 +196,7 @@ export default function UpcomingEventsSidebar({
           <button
             onClick={() => setPage((p) => p + 1)}
             disabled={page === totalPages - 1}
-            className={btn({ size: "md", icon: true })}
+            className={buttonVariants({ size: "icon-md" })}
             aria-label="Página siguiente"
           >
             <ChevronRight className="w-4 h-4" />

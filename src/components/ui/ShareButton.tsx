@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Share2, Check } from "lucide-react";
-import { btn } from "@/components/ui/button-styles";
+import { buttonVariants } from '@/components/ui/Button';
 
 export default function ShareButton({
   title,
@@ -33,7 +33,7 @@ export default function ShareButton({
   return (
     <button
       onClick={handleShare}
-      className={btn({ size: 'md' })}
+      className={buttonVariants({ size: 'md' })}
     >
       {copied ? (
         <>
