@@ -12,15 +12,12 @@ import { ENTRY_TYPE_ICON_MAP } from '@/lib/icons'
 import { useDisclosure } from '@/hooks/useDisclosure'
 import { buttonVariants } from '@/components/ui/Button'
 import { AtlasLogo } from '@/components/layout/AtlasLogo'
+import { SiteFrame } from '@/components/layout/SiteFrame'
 
 const NAV_LINK = "flex items-center gap-1 px-2 py-1 text-[10px] font-mono text-secondary hover:text-accent rounded hover:bg-elevated transition-colors"
 const MOBILE_LINK = "flex items-center gap-2 py-3 text-lg font-mono font-semibold text-primary hover:text-accent transition-colors"
 
-export function Header({
-  contentContainerClassName = 'mx-auto w-full',
-}: {
-  contentContainerClassName?: string
-}) {
+export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const dropdown = useDisclosure()
   const pathname = usePathname()
@@ -41,8 +38,7 @@ export function Header({
             Ir al contenido
           </a>
 
-          <div className="px-4 md:px-6 lg:px-8">
-            <div className={`${contentContainerClassName} flex h-8 items-center justify-between`}>
+          <SiteFrame className="flex h-8 items-center justify-between">
               <div className="flex min-w-0 items-center gap-3">
                 <Link href="/" className="flex items-center shrink-0" aria-label="Tech Atlas — inicio">
                   <AtlasLogo className="h-4 w-auto" priority />
@@ -117,8 +113,7 @@ export function Header({
                   <X className={`w-4 h-4 absolute transition-all duration-300 ${mobileOpen ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-90 scale-75'}`} />
                 </button>
               </div>
-            </div>
-          </div>
+          </SiteFrame>
         </header>
       </div>
 

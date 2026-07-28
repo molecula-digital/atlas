@@ -86,7 +86,7 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ slu
           <RichText data={article.body as any} />
         </div>
 
-        <WhatsAppCta />
+        <WhatsAppCta className="mt-8" />
       </div>
     </article>
   )

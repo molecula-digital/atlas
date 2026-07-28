@@ -1,3 +1,4 @@
+import { SectionBlock } from '@/components/layout/SectionBlock'
 import Link from 'next/link'
 import { EntryStrip } from '@/components/entries/EntryStrip'
 import { FeaturedEntryTile } from '@/components/entries/FeaturedEntryTile'
@@ -29,7 +30,7 @@ export function FeaturedSection({ entries, latestEntries }: FeaturedSectionProps
   const displayLatest = latestEntries.slice(0, 5)
 
   return (
-    <section className="py-4">
+    <SectionBlock>
       <div className="min-w-0">
         <div className="mb-6 flex items-center justify-between">
           <SectionTitle description="Startups y organizaciones destacadas del ecosistema">
@@ -108,6 +109,6 @@ export function FeaturedSection({ entries, latestEntries }: FeaturedSectionProps
           </div>
         </div>
       </div>
-    </section>
+    </SectionBlock>
   )
 }

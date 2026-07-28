@@ -1,9 +1,10 @@
+import { SectionBlock } from '@/components/layout/SectionBlock'
 import Link from 'next/link'
 import { buttonVariants } from '@/components/ui/Button'
 
 export function CtaSection() {
   return (
-    <section className="py-4">
+    <SectionBlock>
       <div className="max-w-3xl mx-auto text-center">
         <div className="bg-card border border-border rounded-lg p-8 md:p-12 space-y-6">
           <h2 className="terminal-title text-2xl md:text-3xl font-sans font-bold text-primary uppercase">
@@ -37,6 +38,6 @@ export function CtaSection() {
           </div>
         </div>
       </div>
-    </section>
+    </SectionBlock>
   )
 }

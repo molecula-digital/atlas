@@ -1,3 +1,4 @@
+import { SectionBlock } from '@/components/layout/SectionBlock'
 import Link from 'next/link'
 import { Plus, ArrowRight } from 'lucide-react'
 import { buttonVariants } from '@/components/ui/Button'
@@ -5,7 +6,7 @@ import { SectionTitle } from '@/components/ui/SectionTitle'
 
 export function CombinedCtaSection() {
   return (
-    <section className="py-4">
+    <SectionBlock>
       <div className="max-w-5xl mx-auto">
         {/* Section header */}
         <SectionTitle
@@ -47,6 +48,6 @@ export function CombinedCtaSection() {
           para ver quién ya está aquí.
         </p>
       </div>
-    </section>
+    </SectionBlock>
   )
 }

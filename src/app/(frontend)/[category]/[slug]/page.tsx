@@ -558,7 +558,7 @@ export default async function EntryDetailPage({
       </div>
 
       <div className={!isCompactLayout ? 'max-w-3xl mx-auto lg:max-w-none' : ''}>
-        <WhatsAppCta className="pt-6 pb-2" />
+        <WhatsAppCta className="mt-6" />
 
         {/* Suggestions */}
         {suggestions.length > 0 && (

@@ -1,3 +1,4 @@
+import { SectionBlock } from '@/components/layout/SectionBlock'
 import { Sparkles, Compass, UserPlus, Gift, Users, HelpCircle, ChevronDown } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { FAQS } from '@/config'
@@ -13,7 +14,7 @@ const FAQ_ICON_MAP: Record<string, LucideIcon> = {
 
 export function FaqSection() {
   return (
-    <section className="py-4">
+    <SectionBlock>
       <div className="max-w-3xl mx-auto">
         <SectionTitle
           align="center"
@@ -43,6 +44,6 @@ export function FaqSection() {
           })}
         </div>
       </div>
-    </section>
+    </SectionBlock>
   )
 }
