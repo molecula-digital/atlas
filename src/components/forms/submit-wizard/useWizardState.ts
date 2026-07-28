@@ -37,10 +37,6 @@ export interface WizardState {
   telegram: string;
   tags: string[];
   tagInput: string;
-  // Step 4: Contact (submitter info)
-  submitterName: string;
-  submitterEmail: string;
-  submitterPhone: string;
   // Step 5: Submission
   submitting: boolean;
   uploadingImages: boolean;
@@ -99,9 +95,6 @@ const initialState: WizardState = {
   telegram: "",
   tags: [],
   tagInput: "",
-  submitterName: "",
-  submitterEmail: "",
-  submitterPhone: "",
   submitting: false,
   uploadingImages: false,
   uploadError: null,
@@ -170,7 +163,8 @@ function buildPayload(state: WizardState) {
     teamSize: state.teamSize || undefined,
     sector: state.sector || undefined,
     technologies: csvToArray(state.technologies)?.map((t) => ({ technology: t })),
-    hiringUrl: state.hiringUrl || undefined,
+    // The checkbox is only a UI gate — a retained URL must not be submitted once it is off.
+    hiringUrl: state.hiring ? state.hiringUrl || undefined : undefined,
     memberCount: state.memberCount ? Number(state.memberCount) : undefined,
     meetupFrequency: state.meetupFrequency || undefined,
     businessModel: state.businessModel || undefined,
@@ -180,11 +174,6 @@ function buildPayload(state: WizardState) {
     portfolio: state.portfolio || undefined,
     availableForHire: state.availableForHire || undefined,
     availableForMentoring: state.availableForMentoring || undefined,
-    submitter: {
-      name: state.submitterName,
-      email: state.submitterEmail,
-      phone: state.submitterPhone || undefined,
-    },
   };
 }
 
@@ -197,11 +186,6 @@ function canAdvance(state: WizardState): boolean {
         state.name.trim() !== "" &&
         state.description.trim() !== "" &&
         state.city !== ""
-      );
-    case 4:
-      return (
-        state.submitterName.trim() !== "" &&
-        state.submitterEmail.trim() !== ""
       );
     default:
       return true;

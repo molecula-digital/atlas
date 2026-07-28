@@ -79,7 +79,7 @@ export default function NewJobPage() {
               <input id="title" name="title" required className="w-full px-3 py-2 bg-background border border-border rounded-md text-base sm:text-sm text-primary" placeholder="Ej: Frontend Developer" />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
                 <label htmlFor="type" className="block text-xs font-mono text-muted mb-1">Tipo *</label>
                 <select id="type" name="type" required className="w-full px-3 py-2 bg-background border border-border rounded-md text-base sm:text-sm text-primary">
@@ -94,7 +94,7 @@ export default function NewJobPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
                 <label htmlFor="city" className="block text-xs font-mono text-muted mb-1">Ciudad (si aplica)</label>
                 <select id="city" name="city" className="w-full px-3 py-2 bg-background border border-border rounded-md text-base sm:text-sm text-primary">

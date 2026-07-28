@@ -5,7 +5,7 @@ import { EntryBadge } from '@/components/entries/EntryBadge'
 import { getCityName, ENTRY_TYPE_CONFIG, type AtlasEntryType } from '@/config'
 import { ENTRY_TYPE_ICON_MAP } from '@/lib/icons'
 import { timeAgo } from '@/lib/utils'
-import { CheckCircle, Clock, XCircle, Pencil, ExternalLink, Plus, FolderKanban } from 'lucide-react'
+import { CheckCircle, Clock, XCircle, Pencil, ExternalLink, Plus, FolderKanban, AlertTriangle } from 'lucide-react'
 import { useUserResource } from '@/hooks/useUserResource'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { btn } from '@/components/ui/button-styles'
@@ -22,7 +22,7 @@ interface Entry {
 }
 
 export function MyEntries() {
-  const { data: entries, loading } = useUserResource<Entry>('/api/user/entries')
+  const { data: entries, loading, error } = useUserResource<Entry>('/api/user/entries')
 
   if (loading) {
     return (
@@ -51,6 +51,16 @@ export function MyEntries() {
           </div>
         ))}
       </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <EmptyState
+        icon={AlertTriangle}
+        title="No pudimos cargar tus registros"
+        subtitle={error}
+      />
     )
   }
 

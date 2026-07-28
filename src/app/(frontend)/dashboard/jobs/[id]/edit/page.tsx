@@ -230,7 +230,7 @@ export default function EditJobPage() {
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
                       <label htmlFor="type" className={labelClass}>Tipo *</label>
                       <select
@@ -261,7 +261,7 @@ export default function EditJobPage() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
                       <label htmlFor="city" className={labelClass}>Ciudad (si aplica)</label>
                       <select
