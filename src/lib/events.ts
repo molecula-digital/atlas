@@ -47,17 +47,24 @@ function lexicalToPlainText(data: Event['description']): string {
     .trim()
 }
 
-function formatTimeField(value: string | null | undefined): string {
+/** Site timezone — event times are authored in Mexico, not the viewer's browser. */
+const EVENT_TIMEZONE = 'America/Mexico_City'
+
+/**
+ * Returns the wall-clock time from Payload without using the viewer's browser
+ * timezone. Plain strings pass through unchanged; ISO timestamps from Payload
+ * date fields are shown in the site's canonical timezone.
+ */
+export function payloadTimeAsStored(value: string | null | undefined): string {
   if (!value) return ''
-  if (value.includes('T')) {
-    const date = new Date(value)
-    const h = date.getUTCHours()
-    const m = date.getUTCMinutes()
-    const ampm = h >= 12 ? 'PM' : 'AM'
-    const h12 = h % 12 || 12
-    return `${h12}:${String(m).padStart(2, '0')} ${ampm}`
-  }
-  return value
+  if (!value.includes('T')) return value
+
+  return new Intl.DateTimeFormat('en-US', {
+    timeZone: EVENT_TIMEZONE,
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  }).format(new Date(value))
 }
 
 export function eventDocToTechEvent(doc: Event): TechEvent {
@@ -77,8 +84,8 @@ export function eventDocToTechEvent(doc: Event): TechEvent {
     title: doc.title,
     organizer: doc.organizer || '',
     date: (doc.date || '').split('T')[0],
-    startTime: formatTimeField(doc.startTime),
-    endTime: formatTimeField(doc.endTime),
+    startTime: payloadTimeAsStored(doc.startTime),
+    endTime: payloadTimeAsStored(doc.endTime),
     description: lexicalToPlainText(doc.description),
     url: doc.url || '',
     location: doc.location || '',
