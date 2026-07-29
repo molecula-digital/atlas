@@ -1,6 +1,9 @@
 export const SITE_TITLE = 'Tech Atlas'
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://atlas-sinaloa.tech'
 
+/** Pacific Time — all of Sinaloa uses America/Mazatlan (UTC-7, no DST). */
+export const EVENT_TIMEZONE = 'America/Mazatlan'
+
 export const DEFAULT_PAGINATION = 18
 
 export const SITE_DESCRIPTION =

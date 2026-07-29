@@ -1,4 +1,5 @@
 import type { Event, Media } from '@/payload-types'
+import { EVENT_TIMEZONE } from '@/config'
 
 export interface TechEvent {
   id: string
@@ -47,8 +48,7 @@ function lexicalToPlainText(data: Event['description']): string {
     .trim()
 }
 
-/** Site timezone — event times are authored in Mexico, not the viewer's browser. */
-const EVENT_TIMEZONE = 'America/Mexico_City'
+/** Site timezone — event times are wall-clock in Sinaloa, not the viewer's browser. */
 
 /**
  * Returns the wall-clock time from Payload without using the viewer's browser

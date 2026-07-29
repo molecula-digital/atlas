@@ -1,6 +1,7 @@
 import type { TechEvent } from '@/lib/events'
+import { EVENT_TIMEZONE } from '@/config'
 
-const EVENT_TZ = 'America/Mexico_City'
+const EVENT_TZ = EVENT_TIMEZONE
 /** Fallback when an event has a start but no end time. */
 const DEFAULT_DURATION_MINUTES = 60
 

@@ -24,6 +24,9 @@ export default buildConfig({
     importMap: {
       baseDir: path.resolve(dirname),
     },
+    timezones: {
+      defaultTimezone: 'America/Mazatlan',
+    },
     components: {
       views: {
         dashboard: {
