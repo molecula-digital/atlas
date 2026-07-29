@@ -284,6 +284,9 @@ export function ProfileForm() {
               placeholder="+52 667 123 4567"
             />
           </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
             <FieldLabel icon={Globe}>Sitio web</FieldLabel>
             <input
@@ -293,9 +296,6 @@ export function ProfileForm() {
               placeholder="hola.com"
             />
           </div>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
             <FieldLabel icon={LinkedInIcon}>LinkedIn</FieldLabel>
             <input
