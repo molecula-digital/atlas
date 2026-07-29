@@ -4,6 +4,7 @@ import { MapPin } from 'lucide-react'
 import { EntryBadge } from '@/components/entries/EntryBadge'
 import { ClampedText } from '@/components/ui/ClampedText'
 import { getEntryUrl, getCityName, type AtlasEntryType } from '@/config'
+import { toPublicMediaUrl } from '@/lib/media-url'
 import { cn } from '@/lib/utils'
 
 export interface EntryStripProps {
@@ -28,7 +29,8 @@ export function EntryStrip({
   className,
 }: EntryStripProps) {
   const href = hrefOverride ?? getEntryUrl(entryType, slug)
-  const logoUrl = typeof logo === 'object' && logo?.url ? logo.url : null
+  const logoUrl =
+    typeof logo === 'object' && logo?.url ? toPublicMediaUrl(logo.url) : null
 
   return (
     <Link

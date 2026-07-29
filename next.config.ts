@@ -6,17 +6,10 @@ const nextConfig: NextConfig = {
   output: 'standalone',
   images: {
     remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '*.r2.cloudflarestorage.com',
-      },
+      // Bucket objects are always served via the CDN custom domain.
       {
         protocol: 'https',
         hostname: 'cdn.atlas-sinaloa.tech',
-      },
-      {
-        protocol: 'https',
-        hostname: 'media.atlas-sinaloa.tech',
       },
       {
         protocol: 'https',

@@ -14,6 +14,7 @@ import {
   slugifyProfile,
   PROFILE_BIO_MAX_LENGTH,
 } from '@/lib/profile-fields'
+import { toPublicMediaUrl } from '@/lib/media-url'
 
 const FIELD_LABELS: Record<string, string> = {
   email: 'correo',
@@ -139,7 +140,7 @@ function toClientProfile(
     newsletterEnabled: profile.newsletterEnabled,
     isPublic: profile.isPublic,
     name: sessionUser.name,
-    photo: sessionUser.image ?? '',
+    photo: toPublicMediaUrl(sessionUser.image) ?? '',
     createdAt: profile.createdAt?.toISOString?.() ?? profile.createdAt,
     updatedAt: profile.updatedAt?.toISOString?.() ?? profile.updatedAt,
   }
@@ -175,7 +176,7 @@ export async function GET() {
         name: session.user.name,
         email: session.user.email,
         accountEmail: session.user.email,
-        photo: session.user.image ?? '',
+        photo: toPublicMediaUrl(session.user.image) ?? '',
       })
     }
 
