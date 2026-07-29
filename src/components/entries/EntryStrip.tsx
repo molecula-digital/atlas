@@ -57,11 +57,11 @@ export function EntryStrip({
       </div>
 
       <div className="min-w-0 flex-1">
-        <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-2">
-          <span className="truncate text-sm font-sans font-semibold text-primary transition-colors group-hover:text-accent">
+        <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-2">
+          <span className="min-w-0 truncate text-sm font-sans font-semibold text-primary transition-colors group-hover:text-accent">
             {name}
           </span>
-          <span className="w-fit shrink-0">
+          <span className="w-fit shrink-0 sm:ml-auto">
             <EntryBadge entryType={entryType} />
           </span>
         </div>
