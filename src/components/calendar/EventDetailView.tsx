@@ -23,6 +23,7 @@ import { buttonVariants, type ButtonSize } from '@/components/ui/button-variants
 import { Card } from '@/components/ui/Card'
 import EventTypeBadge from './EventTypeBadge'
 import { AddToCalendar } from './AddToCalendar'
+import { EventRichDescription } from './EventRichDescription'
 
 interface EventDetailViewProps {
   event: TechEvent
@@ -230,10 +231,14 @@ export function EventDetailView({
           </div>
         )}
 
-        {event.description && (
-          <p className="text-secondary whitespace-pre-line text-sm leading-relaxed">
-            {event.description}
-          </p>
+        {(event.descriptionRich || event.description) && (
+          event.descriptionRich ? (
+            <EventRichDescription data={event.descriptionRich} />
+          ) : (
+            <p className="text-secondary whitespace-pre-line text-sm leading-relaxed">
+              {event.description}
+            </p>
+          )
         )}
       </div>
     </>
@@ -332,11 +337,15 @@ export function EventDetailView({
           <EventDetailsCard event={event} showLocation={showLocation} />
         )}
 
-        {event.description && (
+        {(event.descriptionRich || event.description) && (
           <EventDetailCard title="Acerca de" Icon={Info}>
-            <p className="text-secondary whitespace-pre-line text-sm leading-relaxed">
-              {event.description}
-            </p>
+            {event.descriptionRich ? (
+              <EventRichDescription data={event.descriptionRich} />
+            ) : (
+              <p className="text-secondary whitespace-pre-line text-sm leading-relaxed">
+                {event.description}
+              </p>
+            )}
           </EventDetailCard>
         )}
       </div>

@@ -10,7 +10,10 @@ export interface TechEvent {
   date: string
   startTime: string
   endTime: string
+  /** Plain-text description for meta tags, JSON-LD, and compact previews. */
   description: string
+  /** Lexical rich text for the Acerca de section (headings, lists, links). */
+  descriptionRich?: Event['description']
   url: string
   location: string
   mapsUrl: string
@@ -78,6 +81,7 @@ export function eventDocToTechEvent(doc: Event): TechEvent {
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/(^-|-$)/g, '')}${date ? `-${date}` : ''}`
     : String(doc.id)
+  const description = lexicalToPlainText(doc.description)
 
   return {
     id: String(doc.id),
@@ -87,7 +91,8 @@ export function eventDocToTechEvent(doc: Event): TechEvent {
     date: (doc.date || '').split('T')[0],
     startTime: payloadTimeAsStored(doc.startTime),
     endTime: payloadTimeAsStored(doc.endTime),
-    description: lexicalToPlainText(doc.description),
+    description,
+    descriptionRich: description ? doc.description ?? undefined : undefined,
     url: doc.url || '',
     location: doc.location || '',
     mapsUrl: doc.mapsUrl || '',
