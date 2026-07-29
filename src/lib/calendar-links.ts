@@ -66,10 +66,9 @@ function getTimeZoneOffsetMinutes(utcDate: Date, timeZone: string): number {
 /**
  * Parses the time strings carried on a TechEvent.
  *
- * `formatTimeField` in lib/events.ts renders Payload's timestamps as 12-hour
- * display strings ("6:30 PM"), but passes non-ISO values through untouched, so
- * legacy 24-hour data ("18:30") still reaches here. Both have to be handled —
- * naive `split(':')` reads "6:30 PM" as 06:00.
+ * Payload time values may be plain strings ("6:30 PM", "18:30") or ISO timestamps
+ * ("1970-01-01T18:30:00.000Z"). All of these have to be handled — naive
+ * `split(':')` reads "6:30 PM" as 06:00.
  *
  * Returns null when the value is absent or unrecognised, which callers treat as
  * an all-day event rather than guessing at a wrong time.
@@ -77,6 +76,14 @@ function getTimeZoneOffsetMinutes(utcDate: Date, timeZone: string): number {
 function parseClockTime(time: string | undefined): { hour: number; minute: number } | null {
   if (!time) return null
   const value = time.trim()
+
+  const isoTime = value.match(/T(\d{2}):(\d{2})/)
+  if (isoTime) {
+    const hour = Number(isoTime[1])
+    const minute = Number(isoTime[2])
+    if (hour <= 23 && minute <= 59) return { hour, minute }
+    return null
+  }
 
   const twelveHour = value.match(/^(\d{1,2})(?::(\d{2}))?\s*([AaPp])\.?[Mm]\.?$/)
   if (twelveHour) {
