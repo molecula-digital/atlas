@@ -1,9 +1,11 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { useSession, authClient } from '@/lib/auth-client'
 import { readJson } from '@/lib/read-json'
 import { slugifyProfile } from '@/lib/profile-fields'
+import { uploadMediaFile, validateImageFile } from '@/lib/media-upload'
+import { replaceObjectUrl, revokeObjectUrl } from '@/lib/object-url'
 import { useFormSubmission } from '@/hooks/useFormSubmission'
 
 export interface ProfileData {
@@ -64,6 +66,9 @@ export function useProfileForm() {
   const { data: session } = useSession()
   const [profile, setProfile] = useState<ProfileData>(emptyProfile)
   const [loading, setLoading] = useState(true)
+  const [uploadingPhoto, setUploadingPhoto] = useState(false)
+  const [photoError, setPhotoError] = useState<string | null>(null)
+  const previewUrlRef = useRef<string | null>(null)
   /** Last persisted public state — the link only shows when this is live. */
   const [published, setPublished] = useState<{ isPublic: boolean; slug: string }>({
     isPublic: false,
@@ -96,6 +101,12 @@ export function useProfileForm() {
     if (session) fetchProfile()
   }, [session, fetchProfile])
 
+  useEffect(() => {
+    return () => {
+      revokeObjectUrl(previewUrlRef.current)
+    }
+  }, [])
+
   const setField = useCallback(
     (field: keyof ProfileData, value: string | boolean) => {
       setProfile((prev) => ({ ...prev, [field]: value }))
@@ -116,6 +127,59 @@ export function useProfileForm() {
     },
     [submission],
   )
+
+  const uploadPhoto = useCallback(async (file: File) => {
+    const validationError = validateImageFile(file)
+    if (validationError) {
+      setPhotoError(validationError)
+      return
+    }
+
+    setPhotoError(null)
+    setUploadingPhoto(true)
+
+    const preview = replaceObjectUrl(previewUrlRef.current, file)
+    previewUrlRef.current = preview
+    if (preview) {
+      setProfile((prev) => ({ ...prev, photo: preview }))
+    }
+
+    try {
+      const media = await uploadMediaFile(file)
+      const result = await authClient.updateUser({ image: media.url })
+      if (result.error) {
+        throw new Error(result.error.message || 'No se pudo actualizar la foto')
+      }
+
+      revokeObjectUrl(previewUrlRef.current)
+      previewUrlRef.current = null
+      setProfile((prev) => ({ ...prev, photo: media.url }))
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'No se pudo subir la foto'
+      setPhotoError(message)
+      // Keep the blob preview so the user still sees what they picked; clear on next success.
+    } finally {
+      setUploadingPhoto(false)
+    }
+  }, [])
+
+  const removePhoto = useCallback(async () => {
+    setPhotoError(null)
+    setUploadingPhoto(true)
+    try {
+      const result = await authClient.updateUser({ image: '' })
+      if (result.error) {
+        throw new Error(result.error.message || 'No se pudo quitar la foto')
+      }
+      revokeObjectUrl(previewUrlRef.current)
+      previewUrlRef.current = null
+      setProfile((prev) => ({ ...prev, photo: '' }))
+    } catch (err) {
+      setPhotoError(err instanceof Error ? err.message : 'No se pudo quitar la foto')
+    } finally {
+      setUploadingPhoto(false)
+    }
+  }, [])
 
   const save = useCallback(async () => {
     await submission.run(async () => {
@@ -179,6 +243,10 @@ export function useProfileForm() {
     saved: submission.succeeded,
     error: submission.error,
     save,
+    uploadPhoto,
+    removePhoto,
+    uploadingPhoto,
+    photoError,
     /** True only when the live profile matches what is on screen. */
     showPublicLink:
       published.isPublic &&

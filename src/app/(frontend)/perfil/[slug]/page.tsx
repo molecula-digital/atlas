@@ -33,7 +33,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title: `${profile.name} — Perfil`,
       description,
       url: canonical,
-      ...(profile.photo ? { images: [{ url: profile.photo }] } : {}),
+      ...(profile.photo?.trim()
+        ? { images: [{ url: profile.photo.trim() }] }
+        : {}),
     },
   }
 }
@@ -57,6 +59,7 @@ export default async function PublicProfilePage({ params }: PageProps) {
   const profile = await getPublicProfileBySlug(slug)
   if (!profile) notFound()
 
+  const photo = profile.photo?.trim() || null
   const subtitle = [profile.title, profile.company].filter(Boolean).join(' · ')
   const links = [
     profile.website
@@ -87,13 +90,14 @@ export default async function PublicProfilePage({ params }: PageProps) {
         <Card className="shadow-sm sm:p-8">
           <div className="flex flex-col sm:flex-row gap-6 items-center sm:items-start text-center sm:text-left">
             <div className="w-20 h-20 rounded-full overflow-hidden border border-border bg-elevated shrink-0 flex items-center justify-center text-2xl font-mono font-bold text-accent">
-              {profile.photo ? (
+              {photo ? (
                 <Image
-                  src={profile.photo}
+                  src={photo}
                   alt={profile.name}
                   width={80}
                   height={80}
                   className="w-full h-full object-cover"
+                  priority
                 />
               ) : (
                 profile.name.charAt(0).toUpperCase()

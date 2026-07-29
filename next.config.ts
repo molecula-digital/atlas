@@ -16,6 +16,10 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'media.atlas-sinaloa.tech',
+      },
+      {
+        protocol: 'https',
         hostname: 'lh3.googleusercontent.com',
       },
       {

@@ -148,7 +148,9 @@ export function publicProfileToDirectoryItem(profile: PublicProfile) {
     name: profile.name,
     tagline,
     entryType: 'person' as const,
-    logo: profile.photo ? { url: profile.photo, alt: profile.name } : null,
+    logo: profile.photo?.trim()
+      ? { url: profile.photo.trim(), alt: profile.name }
+      : null,
     coverImage: null,
     city: 'global',
     tags: [],

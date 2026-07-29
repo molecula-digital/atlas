@@ -1,4 +1,5 @@
 import { isStartupLike, type AtlasEntryType } from '@/config'
+import { uploadMediaFile } from '@/lib/media-upload'
 
 /** The editable entry fields, as the forms hold them (all strings, as typed). */
 export interface EntryFormValues {
@@ -102,13 +103,6 @@ export function toEntrySubmission(
 
 /** Uploads one image and returns its media id. Shared by create and edit. */
 export async function uploadEntryImage(file: File): Promise<number> {
-  const formData = new FormData()
-  formData.append('file', file)
-  const res = await fetch('/api/media/upload', { method: 'POST', body: formData })
-  if (!res.ok) {
-    const data = await res.json().catch(() => ({}))
-    throw new Error(data.error || 'Error al subir imagen')
-  }
-  const data = await res.json()
-  return data.id
+  const media = await uploadMediaFile(file)
+  return media.id
 }
