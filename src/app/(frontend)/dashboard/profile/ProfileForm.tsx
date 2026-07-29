@@ -201,29 +201,14 @@ export function ProfileForm() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <FieldLabel icon={User}>Nombre</FieldLabel>
-            <input
-              className={inputClass}
-              value={profile.name}
-              onChange={(e) => setField('name', e.target.value)}
-              placeholder="Tu nombre completo"
-            />
-          </div>
-          <div>
-            <FieldLabel icon={Mail}>Correo</FieldLabel>
-            <input
-              className={inputClass}
-              type="email"
-              value={profile.email}
-              onChange={(e) => setField('email', e.target.value)}
-              placeholder="tu@email.com"
-            />
-            <p className="mt-1 text-2xs text-muted font-mono">
-              Contacto público (por defecto tu Gmail de inicio de sesión).
-            </p>
-          </div>
+        <div>
+          <FieldLabel icon={User}>Nombre</FieldLabel>
+          <input
+            className={inputClass}
+            value={profile.name}
+            onChange={(e) => setField('name', e.target.value)}
+            placeholder="Tu nombre completo"
+          />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -273,9 +258,22 @@ export function ProfileForm() {
       <FormSection
         icon={Phone}
         title="Contacto y redes"
-        description="Enlaces opcionales que se muestran como botones en tu perfil."
+        description="Correo y teléfono para tu tarjeta Wallet (no se publican en /perfil). Los enlaces sí aparecen en tu perfil."
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <FieldLabel icon={Mail}>Correo</FieldLabel>
+            <input
+              className={inputClass}
+              type="email"
+              value={profile.email}
+              onChange={(e) => setField('email', e.target.value)}
+              placeholder="tu@email.com"
+            />
+            <p className="mt-1 text-2xs text-muted font-mono">
+              Por defecto tu correo de inicio de sesión.
+            </p>
+          </div>
           <div>
             <FieldLabel icon={Phone}>Teléfono</FieldLabel>
             <input
@@ -326,6 +324,27 @@ export function ProfileForm() {
             />
           </div>
         </div>
+      </FormSection>
+
+      <div className="border-t border-border" />
+
+      <FormSection
+        icon={Newspaper}
+        title="Newsletter"
+        description="Correos del ecosistema tech de Sinaloa. Máximo uno al mes."
+      >
+        <label className="flex items-start gap-3 cursor-pointer rounded-lg border border-border bg-elevated/40 px-4 py-3">
+          <input
+            type="checkbox"
+            checked={profile.newsletterEnabled}
+            onChange={(e) => setField('newsletterEnabled', e.target.checked)}
+            className="mt-0.5 size-4 rounded border-border accent-[var(--accent)]"
+          />
+          <span>
+            <span className="text-sm text-primary font-medium">{NEWSLETTER.profileLabel}</span>
+            <span className="block text-xs text-muted mt-0.5">{NEWSLETTER.profileHint}</span>
+          </span>
+        </label>
       </FormSection>
 
       <div className="border-t border-border" />
@@ -389,22 +408,6 @@ export function ProfileForm() {
               )}
             </div>
           )}
-
-          <label className="flex items-start gap-3 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={profile.newsletterEnabled}
-              onChange={(e) => setField('newsletterEnabled', e.target.checked)}
-              className="mt-0.5 size-4 rounded border-border accent-[var(--accent)]"
-            />
-            <span>
-              <span className="flex items-center gap-1.5 text-sm text-primary font-medium">
-                <Newspaper className="h-3.5 w-3.5 text-accent" />
-                {NEWSLETTER.profileLabel}
-              </span>
-              <span className="block text-xs text-muted mt-0.5">{NEWSLETTER.profileHint}</span>
-            </span>
-          </label>
         </div>
       </FormSection>
 
