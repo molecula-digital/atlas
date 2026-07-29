@@ -1,8 +1,11 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
+import { ArrowLeft } from 'lucide-react'
 import { AuthGuard } from '@/components/auth/AuthGuard'
 import { SINALOA_CITIES } from '@/config'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import { Card } from '@/components/ui/Card'
+import { buttonVariants } from '@/components/ui/button-variants'
 import SubmitWizard from '@/components/forms/submit-wizard'
 
 export const metadata: Metadata = {
@@ -26,10 +29,20 @@ export default function NewEntryPage() {
             { label: 'Agregar registro' },
           ]} />
 
-          <h1 className="text-3xl md:text-4xl font-sans font-bold text-primary mb-2">Agregar registro</h1>
-          <p className="text-secondary mb-8">
-            Registra tu startup, consultora, comunidad o perfil en el directorio tech de Sinaloa.
-          </p>
+          <div className="flex items-center gap-3 mb-6">
+            <Link
+              href="/dashboard"
+              className={buttonVariants({ variant: 'ghost', size: 'icon-md' })}
+            >
+              <ArrowLeft className="w-4 h-4" />
+            </Link>
+            <div>
+              <h1 className="text-xl font-bold text-primary mb-0.5">Agregar registro</h1>
+              <p className="text-xs text-muted font-mono">
+                Startup, consultora, comunidad o perfil
+              </p>
+            </div>
+          </div>
 
           <Card className="md:p-8">
             <SubmitWizard cities={cities} />

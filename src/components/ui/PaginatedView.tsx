@@ -99,9 +99,14 @@ function Pagination({
     }
   }
 
-  const active = buttonVariants({ variant: 'accent', size: 'md', className: 'min-w-7' })
-  const inactive = buttonVariants({ variant: 'ghost', size: 'md', className: 'min-w-7' })
-  const disabled = buttonVariants({ variant: 'ghost', size: 'md', className: 'min-w-7 text-muted/40 pointer-events-none' })
+  const surface = 'min-w-7 bg-card/90 backdrop-blur-sm'
+  const active = buttonVariants({ variant: 'accent', size: 'md', className: surface })
+  const inactive = buttonVariants({ variant: 'neutral', size: 'md', className: surface })
+  const disabled = buttonVariants({
+    variant: 'neutral',
+    size: 'md',
+    className: `${surface} text-muted/40 pointer-events-none`,
+  })
 
   return (
     <nav aria-label="Paginación" className="flex items-center justify-center gap-1 mt-8">
