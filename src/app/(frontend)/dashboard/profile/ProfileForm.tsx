@@ -20,7 +20,10 @@ import {
   Eye,
   Newspaper,
   FileText,
+  Camera,
+  Trash2,
 } from 'lucide-react'
+import { useRef, type ReactNode } from 'react'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { MarkdownEditor } from '@/components/ui/MarkdownEditor'
 import { NEWSLETTER } from '@/config'
@@ -28,7 +31,6 @@ import { PROFILE_BIO_MAX_LENGTH, slugifyProfile } from '@/lib/profile-fields'
 import { GitHubIcon, LinkedInIcon, XIcon } from '@/components/icons/SocialIcons'
 import { useProfileForm } from './useProfileForm'
 import type { LucideIcon } from 'lucide-react'
-import type { ReactNode } from 'react'
 
 const inputClass =
   'mt-1 w-full px-3 py-2 rounded-lg border border-border bg-card text-primary font-mono text-base sm:text-sm placeholder:text-muted/50 focus:outline-hidden focus:border-accent transition-colors'
@@ -91,9 +93,14 @@ export function ProfileForm() {
     saved,
     error,
     save,
+    uploadPhoto,
+    removePhoto,
+    uploadingPhoto,
+    photoError,
     showPublicLink,
     publishedSlug,
   } = useProfileForm()
+  const photoInputRef = useRef<HTMLInputElement>(null)
 
   if (loading) {
     return (
@@ -124,6 +131,76 @@ export function ProfileForm() {
         title="Información personal"
         description="Datos básicos que aparecen en tu perfil."
       >
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+          <div className="relative shrink-0 self-center sm:self-auto">
+            <div className="w-20 h-20 rounded-full overflow-hidden border border-border bg-elevated flex items-center justify-center text-2xl font-mono font-bold text-accent">
+              {profile.photo ? (
+                <img
+                  src={profile.photo}
+                  alt={profile.name || 'Foto de perfil'}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                (profile.name || session?.user?.name || '?').charAt(0).toUpperCase()
+              )}
+            </div>
+            {uploadingPhoto && (
+              <div className="absolute inset-0 rounded-full bg-background/70 flex items-center justify-center">
+                <Loader2 className="w-5 h-5 animate-spin text-accent" />
+              </div>
+            )}
+          </div>
+
+          <div className="min-w-0 flex-1 space-y-2 text-center sm:text-left">
+            <p className="text-xs text-muted font-mono leading-relaxed">
+              Foto de perfil (JPEG, PNG, WebP o GIF · máx. 5 MB). Se muestra en /perfil.
+            </p>
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+              <input
+                ref={photoInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                className="sr-only"
+                onChange={(e) => {
+                  const file = e.target.files?.[0]
+                  e.target.value = ''
+                  if (file) void uploadPhoto(file)
+                }}
+              />
+              <button
+                type="button"
+                disabled={uploadingPhoto}
+                onClick={() => photoInputRef.current?.click()}
+                className={buttonVariants({ variant: 'neutral', size: 'sm' })}
+              >
+                {uploadingPhoto ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  <Camera className="w-3.5 h-3.5" />
+                )}
+                {profile.photo ? 'Cambiar foto' : 'Subir foto'}
+              </button>
+              {profile.photo && (
+                <button
+                  type="button"
+                  disabled={uploadingPhoto}
+                  onClick={() => void removePhoto()}
+                  className={buttonVariants({ variant: 'danger', size: 'sm' })}
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  Quitar
+                </button>
+              )}
+            </div>
+            {photoError && (
+              <p className="flex items-center justify-center sm:justify-start gap-1 text-xs text-red-400 font-mono">
+                <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                {photoError}
+              </p>
+            )}
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <FieldLabel icon={User}>Nombre</FieldLabel>

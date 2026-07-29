@@ -76,7 +76,7 @@ Copia `.env.example` y configura segun tu entorno:
 | `S3_BUCKET` | Nombre del bucket |
 | `S3_ACCESS_KEY_ID` / `S3_SECRET_ACCESS_KEY` | Credenciales de acceso al bucket |
 | `S3_REGION` | Region (`us-east-1` para MinIO, `auto` para R2) |
-| `MEDIA_URL` | URL publica donde se sirven las imagenes |
+| `MEDIA_URL` | URL publica (CDN) donde se sirven las imagenes. Local: `http://localhost:9000/atlas-media`. Produccion: `https://cdn.atlas-sinaloa.tech` — no usar el endpoint R2 |
 
 ## Docker
 

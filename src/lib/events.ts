@@ -1,5 +1,6 @@
 import type { Event, Media } from '@/payload-types'
 import { EVENT_TIMEZONE } from '@/config'
+import { toPublicMediaUrl } from '@/lib/media-url'
 
 export interface TechEvent {
   id: string
@@ -26,7 +27,7 @@ export function getEventPath(slug: string): string {
 
 function getImageUrl(image: Event['image']): string | null {
   if (typeof image === 'object' && image !== null && (image as Media).url) {
-    return (image as Media).url ?? null
+    return toPublicMediaUrl((image as Media).url)
   }
   return null
 }

@@ -4,6 +4,7 @@ import { MapPin } from 'lucide-react'
 import { EntryBadge } from '@/components/entries/EntryBadge'
 import { ClampedText } from '@/components/ui/ClampedText'
 import { getEntryUrl, getCityName, type AtlasEntryType } from '@/config'
+import { toPublicMediaUrl } from '@/lib/media-url'
 
 export interface FeaturedEntryTileProps {
   slug: string
@@ -25,8 +26,12 @@ export function FeaturedEntryTile({
   city,
 }: FeaturedEntryTileProps) {
   const href = getEntryUrl(entryType, slug)
-  const coverUrl = typeof coverImage === 'object' && coverImage?.url ? coverImage.url : null
-  const logoUrl = typeof logo === 'object' && logo?.url ? logo.url : null
+  const coverUrl =
+    typeof coverImage === 'object' && coverImage?.url
+      ? toPublicMediaUrl(coverImage.url)
+      : null
+  const logoUrl =
+    typeof logo === 'object' && logo?.url ? toPublicMediaUrl(logo.url) : null
 
   return (
     <Link

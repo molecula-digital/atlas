@@ -14,6 +14,7 @@ import { News } from './src/collections/News'
 import { Jobs } from './src/collections/Jobs'
 import { Events } from './src/collections/Events'
 import { NewsletterSubscribers } from './src/collections/NewsletterSubscribers'
+import { buildMediaFileUrl } from './src/lib/media-url'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -60,11 +61,9 @@ export default buildConfig({
       collections: {
         media: {
           prefix: 'media',
-          generateFileURL: ({ filename, prefix = '' }) => {
-            const base = process.env.MEDIA_URL || ''
-            const filePath = prefix ? `${prefix}/${filename}` : filename
-            return `${base}/${filePath}`
-          },
+          // Always emit the public CDN (or local MinIO) URL — never the R2 API host.
+          generateFileURL: ({ filename, prefix = '' }) =>
+            buildMediaFileUrl(filename, prefix),
         },
       },
       bucket: process.env.S3_BUCKET || '',

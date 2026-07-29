@@ -2,6 +2,7 @@ import { and, asc, desc, eq, isNotNull, sql } from 'drizzle-orm'
 import { db } from '@/db'
 import { profiles } from '@/db/schema/profiles'
 import { user } from '@/db/schema/auth'
+import { toPublicMediaUrl } from '@/lib/media-url'
 
 export type PublicProfile = {
   userId: string
@@ -50,7 +51,7 @@ export async function getPublicProfileBySlug(slug: string): Promise<PublicProfil
     userId: row.userId,
     slug: row.slug,
     name: row.name,
-    photo: row.photo,
+    photo: toPublicMediaUrl(row.photo),
     title: row.title,
     company: row.company,
     bio: row.bio,
@@ -107,7 +108,7 @@ export async function listPublicProfiles(
       userId: row.userId,
       slug: row.slug,
       name: row.name,
-      photo: row.photo,
+      photo: toPublicMediaUrl(row.photo),
       title: row.title,
       company: row.company,
       bio: row.bio,
@@ -148,7 +149,9 @@ export function publicProfileToDirectoryItem(profile: PublicProfile) {
     name: profile.name,
     tagline,
     entryType: 'person' as const,
-    logo: profile.photo ? { url: profile.photo, alt: profile.name } : null,
+    logo: profile.photo
+      ? { url: profile.photo, alt: profile.name }
+      : null,
     coverImage: null,
     city: 'global',
     tags: [],

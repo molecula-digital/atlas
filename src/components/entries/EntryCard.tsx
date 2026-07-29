@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { MapPin } from 'lucide-react'
 import { EntryBadge } from './EntryBadge'
 import { getEntryUrl, getCityName, type AtlasEntryType } from '@/config'
+import { toPublicMediaUrl } from '@/lib/media-url'
 
 interface EntryCardProps {
   slug: string
@@ -33,8 +34,12 @@ export function EntryCard({
 }: EntryCardProps) {
   const href = hrefOverride ?? getEntryUrl(entryType, slug)
   const displayTags = (tags || []).slice(0, 3).map((t) => (typeof t === 'string' ? t : t.tag))
-  const coverUrl = typeof coverImage === 'object' && coverImage?.url ? coverImage.url : null
-  const logoUrl = typeof logo === 'object' && logo?.url ? logo.url : null
+  const coverUrl =
+    typeof coverImage === 'object' && coverImage?.url
+      ? toPublicMediaUrl(coverImage.url)
+      : null
+  const logoUrl =
+    typeof logo === 'object' && logo?.url ? toPublicMediaUrl(logo.url) : null
 
   return (
     <Link href={href} className="group flex flex-col h-full bg-card/90 backdrop-blur-sm border border-border rounded-lg overflow-hidden hover:border-accent/50 transition-colors">
