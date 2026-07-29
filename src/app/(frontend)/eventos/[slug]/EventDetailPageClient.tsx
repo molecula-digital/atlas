@@ -15,9 +15,11 @@ import {
 export default function EventDetailPageClient({
   event,
   showLocation = true,
+  showDetailsInline = true,
 }: {
   event: TechEvent
   showLocation?: boolean
+  showDetailsInline?: boolean
 }) {
   const [showFullImage, setShowFullImage] = useState(false)
   const hasImage = !!event.image
@@ -28,6 +30,7 @@ export default function EventDetailPageClient({
         event={event}
         variant="page"
         showLocation={showLocation}
+        showDetailsInline={showDetailsInline}
         onExpandImage={hasImage ? () => setShowFullImage(true) : undefined}
       />
 

@@ -9,6 +9,7 @@ import { safeJsonLd } from '@/lib/utils'
 import { MapPin, ArrowUpRight } from 'lucide-react'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { resolveMapEmbedUrl } from '@/lib/maps'
+import { EventDetailsCard } from '@/components/calendar/EventDetailView'
 import EventDetailPageClient from './EventDetailPageClient'
 
 export const revalidate = 3600
@@ -56,9 +57,9 @@ export default async function EventDetailPage({
 
   const event = eventDocToTechEvent(doc)
   const canonical = `${SITE_URL}/eventos/${event.slug}`
-  // Derived from the pasted Maps link, never from the free-text location.
   const mapEmbedUrl = event.location ? await resolveMapEmbedUrl(event.mapsUrl) : null
   const showLocationPanel = Boolean(event.location && event.mapsUrl)
+  const showSidebar = showLocationPanel
 
   return (
     <article>
@@ -106,65 +107,80 @@ export default async function EventDetailPage({
         ]}
       />
 
+      <p className="mb-2 text-sm font-mono text-muted">
+        {formatDateEs(event.date)}
+      </p>
+      <h1 className="mb-6 text-3xl font-bold text-primary md:text-4xl">
+        {event.title}
+      </h1>
+
       <div
         className={
-          showLocationPanel
+          showSidebar
             ? 'grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_20rem] xl:grid-cols-[minmax(0,1fr)_22rem]'
             : undefined
         }
       >
-        <div className="min-w-0">
-          <p className="mb-2 text-sm font-mono text-muted">
-            {formatDateEs(event.date)}
-          </p>
-          <h1 className="mb-6 text-3xl font-bold text-primary md:text-4xl">
-            {event.title}
-          </h1>
-          <EventDetailPageClient event={event} showLocation={!showLocationPanel} />
-        </div>
+        {showSidebar && (
+          <aside className="order-1 space-y-4 lg:order-2 lg:sticky lg:top-14">
+            <EventDetailsCard
+              event={event}
+              showLocation={!showLocationPanel}
+              className="p-4"
+            />
 
-        {showLocationPanel && (
-          <aside className="overflow-hidden rounded-xl border border-border bg-card/90 shadow-sm lg:sticky lg:top-14">
-            <div className="flex items-start gap-3 p-4">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-accent/20 bg-accent/10 text-accent">
-                <MapPin size={16} />
-              </span>
-              <div className="min-w-0">
-                <p className="text-2xs font-mono uppercase tracking-wider text-muted">
-                  Ubicación
-                </p>
-                <p className="mt-1 text-sm leading-snug text-primary">
-                  {event.location}
-                </p>
-              </div>
-            </div>
+            {showLocationPanel && (
+              <div className="overflow-hidden rounded-xl border border-border bg-card/90 shadow-sm">
+                <div className="flex items-start gap-3 p-4">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-accent/20 bg-accent/10 text-accent">
+                    <MapPin size={16} />
+                  </span>
+                  <div className="min-w-0">
+                    <p className="text-2xs font-mono uppercase tracking-wider text-muted">
+                      Ubicación
+                    </p>
+                    <p className="mt-1 text-sm leading-snug text-primary">
+                      {event.location}
+                    </p>
+                  </div>
+                </div>
 
-            {mapEmbedUrl && (
-              <div className="h-52 border-y border-border bg-elevated">
-                <iframe
-                  src={mapEmbedUrl}
-                  title={`Mapa de ${event.location}`}
-                  className="h-full w-full border-0"
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  allowFullScreen
-                />
+                {mapEmbedUrl && (
+                  <div className="h-52 border-y border-border bg-elevated">
+                    <iframe
+                      src={mapEmbedUrl}
+                      title={`Mapa de ${event.location}`}
+                      className="h-full w-full border-0"
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                      allowFullScreen
+                    />
+                  </div>
+                )}
+
+                <div className={mapEmbedUrl ? 'p-3' : 'border-t border-border p-3'}>
+                  <a
+                    href={event.mapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={buttonVariants({ size: 'md', className: 'w-full justify-center' })}
+                  >
+                    Abrir en Google Maps
+                    <ArrowUpRight size={13} />
+                  </a>
+                </div>
               </div>
             )}
-
-            <div className={mapEmbedUrl ? 'p-3' : 'border-t border-border p-3'}>
-              <a
-                href={event.mapsUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={buttonVariants({ size: 'md', className: 'w-full justify-center' })}
-              >
-                Abrir en Google Maps
-                <ArrowUpRight size={13} />
-              </a>
-            </div>
           </aside>
         )}
+
+        <div className={`min-w-0 ${showSidebar ? 'order-2 lg:order-1' : ''}`}>
+          <EventDetailPageClient
+            event={event}
+            showLocation={!showLocationPanel}
+            showDetailsInline={!showSidebar}
+          />
+        </div>
       </div>
     </article>
   )

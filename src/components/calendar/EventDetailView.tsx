@@ -29,6 +29,8 @@ interface EventDetailViewProps {
   variant?: 'modal' | 'page'
   onExpandImage?: () => void
   showLocation?: boolean
+  /** When false on the full page, the details card is rendered in the sidebar instead. */
+  showDetailsInline?: boolean
   /** Dismisses the containing dialog, when rendered inside one. */
   onClose?: () => void
 }
@@ -38,13 +40,15 @@ function EventDetailCard({
   title,
   Icon,
   children,
+  className,
 }: {
   title: string
   Icon: LucideIcon
   children: React.ReactNode
+  className?: string
 }) {
   return (
-    <Card as="section">
+    <Card as="section" className={className}>
       <h2 className="font-mono text-xs text-muted uppercase tracking-wider mb-4 flex items-center gap-2">
         <Icon className="w-4 h-4 text-accent" />
         {title}
@@ -77,6 +81,56 @@ function DetailRow({
   )
 }
 
+export function buildEventSchedule(event: TechEvent): string {
+  return event.startTime && event.endTime
+    ? `${event.startTime}–${event.endTime}`
+    : event.startTime || event.endTime
+}
+
+interface EventDetailsCardProps {
+  event: TechEvent
+  showLocation?: boolean
+  className?: string
+}
+
+/** Shared details card for modal, inline page, and sidebar layouts. */
+export function EventDetailsCard({
+  event,
+  showLocation = true,
+  className,
+}: EventDetailsCardProps) {
+  const schedule = buildEventSchedule(event)
+  const hasDetails =
+    !!event.organizer || !!schedule || (showLocation && !!event.location)
+
+  if (!hasDetails) return null
+
+  return (
+    <EventDetailCard title="Detalles" Icon={LayoutList} className={className}>
+      <div className="space-y-4">
+        {event.organizer && (
+          <DetailRow label="Organiza" Icon={Users}>
+            {event.organizer}
+          </DetailRow>
+        )}
+        {schedule && (
+          <DetailRow label="Horario" Icon={Clock}>
+            {schedule}
+          </DetailRow>
+        )}
+        {showLocation && event.location && (
+          <DetailRow label="Ubicación" Icon={MapPin}>
+            {event.location}
+            {event.isInPerson && (
+              <EventTypeBadge isInPerson className="ml-2" />
+            )}
+          </DetailRow>
+        )}
+      </div>
+    </EventDetailCard>
+  )
+}
+
 function EventFullPageLink({ slug, onClose }: { slug: string; onClose?: () => void }) {
   const router = useRouter()
 
@@ -101,14 +155,12 @@ export function EventDetailView({
   variant = 'modal',
   onExpandImage,
   showLocation = true,
+  showDetailsInline = true,
   onClose,
 }: EventDetailViewProps) {
   const hasImage = !!event.image
   const isPage = variant === 'page'
-  const schedule =
-    event.startTime && event.endTime
-      ? `${event.startTime}–${event.endTime}`
-      : event.startTime || event.endTime
+  const schedule = buildEventSchedule(event)
 
   const hero = (
     <>
@@ -150,7 +202,7 @@ export function EventDetailView({
     <>
       {hero}
 
-      <div className="px-5 pb-5 space-y-3">
+      <div className={`px-5 pb-5 space-y-3 ${hasImage ? 'pt-5' : ''}`}>
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
           {event.organizer && (
             <span className="inline-flex items-center gap-1.5 text-xs font-mono text-muted">
@@ -187,24 +239,11 @@ export function EventDetailView({
     </>
   )
 
-  // On the full page the actions sit inside their own card, so they get the
-  // larger size — at `md` on a bare background they were easy to miss.
   const size: ButtonSize = isPage ? 'lg' : 'md'
   const iconSize = isPage ? 15 : 13
 
-  const actions = (
+  const secondaryActions = (
     <>
-      {event.registerUrl && (
-        <a
-          href={event.registerUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={buttonVariants({ variant: 'accent', size })}
-        >
-          <Ticket size={iconSize} />
-          Registrarse
-        </a>
-      )}
       {event.url && (
         <a
           href={event.url}
@@ -243,41 +282,54 @@ export function EventDetailView({
     </>
   )
 
-  if (isPage) {
-    const hasDetails =
-      !!event.organizer || !!schedule || (showLocation && !!event.location)
+  const actions = (
+    <>
+      {event.registerUrl && (
+        <a
+          href={event.registerUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={buttonVariants({
+            variant: 'accent',
+            size: isPage ? 'lg' : size,
+            className: isPage ? 'w-full sm:w-auto' : undefined,
+          })}
+        >
+          <Ticket size={iconSize} />
+          Registrarse
+        </a>
+      )}
+      {secondaryActions}
+    </>
+  )
 
+  if (isPage) {
     return (
       <div className="space-y-4">
         {hero}
 
+        {event.registerUrl && (
+          <a
+            href={event.registerUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={buttonVariants({
+              variant: 'accent',
+              size: 'lg',
+              className: 'w-full justify-center',
+            })}
+          >
+            <Ticket size={iconSize} />
+            Registrarse
+          </a>
+        )}
+
         <EventDetailCard title="Acciones" Icon={Zap}>
-          <div className="flex flex-wrap gap-2">{actions}</div>
+          <div className="flex flex-wrap gap-2">{secondaryActions}</div>
         </EventDetailCard>
 
-        {hasDetails && (
-          <EventDetailCard title="Detalles" Icon={LayoutList}>
-            <div className="grid gap-4 sm:grid-cols-2">
-              {event.organizer && (
-                <DetailRow label="Organiza" Icon={Users}>
-                  {event.organizer}
-                </DetailRow>
-              )}
-              {schedule && (
-                <DetailRow label="Horario" Icon={Clock}>
-                  {schedule}
-                </DetailRow>
-              )}
-              {showLocation && event.location && (
-                <DetailRow label="Ubicación" Icon={MapPin}>
-                  {event.location}
-                  {event.isInPerson && (
-                    <EventTypeBadge isInPerson className="ml-2" />
-                  )}
-                </DetailRow>
-              )}
-            </div>
-          </EventDetailCard>
+        {showDetailsInline && (
+          <EventDetailsCard event={event} showLocation={showLocation} />
         )}
 
         {event.description && (
