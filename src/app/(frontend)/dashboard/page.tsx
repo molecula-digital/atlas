@@ -1,15 +1,13 @@
 'use client'
 
-import Link from 'next/link'
 import { useState } from 'react'
 import { useSession } from '@/lib/auth-client'
 import { AuthGuard } from '@/components/auth/AuthGuard'
 import { ProfileForm } from './profile/ProfileForm'
 import { MyEntries } from '@/components/dashboard/MyEntries'
 import { MyJobs } from '@/components/dashboard/MyJobs'
-import { Plus, Briefcase, User, FolderKanban } from 'lucide-react'
+import { Briefcase, User, FolderKanban } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import { buttonVariants } from '@/components/ui/button-variants'
 
 type Tab = 'profile' | 'projects' | 'jobs'
 
@@ -45,32 +43,16 @@ function DashboardContent() {
     <section>
       <div className="max-w-4xl mx-auto">
         {/* Welcome header */}
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-8">
-          <div className="flex items-center gap-3 flex-1">
-            <div className="w-12 h-12 rounded-full bg-accent/15 border border-accent/20 flex items-center justify-center text-accent font-bold text-sm shrink-0">
-              {user?.name ? getInitials(user.name) : '?'}
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-primary">Hola, {firstName}</h1>
-              <p className="text-xs font-mono text-muted">
-                {user?.email}
-                {user?.createdAt && ` · Miembro desde ${getMemberSince(user.createdAt)}`}
-              </p>
-            </div>
+        <div className="flex items-center gap-3 mb-8">
+          <div className="w-12 h-12 rounded-full bg-accent/15 border border-accent/20 flex items-center justify-center text-accent font-bold text-sm shrink-0">
+            {user?.name ? getInitials(user.name) : '?'}
           </div>
-          <div className="flex gap-2">
-            <Link
-              href="/dashboard/entries/new"
-              className={buttonVariants({ variant: "accent", size: "md" })}
-            >
-              <Plus className="w-3 h-3" /> Agregar registro
-            </Link>
-            <Link
-              href="/dashboard/jobs/new"
-              className={buttonVariants({ size: "md" })}
-            >
-              <Briefcase className="w-3 h-3" /> Publicar empleo
-            </Link>
+          <div>
+            <h1 className="text-xl font-bold text-primary">Hola, {firstName}</h1>
+            <p className="text-xs font-mono text-muted">
+              {user?.email}
+              {user?.createdAt && ` · Miembro desde ${getMemberSince(user.createdAt)}`}
+            </p>
           </div>
         </div>
 

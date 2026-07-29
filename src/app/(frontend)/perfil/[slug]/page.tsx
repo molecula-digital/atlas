@@ -5,8 +5,10 @@ import { notFound } from 'next/navigation'
 import { Globe, UserRound } from 'lucide-react'
 import { SITE_TITLE, SITE_URL } from '@/config'
 import { getPublicProfileBySlug } from '@/lib/public-profile'
+import { stripMarkdown } from '@/lib/profile-fields'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import { Card } from '@/components/ui/Card'
+import { MarkdownContent } from '@/components/ui/MarkdownContent'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { GitHubIcon, LinkedInIcon, XIcon } from '@/components/icons/SocialIcons'
 
@@ -17,9 +19,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const profile = await getPublicProfileBySlug(slug)
   if (!profile) return { title: 'Perfil no encontrado', robots: { index: false } }
 
-  const description = profile.bio
-    || [profile.title, profile.company].filter(Boolean).join(' · ')
-    || `Perfil en ${SITE_TITLE}`
+  const description =
+    (profile.bio ? stripMarkdown(profile.bio) : '') ||
+    [profile.title, profile.company].filter(Boolean).join(' · ') ||
+    `Perfil en ${SITE_TITLE}`
   const canonical = `${SITE_URL}/perfil/${profile.slug}`
 
   return {
@@ -134,9 +137,7 @@ export default async function PublicProfilePage({ params }: PageProps) {
                 <UserRound className="w-4 h-4 text-accent" />
                 Sobre mí
               </h2>
-              <p className="text-sm leading-relaxed text-secondary whitespace-pre-line">
-                {profile.bio}
-              </p>
+              <MarkdownContent>{profile.bio}</MarkdownContent>
             </div>
           )}
         </Card>

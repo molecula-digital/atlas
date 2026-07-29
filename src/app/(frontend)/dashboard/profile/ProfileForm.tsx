@@ -2,15 +2,83 @@
 
 import { signOut } from '@/lib/auth-client'
 import Link from 'next/link'
-import { Save, Loader2, CheckCircle, AlertCircle, ExternalLink, LogOut } from 'lucide-react'
+import {
+  Save,
+  Loader2,
+  CheckCircle,
+  AlertCircle,
+  ExternalLink,
+  LogOut,
+  User,
+  Briefcase,
+  Building2,
+  Mail,
+  Phone,
+  Globe,
+  AtSign,
+  Link2,
+  Eye,
+  Newspaper,
+  FileText,
+} from 'lucide-react'
 import { buttonVariants } from '@/components/ui/button-variants'
+import { MarkdownEditor } from '@/components/ui/MarkdownEditor'
 import { NEWSLETTER } from '@/config'
 import { PROFILE_BIO_MAX_LENGTH, slugifyProfile } from '@/lib/profile-fields'
+import { GitHubIcon, LinkedInIcon, XIcon } from '@/components/icons/SocialIcons'
 import { useProfileForm } from './useProfileForm'
+import type { LucideIcon } from 'lucide-react'
+import type { ReactNode } from 'react'
 
 const inputClass =
   'mt-1 w-full px-3 py-2 rounded-lg border border-border bg-card text-primary font-mono text-base sm:text-sm placeholder:text-muted/50 focus:outline-hidden focus:border-accent transition-colors'
 const labelClass = 'text-xs font-mono text-muted uppercase tracking-wider'
+
+function FormSection({
+  icon: Icon,
+  title,
+  description,
+  children,
+}: {
+  icon: LucideIcon
+  title: string
+  description?: string
+  children: ReactNode
+}) {
+  return (
+    <section className="space-y-4">
+      <div className="flex items-start gap-2.5">
+        <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-border bg-elevated">
+          <Icon className="h-3.5 w-3.5 text-accent" />
+        </div>
+        <div className="min-w-0">
+          <h2 className="text-sm font-semibold text-primary">{title}</h2>
+          {description && (
+            <p className="mt-0.5 text-xs text-muted font-mono leading-relaxed">{description}</p>
+          )}
+        </div>
+      </div>
+      {children}
+    </section>
+  )
+}
+
+function FieldLabel({
+  htmlFor,
+  icon: Icon,
+  children,
+}: {
+  htmlFor?: string
+  icon: LucideIcon | ((props: { className?: string }) => ReactNode)
+  children: ReactNode
+}) {
+  return (
+    <label className={`${labelClass} inline-flex items-center gap-1.5`} htmlFor={htmlFor}>
+      <Icon className="h-3 w-3 text-muted" />
+      {children}
+    </label>
+  )
+}
 
 export function ProfileForm() {
   const {
@@ -30,35 +98,35 @@ export function ProfileForm() {
   if (loading) {
     return (
       <div className="space-y-8">
-        <div className="space-y-4">
-          <div className="h-4 w-16 bg-elevated rounded animate-pulse" />
-          <div className="h-10 bg-elevated rounded-lg animate-pulse" />
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="h-10 bg-elevated rounded-lg animate-pulse" />
-            <div className="h-10 bg-elevated rounded-lg animate-pulse" />
+        {[1, 2, 3].map((section) => (
+          <div key={section} className="space-y-4">
+            <div className="flex items-center gap-2.5">
+              <div className="h-8 w-8 rounded-lg bg-elevated animate-pulse" />
+              <div className="space-y-1.5 flex-1">
+                <div className="h-4 w-32 bg-elevated rounded animate-pulse" />
+                <div className="h-3 w-48 bg-elevated rounded animate-pulse" />
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="h-10 bg-elevated rounded-lg animate-pulse" />
+              <div className="h-10 bg-elevated rounded-lg animate-pulse" />
+            </div>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="h-10 bg-elevated rounded-lg animate-pulse" />
-            <div className="h-10 bg-elevated rounded-lg animate-pulse" />
-          </div>
-          <div className="h-10 bg-elevated rounded-lg animate-pulse" />
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="h-10 bg-elevated rounded-lg animate-pulse" />
-            <div className="h-10 bg-elevated rounded-lg animate-pulse" />
-            <div className="h-10 bg-elevated rounded-lg animate-pulse" />
-          </div>
-        </div>
+        ))}
       </div>
     )
   }
 
   return (
     <div className="space-y-8">
-      {/* Profile Form */}
-      <div className="space-y-4">
+      <FormSection
+        icon={User}
+        title="Información personal"
+        description="Datos básicos que aparecen en tu perfil."
+      >
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className={labelClass}>Nombre</label>
+            <FieldLabel icon={User}>Nombre</FieldLabel>
             <input
               className={inputClass}
               value={profile.name}
@@ -67,7 +135,7 @@ export function ProfileForm() {
             />
           </div>
           <div>
-            <label className={labelClass}>Correo</label>
+            <FieldLabel icon={Mail}>Correo</FieldLabel>
             <input
               className={inputClass}
               type="email"
@@ -83,7 +151,7 @@ export function ProfileForm() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className={labelClass}>Cargo</label>
+            <FieldLabel icon={Briefcase}>Cargo</FieldLabel>
             <input
               className={inputClass}
               value={profile.title}
@@ -92,7 +160,7 @@ export function ProfileForm() {
             />
           </div>
           <div>
-            <label className={labelClass}>Empresa</label>
+            <FieldLabel icon={Building2}>Empresa</FieldLabel>
             <input
               className={inputClass}
               value={profile.company}
@@ -101,29 +169,38 @@ export function ProfileForm() {
             />
           </div>
         </div>
+      </FormSection>
 
-        <div>
-          <label className={labelClass} htmlFor="profile-bio">Sobre ti</label>
-          <textarea
-            id="profile-bio"
-            className={`${inputClass} min-h-28 resize-y leading-relaxed`}
-            value={profile.bio}
-            onChange={(e) => setField('bio', e.target.value)}
-            placeholder="Cuéntale a la comunidad en qué trabajas, qué tecnologías usas o en qué te gustaría colaborar."
-            maxLength={PROFILE_BIO_MAX_LENGTH}
-            rows={4}
-          />
-          <p className="mt-1 flex items-center justify-between gap-2 text-2xs text-muted font-mono">
-            <span>Se muestra en tu perfil público.</span>
-            <span className={profile.bio.length >= PROFILE_BIO_MAX_LENGTH ? 'text-accent' : ''}>
-              {profile.bio.length}/{PROFILE_BIO_MAX_LENGTH}
-            </span>
-          </p>
-        </div>
+      <div className="border-t border-border" />
 
+      <FormSection
+        icon={FileText}
+        title="Sobre ti"
+        description="Biografía en Markdown. Se muestra en tu perfil público."
+      >
+        <MarkdownEditor
+          id="profile-bio"
+          value={profile.bio}
+          onChange={(next) => setField('bio', next)}
+          maxLength={PROFILE_BIO_MAX_LENGTH}
+          rows={6}
+          placeholder={
+            'Cuéntale a la comunidad en qué trabajas.\n\nPuedes usar **negritas**, *cursivas*, listas y [enlaces](https://…).'
+          }
+          hint="Markdown · se muestra en /perfil"
+        />
+      </FormSection>
+
+      <div className="border-t border-border" />
+
+      <FormSection
+        icon={Phone}
+        title="Contacto y redes"
+        description="Enlaces opcionales que se muestran como botones en tu perfil."
+      >
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className={labelClass}>Telefono</label>
+            <FieldLabel icon={Phone}>Teléfono</FieldLabel>
             <input
               className={inputClass}
               type="tel"
@@ -133,7 +210,7 @@ export function ProfileForm() {
             />
           </div>
           <div>
-            <label className={labelClass}>Sitio web</label>
+            <FieldLabel icon={Globe}>Sitio web</FieldLabel>
             <input
               className={inputClass}
               value={profile.website}
@@ -145,7 +222,7 @@ export function ProfileForm() {
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
-            <label className={labelClass}>LinkedIn</label>
+            <FieldLabel icon={LinkedInIcon}>LinkedIn</FieldLabel>
             <input
               className={inputClass}
               value={profile.linkedin}
@@ -154,7 +231,7 @@ export function ProfileForm() {
             />
           </div>
           <div>
-            <label className={labelClass}>X / Twitter</label>
+            <FieldLabel icon={XIcon}>X / Twitter</FieldLabel>
             <input
               className={inputClass}
               value={profile.x}
@@ -163,7 +240,7 @@ export function ProfileForm() {
             />
           </div>
           <div>
-            <label className={labelClass}>GitHub</label>
+            <FieldLabel icon={GitHubIcon}>GitHub</FieldLabel>
             <input
               className={inputClass}
               value={profile.github}
@@ -172,7 +249,15 @@ export function ProfileForm() {
             />
           </div>
         </div>
+      </FormSection>
 
+      <div className="border-t border-border" />
+
+      <FormSection
+        icon={Eye}
+        title="Visibilidad"
+        description="Controla si tu perfil aparece en el directorio de personas."
+      >
         <div className="rounded-lg border border-border bg-elevated/40 px-4 py-3 space-y-3">
           <label className="flex items-start gap-3 cursor-pointer">
             <input
@@ -182,7 +267,10 @@ export function ProfileForm() {
               className="mt-0.5 size-4 rounded border-border accent-[var(--accent)]"
             />
             <span>
-              <span className="block text-sm text-primary font-medium">Perfil público</span>
+              <span className="flex items-center gap-1.5 text-sm text-primary font-medium">
+                <Eye className="h-3.5 w-3.5 text-accent" />
+                Perfil público
+              </span>
               <span className="block text-xs text-muted mt-0.5">
                 Aparece en /personas. Desactivado por defecto. No publica tu correo ni teléfono.
               </span>
@@ -191,7 +279,9 @@ export function ProfileForm() {
 
           {profile.isPublic && (
             <div>
-              <label className={labelClass} htmlFor="profile-slug">Slug público</label>
+              <FieldLabel htmlFor="profile-slug" icon={Link2}>
+                Slug público
+              </FieldLabel>
               <div className="mt-1 flex items-center gap-2">
                 <span className="text-xs font-mono text-muted shrink-0">/perfil/</span>
                 <input
@@ -231,42 +321,50 @@ export function ProfileForm() {
               className="mt-0.5 size-4 rounded border-border accent-[var(--accent)]"
             />
             <span>
-              <span className="block text-sm text-primary font-medium">{NEWSLETTER.profileLabel}</span>
+              <span className="flex items-center gap-1.5 text-sm text-primary font-medium">
+                <Newspaper className="h-3.5 w-3.5 text-accent" />
+                {NEWSLETTER.profileLabel}
+              </span>
               <span className="block text-xs text-muted mt-0.5">{NEWSLETTER.profileHint}</span>
             </span>
           </label>
         </div>
+      </FormSection>
 
-        {/* Save Button */}
-        <div className="flex items-center justify-end gap-3">
-          {error && (
-            <span className="flex items-center gap-1 text-xs text-red-400 font-mono">
-              <AlertCircle className="w-3.5 h-3.5" /> {error}
-            </span>
+      <div className="flex items-center justify-end gap-3">
+        {error && (
+          <span className="flex items-center gap-1 text-xs text-red-400 font-mono">
+            <AlertCircle className="w-3.5 h-3.5" /> {error}
+          </span>
+        )}
+        <button
+          onClick={save}
+          disabled={saving}
+          className={buttonVariants({ variant: 'accent', size: 'md' })}
+        >
+          {saving ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : saved ? (
+            <CheckCircle className="w-4 h-4" />
+          ) : (
+            <Save className="w-3.5 h-3.5" />
           )}
-          <button
-            onClick={save}
-            disabled={saving}
-            className={buttonVariants({ variant: "accent", size: "md" })}
-          >
-            {saving ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : saved ? (
-              <CheckCircle className="w-4 h-4" />
-            ) : (
-              <Save className="w-3.5 h-3.5" />
-            )}
-            {saving ? 'Guardando...' : saved ? 'Guardado' : 'Guardar perfil'}
-          </button>
-        </div>
+          {saving ? 'Guardando...' : saved ? 'Guardado' : 'Guardar perfil'}
+        </button>
       </div>
 
-      {/* Account / session */}
       <div className="border-t border-border pt-8">
-        <h2 className="text-lg font-semibold text-primary mb-2">Cuenta</h2>
-        <p className="text-sm text-muted mb-4">
-          Sesión iniciada con Google{session?.user?.email ? ` (${session.user.email})` : ''}.
-        </p>
+        <div className="flex items-start gap-2.5 mb-4">
+          <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-border bg-elevated">
+            <AtSign className="h-3.5 w-3.5 text-accent" />
+          </div>
+          <div>
+            <h2 className="text-sm font-semibold text-primary">Cuenta</h2>
+            <p className="mt-0.5 text-xs text-muted font-mono">
+              Sesión iniciada con Google{session?.user?.email ? ` (${session.user.email})` : ''}.
+            </p>
+          </div>
+        </div>
         <button
           type="button"
           onClick={() => signOut()}

@@ -45,18 +45,18 @@ export function isValidWebsiteInput(value: string): boolean {
 }
 
 /**
- * Free-text bio shown on the public profile.
+ * Markdown bio shown on the public profile.
  *
- * Paragraph breaks survive because people write bios in a textarea, but runs of
- * spaces and blank lines are collapsed so a paste out of a CV cannot stretch the
- * profile card. Returns null for empty input, keeping the column NULL rather
- * than storing an empty string.
+ * Keeps intentional newlines for paragraphs/lists. Trailing spaces on each line
+ * and long blank runs are trimmed so a paste cannot stretch the card. Returns
+ * null for empty input, keeping the column NULL rather than storing "".
  */
 export function normalizeBio(value: string): string | null {
   const cleaned = value
     .replace(/\r\n?/g, '\n')
-    .replace(/[^\S\n]+/g, ' ')
-    .replace(/ ?\n ?/g, '\n')
+    .split('\n')
+    .map((line) => line.replace(/[ \t]+$/g, ''))
+    .join('\n')
     .replace(/\n{3,}/g, '\n\n')
     .trim()
 
@@ -66,4 +66,20 @@ export function normalizeBio(value: string): string | null {
 export function isValidBioInput(value: string): boolean {
   const normalized = normalizeBio(value)
   return normalized === null || normalized.length <= PROFILE_BIO_MAX_LENGTH
+}
+
+/** Plain-text excerpt of a markdown bio for meta tags and directory snippets. */
+export function stripMarkdown(value: string): string {
+  return value
+    .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/!\[([^\]]*)\]\([^)]+\)/g, '$1')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/^\s*[-*+]\s+/gm, '')
+    .replace(/^\s*\d+\.\s+/gm, '')
+    .replace(/(\*\*|__)(.*?)\1/g, '$2')
+    .replace(/(\*|_)(.*?)\1/g, '$2')
+    .replace(/\s+/g, ' ')
+    .trim()
 }
