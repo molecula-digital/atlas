@@ -26,6 +26,7 @@ import EventTypeBadge from './EventTypeBadge'
 import { AddToCalendar } from './AddToCalendar'
 import { EventRichDescription } from './EventRichDescription'
 import { EventDateDisplay } from './EventDateDisplay'
+import { RegisterEventButton } from './RegisterEventButton'
 
 interface EventDetailViewProps {
   event: TechEvent
@@ -321,27 +322,21 @@ export function EventDetailView({
     </>
   )
 
-  const registerButton = event.registerUrl ? (
-    <a
-      href={event.registerUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={buttonVariants({
-        variant: 'accent-filled',
-        size: isPage ? 'lg' : size,
-        className: isPage
-          ? 'h-12 w-full justify-center gap-2 px-8 text-sm sm:h-14 sm:text-base'
-          : undefined,
-      })}
-    >
-      <Ticket size={isPage ? 18 : iconSize} />
-      Registrarse
-    </a>
-  ) : null
-
+  /* The modal keeps the compact accent button; the full page gets the ticket
+     CTA below. */
   const actions = (
     <>
-      {registerButton}
+      {event.registerUrl && (
+        <a
+          href={event.registerUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={buttonVariants({ variant: 'accent-filled', size })}
+        >
+          <Ticket size={iconSize} />
+          Registrarse
+        </a>
+      )}
       {secondaryActions}
     </>
   )
@@ -351,7 +346,7 @@ export function EventDetailView({
       <div className="space-y-5">
         {hero}
 
-        {registerButton && <div className="w-full">{registerButton}</div>}
+        {event.registerUrl && <RegisterEventButton url={event.registerUrl} />}
 
         <EventDetailCard title="Acciones" Icon={Zap}>
           <div className="flex flex-wrap gap-2">{secondaryActions}</div>
