@@ -1,4 +1,4 @@
-import { Ticket, ArrowRight } from 'lucide-react'
+import { Ticket, ArrowRight, CircleCheck } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 /**
@@ -18,24 +18,32 @@ export function RegisterEventButton({
     <>
       <span className="relative z-2 flex min-w-0 flex-1 flex-col justify-center px-5 sm:px-6">
         <span className="mb-1 text-[9px] font-semibold uppercase tracking-[0.22em] opacity-70">
-          Entrada al evento
+          {disabled ? 'Estado del evento' : 'Entrada al evento'}
         </span>
         <span className="flex items-center gap-2.5 text-base tracking-tight sm:text-lg">
-          <Ticket size={20} className="shrink-0" />
-          Registrarse
+          {disabled ? (
+            <CircleCheck size={20} className="shrink-0" />
+          ) : (
+            <Ticket size={20} className="shrink-0" />
+          )}
+          {disabled ? 'Evento finalizado' : 'Registrarse'}
         </span>
         <span className="mt-1 text-[9px] font-medium uppercase tracking-[0.16em] opacity-60">
-          Reserva tu lugar
+          {disabled ? 'Registro cerrado' : 'Reserva tu lugar'}
         </span>
       </span>
 
       <span aria-hidden className="event-cta__tear relative z-2 my-3.5 w-px shrink-0" />
 
       <span className="event-cta__stub relative z-2 flex w-24 shrink-0 flex-col items-center justify-center gap-2 px-3">
-        <span aria-hidden className="event-cta__barcode" />
+        {disabled ? (
+          <CircleCheck size={22} aria-hidden className="opacity-70" />
+        ) : (
+          <span aria-hidden className="event-cta__barcode" />
+        )}
         <span className="flex items-center gap-1 text-[9px] uppercase tracking-[0.12em]">
-          Acceder
-          <ArrowRight size={13} />
+          {disabled ? 'Finalizado' : 'Acceder'}
+          {!disabled && <ArrowRight size={13} />}
         </span>
       </span>
 
@@ -45,7 +53,7 @@ export function RegisterEventButton({
   )
   const classes = cn(
     'event-cta mx-auto flex h-20 w-full max-w-sm cursor-pointer items-stretch overflow-hidden rounded-lg font-mono font-semibold whitespace-nowrap select-none outline-hidden sm:h-24',
-    disabled && 'cursor-not-allowed opacity-50',
+    disabled && 'event-cta--closed cursor-default',
     className,
   )
 

@@ -317,6 +317,26 @@ html {
   --event-cta-ink: #04211f;
 }
 
+.event-cta--closed {
+  --event-cta-fill: #e2e8f0;
+  --event-cta-ink: #475569;
+  border: 1px solid var(--color-border);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #fff 55%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, #000 8%, transparent),
+    0 6px 16px color-mix(in srgb, #475569 10%, transparent);
+  text-shadow: none;
+}
+
+:root.dark .event-cta--closed {
+  --event-cta-fill: #1e293b;
+  --event-cta-ink: #cbd5e1;
+}
+
+.event-cta--closed::after {
+  display: none;
+}
+
 .event-cta:focus-visible {
   outline: 2px solid var(--event-cta-fill);
   outline-offset: 2px;

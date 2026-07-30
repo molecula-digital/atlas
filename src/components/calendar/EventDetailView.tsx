@@ -15,6 +15,7 @@ import {
   LayoutList,
   Zap,
   Clock,
+  CircleCheck,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import type { TechEvent } from '@/lib/events'
@@ -466,13 +467,13 @@ export function EventDetailView({
             <span
               aria-disabled="true"
               className={buttonVariants({
-                variant: 'accent-filled',
+                variant: 'neutral',
                 size: 'md',
-                className: 'max-sm:w-full cursor-not-allowed opacity-40',
+                className: 'max-sm:w-full cursor-default text-muted',
               })}
             >
-              <Ticket size={14} />
-              Registrarse
+              <CircleCheck size={14} />
+              Evento finalizado
             </span>
           ) : (
             <a
