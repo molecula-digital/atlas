@@ -117,19 +117,13 @@ export default function UpcomingEventsStrip() {
             Próximos eventos
           </h2>
         </div>
-        <a
-          href="#calendario"
-          onClick={(e) => {
-            e.preventDefault();
-            document
-              .querySelector("#calendario")
-              ?.scrollIntoView({ behavior: "smooth" });
-          }}
+        <Link
+          href="/eventos"
           className="inline-flex items-center gap-1 text-xs font-mono font-medium text-accent hover:underline"
         >
           Ver calendario
           <ArrowRight className="w-3 h-3" />
-        </a>
+        </Link>
       </div>
 
       {/* Mobile carousel */}
