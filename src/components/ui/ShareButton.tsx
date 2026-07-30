@@ -38,12 +38,12 @@ export default function ShareButton({
       {copied ? (
         <>
           <Check className="w-3.5 h-3.5 text-accent" />
-          <span className="text-accent">LINK COPIADO</span>
+          <span className="text-accent">Link copiado</span>
         </>
       ) : (
         <>
           <Share2 className="w-3.5 h-3.5" />
-          COMPARTIR
+          Compartir
         </>
       )}
     </button>

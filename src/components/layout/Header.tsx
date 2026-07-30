@@ -91,7 +91,7 @@ export function Header() {
                   GitHub
                 </a>
                 <ThemeToggle />
-                <Link href="/dashboard" className={buttonVariants({ variant: 'accent', size: 'xs', className: 'ml-1' })}>
+                <Link href="/dashboard" className={buttonVariants({ variant: 'accent-filled', size: 'xs', className: 'ml-1' })}>
                   {session ? (
                     <><LayoutDashboard className="w-3 h-3" /> Dashboard</>
                   ) : (
@@ -161,7 +161,7 @@ export function Header() {
           </a>
 
           <div className="pt-4">
-            <Link href="/dashboard" className={buttonVariants({ variant: 'accent', size: 'lg' })}>
+            <Link href="/dashboard" className={buttonVariants({ variant: 'accent-filled', size: 'lg' })}>
               {session ? (
                 <><LayoutDashboard className="w-4 h-4" /> Dashboard</>
               ) : (

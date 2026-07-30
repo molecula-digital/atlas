@@ -161,7 +161,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
             <p className="text-sm text-primary font-medium mb-3">Interesado en esta oportunidad?</p>
             <ExternalLink
               href={job.contactUrl as string}
-              className={buttonVariants({ variant: "accent", size: "md" })}
+              className={buttonVariants({ variant: "accent-filled", size: "md" })}
             >
               <LinkIcon className="w-4 h-4" /> Aplicar
             </ExternalLink>
