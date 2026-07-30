@@ -4,7 +4,7 @@ import { getEventBySlug, getPublishedEvents } from '@/lib/payload'
 import { eventDocToTechEvent, selectOtherEvents } from '@/lib/events'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import { SITE_URL } from '@/config'
-import { extractSocialImage } from '@/lib/format'
+import { extractSocialImage, truncateMetadataText } from '@/lib/format'
 import { safeJsonLd } from '@/lib/utils'
 import { MapPin, ArrowUpRight } from 'lucide-react'
 import { buttonVariants } from '@/components/ui/button-variants'
@@ -12,6 +12,7 @@ import { resolveMapEmbedUrl } from '@/lib/maps'
 import { EventDetailsCard } from '@/components/calendar/EventDetailView'
 import { EventDateDisplay } from '@/components/calendar/EventDateDisplay'
 import { OtherEventsSection } from '@/components/calendar/OtherEventsSection'
+import { RegisterEventButton } from '@/components/calendar/RegisterEventButton'
 import EventDetailPageClient from './EventDetailPageClient'
 
 export const revalidate = 3600
@@ -31,7 +32,10 @@ export async function generateMetadata({
   if (!doc) return { title: 'Evento no encontrado — Eventos' }
 
   const event = eventDocToTechEvent(doc)
-  const description = event.description || `${event.title} — evento tech en Sinaloa`
+  const fullDescription =
+    event.description || `${event.title} — evento tech en Sinaloa`
+  const description = truncateMetadataText(fullDescription, 155)
+  const socialDescription = truncateMetadataText(fullDescription, 125)
   const canonical = `${SITE_URL}/eventos/${event.slug}`
   const socialImage = extractSocialImage(doc.image, event.title)
 
@@ -41,14 +45,14 @@ export async function generateMetadata({
     alternates: { canonical },
     openGraph: {
       title: event.title,
-      description,
+      description: socialDescription,
       url: canonical,
       ...(socialImage ? { images: [socialImage] } : {}),
     },
     twitter: {
       card: 'summary_large_image',
       title: event.title,
-      description,
+      description: socialDescription,
       ...(socialImage
         ? { images: [{ url: socialImage.url, alt: socialImage.alt }] }
         : {}),
@@ -144,11 +148,19 @@ export default async function EventDetailPage({
             event={event}
             showLocation={!showLocationPanel}
             showDetailsInline={!showSidebar}
+            registrationClassName={showSidebar ? 'lg:hidden' : 'lg:mx-0'}
           />
         </div>
 
         {showSidebar && (
           <aside className="space-y-4 lg:sticky lg:top-14">
+            {event.registerUrl && (
+              <RegisterEventButton
+                url={event.registerUrl}
+                className="hidden max-w-none lg:flex"
+              />
+            )}
+
             <EventDetailsCard
               event={event}
               showLocation={!showLocationPanel}

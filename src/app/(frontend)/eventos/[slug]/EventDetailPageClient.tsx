@@ -9,10 +9,12 @@ export default function EventDetailPageClient({
   event,
   showLocation = true,
   showDetailsInline = true,
+  registrationClassName,
 }: {
   event: TechEvent
   showLocation?: boolean
   showDetailsInline?: boolean
+  registrationClassName?: string
 }) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
   const hasImage = !!event.image
@@ -28,6 +30,7 @@ export default function EventDetailPageClient({
         showLocation={showLocation}
         showDetailsInline={showDetailsInline}
         showDateDisplay={false}
+        registrationClassName={registrationClassName}
         onExpandImage={hasImage ? () => setLightboxIndex(0) : undefined}
       />
 

@@ -41,6 +41,8 @@ interface EventDetailViewProps {
   showDateDisplay?: boolean
   /** Dismisses the containing dialog, when rendered inside one. */
   onClose?: () => void
+  /** Responsive placement override for the full-page registration ticket. */
+  registrationClassName?: string
 }
 
 /** Titled section card — the entry detail pages use the same chrome. */
@@ -223,6 +225,7 @@ export function EventDetailView({
   showDetailsInline = true,
   showDateDisplay = true,
   onClose,
+  registrationClassName,
 }: EventDetailViewProps) {
   const isPage = variant === 'page'
   const hasImage = !!event.image
@@ -350,10 +353,15 @@ export function EventDetailView({
 
   if (isPage) {
     return (
-      <div className="space-y-5">
+      <div className="flex flex-col gap-5">
         {hero}
 
-        {event.registerUrl && <RegisterEventButton url={event.registerUrl} />}
+        {event.registerUrl && (
+          <RegisterEventButton
+            url={event.registerUrl}
+            className={registrationClassName}
+          />
+        )}
 
         <EventDetailCard title="Acciones" Icon={Zap}>
           <div className="flex flex-wrap gap-2">{secondaryActions}</div>
