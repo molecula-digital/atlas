@@ -23,6 +23,11 @@ import { SITE_URL } from '@/config'
 import { buttonVariants, type ButtonSize } from '@/components/ui/button-variants'
 import { Card } from '@/components/ui/Card'
 import ShareButton from '@/components/ui/ShareButton'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/Tooltip'
 import { cn } from '@/lib/utils'
 import EventTypeBadge from './EventTypeBadge'
 import { AddToCalendar } from './AddToCalendar'
@@ -141,10 +146,57 @@ export function EventDetailsCard({
   )
 }
 
-function EventFullPageLink({ slug, onClose }: { slug: string; onClose?: () => void }) {
+function IconActionTooltip({
+  label,
+  children,
+}: {
+  label: string
+  children: React.ReactElement
+}) {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>{children}</TooltipTrigger>
+      <TooltipContent side="top">{label}</TooltipContent>
+    </Tooltip>
+  )
+}
+
+function ModalActionLink({
+  href,
+  label,
+  Icon,
+}: {
+  href: string
+  label: string
+  Icon: LucideIcon
+}) {
+  return (
+    <IconActionTooltip label={label}>
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={buttonVariants({ size: 'icon-lg' })}
+        aria-label={label}
+      >
+        <Icon size={16} />
+      </a>
+    </IconActionTooltip>
+  )
+}
+
+function EventFullPageLink({
+  slug,
+  onClose,
+  iconOnly = false,
+}: {
+  slug: string
+  onClose?: () => void
+  iconOnly?: boolean
+}) {
   const router = useRouter()
 
-  return (
+  const link = (
     <Link
       href={getEventPath(slug)}
       onClick={(e) => {
@@ -152,11 +204,21 @@ function EventFullPageLink({ slug, onClose }: { slug: string; onClose?: () => vo
         onClose?.()
         router.push(getEventPath(slug))
       }}
-      className={buttonVariants({ variant: 'ghost', size: 'md' })}
+      className={buttonVariants({
+        variant: 'ghost',
+        size: iconOnly ? 'icon-lg' : 'md',
+      })}
+      aria-label={iconOnly ? 'Ver página completa' : undefined}
     >
-      <Link2 size={13} />
-      Ver página completa
+      <Link2 size={iconOnly ? 16 : 13} />
+      {!iconOnly && 'Ver página completa'}
     </Link>
+  )
+
+  return iconOnly ? (
+    <IconActionTooltip label="Ver página completa">{link}</IconActionTooltip>
+  ) : (
+    link
   )
 }
 
@@ -332,23 +394,30 @@ export function EventDetailView({
     </>
   )
 
-  /* The modal keeps the compact accent button; the full page gets the ticket
-     CTA below. */
-  const actions = (
-    <>
-      {event.registerUrl && (
-        <a
-          href={event.registerUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={buttonVariants({ variant: 'accent-filled', size })}
-        >
-          <Ticket size={iconSize} />
-          Registrarse
-        </a>
+  const modalActions = (
+    <div
+      className="flex flex-wrap items-center gap-1.5 max-sm:w-full max-sm:justify-center"
+      role="group"
+      aria-label="Acciones del evento"
+    >
+      {event.url && (
+        <ModalActionLink href={event.url} label="Abrir sitio web" Icon={ExternalLink} />
       )}
-      {secondaryActions}
-    </>
+      {event.mapsUrl && (
+        <ModalActionLink href={event.mapsUrl} label="Abrir en Google Maps" Icon={Map} />
+      )}
+      <AddToCalendar event={event} size="icon-lg" iconOnly />
+      <ShareButton
+        title={`${event.title} | Tech Atlas`}
+        url={`${SITE_URL}${getEventPath(event.slug)}`}
+        size="icon-lg"
+        iconOnly
+      />
+      {event.meetLink && (
+        <ModalActionLink href={event.meetLink} label="Abrir Meet o Zoom" Icon={Video} />
+      )}
+      <EventFullPageLink slug={event.slug} onClose={onClose} iconOnly />
+    </div>
   )
 
   if (isPage) {
@@ -389,8 +458,23 @@ export function EventDetailView({
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="min-h-0 flex-1 overflow-y-auto">{body}</div>
-      <div className="flex shrink-0 flex-col flex-wrap gap-2 border-t border-border px-5 py-4 sm:flex-row sm:items-center">
-        {actions}
+      <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-t border-border px-5 py-3">
+        {event.registerUrl && (
+          <a
+            href={event.registerUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={buttonVariants({
+              variant: 'accent-filled',
+              size: 'md',
+              className: 'max-sm:w-full',
+            })}
+          >
+            <Ticket size={14} />
+            Registrarse
+          </a>
+        )}
+        {modalActions}
       </div>
     </div>
   )

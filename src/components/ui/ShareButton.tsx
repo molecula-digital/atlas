@@ -4,6 +4,11 @@ import { Check, Share2, X } from 'lucide-react'
 import { buttonVariants, type ButtonSize } from '@/components/ui/button-variants'
 import { useShare } from '@/hooks/useShare'
 import { cn } from '@/lib/utils'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/Tooltip'
 
 export default function ShareButton({
   title,
@@ -11,12 +16,14 @@ export default function ShareButton({
   text,
   size = 'md',
   className,
+  iconOnly = false,
 }: {
   title: string
   url: string
   text?: string
   size?: ButtonSize
   className?: string
+  iconOnly?: boolean
 }) {
   const { share, status } = useShare({ title, text, url, copyText: url })
   const completed = status === 'copied' || status === 'shared'
@@ -29,7 +36,7 @@ export default function ShareButton({
           ? 'No se pudo copiar'
           : 'Compartir'
 
-  return (
+  const button = (
     <button
       type="button"
       onClick={() => void share()}
@@ -39,23 +46,41 @@ export default function ShareButton({
       {completed ? (
         <>
           <Check className="w-3.5 h-3.5 text-accent" />
-          <span className="text-accent" aria-live="polite">
-            {feedbackLabel}
-          </span>
+          {!iconOnly && (
+            <span className="text-accent" aria-live="polite">
+              {feedbackLabel}
+            </span>
+          )}
         </>
       ) : status === 'error' ? (
         <>
           <X className="w-3.5 h-3.5 text-red-500" />
-          <span className="text-red-500" aria-live="polite">
-            {feedbackLabel}
-          </span>
+          {!iconOnly && (
+            <span className="text-red-500" aria-live="polite">
+              {feedbackLabel}
+            </span>
+          )}
         </>
       ) : (
         <>
           <Share2 className="w-3.5 h-3.5" />
-          <span>Compartir</span>
+          {!iconOnly && <span>Compartir</span>}
         </>
       )}
+      {iconOnly && (
+        <span className="sr-only" aria-live="polite">
+          {feedbackLabel}
+        </span>
+      )}
     </button>
+  )
+
+  if (!iconOnly) return button
+
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>{button}</TooltipTrigger>
+      <TooltipContent side="top">{feedbackLabel}</TooltipContent>
+    </Tooltip>
   )
 }

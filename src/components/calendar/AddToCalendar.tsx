@@ -21,6 +21,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/Dialog'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/Tooltip'
 
 const optionClass =
   'flex w-full items-center gap-3 rounded-lg border border-border bg-card px-3 py-2.5 text-left text-sm text-secondary transition-colors hover:border-accent/40 hover:bg-accent/5 hover:text-primary'
@@ -61,9 +66,11 @@ function YahooIcon() {
 export function AddToCalendar({
   event,
   size = 'md',
+  iconOnly = false,
 }: {
   event: TechEvent
   size?: ButtonSize
+  iconOnly?: boolean
 }) {
   const [open, setOpen] = useState(false)
   const calEvent = toCalendarEvent(event, `${SITE_URL}${getEventPath(event.slug)}`)
@@ -85,12 +92,26 @@ export function AddToCalendar({
     { label: 'Yahoo', href: yahooCalendarUrl(calEvent), Icon: YahooIcon },
   ]
 
+  const trigger = (
+    <DialogTrigger
+      className={buttonVariants({ size })}
+      aria-label={iconOnly ? 'Agregar a calendario' : undefined}
+    >
+      <CalendarPlus size={iconOnly ? 16 : size === 'lg' ? 15 : 13} />
+      {!iconOnly && 'Agregar a calendario'}
+    </DialogTrigger>
+  )
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger className={buttonVariants({ size })}>
-        <CalendarPlus size={size === 'lg' ? 15 : 13} />
-        Agregar a calendario
-      </DialogTrigger>
+      {iconOnly ? (
+        <Tooltip>
+          <TooltipTrigger asChild>{trigger}</TooltipTrigger>
+          <TooltipContent side="top">Agregar a calendario</TooltipContent>
+        </Tooltip>
+      ) : (
+        trigger
+      )}
       <DialogContent className="sm:max-w-sm" showCloseButton>
         <DialogHeader>
           <DialogTitle>Agregar a calendario</DialogTitle>
