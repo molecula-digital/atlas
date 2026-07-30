@@ -4,6 +4,7 @@ import { getEventBySlug, getPublishedEvents } from '@/lib/payload'
 import { eventDocToTechEvent, selectOtherEvents } from '@/lib/events'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import { SITE_URL } from '@/config'
+import { extractSocialImage } from '@/lib/format'
 import { safeJsonLd } from '@/lib/utils'
 import { MapPin, ArrowUpRight } from 'lucide-react'
 import { buttonVariants } from '@/components/ui/button-variants'
@@ -32,6 +33,7 @@ export async function generateMetadata({
   const event = eventDocToTechEvent(doc)
   const description = event.description || `${event.title} — evento tech en Sinaloa`
   const canonical = `${SITE_URL}/eventos/${event.slug}`
+  const socialImage = extractSocialImage(doc.image, event.title)
 
   return {
     title: `${event.title} — Eventos`,
@@ -41,9 +43,16 @@ export async function generateMetadata({
       title: event.title,
       description,
       url: canonical,
-      ...(event.image ? { images: [{ url: event.image }] } : {}),
+      ...(socialImage ? { images: [socialImage] } : {}),
     },
-    twitter: { card: 'summary_large_image' },
+    twitter: {
+      card: 'summary_large_image',
+      title: event.title,
+      description,
+      ...(socialImage
+        ? { images: [{ url: socialImage.url, alt: socialImage.alt }] }
+        : {}),
+    },
   }
 }
 
