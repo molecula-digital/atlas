@@ -287,9 +287,8 @@ html {
 }
 
 /* ── Registrarse CTA (event pages) ───────────────────────────────────────────
-   Perforated ticket bar with a light streak that sweeps across on hover. Teal
-   sets it apart from the green accent the rest of the page chrome uses, so it
-   reads as the one thing to click. */
+   A compact admission ticket with printed texture, dimensional paper edges,
+   a perforated tear line, and a detachable barcode stub. */
 .event-cta {
   --event-cta-fill: #0f766e;
   --event-cta-ink: #f2fffd;
@@ -297,8 +296,24 @@ html {
   isolation: isolate;
   overflow: hidden;
   background-color: var(--event-cta-fill);
+  background-image:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, #fff 13%, transparent),
+      transparent 35%,
+      color-mix(in srgb, #000 10%, transparent)
+    );
   color: var(--event-cta-ink);
-  transition: background-color 160ms ease-out;
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #fff 34%, transparent),
+    inset 0 -2px 0 color-mix(in srgb, #000 18%, transparent),
+    0 2px 0 color-mix(in srgb, var(--event-cta-fill) 62%, #000),
+    0 10px 22px color-mix(in srgb, var(--event-cta-fill) 20%, transparent);
+  text-shadow: 0 1px 0 color-mix(in srgb, #000 20%, transparent);
+  transition:
+    background-color 160ms ease-out,
+    box-shadow 160ms ease-out,
+    transform 160ms ease-out;
 }
 
 :root.dark .event-cta {
@@ -307,7 +322,21 @@ html {
 }
 
 .event-cta:hover {
-  background-color: color-mix(in srgb, var(--event-cta-fill) 90%, #000);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #fff 38%, transparent),
+    inset 0 -2px 0 color-mix(in srgb, #000 18%, transparent),
+    0 3px 0 color-mix(in srgb, var(--event-cta-fill) 58%, #000),
+    0 14px 28px color-mix(in srgb, var(--event-cta-fill) 26%, transparent);
+  transform: translateY(-1px);
+}
+
+.event-cta:active {
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #fff 28%, transparent),
+    inset 0 -2px 0 color-mix(in srgb, #000 20%, transparent),
+    0 1px 0 color-mix(in srgb, var(--event-cta-fill) 62%, #000),
+    0 6px 14px color-mix(in srgb, var(--event-cta-fill) 18%, transparent);
+  transform: translateY(1px);
 }
 
 .event-cta:focus-visible {
@@ -315,11 +344,29 @@ html {
   outline-offset: 2px;
 }
 
-/* The sheen. Rides above the label on purpose: it reads as glare crossing the
-   whole ticket, not a band behind the text. */
-.event-cta::after {
+/* Fibrous dot-and-line texture gives the flat color a printed-paper surface. */
+.event-cta::before {
   position: absolute;
   z-index: 1;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background-image:
+    radial-gradient(circle, color-mix(in srgb, #fff 45%, transparent) 0.5px, transparent 0.7px),
+    repeating-linear-gradient(
+      7deg,
+      transparent 0 4px,
+      color-mix(in srgb, #000 8%, transparent) 4px 5px
+    );
+  background-size: 5px 5px, 13px 13px;
+  opacity: 0.22;
+  mix-blend-mode: soft-light;
+}
+
+/* The sheen rides above the print like glare crossing coated card stock. */
+.event-cta::after {
+  position: absolute;
+  z-index: 3;
   inset: 0;
   pointer-events: none;
   content: "";
@@ -347,28 +394,57 @@ html {
   );
 }
 
-/* Punch notches, aligned to the tear line at right: 5rem (= w-20). The bar's
+/* The detachable stub is subtly darker, like a separately printed coupon. */
+.event-cta__stub {
+  background-image: linear-gradient(
+    90deg,
+    color-mix(in srgb, #000 8%, transparent),
+    transparent 30%
+  );
+}
+
+.event-cta__barcode {
+  display: block;
+  width: 2.75rem;
+  height: 0.8rem;
+  background-image: repeating-linear-gradient(
+    to right,
+    currentColor 0 1px,
+    transparent 1px 3px,
+    currentColor 3px 5px,
+    transparent 5px 7px
+  );
+  opacity: 0.72;
+}
+
+/* Punch notches, aligned to the 6rem tear-off stub. The bar's
    overflow clip turns each circle into a semicircular bite out of the edge. */
 .event-cta__notch {
   position: absolute;
   z-index: 2;
-  right: 5rem;
-  height: 0.75rem;
-  width: 0.75rem;
+  right: 6rem;
+  height: 0.9rem;
+  width: 0.9rem;
   transform: translateX(50%);
   border-radius: 9999px;
   background-color: var(--color-background);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--event-cta-fill) 38%, transparent);
 }
 .event-cta__notch--top {
-  top: -0.375rem;
+  top: -0.45rem;
 }
 .event-cta__notch--bottom {
-  bottom: -0.375rem;
+  bottom: -0.45rem;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .event-cta::after {
     transition: none;
+  }
+
+  .event-cta:hover,
+  .event-cta:active {
+    transform: none;
   }
 }
 

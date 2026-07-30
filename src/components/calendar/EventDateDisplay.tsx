@@ -28,7 +28,7 @@ export function EventDateDisplay({ event, className }: EventDateDisplayProps) {
         <span className="text-xs font-mono font-semibold uppercase leading-none text-muted">
           {month}
         </span>
-        <span className="mt-1 text-2xl font-bold leading-none text-primary">{day}</span>
+        <span className="mt-1 text-2xl font-bold leading-none text-accent">{day}</span>
       </div>
 
       <div className="min-w-0 space-y-0.5">

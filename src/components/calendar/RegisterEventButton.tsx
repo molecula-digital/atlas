@@ -2,12 +2,8 @@ import { Ticket, ArrowRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 /**
- * Primary Registrarse CTA on the event pages: a perforated ticket bar with a
- * light streak that sweeps across on hover. Deliberately teal rather than the
- * green accent used by the surrounding chrome, so it reads as the one thing to
- * click. Colours, sheen, tear line, and notches live in globals.css under
- * `.event-cta` — the notches are painted in --color-background, so this belongs
- * on the page background rather than inside a card.
+ * Primary Registrarse CTA on event pages: a compact, perforated admission
+ * ticket with a tear-off stub and printed-paper details.
  */
 export function RegisterEventButton({
   url,
@@ -22,22 +18,34 @@ export function RegisterEventButton({
       target="_blank"
       rel="noopener noreferrer"
       className={cn(
-        'event-cta group flex h-12 w-full items-center rounded font-mono text-sm font-semibold whitespace-nowrap select-none outline-hidden sm:h-14 sm:text-base',
+        'event-cta group flex h-20 w-full max-w-md cursor-pointer items-stretch overflow-hidden rounded-lg font-mono font-semibold whitespace-nowrap select-none outline-hidden sm:h-24',
         className,
       )}
     >
-      <span className="flex min-w-0 flex-1 items-center gap-2.5 px-5">
-        <Ticket size={18} className="shrink-0" />
-        Registrarse
+      <span className="relative z-2 flex min-w-0 flex-1 flex-col justify-center px-5 sm:px-6">
+        <span className="mb-1 text-[9px] font-semibold uppercase tracking-[0.22em] opacity-70">
+          Entrada al evento
+        </span>
+        <span className="flex items-center gap-2.5 text-base tracking-tight sm:text-lg">
+          <Ticket size={20} className="shrink-0" />
+          Registrarse
+        </span>
+        <span className="mt-1 text-[9px] font-medium uppercase tracking-[0.16em] opacity-60">
+          Reserva tu lugar
+        </span>
       </span>
 
-      <span aria-hidden className="event-cta__tear my-2.5 w-px shrink-0" />
+      <span aria-hidden className="event-cta__tear relative z-2 my-3.5 w-px shrink-0" />
 
-      <span className="flex w-20 shrink-0 items-center justify-center">
-        <ArrowRight
-          size={18}
-          className="transition-transform duration-200 group-hover:translate-x-0.5"
-        />
+      <span className="event-cta__stub relative z-2 flex w-24 shrink-0 flex-col items-center justify-center gap-2 px-3">
+        <span aria-hidden className="event-cta__barcode" />
+        <span className="flex items-center gap-1 text-[9px] uppercase tracking-[0.12em]">
+          Acceder
+          <ArrowRight
+            size={13}
+            className="transition-transform duration-200 group-hover:translate-x-0.5"
+          />
+        </span>
       </span>
 
       <span aria-hidden className="event-cta__notch event-cta__notch--top" />

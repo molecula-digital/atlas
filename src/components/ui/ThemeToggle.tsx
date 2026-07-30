@@ -36,7 +36,7 @@ export default function ThemeToggle({ className = '' }: { className?: string }) 
         aria-label="Cambiar tema"
         aria-haspopup="true"
         aria-expanded={open}
-        className="group relative flex min-h-8 min-w-8 items-center justify-center text-secondary hover:text-accent transition-colors duration-200"
+        className="group relative flex min-h-8 min-w-8 cursor-pointer items-center justify-center text-secondary hover:text-accent transition-colors duration-200"
       >
         {/*
           The header row is h-8 and so is this button, so a background on the
@@ -64,7 +64,7 @@ export default function ThemeToggle({ className = '' }: { className?: string }) 
                 setOpen(false)
                 setSwapCount((n) => n + 1)
               }}
-              className="w-full flex items-center gap-2.5 rounded-md px-3 py-2 text-xs font-mono text-secondary hover:text-accent hover:bg-elevated transition-colors"
+              className="flex w-full cursor-pointer items-center gap-2.5 rounded-md px-3 py-2 text-xs font-mono text-secondary hover:text-accent hover:bg-elevated transition-colors"
             >
               <Icon className="w-4 h-4" />
               {label}

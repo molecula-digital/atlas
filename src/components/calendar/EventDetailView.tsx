@@ -19,8 +19,10 @@ import {
 import type { LucideIcon } from 'lucide-react'
 import type { TechEvent } from '@/lib/events'
 import { getEventPath } from '@/lib/events'
+import { SITE_URL } from '@/config'
 import { buttonVariants, type ButtonSize } from '@/components/ui/button-variants'
 import { Card } from '@/components/ui/Card'
+import ShareButton from '@/components/ui/ShareButton'
 import { cn } from '@/lib/utils'
 import EventTypeBadge from './EventTypeBadge'
 import { AddToCalendar } from './AddToCalendar'
@@ -307,6 +309,13 @@ export function EventDetailView({
         </a>
       )}
       <AddToCalendar event={event} size={size} />
+      {(!isPage || !event.registerUrl) && (
+        <ShareButton
+          title={`${event.title} | Tech Atlas`}
+          url={`${SITE_URL}${getEventPath(event.slug)}`}
+          size={size}
+        />
+      )}
       {event.meetLink && (
         <a
           href={event.meetLink}
@@ -346,7 +355,21 @@ export function EventDetailView({
       <div className="space-y-5">
         {hero}
 
-        {event.registerUrl && <RegisterEventButton url={event.registerUrl} />}
+        {event.registerUrl && (
+          <div className="flex items-stretch gap-3">
+            <RegisterEventButton
+              url={event.registerUrl}
+              className="min-w-0 flex-1"
+            />
+            <ShareButton
+              title={`${event.title} | Tech Atlas`}
+              url={`${SITE_URL}${getEventPath(event.slug)}`}
+              size="lg"
+              iconOnlyOnMobile
+              className="h-20 w-12 shrink-0 p-0 sm:h-24 sm:w-auto sm:px-5"
+            />
+          </div>
+        )}
 
         <EventDetailCard title="Acciones" Icon={Zap}>
           <div className="flex flex-wrap gap-2">{secondaryActions}</div>

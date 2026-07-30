@@ -14,7 +14,7 @@ import { buttonVariants } from '@/components/ui/button-variants'
 import { AtlasLogo } from '@/components/layout/AtlasLogo'
 import { SiteFrame } from '@/components/layout/SiteFrame'
 
-const NAV_LINK = "flex items-center gap-1 px-2 py-1 text-[10px] font-mono text-secondary hover:text-accent rounded hover:bg-elevated transition-colors"
+const NAV_LINK = "flex cursor-pointer items-center gap-1 px-2 py-1 text-[10px] font-mono text-secondary hover:text-accent rounded hover:bg-elevated transition-colors"
 const MOBILE_LINK = "flex items-center gap-2 py-3 text-lg font-mono font-semibold text-primary hover:text-accent transition-colors"
 
 export function Header() {
@@ -105,7 +105,7 @@ export function Header() {
                 <ThemeToggle />
                 <button
                   onClick={() => setMobileOpen(!mobileOpen)}
-                  className="relative p-1.5 text-secondary hover:text-primary w-8 h-8 flex items-center justify-center"
+                  className="relative flex h-8 w-8 cursor-pointer items-center justify-center p-1.5 text-secondary hover:text-primary"
                   aria-label={mobileOpen ? 'Cerrar menú' : 'Abrir menú'}
                   aria-expanded={mobileOpen}
                 >
@@ -128,7 +128,7 @@ export function Header() {
           <Link href="/" className="flex items-center" aria-label="Tech Atlas — inicio">
             <AtlasLogo className="h-6 w-auto" />
           </Link>
-          <button onClick={() => setMobileOpen(false)} className="p-2 min-h-11 min-w-11 flex items-center justify-center text-secondary hover:text-accent transition-colors" aria-label="Cerrar menú">
+          <button onClick={() => setMobileOpen(false)} className="flex min-h-11 min-w-11 cursor-pointer items-center justify-center p-2 text-secondary hover:text-accent transition-colors" aria-label="Cerrar menú">
             <X className="w-6 h-6" />
           </button>
         </div>

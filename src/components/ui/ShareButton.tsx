@@ -1,51 +1,73 @@
-"use client"
+'use client'
 
-import { useState } from "react";
-import { Share2, Check } from "lucide-react";
-import { buttonVariants } from '@/components/ui/button-variants';
+import { Check, Share2, X } from 'lucide-react'
+import { buttonVariants, type ButtonSize } from '@/components/ui/button-variants'
+import { useShare } from '@/hooks/useShare'
+import { cn } from '@/lib/utils'
+
+const shareLabelClass = 'share-button__label'
 
 export default function ShareButton({
   title,
   url,
+  text,
+  size = 'md',
+  className,
+  iconOnlyOnMobile = false,
 }: {
-  title: string;
-  url: string;
+  title: string
+  url: string
+  text?: string
+  size?: ButtonSize
+  className?: string
+  iconOnlyOnMobile?: boolean
 }) {
-  const [copied, setCopied] = useState(false);
-
-  async function handleShare() {
-    // Mobile: use native share sheet when available
-    if (navigator.share) {
-      try {
-        await navigator.share({ title, url });
-      } catch {
-        // User cancelled — ignore
-      }
-      return;
-    }
-
-    // Desktop fallback: copy to clipboard
-    await navigator.clipboard.writeText(url);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  }
+  const { share, status } = useShare({ title, text, url, copyText: url })
+  const completed = status === 'copied' || status === 'shared'
+  const feedbackLabel =
+    status === 'copied'
+      ? 'Link copiado'
+      : status === 'shared'
+        ? 'Compartido'
+        : status === 'error'
+          ? 'No se pudo copiar'
+          : 'Compartir'
 
   return (
     <button
-      onClick={handleShare}
-      className={buttonVariants({ size: 'md' })}
+      type="button"
+      onClick={() => void share()}
+      className={cn(buttonVariants({ size }), className)}
+      aria-label={feedbackLabel}
     >
-      {copied ? (
+      {completed ? (
         <>
           <Check className="w-3.5 h-3.5 text-accent" />
-          <span className="text-accent">Link copiado</span>
+          <span
+            className={cn(shareLabelClass, 'text-accent', iconOnlyOnMobile && 'hidden sm:inline')}
+            aria-live="polite"
+          >
+            {feedbackLabel}
+          </span>
+        </>
+      ) : status === 'error' ? (
+        <>
+          <X className="w-3.5 h-3.5 text-red-500" />
+          <span
+            className={cn(shareLabelClass, 'text-red-500', iconOnlyOnMobile && 'hidden sm:inline')}
+            aria-live="polite"
+          >
+            {feedbackLabel}
+          </span>
         </>
       ) : (
         <>
           <Share2 className="w-3.5 h-3.5" />
-          Compartir
+          <span className={cn(shareLabelClass, iconOnlyOnMobile && 'hidden sm:inline')}>
+            Compartir
+          </span>
         </>
       )}
     </button>
-  );
+  )
 }
