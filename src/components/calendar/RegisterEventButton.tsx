@@ -18,7 +18,7 @@ export function RegisterEventButton({
       target="_blank"
       rel="noopener noreferrer"
       className={cn(
-        'event-cta flex h-20 w-full max-w-md cursor-pointer items-stretch overflow-hidden rounded-lg font-mono font-semibold whitespace-nowrap select-none outline-hidden sm:h-24',
+        'event-cta mx-auto flex h-20 w-full max-w-md cursor-pointer items-stretch overflow-hidden rounded-lg font-mono font-semibold whitespace-nowrap select-none outline-hidden sm:h-24',
         className,
       )}
     >
