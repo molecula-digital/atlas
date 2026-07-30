@@ -121,6 +121,7 @@ export function EventDialog({
         index={lightboxIndex}
         onClose={() => setLightboxIndex(null)}
         onIndexChange={setLightboxIndex}
+        manageBackNavigation={false}
       />
     </>
   )

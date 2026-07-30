@@ -222,14 +222,23 @@ export function EventDetailView({
   onClose,
 }: EventDetailViewProps) {
   const isPage = variant === 'page'
+  const hasImage = !!event.image
 
-  const hero = <EventHeroImage event={event} isPage={isPage} onExpandImage={onExpandImage} />
+  const hero = hasImage ? (
+    <EventHeroImage event={event} isPage={isPage} onExpandImage={onExpandImage} />
+  ) : null
 
   const body = (
     <>
       {hero}
 
-      <div className={cn('space-y-5', isPage ? 'pt-1' : 'px-5 pb-5', hero ? (isPage ? 'pt-5' : 'pt-5') : '')}>
+      <div
+        className={cn(
+          'space-y-5',
+          isPage ? 'pt-1' : 'px-5 pb-5',
+          hasImage && 'pt-5',
+        )}
+      >
         {showDateDisplay && <EventDateDisplay event={event} />}
 
         {event.organizer && (

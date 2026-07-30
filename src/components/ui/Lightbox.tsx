@@ -24,12 +24,22 @@ interface LightboxProps {
   index: number | null
   onClose: () => void
   onIndexChange: (index: number) => void
+  /** When false, back-button history is managed by a parent overlay instead. */
+  manageBackNavigation?: boolean
 }
 
-export function Lightbox({ images, index, onClose, onIndexChange }: LightboxProps) {
+export function Lightbox({
+  images,
+  index,
+  onClose,
+  onIndexChange,
+  manageBackNavigation = true,
+}: LightboxProps) {
   const open = index !== null && images.length > 0
   const current = open ? images[index]! : null
-  const { dismiss } = useDialogBackNavigation(open, onClose)
+  const { dismiss } = useDialogBackNavigation(open, onClose, {
+    enabled: manageBackNavigation,
+  })
 
   const goPrev = useCallback(() => {
     if (index === null || images.length === 0) return
