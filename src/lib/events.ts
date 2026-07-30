@@ -152,6 +152,33 @@ export function selectUpcomingEvents(events: TechEvent[], today: string): TechEv
     )
 }
 
+/** Events before `today`, most recent first. Pass the day explicitly so it stays pure. */
+export function selectPastEvents(events: TechEvent[], today: string): TechEvent[] {
+  return events
+    .filter((ev) => ev.date < today)
+    .sort(
+      (a, b) => b.date.localeCompare(a.date) || b.startTime.localeCompare(a.startTime),
+    )
+}
+
+/**
+ * Other events for a detail page: prefer upcoming, then fill with recent past.
+ * Excludes the current event by id (and slug as a safety net).
+ */
+export function selectOtherEvents(
+  events: TechEvent[],
+  options: { excludeId: string; excludeSlug?: string; today: string; limit?: number },
+): TechEvent[] {
+  const { excludeId, excludeSlug, today, limit = 3 } = options
+  const others = events.filter(
+    (ev) => ev.id !== excludeId && (!excludeSlug || ev.slug !== excludeSlug),
+  )
+  const upcoming = selectUpcomingEvents(others, today)
+  if (upcoming.length >= limit) return upcoming.slice(0, limit)
+  const past = selectPastEvents(others, today)
+  return [...upcoming, ...past].slice(0, limit)
+}
+
 export function groupEventsByDate(events: TechEvent[]): Record<string, TechEvent[]> {
   const map: Record<string, TechEvent[]> = {}
   for (const ev of events) {
