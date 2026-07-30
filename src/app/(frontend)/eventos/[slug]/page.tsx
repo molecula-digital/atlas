@@ -152,7 +152,7 @@ export default async function EventDetailPage({
             event={event}
             showLocation={!showLocationPanel}
             showDetailsInline={!showSidebar}
-            registrationClassName={showSidebar ? 'lg:hidden' : 'lg:mx-0'}
+            registrationClassName={showSidebar ? 'lg:hidden' : undefined}
           />
         </div>
 
@@ -162,7 +162,7 @@ export default async function EventDetailPage({
               <RegisterEventButton
                 url={event.registerUrl}
                 disabled={isPastEventDate(event.date)}
-                className="hidden max-w-none lg:flex"
+                className="hidden lg:flex"
               />
             )}
 

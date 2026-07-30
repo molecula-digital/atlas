@@ -49,7 +49,7 @@ export function RegisterEventButton({
     </>
   )
   const classes = cn(
-    'event-cta mx-auto flex h-20 w-full max-w-sm cursor-pointer items-stretch overflow-hidden rounded-lg font-mono font-semibold whitespace-nowrap select-none outline-hidden sm:h-24',
+    'event-cta flex h-20 w-full cursor-pointer items-stretch overflow-hidden rounded-lg font-mono font-semibold whitespace-nowrap select-none outline-hidden sm:h-24',
     disabled && 'event-cta--closed cursor-default',
     className,
   )
