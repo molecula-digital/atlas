@@ -21,6 +21,8 @@ export const buttonVariants = cva(
     variants: {
       variant: {
         accent: 'border-accent/60 text-accent hover:border-accent hover:bg-accent/10',
+        'accent-filled':
+          'border-accent bg-accent text-accent-foreground hover:border-accent hover:bg-accent/90',
         neutral: 'border-border text-primary hover:border-accent/50 hover:text-accent',
         ghost: 'border-transparent text-secondary hover:text-accent hover:border-border',
         danger: 'border-red-500/40 text-red-500 hover:border-red-500/70 hover:bg-red-500/10',

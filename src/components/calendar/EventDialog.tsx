@@ -7,6 +7,7 @@ import type { TechEvent } from '@/lib/events'
 import { getEventPath } from '@/lib/events'
 import { useDialogBackNavigation } from '@/hooks/useDialogBackNavigation'
 import { buttonVariants } from '@/components/ui/button-variants'
+import { Lightbox } from '@/components/ui/Lightbox'
 import {
   Dialog,
   DialogClose,
@@ -43,19 +44,17 @@ export function EventDialog({
   'aria-label': ariaLabel,
 }: EventDialogProps) {
   const [open, setOpen] = useState(false)
-  const [showFullImage, setShowFullImage] = useState(false)
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
 
   const close = useCallback(() => {
     setOpen(false)
-    setShowFullImage(false)
+    setLightboxIndex(null)
   }, [])
 
-  // The hook refreshes its onBack ref every render, so this closure always sees
-  // the current showFullImage — back closes the lightbox before the dialog.
   const { dismiss } = useDialogBackNavigation(open, close, {
     onBack: () => {
-      if (showFullImage) {
-        setShowFullImage(false)
+      if (lightboxIndex !== null) {
+        setLightboxIndex(null)
         return true
       }
       return false
@@ -70,6 +69,9 @@ export function EventDialog({
   }
 
   const hasImage = !!event.image
+  const lightboxImages = hasImage
+    ? [{ src: event.image!, alt: event.title }]
+    : []
 
   return (
     <>
@@ -90,11 +92,11 @@ export function EventDialog({
         }}
       >
         <DialogContent
-          className="gap-0 overflow-hidden p-0 sm:max-w-xl flex flex-col"
+          className="flex max-h-[min(90vh,48rem)] flex-col gap-0 overflow-hidden p-0 sm:max-w-2xl"
           onOpenAutoFocus={(e) => e.preventDefault()}
         >
-          <div className="px-5 pt-5 pb-3 shrink-0 flex items-start justify-between gap-3">
-            <DialogTitle className="pr-2">{event.title}</DialogTitle>
+          <div className="flex shrink-0 items-start justify-between gap-3 px-5 pt-5 pb-2">
+            <DialogTitle className="pr-2 text-lg leading-snug">{event.title}</DialogTitle>
             <DialogClose
               className={buttonVariants({ variant: 'ghost', size: 'icon-md', className: 'shrink-0' })}
               aria-label="Cerrar"
@@ -109,41 +111,17 @@ export function EventDialog({
             event={event}
             variant="modal"
             onClose={close}
-            onExpandImage={hasImage ? () => setShowFullImage(true) : undefined}
+            onExpandImage={hasImage ? () => setLightboxIndex(0) : undefined}
           />
         </DialogContent>
       </Dialog>
 
-      <Dialog
-        open={showFullImage && hasImage}
-        onOpenChange={(next) => {
-          if (!next) setShowFullImage(false)
-        }}
-      >
-        {event.image && (
-          <DialogContent
-            overlayClassName="z-60 bg-black/80"
-            className="z-60 max-w-[min(90vw,56rem)] border-0 bg-transparent p-4 shadow-none"
-            onOpenAutoFocus={(e) => e.preventDefault()}
-          >
-            <DialogTitle className="sr-only">Imagen del evento {event.title}</DialogTitle>
-            <DialogDescription className="sr-only">
-              Vista ampliada de la imagen del evento
-            </DialogDescription>
-            <img
-              src={event.image}
-              alt={event.title}
-              className="max-h-[85vh] w-full object-contain rounded-lg"
-            />
-            <DialogClose
-              className="absolute top-4 right-4 p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
-              aria-label="Cerrar imagen"
-            >
-              <X size={20} className="text-white" />
-            </DialogClose>
-          </DialogContent>
-        )}
-      </Dialog>
+      <Lightbox
+        images={lightboxImages}
+        index={lightboxIndex}
+        onClose={() => setLightboxIndex(null)}
+        onIndexChange={setLightboxIndex}
+      />
     </>
   )
 }

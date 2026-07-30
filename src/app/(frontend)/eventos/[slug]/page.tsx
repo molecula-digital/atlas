@@ -4,12 +4,12 @@ import { getEventBySlug, getPublishedEvents } from '@/lib/payload'
 import { eventDocToTechEvent } from '@/lib/events'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import { SITE_URL } from '@/config'
-import { formatDateEs } from '@/lib/format'
 import { safeJsonLd } from '@/lib/utils'
 import { MapPin, ArrowUpRight } from 'lucide-react'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { resolveMapEmbedUrl } from '@/lib/maps'
 import { EventDetailsCard } from '@/components/calendar/EventDetailView'
+import { EventDateDisplay } from '@/components/calendar/EventDateDisplay'
 import EventDetailPageClient from './EventDetailPageClient'
 
 export const revalidate = 3600
@@ -107,12 +107,11 @@ export default async function EventDetailPage({
         ]}
       />
 
-      <p className="mb-2 text-sm font-mono text-muted">
-        {formatDateEs(event.date)}
-      </p>
-      <h1 className="mb-6 text-3xl font-bold text-primary md:text-4xl">
+      <h1 className="mb-4 text-3xl font-bold text-primary md:text-4xl">
         {event.title}
       </h1>
+
+      <EventDateDisplay event={event} className="mb-6" />
 
       <div
         className={

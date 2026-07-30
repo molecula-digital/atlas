@@ -3,7 +3,6 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import {
-  Clock,
   MapPin,
   Users,
   ExternalLink,
@@ -15,15 +14,18 @@ import {
   Info,
   LayoutList,
   Zap,
+  Clock,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import type { TechEvent } from '@/lib/events'
 import { getEventPath } from '@/lib/events'
 import { buttonVariants, type ButtonSize } from '@/components/ui/button-variants'
 import { Card } from '@/components/ui/Card'
+import { cn } from '@/lib/utils'
 import EventTypeBadge from './EventTypeBadge'
 import { AddToCalendar } from './AddToCalendar'
 import { EventRichDescription } from './EventRichDescription'
+import { EventDateDisplay } from './EventDateDisplay'
 
 interface EventDetailViewProps {
   event: TechEvent
@@ -32,6 +34,8 @@ interface EventDetailViewProps {
   showLocation?: boolean
   /** When false on the full page, the details card is rendered in the sidebar instead. */
   showDetailsInline?: boolean
+  /** Show the Luma-style date block (hidden on full page when rendered in the header). */
+  showDateDisplay?: boolean
   /** Dismisses the containing dialog, when rendered inside one. */
   onClose?: () => void
 }
@@ -151,77 +155,98 @@ function EventFullPageLink({ slug, onClose }: { slug: string; onClose?: () => vo
   )
 }
 
+function EventHeroImage({
+  event,
+  isPage,
+  onExpandImage,
+}: {
+  event: TechEvent
+  isPage: boolean
+  onExpandImage?: () => void
+}) {
+  if (!event.image) return null
+
+  const image = (
+    <>
+      <img
+        src={event.image}
+        alt=""
+        aria-hidden
+        className="absolute inset-0 h-full w-full scale-110 object-cover opacity-40 blur-2xl"
+      />
+      <img
+        src={event.image}
+        alt={event.title}
+        className="relative z-10 h-full w-full object-contain"
+      />
+      {onExpandImage && (
+        <span className="absolute bottom-2 right-2 z-20 inline-flex items-center gap-1.5 rounded-md bg-black/60 px-2 py-1 font-mono text-2xs text-white opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100">
+          <Maximize2 size={11} />
+          Ver imagen
+        </span>
+      )}
+    </>
+  )
+
+  const containerClass = cn(
+    'relative overflow-hidden bg-black/10',
+    isPage
+      ? 'h-56 rounded-xl border border-border md:h-80'
+      : 'h-52 shrink-0 sm:h-60',
+    onExpandImage && 'group cursor-pointer',
+  )
+
+  if (onExpandImage) {
+    return (
+      <button
+        type="button"
+        onClick={onExpandImage}
+        className={cn(containerClass, 'w-full text-left')}
+        aria-label={`Ver imagen de ${event.title}`}
+      >
+        {image}
+      </button>
+    )
+  }
+
+  return <div className={containerClass}>{image}</div>
+}
+
 export function EventDetailView({
   event,
   variant = 'modal',
   onExpandImage,
   showLocation = true,
   showDetailsInline = true,
+  showDateDisplay = true,
   onClose,
 }: EventDetailViewProps) {
-  const hasImage = !!event.image
   const isPage = variant === 'page'
-  const schedule = buildEventSchedule(event)
 
-  const hero = (
-    <>
-      {hasImage && (
-        <div
-          className={
-            isPage
-              ? 'relative h-56 md:h-72 overflow-hidden rounded-lg border border-border bg-black/10'
-              : 'relative h-48 overflow-hidden shrink-0 bg-black/10'
-          }
-        >
-          <img
-            src={event.image!}
-            alt=""
-            aria-hidden
-            className="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-40"
-          />
-          <img
-            src={event.image!}
-            alt={event.title}
-            className="relative z-10 w-full h-full object-contain"
-          />
-          {onExpandImage && (
-            <button
-              type="button"
-              onClick={onExpandImage}
-              className="absolute bottom-2 right-2 z-20 inline-flex items-center gap-1.5 text-2xs font-mono px-2 py-1 rounded-md bg-black/60 text-white hover:bg-black/80 transition-colors backdrop-blur-sm"
-            >
-              <Maximize2 size={11} />
-              Ver imagen
-            </button>
-          )}
-        </div>
-      )}
-    </>
-  )
+  const hero = <EventHeroImage event={event} isPage={isPage} onExpandImage={onExpandImage} />
 
   const body = (
     <>
       {hero}
 
-      <div className={`px-5 pb-5 space-y-3 ${hasImage ? 'pt-5' : ''}`}>
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
-          {event.organizer && (
-            <span className="inline-flex items-center gap-1.5 text-xs font-mono text-muted">
-              <Users size={12} />
-              {event.organizer}
+      <div className={cn('space-y-5', isPage ? 'pt-1' : 'px-5 pb-5', hero ? (isPage ? 'pt-5' : 'pt-5') : '')}>
+        {showDateDisplay && <EventDateDisplay event={event} />}
+
+        {event.organizer && (
+          <div className="flex items-center gap-2">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-elevated text-muted">
+              <Users size={14} />
             </span>
-          )}
-          {schedule && (
-            <span className="inline-flex items-center gap-1.5 text-xs font-mono text-muted">
-              <Clock size={12} />
-              {schedule}
-            </span>
-          )}
-        </div>
+            <div className="min-w-0">
+              <p className="text-2xs font-mono uppercase tracking-wider text-muted">Organiza</p>
+              <p className="text-sm font-medium text-primary">{event.organizer}</p>
+            </div>
+          </div>
+        )}
 
         {showLocation && event.location && (
-          <div className="flex items-start gap-2 text-sm text-secondary">
-            <MapPin size={14} className="shrink-0 mt-0.5 text-muted" />
+          <div className="flex items-start gap-2.5 text-sm text-secondary">
+            <MapPin size={15} className="mt-0.5 shrink-0 text-muted" />
             <span>
               {event.location}
               {event.isInPerson && (
@@ -287,47 +312,35 @@ export function EventDetailView({
     </>
   )
 
+  const registerButton = event.registerUrl ? (
+    <a
+      href={event.registerUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={buttonVariants({
+        variant: 'accent-filled',
+        size: isPage ? 'lg' : size,
+        className: isPage ? 'w-full justify-center sm:w-auto' : undefined,
+      })}
+    >
+      <Ticket size={iconSize} />
+      Registrarse
+    </a>
+  ) : null
+
   const actions = (
     <>
-      {event.registerUrl && (
-        <a
-          href={event.registerUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={buttonVariants({
-            variant: 'accent',
-            size: isPage ? 'lg' : size,
-            className: isPage ? 'w-full sm:w-auto' : undefined,
-          })}
-        >
-          <Ticket size={iconSize} />
-          Registrarse
-        </a>
-      )}
+      {registerButton}
       {secondaryActions}
     </>
   )
 
   if (isPage) {
     return (
-      <div className="space-y-4">
+      <div className="space-y-5">
         {hero}
 
-        {event.registerUrl && (
-          <a
-            href={event.registerUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={buttonVariants({
-              variant: 'accent',
-              size: 'lg',
-              className: 'w-full justify-center',
-            })}
-          >
-            <Ticket size={iconSize} />
-            Registrarse
-          </a>
-        )}
+        {registerButton && <div className="flex flex-wrap gap-2">{registerButton}</div>}
 
         <EventDetailCard title="Acciones" Icon={Zap}>
           <div className="flex flex-wrap gap-2">{secondaryActions}</div>
@@ -353,9 +366,9 @@ export function EventDetailView({
   }
 
   return (
-    <div className="flex flex-col min-h-0 flex-1">
-      <div className="overflow-y-auto flex-1 min-h-0">{body}</div>
-      <div className="flex flex-col sm:flex-row sm:items-center flex-wrap gap-2 px-5 py-4 border-t border-border shrink-0">
+    <div className="flex min-h-0 flex-1 flex-col">
+      <div className="min-h-0 flex-1 overflow-y-auto">{body}</div>
+      <div className="flex shrink-0 flex-col flex-wrap gap-2 border-t border-border px-5 py-4 sm:flex-row sm:items-center">
         {actions}
       </div>
     </div>

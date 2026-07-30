@@ -119,6 +119,30 @@ export function formatEventDateBadge(dateStr: string): { day: string; month: str
   }
 }
 
+/** Capitalized 3-letter month for the calendar tile (e.g. "Ago"). */
+export function formatEventMonthShort(dateStr: string): string {
+  const { month } = formatEventDateBadge(dateStr)
+  return month ? month.charAt(0).toUpperCase() + month.slice(1) : ''
+}
+
+/** Full weekday + date in Spanish (e.g. "Sábado, 29 de agosto"). */
+export function formatEventDateLong(dateStr: string): string {
+  const [y, m, d] = dateStr.split('-').map(Number)
+  const date = new Date(y, m - 1, d)
+  const formatted = date.toLocaleDateString('es-MX', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+  })
+  return formatted.charAt(0).toUpperCase() + formatted.slice(1)
+}
+
+/** Time range with spaced dash (e.g. "8:00 AM - 7:30 PM"). */
+export function formatEventTimeRange(startTime: string, endTime: string): string {
+  if (startTime && endTime) return `${startTime} - ${endTime}`
+  return startTime || endTime
+}
+
 /** Events from `today` onward, soonest first. Pass the day explicitly so it stays pure. */
 export function selectUpcomingEvents(events: TechEvent[], today: string): TechEvent[] {
   return events
