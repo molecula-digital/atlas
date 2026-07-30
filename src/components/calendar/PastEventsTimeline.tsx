@@ -20,9 +20,6 @@ function TimelineRow({ event }: { event: TechEvent }) {
         <EventDateBadge date={event.date} variant="muted" />
 
         <div className="flex-1 min-w-0">
-          <p className="text-2xs font-mono uppercase tracking-wider text-muted mb-1">
-            {'// pasado'}
-          </p>
           <div className="flex items-start gap-2">
             <span className="text-sm font-sans font-semibold text-primary group-hover:text-accent transition-colors line-clamp-2">
               {event.title}
@@ -57,7 +54,7 @@ export function PastEventsTimeline({ events }: { events: TechEvent[] }) {
 
   return (
     <div>
-      <ol className="relative space-y-3 border-l border-border/80 ml-3 md:ml-4 pl-4 md:pl-5">
+      <ol className="relative space-y-3">
         {visible.map((event) => (
           <TimelineRow key={event.id} event={event} />
         ))}
