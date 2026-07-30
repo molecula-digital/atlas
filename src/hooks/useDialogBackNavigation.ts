@@ -16,25 +16,32 @@ export function useDialogBackNavigation(
     onBack?: () => boolean
     /** Optional URL to push when the dialog opens (for shareable deep links). */
     url?: string | null
+    /** When false, skip history.pushState/back integration (for nested overlays). */
+    enabled?: boolean
   },
 ) {
   const onCloseRef = useRef(onClose)
   const onBackRef = useRef(options?.onBack)
   const urlRef = useRef(options?.url)
+  const enabled = options?.enabled !== false
   onCloseRef.current = onClose
   onBackRef.current = options?.onBack
   urlRef.current = options?.url
 
   const dismiss = useCallback(() => {
+    if (!enabled) {
+      onCloseRef.current()
+      return
+    }
     if (typeof window !== 'undefined' && history.state?.[HISTORY_FLAG]) {
       history.back()
     } else {
       onCloseRef.current()
     }
-  }, [])
+  }, [enabled])
 
   useEffect(() => {
-    if (!isOpen) return
+    if (!isOpen || !enabled) return
 
     const nextUrl = urlRef.current
     history.pushState(
@@ -58,7 +65,7 @@ export function useDialogBackNavigation(
 
     window.addEventListener('popstate', handlePopState)
     return () => window.removeEventListener('popstate', handlePopState)
-  }, [isOpen])
+  }, [isOpen, enabled])
 
   return { dismiss }
 }
