@@ -38,7 +38,6 @@ export default function FrontendLayout({ children }: { children: React.ReactNode
           <div className="font-sans w-full min-h-screen flex flex-col text-secondary selection:bg-accent selection:text-accent-foreground relative overflow-x-clip">
             <MatrixBackground boxSize={26} highlight={false} />
             <div className="relative z-10 flex flex-col flex-1">
-              <InfoBanner />
               <Header />
               {/*
                 Page padding lives here, not on the pages. Horizontal gutters and
