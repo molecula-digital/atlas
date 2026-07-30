@@ -1,4 +1,5 @@
 import { cva, type VariantProps } from 'class-variance-authority'
+import { cn } from '@/lib/utils'
 
 /**
  * The one button styling source in the app.
@@ -19,18 +20,25 @@ import { cva, type VariantProps } from 'class-variance-authority'
  *   <Link className={buttonVariants({ variant: 'accent-filled', size: 'md' })}>
  *
  * Icons are sized at the call site (`w-3.5 h-3.5`), not by the variants.
+ *
+ * Backgrounds live on each variant (not the base) so filled CTAs are not
+ * cancelled by a leftover `bg-transparent` when callers skip `cn`/`twMerge`.
  */
-export const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-1.5 rounded border bg-transparent font-mono font-semibold whitespace-nowrap transition-colors cursor-pointer select-none outline-hidden focus-visible:border-accent disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0',
+const buttonVariantsConfig = cva(
+  'inline-flex items-center justify-center gap-1.5 rounded border font-mono font-semibold whitespace-nowrap transition-colors cursor-pointer select-none outline-hidden focus-visible:border-accent disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0',
   {
     variants: {
       variant: {
-        accent: 'border-accent/60 text-accent hover:border-accent hover:bg-accent/10',
+        accent:
+          'border-accent/60 bg-transparent text-accent hover:border-accent hover:bg-accent/10',
         'accent-filled':
           'border-accent bg-accent text-accent-foreground hover:border-accent hover:bg-accent/90',
-        neutral: 'border-border bg-card text-primary hover:border-accent/50 hover:text-accent',
-        ghost: 'border-transparent text-secondary hover:text-accent hover:border-border',
-        danger: 'border-red-500/40 text-red-500 hover:border-red-500/70 hover:bg-red-500/10',
+        neutral:
+          'border-border bg-card text-primary hover:border-accent/50 hover:text-accent',
+        ghost:
+          'border-transparent bg-transparent text-secondary hover:text-accent hover:border-border',
+        danger:
+          'border-red-500/40 bg-transparent text-red-500 hover:border-red-500/70 hover:bg-red-500/10',
       },
       size: {
         xs: 'gap-1 px-1.5 py-0.5 text-[10px]',
@@ -51,5 +59,14 @@ export const buttonVariants = cva(
   },
 )
 
-export type ButtonVariant = NonNullable<VariantProps<typeof buttonVariants>['variant']>
-export type ButtonSize = NonNullable<VariantProps<typeof buttonVariants>['size']>
+type ButtonVariantsProps = VariantProps<typeof buttonVariantsConfig> & {
+  className?: string
+}
+
+/** Resolve variant classes and merge any `className` overrides via twMerge. */
+export function buttonVariants({ className, ...variants }: ButtonVariantsProps = {}) {
+  return cn(buttonVariantsConfig(variants), className)
+}
+
+export type ButtonVariant = NonNullable<VariantProps<typeof buttonVariantsConfig>['variant']>
+export type ButtonSize = NonNullable<VariantProps<typeof buttonVariantsConfig>['size']>
