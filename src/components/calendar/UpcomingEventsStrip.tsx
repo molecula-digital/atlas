@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo } from "react";
+import Link from "next/link";
 import { CalendarDays, MapPin, ArrowRight, ArrowUpRight } from "lucide-react";
 import AutoScroll from "embla-carousel-auto-scroll";
 import {
