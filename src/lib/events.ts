@@ -162,8 +162,8 @@ export function selectPastEvents(events: TechEvent[], today: string): TechEvent[
 }
 
 /**
- * Other events for a detail page: prefer upcoming, then fill with recent past.
- * Excludes the current event by id (and slug as a safety net).
+ * Other upcoming events for a detail page.
+ * Excludes the current event by id (and slug as a safety net). Never includes past events.
  */
 export function selectOtherEvents(
   events: TechEvent[],
@@ -173,10 +173,7 @@ export function selectOtherEvents(
   const others = events.filter(
     (ev) => ev.id !== excludeId && (!excludeSlug || ev.slug !== excludeSlug),
   )
-  const upcoming = selectUpcomingEvents(others, today)
-  if (upcoming.length >= limit) return upcoming.slice(0, limit)
-  const past = selectPastEvents(others, today)
-  return [...upcoming, ...past].slice(0, limit)
+  return selectUpcomingEvents(others, today).slice(0, limit)
 }
 
 export function groupEventsByDate(events: TechEvent[]): Record<string, TechEvent[]> {
