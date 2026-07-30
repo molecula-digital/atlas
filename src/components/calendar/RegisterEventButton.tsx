@@ -8,20 +8,14 @@ import { cn } from '@/lib/utils'
 export function RegisterEventButton({
   url,
   className,
+  disabled = false,
 }: {
   url: string
   className?: string
+  disabled?: boolean
 }) {
-  return (
-    <a
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={cn(
-        'event-cta mx-auto flex h-20 w-full max-w-sm cursor-pointer items-stretch overflow-hidden rounded-lg font-mono font-semibold whitespace-nowrap select-none outline-hidden sm:h-24',
-        className,
-      )}
-    >
+  const content = (
+    <>
       <span className="relative z-2 flex min-w-0 flex-1 flex-col justify-center px-5 sm:px-6">
         <span className="mb-1 text-[9px] font-semibold uppercase tracking-[0.22em] opacity-70">
           Entrada al evento
@@ -47,6 +41,30 @@ export function RegisterEventButton({
 
       <span aria-hidden className="event-cta__notch event-cta__notch--top" />
       <span aria-hidden className="event-cta__notch event-cta__notch--bottom" />
+    </>
+  )
+  const classes = cn(
+    'event-cta mx-auto flex h-20 w-full max-w-sm cursor-pointer items-stretch overflow-hidden rounded-lg font-mono font-semibold whitespace-nowrap select-none outline-hidden sm:h-24',
+    disabled && 'cursor-not-allowed opacity-50',
+    className,
+  )
+
+  if (disabled) {
+    return (
+      <div className={classes} aria-disabled="true">
+        {content}
+      </div>
+    )
+  }
+
+  return (
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={classes}
+    >
+      {content}
     </a>
   )
 }

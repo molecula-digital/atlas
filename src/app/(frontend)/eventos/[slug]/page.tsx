@@ -1,7 +1,11 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getEventBySlug, getPublishedEvents } from '@/lib/payload'
-import { eventDocToTechEvent, selectOtherEvents } from '@/lib/events'
+import {
+  eventDocToTechEvent,
+  isPastEventDate,
+  selectOtherEvents,
+} from '@/lib/events'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import { SITE_URL } from '@/config'
 import { extractSocialImage, truncateMetadataText } from '@/lib/format'
@@ -157,6 +161,7 @@ export default async function EventDetailPage({
             {event.registerUrl && (
               <RegisterEventButton
                 url={event.registerUrl}
+                disabled={isPastEventDate(event.date)}
                 className="hidden max-w-none lg:flex"
               />
             )}

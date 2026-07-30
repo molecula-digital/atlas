@@ -24,6 +24,30 @@ export interface TechEvent {
   registerUrl: string
 }
 
+/** Current calendar date in the timezone where events take place. */
+export function getEventDateToday(now = new Date()): string {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: EVENT_TIMEZONE,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).formatToParts(now)
+  const values = Object.fromEntries(parts.map(({ type, value }) => [type, value]))
+
+  return `${values.year}-${values.month}-${values.day}`
+}
+
+/**
+ * Registration closes on the calendar day after an event.
+ * Comparing date keys keeps registration open for the event's entire local day.
+ */
+export function isPastEventDate(
+  eventDate: string,
+  today = getEventDateToday(),
+): boolean {
+  return eventDate.split('T')[0] < today
+}
+
 export function getEventPath(slug: string): string {
   return `/eventos/${slug}`
 }

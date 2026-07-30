@@ -18,7 +18,7 @@ import {
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import type { TechEvent } from '@/lib/events'
-import { getEventPath } from '@/lib/events'
+import { getEventPath, isPastEventDate } from '@/lib/events'
 import { SITE_URL } from '@/config'
 import { buttonVariants, type ButtonSize } from '@/components/ui/button-variants'
 import { Card } from '@/components/ui/Card'
@@ -291,6 +291,7 @@ export function EventDetailView({
 }: EventDetailViewProps) {
   const isPage = variant === 'page'
   const hasImage = !!event.image
+  const isRegistrationDisabled = isPastEventDate(event.date)
 
   const hero = hasImage ? (
     <EventHeroImage event={event} isPage={isPage} onExpandImage={onExpandImage} />
@@ -428,6 +429,7 @@ export function EventDetailView({
         {event.registerUrl && (
           <RegisterEventButton
             url={event.registerUrl}
+            disabled={isRegistrationDisabled}
             className={registrationClassName}
           />
         )}
@@ -459,21 +461,34 @@ export function EventDetailView({
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="min-h-0 flex-1 overflow-y-auto">{body}</div>
       <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-t border-border px-5 py-3">
-        {event.registerUrl && (
-          <a
-            href={event.registerUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={buttonVariants({
-              variant: 'accent-filled',
-              size: 'md',
-              className: 'max-sm:w-full',
-            })}
-          >
-            <Ticket size={14} />
-            Registrarse
-          </a>
-        )}
+        {event.registerUrl &&
+          (isRegistrationDisabled ? (
+            <span
+              aria-disabled="true"
+              className={buttonVariants({
+                variant: 'accent-filled',
+                size: 'md',
+                className: 'max-sm:w-full cursor-not-allowed opacity-40',
+              })}
+            >
+              <Ticket size={14} />
+              Registrarse
+            </span>
+          ) : (
+            <a
+              href={event.registerUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={buttonVariants({
+                variant: 'accent-filled',
+                size: 'md',
+                className: 'max-sm:w-full',
+              })}
+            >
+              <Ticket size={14} />
+              Registrarse
+            </a>
+          ))}
         {modalActions}
       </div>
     </div>
