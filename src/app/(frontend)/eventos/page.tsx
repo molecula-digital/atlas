@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { CalendarDays } from 'lucide-react'
 import { CalendarSection } from '@/components/sections/CalendarSection'
+import { PastEventsSection } from '@/components/sections/PastEventsSection'
 import { PageHero } from '@/components/ui/PageHero'
 import { SITE_URL } from '@/config'
 
@@ -35,6 +36,7 @@ export default function EventosPage() {
         breadcrumb={[{ label: 'Inicio', href: '/' }, { label: 'Eventos' }]}
       />
       <CalendarSection />
+      <PastEventsSection />
     </>
   )
 }

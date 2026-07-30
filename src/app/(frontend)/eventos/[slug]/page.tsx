@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getEventBySlug, getPublishedEvents } from '@/lib/payload'
-import { eventDocToTechEvent } from '@/lib/events'
+import { eventDocToTechEvent, selectOtherEvents } from '@/lib/events'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import { SITE_URL } from '@/config'
 import { safeJsonLd } from '@/lib/utils'
@@ -10,6 +10,7 @@ import { buttonVariants } from '@/components/ui/button-variants'
 import { resolveMapEmbedUrl } from '@/lib/maps'
 import { EventDetailsCard } from '@/components/calendar/EventDetailView'
 import { EventDateDisplay } from '@/components/calendar/EventDateDisplay'
+import { OtherEventsSection } from '@/components/calendar/OtherEventsSection'
 import EventDetailPageClient from './EventDetailPageClient'
 
 export const revalidate = 3600
@@ -60,6 +61,15 @@ export default async function EventDetailPage({
   const mapEmbedUrl = event.location ? await resolveMapEmbedUrl(event.mapsUrl) : null
   const showLocationPanel = Boolean(event.location && event.mapsUrl)
   const showSidebar = showLocationPanel
+
+  const allEvents = (await getPublishedEvents(200)).docs.map(eventDocToTechEvent)
+  const today = new Date().toISOString().slice(0, 10)
+  const otherEvents = selectOtherEvents(allEvents, {
+    excludeId: event.id,
+    excludeSlug: event.slug,
+    today,
+    limit: 3,
+  })
 
   return (
     <article>
@@ -181,6 +191,8 @@ export default async function EventDetailPage({
           />
         </div>
       </div>
+
+      <OtherEventsSection events={otherEvents} />
     </article>
   )
 }
