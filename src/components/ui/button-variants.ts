@@ -1,9 +1,14 @@
 import { cva, type VariantProps } from 'class-variance-authority'
 
 /**
- * The one button styling source in the app — outline only, matching the
- * header's compact look. No button carries a solid background; emphasis comes
- * from the border/text color and a subtle tint on hover.
+ * The one button styling source in the app.
+ *
+ * - Outline / tinted variants (`accent`, `ghost`, `danger`) suit elevated
+ *   surfaces (cards, header, dialogs).
+ * - `accent-filled` is the solid primary CTA for page backgrounds, where a
+ *   transparent outline washes out.
+ * - `neutral` carries a `bg-card` fill so secondary actions stay readable on
+ *   transparent page chrome (e.g. Compartir next to Visitar sitio).
  *
  * Lives apart from Button.tsx on purpose: server components style links with
  * buttonVariants(), and Button.tsx pulls in Radix Slot, which is client-only.
@@ -11,7 +16,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
  * Use `<Button>` for real buttons and `buttonVariants()` for anchors, links,
  * and Radix triggers that render their own element:
  *
- *   <Link className={buttonVariants({ variant: 'accent', size: 'md' })}>
+ *   <Link className={buttonVariants({ variant: 'accent-filled', size: 'md' })}>
  *
  * Icons are sized at the call site (`w-3.5 h-3.5`), not by the variants.
  */
@@ -23,7 +28,7 @@ export const buttonVariants = cva(
         accent: 'border-accent/60 text-accent hover:border-accent hover:bg-accent/10',
         'accent-filled':
           'border-accent bg-accent text-accent-foreground hover:border-accent hover:bg-accent/90',
-        neutral: 'border-border text-primary hover:border-accent/50 hover:text-accent',
+        neutral: 'border-border bg-card text-primary hover:border-accent/50 hover:text-accent',
         ghost: 'border-transparent text-secondary hover:text-accent hover:border-border',
         danger: 'border-red-500/40 text-red-500 hover:border-red-500/70 hover:bg-red-500/10',
       },

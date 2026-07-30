@@ -52,7 +52,8 @@ html {
   --color-border: #2f2f2f;
   --color-card: #0a0a0a;
   --color-elevated: #141414;
-  --color-accent-foreground: #f5f8f7;
+  /* Dark text on the light accent fill (buttons, selection, calendar chips). */
+  --color-accent-foreground: #0a120c;
 }
 
 /* Header logo wink animation */

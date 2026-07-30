@@ -61,7 +61,7 @@ export function HeroSection({ cityCounts = {}, typeCounts = {} }: HeroSectionPro
             </p>
 
             <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
-              <Link href="/directorio" className={buttonVariants({ variant: 'accent', size: 'md', className: 'uppercase' })}>
+              <Link href="/directorio" className={buttonVariants({ variant: 'accent-filled', size: 'md', className: 'uppercase' })}>
                 <Search className="w-3.5 h-3.5" />
                 Explorar directorio
               </Link>

@@ -366,7 +366,7 @@ export default async function EntryDetailPage({
               {entry.website && (
                 <ExternalLink
                   href={track(entry.website as string)!}
-                  className={buttonVariants({ variant: "accent", size: "md" })}
+                  className={buttonVariants({ variant: "accent-filled", size: "md" })}
                 >
                   Visitar sitio
                   <ExternalLinkIcon className="w-4 h-4" />

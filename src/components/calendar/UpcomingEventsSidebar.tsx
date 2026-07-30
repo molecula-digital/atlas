@@ -124,7 +124,7 @@ export default function UpcomingEventsSidebar({
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={(e) => e.stopPropagation()}
-                      className={buttonVariants({ variant: "accent", size: "xs", className: "mt-2" })}
+                      className={buttonVariants({ variant: "accent-filled", size: "xs", className: "mt-2" })}
                     >
                       <Ticket className="w-3 h-3" />
                       Registrarse
