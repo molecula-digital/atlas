@@ -288,10 +288,14 @@ html {
 
 /* ── Registrarse CTA (event pages) ───────────────────────────────────────────
    A compact admission ticket with printed texture, dimensional paper edges,
-   a perforated tear line, and a detachable barcode stub. */
+   a perforated tear line, and a detachable barcode stub.
+   Punch notches are cut with a mask (not painted circles) so they stay
+   transparent over any page/card surface. */
 .event-cta {
   --event-cta-fill: #0f766e;
   --event-cta-ink: #f2fffd;
+  --event-cta-notch-r: 0.45rem;
+  --event-cta-stub-w: 6rem;
   position: relative;
   isolation: isolate;
   overflow: hidden;
@@ -310,6 +314,35 @@ html {
     inset 0 -2px 0 color-mix(in srgb, #000 18%, transparent),
     0 10px 22px color-mix(in srgb, var(--event-cta-fill) 20%, transparent);
   text-shadow: 0 1px 0 color-mix(in srgb, #000 20%, transparent);
+  /* Half-height masks place a transparent circle at each tear-line edge. */
+  -webkit-mask-image:
+    radial-gradient(
+      circle var(--event-cta-notch-r) at calc(100% - var(--event-cta-stub-w)) 0,
+      transparent 98%,
+      #000 100%
+    ),
+    radial-gradient(
+      circle var(--event-cta-notch-r) at calc(100% - var(--event-cta-stub-w)) 100%,
+      transparent 98%,
+      #000 100%
+    );
+  -webkit-mask-size: 100% 51%, 100% 51%;
+  -webkit-mask-position: top, bottom;
+  -webkit-mask-repeat: no-repeat;
+  mask-image:
+    radial-gradient(
+      circle var(--event-cta-notch-r) at calc(100% - var(--event-cta-stub-w)) 0,
+      transparent 98%,
+      #000 100%
+    ),
+    radial-gradient(
+      circle var(--event-cta-notch-r) at calc(100% - var(--event-cta-stub-w)) 100%,
+      transparent 98%,
+      #000 100%
+    );
+  mask-size: 100% 51%, 100% 51%;
+  mask-position: top, bottom;
+  mask-repeat: no-repeat;
 }
 
 :root.dark .event-cta {
@@ -413,26 +446,6 @@ html {
     transparent 5px 7px
   );
   opacity: 0.72;
-}
-
-/* Punch notches, aligned to the 6rem tear-off stub. The bar's
-   overflow clip turns each circle into a semicircular bite out of the edge. */
-.event-cta__notch {
-  position: absolute;
-  z-index: 2;
-  right: 6rem;
-  height: 0.9rem;
-  width: 0.9rem;
-  transform: translateX(50%);
-  border-radius: 9999px;
-  background-color: var(--color-background);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--event-cta-fill) 38%, transparent);
-}
-.event-cta__notch--top {
-  top: -0.45rem;
-}
-.event-cta__notch--bottom {
-  bottom: -0.45rem;
 }
 
 @media (prefers-reduced-motion: reduce) {

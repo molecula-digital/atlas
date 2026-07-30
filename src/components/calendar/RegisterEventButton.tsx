@@ -46,9 +46,6 @@ export function RegisterEventButton({
           {!disabled && <ArrowRight size={13} />}
         </span>
       </span>
-
-      <span aria-hidden className="event-cta__notch event-cta__notch--top" />
-      <span aria-hidden className="event-cta__notch event-cta__notch--bottom" />
     </>
   )
   const classes = cn(
