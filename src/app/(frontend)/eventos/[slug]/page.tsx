@@ -27,7 +27,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params
   const doc = await getEventBySlug(slug)
-  if (!doc) return { title: 'Not Found' }
+  if (!doc) return { title: 'Evento no encontrado — Eventos' }
 
   const event = eventDocToTechEvent(doc)
   const description = event.description || `${event.title} — evento tech en Sinaloa`
@@ -60,12 +60,7 @@ export default async function EventDetailPage({
   const canonical = `${SITE_URL}/eventos/${event.slug}`
   const mapEmbedUrl = event.location ? await resolveMapEmbedUrl(event.mapsUrl) : null
   const showLocationPanel = Boolean(event.location && event.mapsUrl)
-  const showDetailsPanel = Boolean(
-    event.organizer ||
-    event.startTime ||
-    event.endTime ||
-    (!showLocationPanel && event.location),
-  )
+  const showSidebar = showLocationPanel
 
   const allEvents = (await getPublishedEvents(200)).docs.map(eventDocToTechEvent)
   const today = new Date().toISOString().slice(0, 10)
@@ -128,31 +123,29 @@ export default async function EventDetailPage({
 
       <EventDateDisplay event={event} className="mb-6" />
 
-      <div className="min-w-0">
-        <EventDetailPageClient
-          event={event}
-          showLocation={!showLocationPanel}
-          showDetailsInline={false}
-        />
-      </div>
+      <div
+        className={
+          showSidebar
+            ? 'grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_20rem] xl:grid-cols-[minmax(0,1fr)_22rem]'
+            : undefined
+        }
+      >
+        <div className="min-w-0">
+          <EventDetailPageClient
+            event={event}
+            showLocation={!showLocationPanel}
+            showDetailsInline={!showSidebar}
+          />
+        </div>
 
-      {(showDetailsPanel || showLocationPanel) && (
-        <div
-          className={
-            showDetailsPanel && showLocationPanel
-              ? 'mt-5 grid items-start gap-5 lg:grid-cols-[20rem_minmax(0,1fr)]'
-              : 'mt-5'
-          }
-        >
-          {showDetailsPanel && (
+        {showSidebar && (
+          <aside className="space-y-4 lg:sticky lg:top-14">
             <EventDetailsCard
               event={event}
               showLocation={!showLocationPanel}
               className="p-4"
             />
-          )}
 
-          {showLocationPanel && (
             <div className="overflow-hidden rounded-xl border border-border bg-card/90 shadow-sm">
               <div className="flex items-start gap-3 p-4">
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-accent/20 bg-accent/10 text-accent">
@@ -193,9 +186,9 @@ export default async function EventDetailPage({
                 </a>
               </div>
             </div>
-          )}
-        </div>
-      )}
+          </aside>
+        )}
+      </div>
 
       <OtherEventsSection events={otherEvents} />
     </article>

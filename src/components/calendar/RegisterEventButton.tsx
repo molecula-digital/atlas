@@ -18,7 +18,7 @@ export function RegisterEventButton({
       target="_blank"
       rel="noopener noreferrer"
       className={cn(
-        'event-cta group flex h-20 w-full max-w-md cursor-pointer items-stretch overflow-hidden rounded-lg font-mono font-semibold whitespace-nowrap select-none outline-hidden sm:h-24',
+        'event-cta flex h-20 w-full max-w-md cursor-pointer items-stretch overflow-hidden rounded-lg font-mono font-semibold whitespace-nowrap select-none outline-hidden sm:h-24',
         className,
       )}
     >
@@ -41,10 +41,7 @@ export function RegisterEventButton({
         <span aria-hidden className="event-cta__barcode" />
         <span className="flex items-center gap-1 text-[9px] uppercase tracking-[0.12em]">
           Acceder
-          <ArrowRight
-            size={13}
-            className="transition-transform duration-200 group-hover:translate-x-0.5"
-          />
+          <ArrowRight size={13} />
         </span>
       </span>
 

@@ -295,6 +295,7 @@ html {
   position: relative;
   isolation: isolate;
   overflow: hidden;
+  border: 0;
   background-color: var(--event-cta-fill);
   background-image:
     linear-gradient(
@@ -307,36 +308,13 @@ html {
   box-shadow:
     inset 0 1px 0 color-mix(in srgb, #fff 34%, transparent),
     inset 0 -2px 0 color-mix(in srgb, #000 18%, transparent),
-    0 2px 0 color-mix(in srgb, var(--event-cta-fill) 62%, #000),
     0 10px 22px color-mix(in srgb, var(--event-cta-fill) 20%, transparent);
   text-shadow: 0 1px 0 color-mix(in srgb, #000 20%, transparent);
-  transition:
-    background-color 160ms ease-out,
-    box-shadow 160ms ease-out,
-    transform 160ms ease-out;
 }
 
 :root.dark .event-cta {
   --event-cta-fill: #2dd4bf;
   --event-cta-ink: #04211f;
-}
-
-.event-cta:hover {
-  box-shadow:
-    inset 0 1px 0 color-mix(in srgb, #fff 38%, transparent),
-    inset 0 -2px 0 color-mix(in srgb, #000 18%, transparent),
-    0 3px 0 color-mix(in srgb, var(--event-cta-fill) 58%, #000),
-    0 14px 28px color-mix(in srgb, var(--event-cta-fill) 26%, transparent);
-  transform: translateY(-1px);
-}
-
-.event-cta:active {
-  box-shadow:
-    inset 0 1px 0 color-mix(in srgb, #fff 28%, transparent),
-    inset 0 -2px 0 color-mix(in srgb, #000 20%, transparent),
-    0 1px 0 color-mix(in srgb, var(--event-cta-fill) 62%, #000),
-    0 6px 14px color-mix(in srgb, var(--event-cta-fill) 18%, transparent);
-  transform: translateY(1px);
 }
 
 .event-cta:focus-visible {
@@ -440,11 +418,6 @@ html {
 @media (prefers-reduced-motion: reduce) {
   .event-cta::after {
     transition: none;
-  }
-
-  .event-cta:hover,
-  .event-cta:active {
-    transform: none;
   }
 }
 
