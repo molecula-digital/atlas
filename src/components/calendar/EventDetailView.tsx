@@ -329,10 +329,12 @@ export function EventDetailView({
       className={buttonVariants({
         variant: 'accent-filled',
         size: isPage ? 'lg' : size,
-        className: isPage ? 'w-full justify-center sm:w-auto' : undefined,
+        className: isPage
+          ? 'h-12 w-full justify-center gap-2 px-8 text-sm sm:h-14 sm:text-base'
+          : undefined,
       })}
     >
-      <Ticket size={iconSize} />
+      <Ticket size={isPage ? 18 : iconSize} />
       Registrarse
     </a>
   ) : null
@@ -349,7 +351,7 @@ export function EventDetailView({
       <div className="space-y-5">
         {hero}
 
-        {registerButton && <div className="flex flex-wrap gap-2">{registerButton}</div>}
+        {registerButton && <div className="w-full">{registerButton}</div>}
 
         <EventDetailCard title="Acciones" Icon={Zap}>
           <div className="flex flex-wrap gap-2">{secondaryActions}</div>
