@@ -21,15 +21,31 @@ const spaceGrotesk = Space_Grotesk({
   display: 'swap',
 })
 
+/**
+ * Umami — cookieless pageview counts, alongside PostHog's product analytics.
+ *
+ * Configured the same way PostHog is: production only, and only when the
+ * environment supplies an id. The id used to be hardcoded, which meant every
+ * environment reported into the same Umami site and turning it off took a code
+ * change. It is not a secret — Umami ids are public in the page source — this
+ * is about being able to point it somewhere per environment.
+ */
+const UMAMI_SRC =
+  process.env.NEXT_PUBLIC_UMAMI_SRC || 'https://analytics.molecula.digital/script.js'
+const umamiWebsiteId = process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID
+const analyticsEnabled = process.env.NODE_ENV === 'production'
+
 export default function FrontendLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es-MX" className={`${jetbrainsMono.variable} ${spaceGrotesk.variable}`} data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
-        {process.env.NODE_ENV === 'production' && (
+        {analyticsEnabled && umamiWebsiteId && (
+          // No `defer`: next/script injects this itself once the page is
+          // interactive, and defer only means anything for a tag the HTML
+          // parser inserted. Leaving it on read as though it controlled timing.
           <Script
-            defer
-            src="https://analytics.molecula.digital/script.js"
-            data-website-id="87276dcc-091a-468d-a36f-4f1be4c4e1bc"
+            src={UMAMI_SRC}
+            data-website-id={umamiWebsiteId}
             strategy="afterInteractive"
           />
         )}
