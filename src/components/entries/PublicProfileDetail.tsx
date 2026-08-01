@@ -1,5 +1,4 @@
 import Image from 'next/image'
-import Link from 'next/link'
 import { Globe, UserRound } from 'lucide-react'
 import type { PublicProfile } from '@/lib/public-profile'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
@@ -7,6 +6,7 @@ import { Card } from '@/components/ui/Card'
 import { MarkdownContent } from '@/components/ui/MarkdownContent'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { GitHubIcon, LinkedInIcon, XIcon } from '@/components/icons/SocialIcons'
+import { ProfileEditButton } from './ProfileEditButton'
 
 function normalizeHref(value: string, kind: 'url' | 'linkedin' | 'x' | 'github'): string {
   if (/^https?:\/\//i.test(value)) return value
@@ -101,6 +101,8 @@ export function PublicProfileDetail({ profile }: { profile: PublicProfile }) {
                 </ul>
               )}
             </div>
+
+            <ProfileEditButton userId={profile.userId} />
           </div>
 
           {profile.bio && (
@@ -113,12 +115,6 @@ export function PublicProfileDetail({ profile }: { profile: PublicProfile }) {
             </div>
           )}
         </Card>
-
-        <p className="mt-6 text-center text-xs text-muted font-mono">
-          <Link href="/dashboard/profile" className="hover:text-accent transition-colors">
-            ¿Este es tu perfil? Edítalo en el dashboard
-          </Link>
-        </p>
       </div>
     </div>
   )
