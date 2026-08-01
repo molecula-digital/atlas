@@ -1,9 +1,9 @@
 'use client'
 
 import { type ReactNode } from 'react'
-import { ChevronLeft, ChevronRight, SearchX } from 'lucide-react'
+import { SearchX } from 'lucide-react'
 import { usePaginatedData } from '@/hooks/usePaginatedData'
-import { buttonVariants } from '@/components/ui/button-variants'
+import { Pagination } from '@/components/ui/Pagination'
 import { EmptyState } from '@/components/ui/EmptyState'
 
 interface PaginatedViewProps<T> {
@@ -74,76 +74,5 @@ export function PaginatedView<T extends { id: string | number }>({
         onPageChange={setPage}
       />
     </div>
-  )
-}
-
-/* ── Pagination ── */
-
-function Pagination({
-  currentPage,
-  totalPages,
-  onPageChange,
-}: {
-  currentPage: number
-  totalPages: number
-  onPageChange: (page: number) => void
-}) {
-  if (totalPages <= 1) return null
-
-  const pages: (number | '...')[] = []
-  for (let i = 1; i <= totalPages; i++) {
-    if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
-      pages.push(i)
-    } else if (pages[pages.length - 1] !== '...') {
-      pages.push('...')
-    }
-  }
-
-  const surface = 'min-w-7 bg-card/90 backdrop-blur-sm'
-  const active = buttonVariants({ variant: 'accent', size: 'md', className: surface })
-  const inactive = buttonVariants({ variant: 'neutral', size: 'md', className: surface })
-  const disabled = buttonVariants({
-    variant: 'neutral',
-    size: 'md',
-    className: `${surface} text-muted/40 pointer-events-none`,
-  })
-
-  return (
-    <nav aria-label="Paginación" className="flex items-center justify-center gap-1 mt-8">
-      <button
-        onClick={() => currentPage > 1 && onPageChange(currentPage - 1)}
-        className={currentPage <= 1 ? disabled : inactive}
-        aria-label="Página anterior"
-        disabled={currentPage <= 1}
-      >
-        <ChevronLeft className="w-3.5 h-3.5" />
-      </button>
-
-      {pages.map((p, i) =>
-        p === '...' ? (
-          <span key={`ellipsis-${i}`} className="px-1 text-muted text-sm">
-            ...
-          </span>
-        ) : (
-          <button
-            key={p}
-            onClick={() => onPageChange(p)}
-            className={p === currentPage ? active : inactive}
-            aria-current={p === currentPage ? 'page' : undefined}
-          >
-            {p}
-          </button>
-        ),
-      )}
-
-      <button
-        onClick={() => currentPage < totalPages && onPageChange(currentPage + 1)}
-        className={currentPage >= totalPages ? disabled : inactive}
-        aria-label="Página siguiente"
-        disabled={currentPage >= totalPages}
-      >
-        <ChevronRight className="w-3.5 h-3.5" />
-      </button>
-    </nav>
   )
 }

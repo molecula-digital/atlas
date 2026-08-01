@@ -11,7 +11,7 @@ export const profiles = appSchema.table(
       .references(() => user.id, { onDelete: 'cascade' }),
     /** Contact email shown on the public profile; defaults to Google signup email. */
     email: text('email'),
-    /** Public URL slug (/perfil/[slug]); required when isPublic. */
+    /** Public URL slug (/personas/[slug]); required when isPublic. */
     slug: text('slug'),
     title: text('title'),
     company: text('company'),

@@ -2,6 +2,9 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { getEntryBySlug, getPublishedEntries, getSuggestedEntries } from '@/lib/payload'
+import { getPublicProfileBySlug } from '@/lib/public-profile'
+import { stripMarkdown } from '@/lib/profile-fields'
+import { PublicProfileDetail } from '@/components/entries/PublicProfileDetail'
 import { buildTrackedUrl, flattenArray, safeJsonLd } from '@/lib/utils'
 import {
   ENTRY_TYPE_CONFIG,
@@ -9,6 +12,7 @@ import {
   URL_CATEGORY_MAP,
   CATEGORY_URL_MAP,
   getCityName,
+  SITE_TITLE,
   SITE_URL,
   type AtlasEntryType,
 } from '@/config'
@@ -62,8 +66,30 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { category, slug } = await params
   const entry = await getEntryBySlug(slug)
-  if (!entry) return { title: 'Not Found' }
   const entryType = URL_CATEGORY_MAP[category] as AtlasEntryType | undefined
+  if (!entry) {
+    // Mirrors the page's fallback: /personas also serves public user profiles.
+    const profile = entryType === 'person' ? await getPublicProfileBySlug(slug) : null
+    if (!profile) return { title: 'Not Found' }
+
+    const description =
+      (profile.bio ? stripMarkdown(profile.bio) : '') ||
+      [profile.title, profile.company].filter(Boolean).join(' · ') ||
+      `Perfil en ${SITE_TITLE}`
+    const profileCanonical = `${SITE_URL}/personas/${profile.slug}`
+
+    return {
+      title: `${profile.name} — Perfil`,
+      description,
+      alternates: { canonical: profileCanonical },
+      openGraph: {
+        title: `${profile.name} — Perfil`,
+        description,
+        url: profileCanonical,
+        ...(profile.photo?.trim() ? { images: [{ url: profile.photo.trim() }] } : {}),
+      },
+    }
+  }
   const categorySlug = entryType ? ENTRY_TYPE_CONFIG[entryType].slug : category
   const canonical = `${SITE_URL}/${categorySlug}/${entry.slug}`
   const coverUrl = extractImageUrl(entry.coverImage)
@@ -97,7 +123,12 @@ export default async function EntryDetailPage({
   if (!entryType) notFound()
 
   const entry = await getEntryBySlug(slug)
-  if (!entry || entry.entryType !== entryType) notFound()
+  if (!entry || entry.entryType !== entryType) {
+    // /personas is shared with public user profiles, which live outside Payload.
+    const profile = entryType === 'person' ? await getPublicProfileBySlug(slug) : null
+    if (profile) return <PublicProfileDetail profile={profile} />
+    notFound()
+  }
 
   // Suggestion algorithm: same type > same city > any, max 3
   const suggestions = await getSuggestedEntries(

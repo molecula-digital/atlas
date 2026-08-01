@@ -62,6 +62,7 @@ export function Footer() {
                 <li><Link href="/eventos" className="text-xs text-secondary hover:text-accent transition-colors font-mono">Eventos</Link></li>
                 <li><Link href="/noticias" className="text-xs text-secondary hover:text-accent transition-colors font-mono">Noticias</Link></li>
                 <li><Link href="/empleos" className="text-xs text-secondary hover:text-accent transition-colors font-mono">Empleos</Link></li>
+                <li><Link href="/comunidad" className="text-xs text-secondary hover:text-accent transition-colors font-mono">Comunidad</Link></li>
                 <li><Link href="/dashboard" className="text-xs text-secondary hover:text-accent transition-colors font-mono">Agregar registro</Link></li>
               </ul>
             </div>
