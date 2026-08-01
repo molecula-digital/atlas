@@ -1,10 +1,11 @@
 import { SectionBlock } from '@/components/layout/SectionBlock'
-import Link from 'next/link'
 import { EntryStrip } from '@/components/entries/EntryStrip'
 import { FeaturedEntryTile } from '@/components/entries/FeaturedEntryTile'
 import FeaturedCarousel from '@/components/entries/FeaturedCarousel'
+import { DirectoryCtaLink } from '@/components/entries/DirectoryCtaLink'
 import { type AtlasEntryType } from '@/config'
 import { SectionTitle } from '@/components/ui/SectionTitle'
+import { DIRECTORY_CTA, ENTRY_SURFACE } from '@/lib/analytics-events'
 
 interface FeaturedEntry {
   slug: string
@@ -36,8 +37,8 @@ export function FeaturedSection({ entries, latestEntries }: FeaturedSectionProps
           <SectionTitle description="Startups y organizaciones destacadas del ecosistema">
             Destacados
           </SectionTitle>
-          <Link
-            href="/directorio"
+          <DirectoryCtaLink
+            cta={DIRECTORY_CTA.featuredHeader}
             className="hidden items-center gap-2 text-sm font-mono text-accent hover:underline sm:inline-flex"
           >
             Ver todos
@@ -54,7 +55,7 @@ export function FeaturedSection({ entries, latestEntries }: FeaturedSectionProps
                 d="M17 8l4 4m0 0l-4 4m4-4H3"
               />
             </svg>
-          </Link>
+          </DirectoryCtaLink>
         </div>
 
         <div className="overflow-hidden rounded-xl border-2 border-accent/25 bg-card/50 p-4 shadow-sm sm:p-6">
@@ -62,7 +63,10 @@ export function FeaturedSection({ entries, latestEntries }: FeaturedSectionProps
             <div className="min-w-0">
               {/* Scroller up to lg — six stacked tiles turned the panel into a tower on phones */}
               <div className="lg:hidden">
-                <FeaturedCarousel entries={displayEntries} />
+                <FeaturedCarousel
+                  entries={displayEntries}
+                  surface={ENTRY_SURFACE.homeFeatured}
+                />
               </div>
 
               {/* Three across from lg up, so the six tiles always land in two rows and the
@@ -78,6 +82,7 @@ export function FeaturedSection({ entries, latestEntries }: FeaturedSectionProps
                     logo={entry.logo}
                     coverImage={entry.coverImage}
                     city={entry.city}
+                    surface={ENTRY_SURFACE.homeFeatured}
                   />
                 ))}
               </div>
@@ -100,6 +105,7 @@ export function FeaturedSection({ entries, latestEntries }: FeaturedSectionProps
                       logo={entry.logo}
                       tagline={entry.tagline}
                       city={entry.city}
+                      surface={ENTRY_SURFACE.homeLatest}
                       className={index >= 4 ? 'hidden xl:flex' : undefined}
                     />
                   ))}

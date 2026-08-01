@@ -5,6 +5,7 @@ import { NEWSLETTER } from '@/config'
 import { useFormSubmission } from '@/hooks/useFormSubmission'
 import posthog from 'posthog-js'
 import { ANALYTICS_EVENTS } from '@/lib/analytics-events'
+import { captureRequestFailed, readErrorReason } from '@/lib/analytics'
 
 export type NewsletterSignupSource = 'homepage' | 'footer'
 
@@ -38,14 +39,31 @@ export function useNewsletterSignup(source: NewsletterSignupSource) {
       }
 
       await submission.run(async () => {
-        const res = await fetch('/api/newsletter', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: trimmed, source }),
-        })
+        let res: Response
+        try {
+          res = await fetch('/api/newsletter', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: trimmed, source }),
+          })
+        } catch (err) {
+          // The request never landed, so no status exists to report.
+          captureRequestFailed(
+            ANALYTICS_EVENTS.newsletterSubscriptionFailed,
+            { status: null },
+            { source },
+          )
+          throw err
+        }
+
         if (!res.ok) {
-          const data = await res.json().catch(() => ({}))
-          throw new Error(data.error || NEWSLETTER.error)
+          const reason = await readErrorReason(res)
+          captureRequestFailed(
+            ANALYTICS_EVENTS.newsletterSubscriptionFailed,
+            { status: res.status, reason },
+            { source },
+          )
+          throw new Error(reason || NEWSLETTER.error)
         }
         posthog.capture(ANALYTICS_EVENTS.newsletterSubscribed, { source })
         setEmailValue('')

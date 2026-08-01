@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import {
-  EVENT_SURFACE,
   captureEventAddedToCalendar,
   type CalendarProvider,
   type EventSurface,
@@ -73,12 +72,17 @@ export function AddToCalendar({
   event,
   size = 'md',
   iconOnly = false,
-  surface = EVENT_SURFACE.detailPage,
+  surface,
 }: {
   event: TechEvent
   size?: ButtonSize
   iconOnly?: boolean
-  surface?: EventSurface
+  /**
+   * Required rather than defaulted: a default silently attributes every new
+   * mount to the detail page, and a wrong surface is harder to notice than a
+   * missing one.
+   */
+  surface: EventSurface
 }) {
   const [open, setOpen] = useState(false)
   const calEvent = toCalendarEvent(event, `${SITE_URL}${getEventPath(event.slug)}`)

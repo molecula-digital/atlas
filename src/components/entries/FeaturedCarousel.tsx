@@ -10,6 +10,7 @@ import {
   CarouselNext,
 } from "@/components/ui/Carousel";
 import { FeaturedEntryTile } from "@/components/entries/FeaturedEntryTile";
+import type { EntrySurface } from "@/lib/analytics";
 import type { AtlasEntryType } from "@/config";
 
 interface CarouselEntry {
@@ -22,7 +23,13 @@ interface CarouselEntry {
   city: string;
 }
 
-export default function FeaturedCarousel({ entries }: { entries: CarouselEntry[] }) {
+export default function FeaturedCarousel({
+  entries,
+  surface,
+}: {
+  entries: CarouselEntry[];
+  surface: EntrySurface;
+}) {
   const plugins = useMemo(
     () => [
       AutoScroll({
@@ -55,6 +62,7 @@ export default function FeaturedCarousel({ entries }: { entries: CarouselEntry[]
               logo={entry.logo}
               coverImage={entry.coverImage}
               city={entry.city}
+              surface={surface}
             />
           </CarouselItem>
         ))}

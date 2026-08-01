@@ -1,11 +1,8 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getEventBySlug, getPublishedEvents } from '@/lib/payload'
-import {
-  eventDocToTechEvent,
-  isPastEventDate,
-  selectOtherEvents,
-} from '@/lib/events'
+import { eventDocToTechEvent, selectOtherEvents } from '@/lib/events'
+import { EVENT_SURFACE } from '@/lib/analytics-events'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import { SITE_URL } from '@/config'
 import { extractSocialImage, truncateMetadataText } from '@/lib/format'
@@ -17,6 +14,7 @@ import { EventDetailsCard } from '@/components/calendar/EventDetailView'
 import { EventDateDisplay } from '@/components/calendar/EventDateDisplay'
 import { OtherEventsSection } from '@/components/calendar/OtherEventsSection'
 import { RegisterEventButton } from '@/components/calendar/RegisterEventButton'
+import { EventExternalLink } from '@/components/calendar/EventExternalLink'
 import EventDetailPageClient from './EventDetailPageClient'
 
 export const revalidate = 3600
@@ -158,13 +156,11 @@ export default async function EventDetailPage({
 
         {showSidebar && (
           <aside className="space-y-4 lg:sticky lg:top-14">
-            {event.registerUrl && (
-              <RegisterEventButton
-                url={event.registerUrl}
-                disabled={isPastEventDate(event.date)}
-                className="hidden lg:flex"
-              />
-            )}
+            <RegisterEventButton
+              event={event}
+              surface={EVENT_SURFACE.detailPage}
+              className="hidden lg:flex"
+            />
 
             <EventDetailsCard
               event={event}
@@ -201,15 +197,15 @@ export default async function EventDetailPage({
               )}
 
               <div className={mapEmbedUrl ? 'p-3' : 'border-t border-border p-3'}>
-                <a
-                  href={event.mapsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <EventExternalLink
+                  event={event}
+                  linkType="maps"
+                  surface={EVENT_SURFACE.detailPage}
                   className={buttonVariants({ size: 'md', className: 'w-full justify-center' })}
                 >
                   Abrir en Google Maps
                   <ArrowUpRight size={13} />
-                </a>
+                </EventExternalLink>
               </div>
             </div>
           </aside>

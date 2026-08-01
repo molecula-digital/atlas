@@ -36,7 +36,12 @@ export function SignInButton({ callbackURL = '/dashboard', compact = false }: Si
     // emitted after we come back. This is the breadcrumb that lets us tell a
     // fresh sign-in apart from a page load on an existing session.
     try {
-      window.sessionStorage.setItem(SIGN_IN_PENDING_KEY, entryPoint)
+      // Timestamped so an abandoned attempt expires instead of attaching
+      // itself to whatever sign-in happens next in this tab.
+      window.sessionStorage.setItem(
+        SIGN_IN_PENDING_KEY,
+        `${Date.now()}|${entryPoint}`,
+      )
     } catch {
       // Storage can be unavailable in private mode; sign-in must still work.
     }

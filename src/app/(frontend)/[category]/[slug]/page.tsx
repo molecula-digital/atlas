@@ -399,6 +399,8 @@ export default async function EntryDetailPage({
               <ShareButton
                 title={`${entry.name as string} | Tech Atlas`}
                 url={pageUrl}
+                contentType="entry"
+                contentId={entry.slug as string}
               />
             </div>
 

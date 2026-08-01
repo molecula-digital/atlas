@@ -7,6 +7,8 @@ import { ENTRY_TYPE_ICON_MAP } from '@/lib/icons'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip'
 import { NewsletterSignup } from '@/components/newsletter/NewsletterSignup'
+import { DirectoryCtaLink } from '@/components/entries/DirectoryCtaLink'
+import { DIRECTORY_CTA } from '@/lib/analytics-events'
 import {
   Dialog,
   DialogContent,
@@ -61,10 +63,13 @@ export function HeroSection({ cityCounts = {}, typeCounts = {} }: HeroSectionPro
             </p>
 
             <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
-              <Link href="/directorio" className={buttonVariants({ variant: 'accent-filled', size: 'md', className: 'uppercase' })}>
+              <DirectoryCtaLink
+                cta={DIRECTORY_CTA.hero}
+                className={buttonVariants({ variant: 'accent-filled', size: 'md', className: 'uppercase' })}
+              >
                 <Search className="w-3.5 h-3.5" />
                 Explorar directorio
-              </Link>
+              </DirectoryCtaLink>
               <Link href="/dashboard" className={buttonVariants({ size: 'md', className: 'uppercase' })}>
                 <Plus className="w-3.5 h-3.5" />
                 Crear perfil

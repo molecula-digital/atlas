@@ -5,14 +5,17 @@ import type { TechEvent } from '@/lib/events'
 import { isPastEventDate } from '@/lib/events'
 import {
   ANALYTICS_EVENTS,
+  type AnalyticsEvent,
   type CalendarProvider,
+  type DirectoryCta,
+  type EntrySurface,
   type EventLinkType,
   type EventSurface,
   type ShareContentType,
 } from '@/lib/analytics-events'
 
 /**
- * Every client-side PostHog capture in the app goes through this module.
+ * Every PostHog capture in the app goes through this module.
  *
  * Two rules make the data survive refactors:
  *   1. Names and property *values* come from `analytics-events.ts`, never from
@@ -20,6 +23,59 @@ import {
  *   2. Entity properties are built by one function per entity, so a chart
  *      grouped by `event_slug` keeps working no matter which surface fired it.
  */
+
+/**
+ * Why an action did not complete. These need different responses, so they must
+ * not collapse into one "it failed":
+ *   - `response`  the server answered and rejected us
+ *   - `network`   the request never arrived (offline, DNS, blocked)
+ *   - `validation` we rejected it ourselves, before any request
+ */
+export type FailureKind = 'response' | 'network' | 'validation'
+
+/**
+ * An action the user asked for did not complete.
+ *
+ * `reason` is the API's own error string. It is the server's wording rather
+ * than a value from this file, so treat it as a diagnostic to read, not a
+ * dimension to build a metric on — the wording can change without warning.
+ */
+export function captureRequestFailed(
+  event: AnalyticsEvent,
+  {
+    status,
+    reason,
+    kind,
+  }: {
+    /** HTTP status, or null when no response was received. */
+    status: number | null
+    reason?: string | null
+    /** Defaults from `status`; pass it for failures that skipped the request. */
+    kind?: FailureKind
+  },
+  properties?: Record<string, unknown>,
+) {
+  posthog.capture(event, {
+    ...properties,
+    status,
+    reason: reason ?? null,
+    failure_kind: kind ?? (status === null ? 'network' : 'response'),
+  })
+}
+
+/**
+ * Reads the error message out of a failed response without disturbing the
+ * caller's own parsing — every call site here has already read, or is about to
+ * read, the same body.
+ */
+export async function readErrorReason(response: Response): Promise<string | null> {
+  try {
+    const body = (await response.clone().json()) as { error?: unknown }
+    return typeof body.error === 'string' ? body.error : null
+  } catch {
+    return null
+  }
+}
 
 /** Identity + segmentation properties shared by every event-related capture. */
 function eventProps(event: TechEvent) {
@@ -112,6 +168,32 @@ export function captureContentShared(
   })
 }
 
+/**
+ * A directory entry was picked out of a listing on the home page.
+ *
+ * Fires on the *listing*, so `surface` answers whether the curated Destacados
+ * tiles or the raw Últimos registros strip actually earns its place — and,
+ * against `directory_cta_clicked`, whether either beats just sending people to
+ * the directory.
+ */
+export function captureEntryCardClicked(
+  entry: { slug: string; name: string; entryType: string; city?: string | null },
+  surface: EntrySurface,
+) {
+  posthog.capture(ANALYTICS_EVENTS.entryCardClicked, {
+    entry_slug: entry.slug,
+    entry_name: entry.name,
+    entry_type: entry.entryType,
+    entry_city: entry.city ?? null,
+    surface,
+  })
+}
+
+/** Someone chose to browse the whole directory instead of a specific entry. */
+export function captureDirectoryCtaClicked(cta: DirectoryCta) {
+  posthog.capture(ANALYTICS_EVENTS.directoryCtaClicked, { cta })
+}
+
 export function captureJobApplicationStarted(job: {
   slug: string
   title: string
@@ -129,6 +211,8 @@ export function captureJobApplicationStarted(job: {
 // Re-exported so components have a single analytics import.
 export {
   ANALYTICS_EVENTS,
+  DIRECTORY_CTA,
+  ENTRY_SURFACE,
   EVENT_SURFACE,
   calendarSidebarSurface,
   calendarSurface,
@@ -137,6 +221,8 @@ export type {
   AnalyticsEvent,
   CalendarPlacement,
   CalendarProvider,
+  DirectoryCta,
+  EntrySurface,
   EventLinkType,
   EventSurface,
   ShareContentType,

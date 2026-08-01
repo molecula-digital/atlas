@@ -7,6 +7,7 @@ import {
 } from "@/lib/entry-submission";
 import posthog from "posthog-js";
 import { ANALYTICS_EVENTS } from "@/lib/analytics-events";
+import { captureRequestFailed, readErrorReason } from "@/lib/analytics";
 
 export interface WizardState {
   step: number;
@@ -214,20 +215,51 @@ export function useWizardState() {
   const coverRef = useRef<HTMLInputElement>(null);
 
   // Drop-off is measured against where the user actually got to, so the
-  // furthest step and the outcome have to survive until unmount.
+  // furthest step and the outcome have to survive until the wizard goes away.
   const furthestStep = useRef(0);
   const completed = useRef(false);
+  const reportedAbandon = useRef(false);
 
   useEffect(() => {
     posthog.capture(ANALYTICS_EVENTS.submitWizardStarted);
 
-    return () => {
-      if (completed.current) return;
+    /**
+     * Fires at most once, from whichever ending happens first.
+     *
+     * Unmount alone is not enough: closing the tab, reloading, and following a
+     * link out of the app all destroy the page without ever running a React
+     * cleanup, and those are the ordinary ways somebody gives up on a form. On
+     * the unmount-only version the abandonment rate read far lower than it was,
+     * which is the flattering direction and so the easy one to believe.
+     */
+    const reportAbandon = () => {
+      if (completed.current || reportedAbandon.current) return;
+      reportedAbandon.current = true;
       posthog.capture(ANALYTICS_EVENTS.submitWizardAbandoned, {
         last_step_index: furthestStep.current,
         last_step_name: stepName(furthestStep.current),
         total_steps: TOTAL_STEPS,
       });
+    };
+
+    /**
+     * `pagehide` covers the endings a React cleanup never sees. `persisted`
+     * has to be excluded though: it means the page went into the back/forward
+     * cache, which is what switching apps on iOS does, and the user is very
+     * likely coming back to finish. Reporting those would both inflate
+     * abandonment and let one session emit an abandonment *and* a completion,
+     * since the latch below cannot be taken back once the page is restored.
+     */
+    const onPageHide = (e: PageTransitionEvent) => {
+      if (e.persisted) return;
+      reportAbandon();
+    };
+
+    window.addEventListener("pagehide", onPageHide);
+
+    return () => {
+      window.removeEventListener("pagehide", onPageHide);
+      reportAbandon();
     };
   }, []);
 
@@ -314,11 +346,19 @@ export function useWizardState() {
         });
         dispatch({ type: "SUBMIT_SUCCESS" });
       } else {
-        // Why it failed is captured server-side by the route handler, which
-        // knows the actual reason rather than guessing from a status code.
+        captureRequestFailed(
+          ANALYTICS_EVENTS.directoryEntrySubmitFailed,
+          { status: res.status, reason: await readErrorReason(res) },
+          { entry_type: state.entryType || null, has_images: hasImages },
+        );
         dispatch({ type: "SUBMIT_ERROR" });
       }
     } catch {
+      captureRequestFailed(
+        ANALYTICS_EVENTS.directoryEntrySubmitFailed,
+        { status: null },
+        { entry_type: state.entryType || null, has_images: hasImages },
+      );
       dispatch({ type: "SUBMIT_ERROR" });
     }
   }, [state]);

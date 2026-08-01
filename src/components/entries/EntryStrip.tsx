@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link'
 import Image from 'next/image'
 import { MapPin } from 'lucide-react'
@@ -6,6 +8,7 @@ import { ClampedText } from '@/components/ui/ClampedText'
 import { getEntryUrl, getCityName, type AtlasEntryType } from '@/config'
 import { toPublicMediaUrl } from '@/lib/media-url'
 import { cn } from '@/lib/utils'
+import { captureEntryCardClicked, type EntrySurface } from '@/lib/analytics'
 
 export interface EntryStripProps {
   slug: string
@@ -16,6 +19,8 @@ export interface EntryStripProps {
   city?: string
   href?: string
   className?: string
+  /** Required so a new placement cannot be mounted without attribution. */
+  surface: EntrySurface
 }
 
 export function EntryStrip({
@@ -27,6 +32,7 @@ export function EntryStrip({
   city,
   href: hrefOverride,
   className,
+  surface,
 }: EntryStripProps) {
   const href = hrefOverride ?? getEntryUrl(entryType, slug)
   const logoUrl =
@@ -35,6 +41,9 @@ export function EntryStrip({
   return (
     <Link
       href={href}
+      onClick={() =>
+        captureEntryCardClicked({ slug, name, entryType, city }, surface)
+      }
       className={cn(
         'group flex w-full min-w-0 items-center gap-2.5 rounded-lg border border-border bg-card p-2.5 text-left transition-all duration-200 hover:border-accent/40 hover:shadow-sm',
         className,

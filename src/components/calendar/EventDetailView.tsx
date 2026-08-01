@@ -473,14 +473,11 @@ export function EventDetailView({
       <div className="flex flex-col gap-5">
         {hero}
 
-        {event.registerUrl && (
-          <RegisterEventButton
-            url={event.registerUrl}
-            disabled={isRegistrationDisabled}
-            className={registrationClassName}
-            onRegister={() => captureEventRegistrationStarted(event, surface)}
-          />
-        )}
+        <RegisterEventButton
+          event={event}
+          surface={surface}
+          className={registrationClassName}
+        />
 
         <EventDetailCard title="Acciones" Icon={Zap}>
           <div className="flex flex-wrap gap-2">{secondaryActions}</div>

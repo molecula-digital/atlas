@@ -31,12 +31,29 @@ function isNewUser(createdAt: unknown): boolean {
   return Date.now() - created.getTime() < NEW_USER_WINDOW_MS
 }
 
+/**
+ * How long the marker stays valid. An abandoned attempt — clicking through to
+ * Google and backing out at the account chooser — leaves the marker behind,
+ * and without an expiry the next reload would read it as a fresh sign-in that
+ * never happened. Comfortably longer than any real OAuth round trip.
+ */
+const SIGN_IN_MARKER_TTL_MS = 10 * 60 * 1000
+
 /** Returns the page sign-in started from, or null if this isn't a fresh sign-in. */
 function takeSignInEntryPoint(): string | null {
   try {
-    const entryPoint = window.sessionStorage.getItem(SIGN_IN_PENDING_KEY)
-    if (entryPoint) window.sessionStorage.removeItem(SIGN_IN_PENDING_KEY)
-    return entryPoint
+    const raw = window.sessionStorage.getItem(SIGN_IN_PENDING_KEY)
+    if (!raw) return null
+    window.sessionStorage.removeItem(SIGN_IN_PENDING_KEY)
+
+    const separator = raw.indexOf('|')
+    if (separator === -1) return null
+
+    const startedAt = Number(raw.slice(0, separator))
+    if (!Number.isFinite(startedAt)) return null
+    if (Date.now() - startedAt > SIGN_IN_MARKER_TTL_MS) return null
+
+    return raw.slice(separator + 1)
   } catch {
     // Private-mode storage must not break identification.
     return null

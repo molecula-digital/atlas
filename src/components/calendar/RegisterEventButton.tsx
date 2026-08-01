@@ -2,26 +2,37 @@
 
 import { Ticket, ArrowRight, CircleCheck } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import type { TechEvent } from '@/lib/events'
+import { isPastEventDate } from '@/lib/events'
+import { captureEventRegistrationStarted, type EventSurface } from '@/lib/analytics'
 
 /**
  * Primary Registrarse CTA on event pages: a compact, perforated admission
  * ticket with a tear-off stub and printed-paper details.
  *
- * Reporting the click is the caller's job — this component never sees the
- * event it belongs to, and a capture without that identity is not worth
- * recording.
+ * Takes the whole event rather than a URL, and reports the click itself. An
+ * earlier version left reporting to the caller through an optional callback,
+ * and the event page — which renders this twice for its responsive layout and
+ * lets CSS pick one — wired up only the copy that mobile sees. Desktop
+ * registrations went uncounted, and the metric looked healthy the whole time.
+ * Requiring the identity here is what makes an untracked instance impossible
+ * to write.
  */
 export function RegisterEventButton({
-  url,
+  event,
+  surface,
   className,
-  disabled = false,
-  onRegister,
 }: {
-  url: string
+  event: TechEvent
+  /** Where this button is mounted, for discovery-path attribution. */
+  surface: EventSurface
   className?: string
-  disabled?: boolean
-  onRegister?: () => void
 }) {
+  const url = event.registerUrl
+  const disabled = isPastEventDate(event.date)
+
+  if (!url) return null
+
   const content = (
     <>
       <span className="relative z-2 flex min-w-0 flex-1 flex-col justify-center px-5 sm:px-6">
@@ -75,7 +86,7 @@ export function RegisterEventButton({
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      onClick={onRegister}
+      onClick={() => captureEventRegistrationStarted(event, surface)}
       className={classes}
     >
       {content}
