@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link'
 import Image from 'next/image'
 import { MapPin } from 'lucide-react'
@@ -5,6 +7,7 @@ import { EntryBadge } from '@/components/entries/EntryBadge'
 import { ClampedText } from '@/components/ui/ClampedText'
 import { getEntryUrl, getCityName, type AtlasEntryType } from '@/config'
 import { toPublicMediaUrl } from '@/lib/media-url'
+import { captureEntryCardClicked, type EntrySurface } from '@/lib/analytics'
 
 export interface FeaturedEntryTileProps {
   slug: string
@@ -14,6 +17,8 @@ export interface FeaturedEntryTileProps {
   logo?: { url: string; alt?: string } | null
   coverImage?: { url: string; alt?: string } | null
   city: string
+  /** Required so a new placement cannot be mounted without attribution. */
+  surface: EntrySurface
 }
 
 export function FeaturedEntryTile({
@@ -24,6 +29,7 @@ export function FeaturedEntryTile({
   logo,
   coverImage,
   city,
+  surface,
 }: FeaturedEntryTileProps) {
   const href = getEntryUrl(entryType, slug)
   const coverUrl =
@@ -36,6 +42,9 @@ export function FeaturedEntryTile({
   return (
     <Link
       href={href}
+      onClick={() =>
+        captureEntryCardClicked({ slug, name, entryType, city }, surface)
+      }
       className="group flex h-full min-w-0 flex-col overflow-hidden rounded-lg border border-border bg-card transition-colors hover:border-accent/40"
     >
       <div className="relative h-24 shrink-0 overflow-hidden bg-elevated">

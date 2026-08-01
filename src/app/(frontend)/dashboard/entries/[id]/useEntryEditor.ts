@@ -8,6 +8,9 @@ import {
   type EntryFormValues,
 } from '@/lib/entry-submission'
 import { replaceObjectUrl, revokeObjectUrl } from '@/lib/object-url'
+import posthog from 'posthog-js'
+import { ANALYTICS_EVENTS } from '@/lib/analytics-events'
+import { captureRequestFailed } from '@/lib/analytics'
 
 export interface EntryData {
   id: string
@@ -276,12 +279,24 @@ export function useEntryEditor(id: string) {
       })
 
       if (res.ok) {
+        posthog.capture(ANALYTICS_EVENTS.directoryEntryUpdated, { entry_type: entry.entryType })
         setSaved(true)
       } else {
         const data = await res.json().catch(() => ({}))
-        setError(data.error || 'Error al guardar')
+        const reason = typeof data.error === 'string' ? data.error : null
+        captureRequestFailed(
+          ANALYTICS_EVENTS.directoryEntryUpdateFailed,
+          { status: res.status, reason },
+          { entry_type: entry.entryType },
+        )
+        setError(reason || 'Error al guardar')
       }
     } catch {
+      captureRequestFailed(
+        ANALYTICS_EVENTS.directoryEntryUpdateFailed,
+        { status: null },
+        { entry_type: entry.entryType },
+      )
       setError('Error de conexion al guardar')
     } finally {
       setSaving(false)

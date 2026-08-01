@@ -6,6 +6,9 @@ import { AuthGuard } from '@/components/auth/AuthGuard'
 import { CITY_SELECT_OPTIONS, JOB_TYPE_OPTIONS, MODALITY_OPTIONS } from '@/config'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import { buttonVariants } from '@/components/ui/button-variants'
+import posthog from 'posthog-js'
+import { ANALYTICS_EVENTS } from '@/lib/analytics-events'
+import { captureRequestFailed } from '@/lib/analytics'
 
 export default function NewJobPage() {
   const router = useRouter()
@@ -41,18 +44,41 @@ export default function NewJobPage() {
       },
     }
 
-    try {
-      const res = await fetch('/api/submissions/jobs', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      })
+    // Reported on both outcomes so the job board has a funnel at all: until
+    // now the only signal a posting produced was the pageview that preceded it.
+    const jobProps = {
+      job_type: data.type,
+      modality: data.modality,
+      has_city: Boolean(data.city),
+      has_compensation: Boolean(data.compensation),
+    }
 
-      if (!res.ok) {
-        const err = await res.json()
-        throw new Error(err.error || 'Submission failed')
+    try {
+      let res: Response
+      try {
+        res = await fetch('/api/submissions/jobs', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        })
+      } catch (err) {
+        // Never reached the server, so there is no status to report.
+        captureRequestFailed(ANALYTICS_EVENTS.jobSubmitFailed, { status: null }, jobProps)
+        throw err
       }
 
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        const reason = typeof err.error === 'string' ? err.error : null
+        captureRequestFailed(
+          ANALYTICS_EVENTS.jobSubmitFailed,
+          { status: res.status, reason },
+          jobProps,
+        )
+        throw new Error(reason || 'Submission failed')
+      }
+
+      posthog.capture(ANALYTICS_EVENTS.jobSubmitted, jobProps)
       router.push('/dashboard?submitted=job')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al enviar')

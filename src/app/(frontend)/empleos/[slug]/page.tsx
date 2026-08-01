@@ -9,9 +9,8 @@ import { flattenArray, safeJsonLd } from '@/lib/utils'
 import { formatDateEs } from '@/lib/format'
 import { Badge } from '@/components/ui/Badge'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
-import { ExternalLink } from '@/components/ui/ExternalLink'
-import { MapPin, Clock, Briefcase, ExternalLink as LinkIcon, AlertTriangle } from 'lucide-react'
-import { buttonVariants } from '@/components/ui/button-variants'
+import { JobApplyLink } from '@/components/entries/JobApplyLink'
+import { MapPin, Clock, Briefcase, AlertTriangle } from 'lucide-react'
 
 export const revalidate = 3600
 
@@ -159,12 +158,13 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
         {!expired && (
           <div className="bg-accent/10 border border-accent/20 rounded-lg p-6 text-center">
             <p className="text-sm text-primary font-medium mb-3">Interesado en esta oportunidad?</p>
-            <ExternalLink
+            <JobApplyLink
               href={job.contactUrl as string}
-              className={buttonVariants({ variant: "accent-filled", size: "md" })}
-            >
-              <LinkIcon className="w-4 h-4" /> Aplicar
-            </ExternalLink>
+              slug={job.slug as string}
+              title={job.title as string}
+              company={entryName}
+              modality={job.modality as string | null}
+            />
           </div>
         )}
 

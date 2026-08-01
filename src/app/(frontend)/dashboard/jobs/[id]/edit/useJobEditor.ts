@@ -2,6 +2,9 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import { useFormSubmission } from '@/hooks/useFormSubmission'
+import posthog from 'posthog-js'
+import { ANALYTICS_EVENTS } from '@/lib/analytics-events'
+import { captureRequestFailed } from '@/lib/analytics'
 
 export interface JobData {
   id: string
@@ -120,25 +123,41 @@ export function useJobEditor(id: string) {
 
   const save = useCallback(async () => {
     if (!job) return
+    const jobProps = { job_type: values.type, modality: values.modality }
+
     await submission.run(async () => {
-      const res = await fetch('/api/submissions/jobs', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: job.id,
-          title: values.title,
-          type: values.type,
-          modality: values.modality,
-          city: values.city || undefined,
-          compensation: values.compensation || undefined,
-          contactUrl: values.contactUrl,
-          description: toLexical(values.description),
-        }),
-      })
+      let res: Response
+      try {
+        res = await fetch('/api/submissions/jobs', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: job.id,
+            title: values.title,
+            type: values.type,
+            modality: values.modality,
+            city: values.city || undefined,
+            compensation: values.compensation || undefined,
+            contactUrl: values.contactUrl,
+            description: toLexical(values.description),
+          }),
+        })
+      } catch (err) {
+        captureRequestFailed(ANALYTICS_EVENTS.jobUpdateFailed, { status: null }, jobProps)
+        throw err
+      }
+
       if (!res.ok) {
         const data = await res.json().catch(() => ({}))
-        throw new Error(data.error || 'Error al guardar')
+        const reason = typeof data.error === 'string' ? data.error : null
+        captureRequestFailed(
+          ANALYTICS_EVENTS.jobUpdateFailed,
+          { status: res.status, reason },
+          jobProps,
+        )
+        throw new Error(reason || 'Error al guardar')
       }
+      posthog.capture(ANALYTICS_EVENTS.jobUpdated, jobProps)
     })
   }, [job, values, submission])
 

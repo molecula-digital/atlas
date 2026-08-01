@@ -16,6 +16,10 @@ import { buttonVariants } from '@/components/ui/button-variants';
 import { EventDialog } from "./EventDialog";
 import { EventDateBadge } from "./EventDateBadge";
 import { selectUpcomingEvents } from "@/lib/events";
+import {
+  captureEventRegistrationStarted,
+  type EventSurface,
+} from "@/lib/analytics";
 
 const PAGE_SIZE = 3;
 
@@ -24,12 +28,15 @@ export default function UpcomingEventsSidebar({
   status,
   refetch,
   onEventSelect,
+  surface,
 }: {
   events: TechEvent[];
   status: string;
   refetch: () => void;
   /** Lets the parent calendar jump to the month of the opened event. */
   onEventSelect?: (event: TechEvent) => void;
+  /** Which calendar this sidebar belongs to, for discovery-path attribution. */
+  surface: EventSurface;
 }) {
   const [page, setPage] = useState(0);
 
@@ -82,6 +89,7 @@ export default function UpcomingEventsSidebar({
               <EventDialog
                 key={`${i}-${ev.date}-${ev.title}`}
                 event={ev}
+                surface={surface}
                 onOpen={onEventSelect}
                 aria-label={`Ver detalles: ${ev.title}`}
                 className="w-full text-left rounded-lg border border-border bg-card p-3 flex items-start gap-3 transition-all duration-200 hover:border-accent/40 hover:bg-accent/5 group cursor-pointer"
@@ -123,7 +131,10 @@ export default function UpcomingEventsSidebar({
                       href={ev.registerUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        captureEventRegistrationStarted(ev, surface)
+                      }}
                       className={buttonVariants({ variant: "accent", size: "xs", className: "mt-2" })}
                     >
                       <Ticket className="w-3 h-3" />

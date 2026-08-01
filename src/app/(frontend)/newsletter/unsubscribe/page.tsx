@@ -6,6 +6,8 @@ import Link from 'next/link'
 import { Loader2, CheckCircle, AlertCircle } from 'lucide-react'
 import { NEWSLETTER } from '@/config'
 import { buttonVariants } from '@/components/ui/button-variants'
+import posthog from 'posthog-js'
+import { ANALYTICS_EVENTS } from '@/lib/analytics-events'
 
 function UnsubscribeForm() {
   const searchParams = useSearchParams()
@@ -29,6 +31,11 @@ function UnsubscribeForm() {
           body: JSON.stringify({ token }),
         })
         if (!res.ok) throw new Error('failed')
+        // Captured even when the effect was cancelled: the unsubscribe already
+        // took effect server-side, and dropping it would overstate list growth.
+        posthog.capture(ANALYTICS_EVENTS.newsletterUnsubscribed, {
+          method: 'email_link',
+        })
         if (!cancelled) {
           setStatus('success')
           setMessage(NEWSLETTER.unsubscribeSuccess)
@@ -58,6 +65,7 @@ function UnsubscribeForm() {
         body: JSON.stringify({ email: email.trim() }),
       })
       if (!res.ok) throw new Error('failed')
+      posthog.capture(ANALYTICS_EVENTS.newsletterUnsubscribed, { method: 'form' })
       setStatus('success')
       setMessage(NEWSLETTER.unsubscribeSuccess)
       setEmail('')

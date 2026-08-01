@@ -1,10 +1,13 @@
-import { useReducer, useRef, useCallback } from "react";
+import { useReducer, useRef, useCallback, useEffect } from "react";
 import type { AtlasEntryType } from "@/config";
 import {
   toEntrySubmission,
   uploadEntryImage,
   type EntryFormValues,
 } from "@/lib/entry-submission";
+import posthog from "posthog-js";
+import { ANALYTICS_EVENTS } from "@/lib/analytics-events";
+import { captureRequestFailed, readErrorReason } from "@/lib/analytics";
 
 export interface WizardState {
   step: number;
@@ -66,6 +69,23 @@ export type WizardAction =
   | { type: "RESET" };
 
 const TOTAL_STEPS = 5;
+
+/**
+ * Stable analytics names for each step index, mirroring the components rendered
+ * in SubmitWizard. Reported alongside the index so a reordered wizard is
+ * obvious in the funnel instead of silently shifting every number.
+ */
+const STEP_NAMES = [
+  "type_select",
+  "basic_info",
+  "details",
+  "links_tags",
+  "review",
+] as const;
+
+function stepName(step: number): string {
+  return STEP_NAMES[step] ?? `step_${step}`;
+}
 
 const initialState: WizardState = {
   step: 0,
@@ -194,6 +214,55 @@ export function useWizardState() {
   const logoRef = useRef<HTMLInputElement>(null);
   const coverRef = useRef<HTMLInputElement>(null);
 
+  // Drop-off is measured against where the user actually got to, so the
+  // furthest step and the outcome have to survive until the wizard goes away.
+  const furthestStep = useRef(0);
+  const completed = useRef(false);
+  const reportedAbandon = useRef(false);
+
+  useEffect(() => {
+    posthog.capture(ANALYTICS_EVENTS.submitWizardStarted);
+
+    /**
+     * Fires at most once, from whichever ending happens first.
+     *
+     * Unmount alone is not enough: closing the tab, reloading, and following a
+     * link out of the app all destroy the page without ever running a React
+     * cleanup, and those are the ordinary ways somebody gives up on a form. On
+     * the unmount-only version the abandonment rate read far lower than it was,
+     * which is the flattering direction and so the easy one to believe.
+     */
+    const reportAbandon = () => {
+      if (completed.current || reportedAbandon.current) return;
+      reportedAbandon.current = true;
+      posthog.capture(ANALYTICS_EVENTS.submitWizardAbandoned, {
+        last_step_index: furthestStep.current,
+        last_step_name: stepName(furthestStep.current),
+        total_steps: TOTAL_STEPS,
+      });
+    };
+
+    /**
+     * `pagehide` covers the endings a React cleanup never sees. `persisted`
+     * has to be excluded though: it means the page went into the back/forward
+     * cache, which is what switching apps on iOS does, and the user is very
+     * likely coming back to finish. Reporting those would both inflate
+     * abandonment and let one session emit an abandonment *and* a completion,
+     * since the latch below cannot be taken back once the page is restored.
+     */
+    const onPageHide = (e: PageTransitionEvent) => {
+      if (e.persisted) return;
+      reportAbandon();
+    };
+
+    window.addEventListener("pagehide", onPageHide);
+
+    return () => {
+      window.removeEventListener("pagehide", onPageHide);
+      reportAbandon();
+    };
+  }, []);
+
   const setField = useCallback(
     (field: string, value: unknown) => {
       dispatch({ type: "SET_FIELD", field, value });
@@ -203,6 +272,14 @@ export function useWizardState() {
 
   const nextStep = useCallback(() => {
     if (canAdvance(state)) {
+      posthog.capture(ANALYTICS_EVENTS.submitWizardStepCompleted, {
+        step_index: state.step,
+        step_name: stepName(state.step),
+        next_step_index: state.step + 1,
+        total_steps: TOTAL_STEPS,
+        entry_type: state.entryType || null,
+      });
+      furthestStep.current = Math.max(furthestStep.current, state.step + 1);
       dispatch({ type: "NEXT_STEP" });
     }
   }, [state]);
@@ -261,11 +338,27 @@ export function useWizardState() {
       });
 
       if (res.ok) {
+        completed.current = true;
+        posthog.capture(ANALYTICS_EVENTS.directoryEntrySubmitted, {
+          entry_type: state.entryType,
+          has_images: hasImages,
+          tag_count: state.tags.length,
+        });
         dispatch({ type: "SUBMIT_SUCCESS" });
       } else {
+        captureRequestFailed(
+          ANALYTICS_EVENTS.directoryEntrySubmitFailed,
+          { status: res.status, reason: await readErrorReason(res) },
+          { entry_type: state.entryType || null, has_images: hasImages },
+        );
         dispatch({ type: "SUBMIT_ERROR" });
       }
     } catch {
+      captureRequestFailed(
+        ANALYTICS_EVENTS.directoryEntrySubmitFailed,
+        { status: null },
+        { entry_type: state.entryType || null, has_images: hasImages },
+      );
       dispatch({ type: "SUBMIT_ERROR" });
     }
   }, [state]);

@@ -2,6 +2,7 @@ import '@/styles/globals.css'
 import Script from 'next/script'
 import { JetBrains_Mono, Space_Grotesk } from 'next/font/google'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
+import { PostHogIdentify } from '@/components/providers/PostHogIdentify'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { InfoBanner } from '@/components/layout/InfoBanner'
@@ -35,6 +36,7 @@ export default function FrontendLayout({ children }: { children: React.ReactNode
       </head>
       <body className="bg-background">
         <ThemeProvider>
+          <PostHogIdentify />
           <div className="font-sans w-full min-h-screen flex flex-col text-secondary selection:bg-accent selection:text-accent-foreground relative overflow-x-clip">
             <MatrixBackground boxSize={26} highlight={false} />
             <div className="relative z-10 flex flex-col flex-1">

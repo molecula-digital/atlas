@@ -14,6 +14,7 @@ import {
 import { useEventsData } from "@/hooks/useEventsData";
 import type { TechEvent } from "@/hooks/useEventsData";
 import { getEventPath, selectUpcomingEvents } from "@/lib/events";
+import { EVENT_SURFACE, captureEventCardClicked } from "@/lib/analytics";
 import { EventDateBadge } from "./EventDateBadge";
 import EventTypeBadge from "./EventTypeBadge";
 
@@ -23,6 +24,9 @@ function EventCard({ ev }: { ev: TechEvent }) {
       href={getEventPath(ev.slug)}
       target="_blank"
       rel="noopener noreferrer"
+      onClick={() =>
+        captureEventCardClicked(ev, EVENT_SURFACE.homeStrip, "page")
+      }
       className="w-full h-full bg-card border border-border rounded-lg p-3 flex items-center gap-3 text-left transition-all duration-200 hover:border-accent/40 hover:shadow-sm cursor-pointer group"
     >
       <EventDateBadge date={ev.date} />

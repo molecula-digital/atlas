@@ -7,6 +7,9 @@ import { slugifyProfile } from '@/lib/profile-fields'
 import { uploadMediaFile, validateImageFile } from '@/lib/media-upload'
 import { replaceObjectUrl, revokeObjectUrl } from '@/lib/object-url'
 import { useFormSubmission } from '@/hooks/useFormSubmission'
+import posthog from 'posthog-js'
+import { ANALYTICS_EVENTS } from '@/lib/analytics-events'
+import { captureRequestFailed } from '@/lib/analytics'
 
 export interface ProfileData {
   name: string
@@ -129,8 +132,17 @@ export function useProfileForm() {
   )
 
   const uploadPhoto = useCallback(async (file: File) => {
+    // Pre-checked here to show the error without touching the network, which
+    // means this path never reaches the capture inside uploadMediaFile — so it
+    // reports its own, or profile photos would be missing from every
+    // validation breakdown.
     const validationError = validateImageFile(file)
     if (validationError) {
+      captureRequestFailed(
+        ANALYTICS_EVENTS.mediaUploadFailed,
+        { status: null, reason: validationError, kind: 'validation' },
+        { stage: 'validation', file_type: file.type, file_size: file.size },
+      )
       setPhotoError(validationError)
       return
     }
@@ -184,27 +196,45 @@ export function useProfileForm() {
   const save = useCallback(async () => {
     await submission.run(async () => {
       if (profile.name && profile.name !== session?.user?.name) {
-        await authClient.updateUser({ name: profile.name })
+        // Runs before the profile request and aborts the whole save when it
+        // rejects, so it needs its own capture — otherwise a failed rename
+        // shows the user an error and reports nothing.
+        try {
+          await authClient.updateUser({ name: profile.name })
+        } catch (err) {
+          captureRequestFailed(ANALYTICS_EVENTS.profileUpdateFailed, {
+            status: null,
+            reason: err instanceof Error ? err.message : null,
+            kind: 'response',
+          })
+          throw err
+        }
       }
 
-      const res = await fetch('/api/user/profile', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: profile.email,
-          slug: profile.slug,
-          title: profile.title,
-          company: profile.company,
-          bio: profile.bio,
-          phone: profile.phone,
-          website: profile.website,
-          linkedin: profile.linkedin,
-          x: profile.x,
-          github: profile.github,
-          newsletterEnabled: profile.newsletterEnabled,
-          isPublic: profile.isPublic,
-        }),
-      })
+      let res: Response
+      try {
+        res = await fetch('/api/user/profile', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: profile.email,
+            slug: profile.slug,
+            title: profile.title,
+            company: profile.company,
+            bio: profile.bio,
+            phone: profile.phone,
+            website: profile.website,
+            linkedin: profile.linkedin,
+            x: profile.x,
+            github: profile.github,
+            newsletterEnabled: profile.newsletterEnabled,
+            isPublic: profile.isPublic,
+          }),
+        })
+      } catch (err) {
+        captureRequestFailed(ANALYTICS_EVENTS.profileUpdateFailed, { status: null })
+        throw err
+      }
 
       const parsed = await readJson<Record<string, unknown>>(res)
       if (!res.ok || !parsed.ok || !parsed.data) {
@@ -214,11 +244,21 @@ export function useProfileForm() {
             : null) ||
           (!parsed.ok ? parsed.error : null) ||
           'No se pudo guardar'
+        captureRequestFailed(ANALYTICS_EVENTS.profileUpdateFailed, {
+          status: res.status,
+          reason: msg,
+        })
         throw new Error(msg)
       }
 
       const savedProfile = parsed.data
       if (typeof savedProfile.error === 'string') {
+        // A 200 that still reports an error in the body — worth separating from
+        // an outright rejection, since only one of the two shows up in logs.
+        captureRequestFailed(ANALYTICS_EVENTS.profileUpdateFailed, {
+          status: res.status,
+          reason: savedProfile.error,
+        })
         throw new Error(savedProfile.error)
       }
 
@@ -230,6 +270,7 @@ export function useProfileForm() {
       })
       setProfile(next)
       setPublished({ isPublic: next.isPublic, slug: next.isPublic ? next.slug : '' })
+      posthog.capture(ANALYTICS_EVENTS.profileUpdated, { is_public: next.isPublic })
     })
   }, [profile, session, submission])
 

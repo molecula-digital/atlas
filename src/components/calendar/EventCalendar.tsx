@@ -5,6 +5,11 @@ import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
 import { useEventsData } from "@/hooks/useEventsData";
 import type { TechEvent } from "@/hooks/useEventsData";
 import { cn } from "@/lib/utils";
+import {
+  calendarSidebarSurface,
+  calendarSurface,
+  type CalendarPlacement,
+} from "@/lib/analytics";
 import UpcomingEventsSidebar from "./UpcomingEventsSidebar";
 import { EventDialog } from "./EventDialog";
 import { buttonVariants } from '@/components/ui/button-variants';
@@ -62,8 +67,18 @@ function CalendarSkeleton() {
   );
 }
 
-export default function EventCalendar() {
+/**
+ * The same calendar is mounted on the home page and on /eventos, so `placement`
+ * is what lets analytics tell those two audiences apart.
+ */
+export default function EventCalendar({
+  placement = "events_page",
+}: {
+  placement?: CalendarPlacement;
+}) {
   const { events, eventsByDate, status, refetch } = useEventsData();
+  const gridSurface = calendarSurface(placement);
+  const sidebarSurface = calendarSidebarSurface(placement);
 
   const now = new Date();
   const [year, setYear] = useState(now.getFullYear());
@@ -221,6 +236,7 @@ export default function EventCalendar() {
                         <EventDialog
                           key={`${j}-${ev.date}-${ev.title}`}
                           event={ev}
+                          surface={gridSurface}
                           className="block w-full text-left truncate rounded-sm px-1 py-0.5 text-[9px] md:text-2xs font-mono text-accent bg-accent/10 border-l-2 border-accent hover:bg-accent/15 transition-colors"
                           title={ev.title}
                         >
@@ -246,6 +262,7 @@ export default function EventCalendar() {
         status={status}
         refetch={refetch}
         onEventSelect={showEventMonth}
+        surface={sidebarSurface}
       />
     </div>
   );

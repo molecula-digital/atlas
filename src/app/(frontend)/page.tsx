@@ -99,7 +99,7 @@ export default async function HomePage() {
       <CommunitySection />
       <FeaturedSection entries={featured as any} latestEntries={latest as any} />
       <MapSection cityCounts={counts.byCity} cityTypeCounts={counts.byCityAndType} />
-      <CalendarSection />
+      <CalendarSection placement="home" />
       <FaqSection />
       <CombinedCtaSection />
     </>

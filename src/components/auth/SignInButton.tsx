@@ -2,6 +2,9 @@
 
 import { signIn } from '@/lib/auth-client'
 import { buttonVariants } from '@/components/ui/button-variants'
+import { SIGN_IN_PENDING_KEY } from '@/components/providers/PostHogIdentify'
+import posthog from 'posthog-js'
+import { ANALYTICS_EVENTS } from '@/lib/analytics-events'
 
 interface SignInButtonProps {
   callbackURL?: string
@@ -21,6 +24,28 @@ function GoogleLogo({ className }: { className?: string }) {
 
 export function SignInButton({ callbackURL = '/dashboard', compact = false }: SignInButtonProps) {
   const handleSignIn = async () => {
+    const entryPoint = window.location.pathname
+
+    posthog.capture(ANALYTICS_EVENTS.signInStarted, {
+      provider: 'google',
+      entry_point: entryPoint,
+      callback_url: callbackURL,
+    })
+
+    // Google takes over the tab from here, so the completion event has to be
+    // emitted after we come back. This is the breadcrumb that lets us tell a
+    // fresh sign-in apart from a page load on an existing session.
+    try {
+      // Timestamped so an abandoned attempt expires instead of attaching
+      // itself to whatever sign-in happens next in this tab.
+      window.sessionStorage.setItem(
+        SIGN_IN_PENDING_KEY,
+        `${Date.now()}|${entryPoint}`,
+      )
+    } catch {
+      // Storage can be unavailable in private mode; sign-in must still work.
+    }
+
     await signIn.social({
       provider: 'google',
       callbackURL,
