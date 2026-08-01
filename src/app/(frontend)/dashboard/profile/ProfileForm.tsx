@@ -403,7 +403,7 @@ export function ProfileForm() {
                 </Link>
               ) : (
                 <p className="mt-1.5 text-2xs text-muted font-mono">
-                  Guarda el perfil para publicar el enlace en /perfil/{profile.slug || '…'}
+                  Guarda el perfil para publicar el enlace en /personas/{profile.slug || '…'}
                 </p>
               )}
             </div>

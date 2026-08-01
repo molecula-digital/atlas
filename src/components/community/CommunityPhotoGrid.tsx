@@ -34,7 +34,8 @@ export function CommunityPhotoGrid({ photos }: CommunityPhotoGridProps) {
                 the bucket listing. */}
             <img
               src={photo.src}
-              alt={photo.alt}
+              // The button already carries the name; a second alt would double-announce.
+              alt=""
               loading="lazy"
               decoding="async"
               className="pointer-events-none h-auto w-full transition-transform duration-300 group-hover:scale-[1.03]"

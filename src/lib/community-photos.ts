@@ -78,6 +78,8 @@ async function listCommunityObjects(): Promise<ListedObject[]> {
   const bucket = process.env.S3_BUCKET?.trim()
   const client = createS3Client()
 
+  // Missing config is a standing condition, not a blip — cache the empty result so
+  // an unconfigured environment warns once per window instead of on every request.
   if (!bucket || !client) {
     console.warn('[community-photos] S3 is not configured; no photos will be listed.')
     return []
@@ -109,11 +111,16 @@ async function listCommunityObjects(): Promise<ListedObject[]> {
       continuationToken = response.IsTruncated ? response.NextContinuationToken : undefined
       page += 1
     } while (continuationToken && page < MAX_LIST_PAGES)
-  } catch (error) {
-    console.error('[community-photos] Failed to list community photos:', error)
-    return []
   } finally {
     client.destroy()
+  }
+
+  if (continuationToken) {
+    // Keys come back in lexicographic order, not by date, so a truncated listing
+    // can silently drop the newest photos. Say so rather than quietly under-report.
+    console.warn(
+      `[community-photos] Listing stopped at ${MAX_LIST_PAGES} pages (${objects.length} images); some photos are not shown.`,
+    )
   }
 
   return objects.sort((a, b) => b.lastModified - a.lastModified)
@@ -125,11 +132,30 @@ const listCommunityObjectsCached = unstable_cache(
   { revalidate: LISTING_REVALIDATE_SECONDS, tags: ['community-photos'] },
 )
 
+/**
+ * `unstable_cache` only memoizes fulfilled results, so a failed R2 call is left to
+ * throw and is caught out here: the error degrades one request instead of pinning an
+ * empty gallery for the whole cache window. The next request retries.
+ */
+async function getListing(): Promise<ListedObject[]> {
+  try {
+    return await listCommunityObjectsCached()
+  } catch (error) {
+    console.error('[community-photos] Failed to list community photos:', error)
+    return []
+  }
+}
+
+/** Keys are whatever filename was uploaded — spaces, accents and `#` all need escaping. */
+function encodeKey(key: string): string {
+  return key.split('/').map(encodeURIComponent).join('/')
+}
+
 function toPhoto({ key }: ListedObject): CommunityPhoto {
   const file = key.slice(key.lastIndexOf('/') + 1)
 
   return {
-    src: `${MEDIA_CDN_ORIGIN}/${key}`,
+    src: `${MEDIA_CDN_ORIGIN}/${encodeKey(key)}`,
     alt: photoAlt(file),
   }
 }
@@ -141,7 +167,7 @@ function toPhoto({ key }: ListedObject): CommunityPhoto {
  * and it appears within the cache window — no code change needed.
  */
 export async function getCommunityPhotosOrdered(): Promise<CommunityPhoto[]> {
-  const objects = await listCommunityObjectsCached()
+  const objects = await getListing()
   return objects.map(toPhoto)
 }
 
@@ -150,6 +176,6 @@ export async function getCommunityPhotosOrdered(): Promise<CommunityPhoto[]> {
  * stays light no matter how large the bucket grows.
  */
 export async function getCommunityPhotos(limit = 24): Promise<CommunityPhoto[]> {
-  const objects = await listCommunityObjectsCached()
+  const objects = await getListing()
   return shuffle(objects).slice(0, limit).map(toPhoto)
 }

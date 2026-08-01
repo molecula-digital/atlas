@@ -5,6 +5,7 @@ import { Pagination } from '@/components/ui/Pagination'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { CommunityPhotoGrid } from '@/components/community/CommunityPhotoGrid'
 import { getCommunityPhotosOrdered } from '@/lib/community-photos'
+import { safeJsonLd } from '@/lib/utils'
 import { SITE_URL } from '@/config'
 
 const TITLE = 'La comunidad en fotos'
@@ -16,10 +17,11 @@ const PAGE_SIZE = 42
 type PageProps = { searchParams: Promise<{ page?: string }> }
 
 export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
-  const { page } = await searchParams
-  const pageNumber = parsePage(page)
-  const canonical =
-    pageNumber > 1 ? `${SITE_URL}/comunidad?page=${pageNumber}` : `${SITE_URL}/comunidad`
+  const [{ page }, photos] = await Promise.all([searchParams, getCommunityPhotosOrdered()])
+  // Same clamp as the page body, so `?page=99` canonicalizes to the page it actually
+  // renders instead of self-canonicalizing a duplicate.
+  const pageNumber = clampPage(parsePage(page), photos.length)
+  const canonical = pageUrl(pageNumber, SITE_URL)
 
   return {
     title: TITLE,
@@ -37,19 +39,31 @@ function parsePage(value: string | undefined): number {
   return parsed
 }
 
+function totalPagesFor(photoCount: number): number {
+  return Math.max(1, Math.ceil(photoCount / PAGE_SIZE))
+}
+
+/** Clamp rather than 404 so a stale deep link still lands on real photos. */
+function clampPage(page: number, photoCount: number): number {
+  return Math.min(page, totalPagesFor(photoCount))
+}
+
+function pageUrl(page: number, base = ''): string {
+  return page > 1 ? `${base}/comunidad?page=${page}` : `${base}/comunidad`
+}
+
 export default async function ComunidadPage({ searchParams }: PageProps) {
   const [{ page }, photos] = await Promise.all([searchParams, getCommunityPhotosOrdered()])
 
-  const totalPages = Math.max(1, Math.ceil(photos.length / PAGE_SIZE))
-  // Clamp rather than 404 so a stale deep link still lands on real photos.
-  const currentPage = Math.min(parsePage(page), totalPages)
+  const totalPages = totalPagesFor(photos.length)
+  const currentPage = clampPage(parsePage(page), photos.length)
   const start = (currentPage - 1) * PAGE_SIZE
   const pagePhotos = photos.slice(start, start + PAGE_SIZE)
 
   return (
     <section>
       <script type="application/ld+json" dangerouslySetInnerHTML={{
-        __html: JSON.stringify({
+        __html: safeJsonLd({
           '@context': 'https://schema.org',
           '@type': 'CollectionPage',
           name: TITLE,
@@ -72,7 +86,7 @@ export default async function ComunidadPage({ searchParams }: PageProps) {
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
-            hrefFor={(target) => (target > 1 ? `/comunidad?page=${target}` : '/comunidad')}
+            hrefFor={(target) => pageUrl(target)}
           />
         </>
       )}
