@@ -13,6 +13,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/eventos`, changeFrequency: 'weekly', priority: 0.7 },
     { url: `${SITE_URL}/noticias`, changeFrequency: 'weekly', priority: 0.7 },
     { url: `${SITE_URL}/empleos`, changeFrequency: 'daily', priority: 0.7 },
+    { url: `${SITE_URL}/comunidad`, changeFrequency: 'weekly', priority: 0.6 },
   ]
 
   // Category pages
@@ -101,7 +102,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const profiles = await listPublicProfiles()
 
   const profilePages: MetadataRoute.Sitemap = profiles.map((profile) => ({
-    url: `${SITE_URL}/perfil/${profile.slug}`,
+    url: `${SITE_URL}/personas/${profile.slug}`,
     lastModified: profile.updatedAt,
     changeFrequency: 'monthly' as const,
     priority: 0.4,

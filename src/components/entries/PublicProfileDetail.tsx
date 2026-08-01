@@ -1,44 +1,12 @@
-import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
 import { Globe, UserRound } from 'lucide-react'
-import { SITE_TITLE, SITE_URL } from '@/config'
-import { getPublicProfileBySlug } from '@/lib/public-profile'
-import { stripMarkdown } from '@/lib/profile-fields'
+import type { PublicProfile } from '@/lib/public-profile'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import { Card } from '@/components/ui/Card'
 import { MarkdownContent } from '@/components/ui/MarkdownContent'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { GitHubIcon, LinkedInIcon, XIcon } from '@/components/icons/SocialIcons'
-
-type PageProps = { params: Promise<{ slug: string }> }
-
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { slug } = await params
-  const profile = await getPublicProfileBySlug(slug)
-  if (!profile) return { title: 'Perfil no encontrado', robots: { index: false } }
-
-  const description =
-    (profile.bio ? stripMarkdown(profile.bio) : '') ||
-    [profile.title, profile.company].filter(Boolean).join(' · ') ||
-    `Perfil en ${SITE_TITLE}`
-  const canonical = `${SITE_URL}/perfil/${profile.slug}`
-
-  return {
-    title: `${profile.name} — Perfil`,
-    description,
-    alternates: { canonical },
-    openGraph: {
-      title: `${profile.name} — Perfil`,
-      description,
-      url: canonical,
-      ...(profile.photo?.trim()
-        ? { images: [{ url: profile.photo.trim() }] }
-        : {}),
-    },
-  }
-}
 
 function normalizeHref(value: string, kind: 'url' | 'linkedin' | 'x' | 'github'): string {
   if (/^https?:\/\//i.test(value)) return value
@@ -54,11 +22,11 @@ function normalizeHref(value: string, kind: 'url' | 'linkedin' | 'x' | 'github')
   }
 }
 
-export default async function PublicProfilePage({ params }: PageProps) {
-  const { slug } = await params
-  const profile = await getPublicProfileBySlug(slug)
-  if (!profile) notFound()
-
+/**
+ * Detail view for a public user profile. Lives under `/personas/[slug]`, sharing
+ * that URL space with Payload `person` entries — the entry wins on a slug tie.
+ */
+export function PublicProfileDetail({ profile }: { profile: PublicProfile }) {
   const photo = profile.photo?.trim() || null
   const subtitle = [profile.title, profile.company].filter(Boolean).join(' · ')
   const links = [

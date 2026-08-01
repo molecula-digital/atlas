@@ -153,7 +153,7 @@ export function ProfileForm() {
 
           <div className="min-w-0 flex-1 space-y-2 text-center sm:text-left">
             <p className="text-xs text-muted font-mono leading-relaxed">
-              Foto de perfil (JPEG, PNG, WebP o GIF · máx. 5 MB). Se muestra en /perfil.
+              Foto de perfil (JPEG, PNG, WebP o GIF · máx. 5 MB). Se muestra en /personas.
             </p>
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
               <input
@@ -249,7 +249,7 @@ export function ProfileForm() {
           placeholder={
             'Cuéntale a la comunidad en qué trabajas.\n\nPuedes usar **negritas**, *cursivas*, listas y [enlaces](https://…).'
           }
-          hint="Markdown · se muestra en /perfil"
+          hint="Markdown · se muestra en /personas"
         />
       </FormSection>
 
@@ -258,7 +258,7 @@ export function ProfileForm() {
       <FormSection
         icon={Phone}
         title="Contacto y redes"
-        description="Correo y teléfono para tu tarjeta Wallet (no se publican en /perfil). Los enlaces sí aparecen en tu perfil."
+        description="Correo y teléfono para tu tarjeta Wallet (no se publican en /personas). Los enlaces sí aparecen en tu perfil."
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
@@ -379,7 +379,7 @@ export function ProfileForm() {
                 Slug público
               </FieldLabel>
               <div className="mt-1 flex items-center gap-2">
-                <span className="text-xs font-mono text-muted shrink-0">/perfil/</span>
+                <span className="text-xs font-mono text-muted shrink-0">/personas/</span>
                 <input
                   id="profile-slug"
                   className={inputClass.replace('mt-1 ', '')}
@@ -394,7 +394,7 @@ export function ProfileForm() {
               </p>
               {showPublicLink ? (
                 <Link
-                  href={`/perfil/${publishedSlug}`}
+                  href={`/personas/${publishedSlug}`}
                   target="_blank"
                   className="inline-flex items-center gap-1 mt-1.5 text-xs font-mono text-accent hover:underline"
                 >
@@ -403,7 +403,7 @@ export function ProfileForm() {
                 </Link>
               ) : (
                 <p className="mt-1.5 text-2xs text-muted font-mono">
-                  Guarda el perfil para publicar el enlace en /perfil/{profile.slug || '…'}
+                  Guarda el perfil para publicar el enlace en /personas/{profile.slug || '…'}
                 </p>
               )}
             </div>

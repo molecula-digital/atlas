@@ -156,6 +156,6 @@ export function publicProfileToDirectoryItem(profile: PublicProfile) {
     city: 'global',
     tags: [],
     publishDate: profile.updatedAt.toISOString(),
-    href: `/perfil/${profile.slug}`,
+    href: `/personas/${profile.slug}`,
   }
 }
