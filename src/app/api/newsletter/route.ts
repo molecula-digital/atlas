@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { withRateLimit } from '@/lib/rate-limit'
 import { subscribeEmail, type NewsletterSource } from '@/lib/newsletter'
 import { captureServerEvent, captureServerException } from '@/lib/posthog-server'
+import { ANALYTICS_EVENTS } from '@/lib/analytics-events'
 
 const subscribeSchema = z.object({
   email: z.string().email().max(254),
@@ -18,7 +19,7 @@ export async function POST(request: NextRequest) {
   if (limited) {
     captureServerEvent({
       request,
-      event: 'newsletter_subscription_rejected',
+      event: ANALYTICS_EVENTS.newsletterSubscriptionRejected,
       properties: { reason: 'rate_limited' },
     })
     return limited
@@ -35,7 +36,7 @@ export async function POST(request: NextRequest) {
   if (!parsed.success) {
     captureServerEvent({
       request,
-      event: 'newsletter_subscription_rejected',
+      event: ANALYTICS_EVENTS.newsletterSubscriptionRejected,
       properties: { reason: 'invalid_email' },
     })
     return NextResponse.json(
@@ -50,7 +51,7 @@ export async function POST(request: NextRequest) {
     await subscribeEmail(parsed.data.email, source)
     captureServerEvent({
       request,
-      event: 'newsletter_subscription_confirmed',
+      event: ANALYTICS_EVENTS.newsletterSubscriptionConfirmed,
       properties: { source },
     })
     return NextResponse.json({ ok: true })

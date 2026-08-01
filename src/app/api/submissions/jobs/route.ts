@@ -4,6 +4,7 @@ import { getPayloadClient } from '@/lib/payload'
 import { pickAllowedFields } from '@/lib/pick-allowed-fields'
 import { withRateLimit } from '@/lib/rate-limit'
 import { captureServerEvent, captureServerException } from '@/lib/posthog-server'
+import { ANALYTICS_EVENTS } from '@/lib/analytics-events'
 
 /** Allowlisted fields that callers may set on job submissions */
 const JOB_ALLOWED_FIELDS = [
@@ -61,7 +62,7 @@ export async function POST(request: NextRequest) {
     captureServerEvent({
       request,
       userId: session.user.id,
-      event: 'job_submission_rejected',
+      event: ANALYTICS_EVENTS.jobSubmissionRejected,
       properties: { reason: 'rate_limited' },
     })
     return limited
@@ -74,7 +75,7 @@ export async function POST(request: NextRequest) {
       captureServerEvent({
         request,
         userId: session.user.id,
-        event: 'job_submission_rejected',
+        event: ANALYTICS_EVENTS.jobSubmissionRejected,
         properties: { reason: 'missing_required_fields' },
       })
       return NextResponse.json(
@@ -97,7 +98,7 @@ export async function POST(request: NextRequest) {
     captureServerEvent({
       request,
       userId: session.user.id,
-      event: 'job_submission_created',
+      event: ANALYTICS_EVENTS.jobSubmissionCreated,
       properties: {
         job_id: job.id,
         job_type: body.type,

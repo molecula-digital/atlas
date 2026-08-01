@@ -8,6 +8,7 @@ import { uploadMediaFile, validateImageFile } from '@/lib/media-upload'
 import { replaceObjectUrl, revokeObjectUrl } from '@/lib/object-url'
 import { useFormSubmission } from '@/hooks/useFormSubmission'
 import posthog from 'posthog-js'
+import { ANALYTICS_EVENTS } from '@/lib/analytics-events'
 
 export interface ProfileData {
   name: string
@@ -231,7 +232,7 @@ export function useProfileForm() {
       })
       setProfile(next)
       setPublished({ isPublic: next.isPublic, slug: next.isPublic ? next.slug : '' })
-      posthog.capture('profile_updated', { is_public: next.isPublic })
+      posthog.capture(ANALYTICS_EVENTS.profileUpdated, { is_public: next.isPublic })
     })
   }, [profile, session, submission])
 

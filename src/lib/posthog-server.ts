@@ -1,5 +1,6 @@
 import { PostHog } from 'posthog-node'
 import type { NextRequest } from 'next/server'
+import type { AnalyticsEvent } from '@/lib/analytics-events'
 
 /**
  * Server-side PostHog for route handlers.
@@ -80,7 +81,8 @@ export function captureServerEvent({
 }: {
   request: NextRequest
   userId?: string | null
-  event: string
+  /** From ANALYTICS_EVENTS — a typo is a type error, not a silent orphan. */
+  event: AnalyticsEvent
   properties?: Record<string, unknown>
 }): void {
   const posthog = getClient()

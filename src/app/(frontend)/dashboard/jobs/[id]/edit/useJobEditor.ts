@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useFormSubmission } from '@/hooks/useFormSubmission'
 import posthog from 'posthog-js'
+import { ANALYTICS_EVENTS } from '@/lib/analytics-events'
 
 export interface JobData {
   id: string
@@ -140,7 +141,7 @@ export function useJobEditor(id: string) {
         const data = await res.json().catch(() => ({}))
         throw new Error(data.error || 'Error al guardar')
       }
-      posthog.capture('job_updated', { job_type: values.type, modality: values.modality })
+      posthog.capture(ANALYTICS_EVENTS.jobUpdated, { job_type: values.type, modality: values.modality })
     })
   }, [job, values, submission])
 

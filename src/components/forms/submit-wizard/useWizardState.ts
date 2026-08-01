@@ -6,6 +6,7 @@ import {
   type EntryFormValues,
 } from "@/lib/entry-submission";
 import posthog from "posthog-js";
+import { ANALYTICS_EVENTS } from "@/lib/analytics-events";
 
 export interface WizardState {
   step: number;
@@ -218,11 +219,11 @@ export function useWizardState() {
   const completed = useRef(false);
 
   useEffect(() => {
-    posthog.capture("submit_wizard_started");
+    posthog.capture(ANALYTICS_EVENTS.submitWizardStarted);
 
     return () => {
       if (completed.current) return;
-      posthog.capture("submit_wizard_abandoned", {
+      posthog.capture(ANALYTICS_EVENTS.submitWizardAbandoned, {
         last_step_index: furthestStep.current,
         last_step_name: stepName(furthestStep.current),
         total_steps: TOTAL_STEPS,
@@ -239,7 +240,7 @@ export function useWizardState() {
 
   const nextStep = useCallback(() => {
     if (canAdvance(state)) {
-      posthog.capture("submit_wizard_step_completed", {
+      posthog.capture(ANALYTICS_EVENTS.submitWizardStepCompleted, {
         step_index: state.step,
         step_name: stepName(state.step),
         next_step_index: state.step + 1,
@@ -306,7 +307,7 @@ export function useWizardState() {
 
       if (res.ok) {
         completed.current = true;
-        posthog.capture("directory_entry_submitted", {
+        posthog.capture(ANALYTICS_EVENTS.directoryEntrySubmitted, {
           entry_type: state.entryType,
           has_images: hasImages,
           tag_count: state.tags.length,

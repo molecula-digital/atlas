@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react'
 import posthog from 'posthog-js'
 import { useSession } from '@/lib/auth-client'
+import { ANALYTICS_EVENTS } from "@/lib/analytics-events";
 
 /**
  * Marker written by SignInButton immediately before handing off to Google.
@@ -82,7 +83,7 @@ export function PostHogIdentify() {
     // there is one event with a flag rather than separate signed_in/signed_up.
     const entryPoint = takeSignInEntryPoint()
     if (entryPoint) {
-      posthog.capture('signed_in', {
+      posthog.capture(ANALYTICS_EVENTS.signedIn, {
         provider: 'google',
         is_new_user: isNewUser((user as { createdAt?: unknown }).createdAt),
         entry_point: entryPoint,

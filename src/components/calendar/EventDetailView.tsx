@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import {
   EVENT_SURFACE,
+  captureEventLinkClicked,
   captureEventRegistrationStarted,
   captureEventViewed,
   type EventSurface,
@@ -173,10 +174,12 @@ function ModalActionLink({
   href,
   label,
   Icon,
+  onClick,
 }: {
   href: string
   label: string
   Icon: LucideIcon
+  onClick?: () => void
 }) {
   return (
     <IconActionTooltip label={label}>
@@ -184,6 +187,7 @@ function ModalActionLink({
         href={href}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={onClick}
         className={buttonVariants({ size: 'icon-lg' })}
         aria-label={label}
       >
@@ -378,6 +382,7 @@ export function EventDetailView({
           href={event.url}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={() => captureEventLinkClicked(event, 'website', surface)}
           className={buttonVariants({ size })}
         >
           <ExternalLink size={iconSize} />
@@ -389,6 +394,7 @@ export function EventDetailView({
           href={event.mapsUrl}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={() => captureEventLinkClicked(event, 'maps', surface)}
           className={buttonVariants({ size })}
         >
           <Map size={iconSize} />
@@ -408,6 +414,7 @@ export function EventDetailView({
           href={event.meetLink}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={() => captureEventLinkClicked(event, 'meet', surface)}
           className={buttonVariants({ size })}
         >
           <Video size={iconSize} />
@@ -429,6 +436,7 @@ export function EventDetailView({
           href={event.url}
           label="Abrir sitio web"
           Icon={ExternalLink}
+          onClick={() => captureEventLinkClicked(event, 'website', surface)}
         />
       )}
       {event.mapsUrl && (
@@ -436,6 +444,7 @@ export function EventDetailView({
           href={event.mapsUrl}
           label="Abrir en Google Maps"
           Icon={Map}
+          onClick={() => captureEventLinkClicked(event, 'maps', surface)}
         />
       )}
       <AddToCalendar event={event} size="icon-lg" iconOnly surface={surface} />
@@ -452,6 +461,7 @@ export function EventDetailView({
           href={event.meetLink}
           label="Abrir Meet o Zoom"
           Icon={Video}
+          onClick={() => captureEventLinkClicked(event, 'meet', surface)}
         />
       )}
       <EventFullPageLink slug={event.slug} onClose={onClose} iconOnly />

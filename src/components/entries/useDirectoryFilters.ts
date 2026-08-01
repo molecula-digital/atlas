@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import posthog from 'posthog-js'
 import { CATEGORY_URL_MAP, ENTRY_TYPE_LABELS, type AtlasEntryType } from '@/config'
+import { ANALYTICS_EVENTS } from '@/lib/analytics-events'
 
 export interface CityInfo {
   id: string
@@ -81,7 +82,7 @@ export function useDirectoryFilters({
   const selectType = useCallback(
     (type: string) => {
       const next = type === activeType ? '' : type
-      posthog.capture('directory_filter_applied', {
+      posthog.capture(ANALYTICS_EVENTS.directoryFilterApplied, {
         filter: 'entry_type',
         value: next || null,
         cleared: next === '',
@@ -94,7 +95,7 @@ export function useDirectoryFilters({
   const selectCity = useCallback(
     (id: string) => {
       const next = id === activeCity ? '' : id
-      posthog.capture('directory_filter_applied', {
+      posthog.capture(ANALYTICS_EVENTS.directoryFilterApplied, {
         filter: 'city',
         value: next || null,
         cleared: next === '',
@@ -105,7 +106,7 @@ export function useDirectoryFilters({
   )
 
   const clearFilters = useCallback(() => {
-    posthog.capture('directory_filter_applied', {
+    posthog.capture(ANALYTICS_EVENTS.directoryFilterApplied, {
       filter: 'all',
       value: null,
       cleared: true,
@@ -114,7 +115,7 @@ export function useDirectoryFilters({
   }, [navigate])
 
   const setSort = useCallback((sort: SortOption) => {
-    posthog.capture('directory_sort_changed', { sort })
+    posthog.capture(ANALYTICS_EVENTS.directorySortChanged, { sort })
     setCurrentSort(sort)
     const url = new URL(window.location.href)
     url.searchParams.delete('page')

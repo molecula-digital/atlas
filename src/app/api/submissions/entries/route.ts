@@ -4,6 +4,7 @@ import { getPayloadClient } from '@/lib/payload'
 import { pickAllowedFields } from '@/lib/pick-allowed-fields'
 import { withRateLimit } from '@/lib/rate-limit'
 import { captureServerEvent, captureServerException } from '@/lib/posthog-server'
+import { ANALYTICS_EVENTS } from '@/lib/analytics-events'
 
 /** Allowlisted fields that callers may set on entry submissions */
 const ENTRY_ALLOWED_FIELDS = [
@@ -59,7 +60,7 @@ export async function POST(request: NextRequest) {
     captureServerEvent({
       request,
       userId: session.user.id,
-      event: 'entry_submission_rejected',
+      event: ANALYTICS_EVENTS.entrySubmissionRejected,
       properties: { reason: 'rate_limited' },
     })
     return limited
@@ -72,7 +73,7 @@ export async function POST(request: NextRequest) {
       captureServerEvent({
         request,
         userId: session.user.id,
-        event: 'entry_submission_rejected',
+        event: ANALYTICS_EVENTS.entrySubmissionRejected,
         properties: { reason: 'missing_required_fields', entry_type: body.entryType ?? null },
       })
       return NextResponse.json(
@@ -95,7 +96,7 @@ export async function POST(request: NextRequest) {
     captureServerEvent({
       request,
       userId: session.user.id,
-      event: 'entry_submission_created',
+      event: ANALYTICS_EVENTS.entrySubmissionCreated,
       properties: { entry_type: body.entryType, entry_id: entry.id },
     })
     return NextResponse.json({ success: true, id: entry.id })

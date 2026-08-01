@@ -4,6 +4,7 @@ import { signIn } from '@/lib/auth-client'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { SIGN_IN_PENDING_KEY } from '@/components/providers/PostHogIdentify'
 import posthog from 'posthog-js'
+import { ANALYTICS_EVENTS } from '@/lib/analytics-events'
 
 interface SignInButtonProps {
   callbackURL?: string
@@ -25,7 +26,7 @@ export function SignInButton({ callbackURL = '/dashboard', compact = false }: Si
   const handleSignIn = async () => {
     const entryPoint = window.location.pathname
 
-    posthog.capture('sign_in_started', {
+    posthog.capture(ANALYTICS_EVENTS.signInStarted, {
       provider: 'google',
       entry_point: entryPoint,
       callback_url: callbackURL,
