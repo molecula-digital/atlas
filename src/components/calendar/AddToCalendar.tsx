@@ -1,6 +1,12 @@
 'use client'
 
 import { useState } from 'react'
+import {
+  EVENT_SURFACE,
+  captureEventAddedToCalendar,
+  type CalendarProvider,
+  type EventSurface,
+} from '@/lib/analytics'
 import { CalendarPlus, Download } from 'lucide-react'
 import type { TechEvent } from '@/lib/events'
 import { getEventPath } from '@/lib/events'
@@ -67,10 +73,12 @@ export function AddToCalendar({
   event,
   size = 'md',
   iconOnly = false,
+  surface = EVENT_SURFACE.detailPage,
 }: {
   event: TechEvent
   size?: ButtonSize
   iconOnly?: boolean
+  surface?: EventSurface
 }) {
   const [open, setOpen] = useState(false)
   const calEvent = toCalendarEvent(event, `${SITE_URL}${getEventPath(event.slug)}`)
@@ -83,13 +91,21 @@ export function AddToCalendar({
     a.download = `${event.slug || 'evento'}.ics`
     a.click()
     URL.revokeObjectURL(url)
+    captureEventAddedToCalendar(event, 'apple_ics', surface)
     setOpen(false)
   }
 
-  const links = [
-    { label: 'Google Calendar', href: googleCalendarUrl(calEvent), Icon: GoogleIcon },
-    { label: 'Outlook', href: outlookCalendarUrl(calEvent), Icon: OutlookIcon },
-    { label: 'Yahoo', href: yahooCalendarUrl(calEvent), Icon: YahooIcon },
+  // `provider` is carried here rather than derived from `label`: the reported
+  // value must not change when someone rewords a button.
+  const links: {
+    label: string
+    provider: CalendarProvider
+    href: string
+    Icon: () => React.JSX.Element
+  }[] = [
+    { label: 'Google Calendar', provider: 'google', href: googleCalendarUrl(calEvent), Icon: GoogleIcon },
+    { label: 'Outlook', provider: 'outlook', href: outlookCalendarUrl(calEvent), Icon: OutlookIcon },
+    { label: 'Yahoo', provider: 'yahoo', href: yahooCalendarUrl(calEvent), Icon: YahooIcon },
   ]
 
   const trigger = (
@@ -119,13 +135,16 @@ export function AddToCalendar({
         </DialogHeader>
 
         <div className="flex flex-col gap-2">
-          {links.map(({ label, href, Icon }) => (
+          {links.map(({ label, provider, href, Icon }) => (
             <a
               key={label}
               href={href}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => setOpen(false)}
+              onClick={() => {
+                captureEventAddedToCalendar(event, provider, surface)
+                setOpen(false)
+              }}
               className={optionClass}
             >
               <Icon />

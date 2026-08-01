@@ -5,6 +5,7 @@ import { ArrowRight, MapPin } from 'lucide-react'
 import type { TechEvent } from '@/lib/events'
 import { getEventPath } from '@/lib/events'
 import { buttonVariants } from '@/components/ui/button-variants'
+import { EVENT_SURFACE, captureEventCardClicked } from '@/lib/analytics'
 import { EventDateBadge } from './EventDateBadge'
 import EventTypeBadge from './EventTypeBadge'
 
@@ -15,6 +16,13 @@ function TimelineRow({ event }: { event: TechEvent }) {
     <li className="relative pl-2">
       <a
         href={getEventPath(event.slug)}
+        onClick={() =>
+          captureEventCardClicked(
+            event,
+            EVENT_SURFACE.eventsPagePastTimeline,
+            'page',
+          )
+        }
         className="flex items-start gap-3 rounded-lg border border-border bg-card/80 p-3 text-left transition-all duration-200 hover:border-accent/30 hover:bg-elevated/50 group"
       >
         <EventDateBadge date={event.date} variant="muted" />

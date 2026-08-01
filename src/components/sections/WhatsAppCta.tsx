@@ -1,6 +1,9 @@
+'use client'
+
 import { MessageCircle } from 'lucide-react'
 import { WHATSAPP_URL } from '@/config'
 import { buttonVariants } from '@/components/ui/button-variants'
+import posthog from 'posthog-js'
 
 /**
  * A content block, not a section — spacing belongs to whoever places it, so it
@@ -30,6 +33,7 @@ export function WhatsAppCta({ className }: { className?: string }) {
           href={WHATSAPP_URL}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={() => posthog.capture('whatsapp_community_join_started')}
           className={buttonVariants({ variant: 'accent', size: 'md', className: 'shrink-0' })}
         >
           <MessageCircle className="w-3.5 h-3.5" />

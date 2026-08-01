@@ -1,10 +1,11 @@
-import { useReducer, useRef, useCallback } from "react";
+import { useReducer, useRef, useCallback, useEffect } from "react";
 import type { AtlasEntryType } from "@/config";
 import {
   toEntrySubmission,
   uploadEntryImage,
   type EntryFormValues,
 } from "@/lib/entry-submission";
+import posthog from "posthog-js";
 
 export interface WizardState {
   step: number;
@@ -66,6 +67,23 @@ export type WizardAction =
   | { type: "RESET" };
 
 const TOTAL_STEPS = 5;
+
+/**
+ * Stable analytics names for each step index, mirroring the components rendered
+ * in SubmitWizard. Reported alongside the index so a reordered wizard is
+ * obvious in the funnel instead of silently shifting every number.
+ */
+const STEP_NAMES = [
+  "type_select",
+  "basic_info",
+  "details",
+  "links_tags",
+  "review",
+] as const;
+
+function stepName(step: number): string {
+  return STEP_NAMES[step] ?? `step_${step}`;
+}
 
 const initialState: WizardState = {
   step: 0,
@@ -194,6 +212,24 @@ export function useWizardState() {
   const logoRef = useRef<HTMLInputElement>(null);
   const coverRef = useRef<HTMLInputElement>(null);
 
+  // Drop-off is measured against where the user actually got to, so the
+  // furthest step and the outcome have to survive until unmount.
+  const furthestStep = useRef(0);
+  const completed = useRef(false);
+
+  useEffect(() => {
+    posthog.capture("submit_wizard_started");
+
+    return () => {
+      if (completed.current) return;
+      posthog.capture("submit_wizard_abandoned", {
+        last_step_index: furthestStep.current,
+        last_step_name: stepName(furthestStep.current),
+        total_steps: TOTAL_STEPS,
+      });
+    };
+  }, []);
+
   const setField = useCallback(
     (field: string, value: unknown) => {
       dispatch({ type: "SET_FIELD", field, value });
@@ -203,6 +239,14 @@ export function useWizardState() {
 
   const nextStep = useCallback(() => {
     if (canAdvance(state)) {
+      posthog.capture("submit_wizard_step_completed", {
+        step_index: state.step,
+        step_name: stepName(state.step),
+        next_step_index: state.step + 1,
+        total_steps: TOTAL_STEPS,
+        entry_type: state.entryType || null,
+      });
+      furthestStep.current = Math.max(furthestStep.current, state.step + 1);
       dispatch({ type: "NEXT_STEP" });
     }
   }, [state]);
@@ -261,8 +305,16 @@ export function useWizardState() {
       });
 
       if (res.ok) {
+        completed.current = true;
+        posthog.capture("directory_entry_submitted", {
+          entry_type: state.entryType,
+          has_images: hasImages,
+          tag_count: state.tags.length,
+        });
         dispatch({ type: "SUBMIT_SUCCESS" });
       } else {
+        // Why it failed is captured server-side by the route handler, which
+        // knows the actual reason rather than guessing from a status code.
         dispatch({ type: "SUBMIT_ERROR" });
       }
     } catch {

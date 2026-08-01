@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { withRateLimit } from '@/lib/rate-limit'
 import { subscribeEmail, type NewsletterSource } from '@/lib/newsletter'
+import { captureServerEvent, captureServerException } from '@/lib/posthog-server'
 
 const subscribeSchema = z.object({
   email: z.string().email().max(254),
@@ -14,7 +15,14 @@ export async function POST(request: NextRequest) {
     windowMs: 15 * 60 * 1000,
     keyPrefix: 'newsletter-subscribe',
   })
-  if (limited) return limited
+  if (limited) {
+    captureServerEvent({
+      request,
+      event: 'newsletter_subscription_rejected',
+      properties: { reason: 'rate_limited' },
+    })
+    return limited
+  }
 
   let body: unknown
   try {
@@ -25,6 +33,11 @@ export async function POST(request: NextRequest) {
 
   const parsed = subscribeSchema.safeParse(body)
   if (!parsed.success) {
+    captureServerEvent({
+      request,
+      event: 'newsletter_subscription_rejected',
+      properties: { reason: 'invalid_email' },
+    })
     return NextResponse.json(
       { error: 'Email inválido', details: parsed.error.issues },
       { status: 400 },
@@ -35,9 +48,19 @@ export async function POST(request: NextRequest) {
 
   try {
     await subscribeEmail(parsed.data.email, source)
+    captureServerEvent({
+      request,
+      event: 'newsletter_subscription_confirmed',
+      properties: { source },
+    })
     return NextResponse.json({ ok: true })
   } catch (err) {
     console.error('Newsletter subscribe failed:', err)
+    captureServerException({
+      request,
+      error: err,
+      properties: { route: '/api/newsletter', source },
+    })
     return NextResponse.json({ error: 'No se pudo suscribir' }, { status: 500 })
   }
 }

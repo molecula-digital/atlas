@@ -3,6 +3,7 @@ import { getServerSession } from '@/lib/auth-helpers'
 import { getPayloadClient } from '@/lib/payload'
 import { pickAllowedFields } from '@/lib/pick-allowed-fields'
 import { withRateLimit } from '@/lib/rate-limit'
+import { captureServerEvent, captureServerException } from '@/lib/posthog-server'
 
 /** Allowlisted fields that callers may set on job submissions */
 const JOB_ALLOWED_FIELDS = [
@@ -56,12 +57,26 @@ export async function POST(request: NextRequest) {
   }
 
   const limited = withRateLimit(request, { limit: 10, windowMs: 15 * 60 * 1000, keyPrefix: 'submit-job' }, session.user.id)
-  if (limited) return limited
+  if (limited) {
+    captureServerEvent({
+      request,
+      userId: session.user.id,
+      event: 'job_submission_rejected',
+      properties: { reason: 'rate_limited' },
+    })
+    return limited
+  }
 
   try {
     const body = await request.json()
 
     if (!body.title || !body.type || !body.modality || !body.contactUrl) {
+      captureServerEvent({
+        request,
+        userId: session.user.id,
+        event: 'job_submission_rejected',
+        properties: { reason: 'missing_required_fields' },
+      })
       return NextResponse.json(
         { error: 'Missing required fields: title, type, modality, contactUrl' },
         { status: 400 },
@@ -79,9 +94,25 @@ export async function POST(request: NextRequest) {
         _status: 'draft',
       } as any,
     })
+    captureServerEvent({
+      request,
+      userId: session.user.id,
+      event: 'job_submission_created',
+      properties: {
+        job_id: job.id,
+        job_type: body.type,
+        modality: body.modality,
+      },
+    })
     return NextResponse.json({ success: true, id: job.id })
   } catch (error) {
     console.error('Job submission failed:', error)
+    captureServerException({
+      request,
+      userId: session.user.id,
+      error,
+      properties: { route: '/api/submissions/jobs', method: 'POST' },
+    })
     return NextResponse.json({ error: 'Submission failed' }, { status: 500 })
   }
 }

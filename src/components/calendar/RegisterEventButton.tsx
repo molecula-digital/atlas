@@ -1,18 +1,26 @@
+'use client'
+
 import { Ticket, ArrowRight, CircleCheck } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 /**
  * Primary Registrarse CTA on event pages: a compact, perforated admission
  * ticket with a tear-off stub and printed-paper details.
+ *
+ * Reporting the click is the caller's job — this component never sees the
+ * event it belongs to, and a capture without that identity is not worth
+ * recording.
  */
 export function RegisterEventButton({
   url,
   className,
   disabled = false,
+  onRegister,
 }: {
   url: string
   className?: string
   disabled?: boolean
+  onRegister?: () => void
 }) {
   const content = (
     <>
@@ -67,6 +75,7 @@ export function RegisterEventButton({
       href={url}
       target="_blank"
       rel="noopener noreferrer"
+      onClick={onRegister}
       className={classes}
     >
       {content}

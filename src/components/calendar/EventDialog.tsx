@@ -5,6 +5,7 @@ import type { MouseEvent, ReactNode } from 'react'
 import { X } from 'lucide-react'
 import type { TechEvent } from '@/lib/events'
 import { getEventPath } from '@/lib/events'
+import { captureEventCardClicked, type EventSurface } from '@/lib/analytics'
 import { useDialogBackNavigation } from '@/hooks/useDialogBackNavigation'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { Lightbox } from '@/components/ui/Lightbox'
@@ -26,6 +27,8 @@ interface EventDialogProps {
   title?: string
   /** Fires when the dialog opens — lets a parent react (e.g. scroll a calendar to the month). */
   onOpen?: (event: TechEvent) => void
+  /** Which listing this card belongs to, for discovery-path attribution. */
+  surface: EventSurface
 }
 
 /**
@@ -42,6 +45,7 @@ export function EventDialog({
   onOpen,
   title,
   'aria-label': ariaLabel,
+  surface,
 }: EventDialogProps) {
   const [open, setOpen] = useState(false)
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
@@ -62,8 +66,14 @@ export function EventDialog({
   })
 
   const handleClick = (e: MouseEvent<HTMLAnchorElement>) => {
-    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return
+    // A modified click keeps the anchor's normal behaviour and lands on the
+    // full page, so it is reported as a different destination.
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) {
+      captureEventCardClicked(event, surface, 'page')
+      return
+    }
     e.preventDefault()
+    captureEventCardClicked(event, surface, 'modal')
     setOpen(true)
     onOpen?.(event)
   }

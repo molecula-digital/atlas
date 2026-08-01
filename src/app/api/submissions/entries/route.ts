@@ -3,6 +3,7 @@ import { getServerSession } from '@/lib/auth-helpers'
 import { getPayloadClient } from '@/lib/payload'
 import { pickAllowedFields } from '@/lib/pick-allowed-fields'
 import { withRateLimit } from '@/lib/rate-limit'
+import { captureServerEvent, captureServerException } from '@/lib/posthog-server'
 
 /** Allowlisted fields that callers may set on entry submissions */
 const ENTRY_ALLOWED_FIELDS = [
@@ -54,12 +55,26 @@ export async function POST(request: NextRequest) {
   }
 
   const limited = withRateLimit(request, { limit: 10, windowMs: 15 * 60 * 1000, keyPrefix: 'submit-entry' }, session.user.id)
-  if (limited) return limited
+  if (limited) {
+    captureServerEvent({
+      request,
+      userId: session.user.id,
+      event: 'entry_submission_rejected',
+      properties: { reason: 'rate_limited' },
+    })
+    return limited
+  }
 
   try {
     const body = await request.json()
 
     if (!body.entryType || !body.name || !body.city) {
+      captureServerEvent({
+        request,
+        userId: session.user.id,
+        event: 'entry_submission_rejected',
+        properties: { reason: 'missing_required_fields', entry_type: body.entryType ?? null },
+      })
       return NextResponse.json(
         { error: 'Missing required fields: entryType, name, city' },
         { status: 400 },
@@ -77,9 +92,21 @@ export async function POST(request: NextRequest) {
         _status: 'draft',
       } as any,
     })
+    captureServerEvent({
+      request,
+      userId: session.user.id,
+      event: 'entry_submission_created',
+      properties: { entry_type: body.entryType, entry_id: entry.id },
+    })
     return NextResponse.json({ success: true, id: entry.id })
   } catch (error) {
     console.error('Entry submission failed:', error)
+    captureServerException({
+      request,
+      userId: session.user.id,
+      error,
+      properties: { route: '/api/submissions/entries', method: 'POST' },
+    })
     return NextResponse.json({ error: 'Submission failed' }, { status: 500 })
   }
 }

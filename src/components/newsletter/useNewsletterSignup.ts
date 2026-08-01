@@ -3,6 +3,7 @@
 import { useState, useCallback, type FormEvent } from 'react'
 import { NEWSLETTER } from '@/config'
 import { useFormSubmission } from '@/hooks/useFormSubmission'
+import posthog from 'posthog-js'
 
 export type NewsletterSignupSource = 'homepage' | 'footer'
 
@@ -45,6 +46,7 @@ export function useNewsletterSignup(source: NewsletterSignupSource) {
           const data = await res.json().catch(() => ({}))
           throw new Error(data.error || NEWSLETTER.error)
         }
+        posthog.capture('newsletter_subscribed', { source })
         setEmailValue('')
       })
     },

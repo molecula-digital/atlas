@@ -4,6 +4,7 @@ import { Check, Share2, X } from 'lucide-react'
 import { buttonVariants, type ButtonSize } from '@/components/ui/button-variants'
 import { useShare } from '@/hooks/useShare'
 import { cn } from '@/lib/utils'
+import { captureContentShared, type ShareContentType } from '@/lib/analytics'
 import {
   Tooltip,
   TooltipContent,
@@ -17,6 +18,8 @@ export default function ShareButton({
   size = 'md',
   className,
   iconOnly = false,
+  contentType,
+  contentId,
 }: {
   title: string
   url: string
@@ -24,6 +27,10 @@ export default function ShareButton({
   size?: ButtonSize
   className?: string
   iconOnly?: boolean
+  /** What is being shared, so shares can be attributed to a content type. */
+  contentType?: ShareContentType
+  /** Slug or ID of the shared item. */
+  contentId?: string
 }) {
   const { share, status } = useShare({ title, text, url, copyText: url })
   const completed = status === 'copied' || status === 'shared'
@@ -36,10 +43,17 @@ export default function ShareButton({
           ? 'No se pudo copiar'
           : 'Compartir'
 
+  const handleShare = async () => {
+    const result = await share()
+    if (result === 'shared' || result === 'copied') {
+      captureContentShared(result, contentType, contentId)
+    }
+  }
+
   const button = (
     <button
       type="button"
-      onClick={() => void share()}
+      onClick={() => void handleShare()}
       className={cn(buttonVariants({ size }), className)}
       aria-label={feedbackLabel}
     >

@@ -8,6 +8,7 @@ import {
   type EntryFormValues,
 } from '@/lib/entry-submission'
 import { replaceObjectUrl, revokeObjectUrl } from '@/lib/object-url'
+import posthog from 'posthog-js'
 
 export interface EntryData {
   id: string
@@ -276,6 +277,7 @@ export function useEntryEditor(id: string) {
       })
 
       if (res.ok) {
+        posthog.capture('directory_entry_updated', { entry_type: entry.entryType })
         setSaved(true)
       } else {
         const data = await res.json().catch(() => ({}))

@@ -1,7 +1,14 @@
 'use client'
 
+import { useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import {
+  EVENT_SURFACE,
+  captureEventRegistrationStarted,
+  captureEventViewed,
+  type EventSurface,
+} from '@/lib/analytics'
 import {
   MapPin,
   Users,
@@ -294,6 +301,19 @@ export function EventDetailView({
   const hasImage = !!event.image
   const isRegistrationDisabled = isPastEventDate(event.date)
 
+  // The modal is the most common way an event gets read, and it never changes
+  // the URL — so $pageview cannot see it. This is the only signal for it.
+  const surface: EventSurface = isPage
+    ? EVENT_SURFACE.detailPage
+    : EVENT_SURFACE.modal
+
+  const viewedSlug = useRef<string | null>(null)
+  useEffect(() => {
+    if (viewedSlug.current === event.slug) return
+    viewedSlug.current = event.slug
+    captureEventViewed(event, surface)
+  }, [event, surface])
+
   const hero = hasImage ? (
     <EventHeroImage event={event} isPage={isPage} onExpandImage={onExpandImage} />
   ) : null
@@ -375,11 +395,13 @@ export function EventDetailView({
           Google Maps
         </a>
       )}
-      <AddToCalendar event={event} size={size} />
+      <AddToCalendar event={event} size={size} surface={surface} />
       <ShareButton
         title={`${event.title} | Tech Atlas`}
         url={`${SITE_URL}${getEventPath(event.slug)}`}
         size={size}
+        contentType="event"
+        contentId={event.slug}
       />
       {event.meetLink && (
         <a
@@ -403,20 +425,34 @@ export function EventDetailView({
       aria-label="Acciones del evento"
     >
       {event.url && (
-        <ModalActionLink href={event.url} label="Abrir sitio web" Icon={ExternalLink} />
+        <ModalActionLink
+          href={event.url}
+          label="Abrir sitio web"
+          Icon={ExternalLink}
+        />
       )}
       {event.mapsUrl && (
-        <ModalActionLink href={event.mapsUrl} label="Abrir en Google Maps" Icon={Map} />
+        <ModalActionLink
+          href={event.mapsUrl}
+          label="Abrir en Google Maps"
+          Icon={Map}
+        />
       )}
-      <AddToCalendar event={event} size="icon-lg" iconOnly />
+      <AddToCalendar event={event} size="icon-lg" iconOnly surface={surface} />
       <ShareButton
         title={`${event.title} | Tech Atlas`}
         url={`${SITE_URL}${getEventPath(event.slug)}`}
         size="icon-lg"
         iconOnly
+        contentType="event"
+        contentId={event.slug}
       />
       {event.meetLink && (
-        <ModalActionLink href={event.meetLink} label="Abrir Meet o Zoom" Icon={Video} />
+        <ModalActionLink
+          href={event.meetLink}
+          label="Abrir Meet o Zoom"
+          Icon={Video}
+        />
       )}
       <EventFullPageLink slug={event.slug} onClose={onClose} iconOnly />
     </div>
@@ -432,6 +468,7 @@ export function EventDetailView({
             url={event.registerUrl}
             disabled={isRegistrationDisabled}
             className={registrationClassName}
+            onRegister={() => captureEventRegistrationStarted(event, surface)}
           />
         )}
 
@@ -480,6 +517,7 @@ export function EventDetailView({
               href={event.registerUrl}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => captureEventRegistrationStarted(event, surface)}
               className={buttonVariants({
                 variant: 'accent-filled',
                 size: 'md',
