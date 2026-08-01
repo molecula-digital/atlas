@@ -19,17 +19,28 @@ ENV DATABASE_URI=${DATABASE_URI}
 ENV SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN}
 ENV NODE_OPTIONS="--max-old-space-size=4096"
 
-# NEXT_PUBLIC_* is inlined into the browser bundle by `next build` below, not
-# read at runtime — passing these at `docker run` is too late. A missing one
-# does not fail the build; it ships as `undefined` and the feature silently
-# does nothing, which is how analytics can look wired up and capture zero.
-ARG NEXT_PUBLIC_SITE_URL
-ARG NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN
-ARG NEXT_PUBLIC_POSTHOG_HOST
-ARG NEXT_PUBLIC_POSTHOG_UI_HOST
-ARG NEXT_PUBLIC_UMAMI_WEBSITE_ID
-ARG NEXT_PUBLIC_UMAMI_SRC
-ENV NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL}
+# Analytics only. NEXT_PUBLIC_* is inlined into the bundle by `next build`
+# below, not read at runtime — passing these at `docker run` is too late. A
+# missing one does not fail the build; it ships as undefined and the feature
+# silently does nothing, which is how analytics can look wired up and capture
+# zero.
+#
+# Every ARG here has a default, and that is load-bearing rather than tidiness.
+# `ARG FOO` with no default followed by `ENV FOO=${FOO}` does not leave FOO
+# unset — it sets it to the empty string, and an empty-but-present key still
+# counts as "defined at build time" to Next, so it gets inlined as empty and
+# `docker run --env-file` can never supply it afterwards. Defaults mean an
+# omitted --build-arg reproduces the previous behaviour instead of blanking it.
+#
+# NEXT_PUBLIC_SITE_URL is deliberately NOT listed. It has no ARG, so it stays
+# absent at build time and therefore stays a real runtime lookup in the server
+# bundle — which is how --env-file supplies it today. Adding it here would
+# freeze it at build and break every non-production deployment.
+ARG NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN=
+ARG NEXT_PUBLIC_POSTHOG_HOST=https://t.molecula.digital
+ARG NEXT_PUBLIC_POSTHOG_UI_HOST=https://us.posthog.com
+ARG NEXT_PUBLIC_UMAMI_WEBSITE_ID=87276dcc-091a-468d-a36f-4f1be4c4e1bc
+ARG NEXT_PUBLIC_UMAMI_SRC=https://analytics.molecula.digital/script.js
 ENV NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN=${NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN}
 ENV NEXT_PUBLIC_POSTHOG_HOST=${NEXT_PUBLIC_POSTHOG_HOST}
 ENV NEXT_PUBLIC_POSTHOG_UI_HOST=${NEXT_PUBLIC_POSTHOG_UI_HOST}

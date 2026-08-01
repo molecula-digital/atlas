@@ -34,6 +34,14 @@ export function useNewsletterSignup(source: NewsletterSignupSource) {
       event.preventDefault()
       const trimmed = email.trim()
       if (!EMAIL_RE.test(trimmed)) {
+        // Rejected before any request, so it never reaches the server and
+        // would otherwise be invisible — signup drop-off caused by a typo
+        // looks identical to nobody trying.
+        captureRequestFailed(
+          ANALYTICS_EVENTS.newsletterSubscriptionFailed,
+          { status: null, reason: 'invalid_email', kind: 'validation' },
+          { source },
+        )
         submission.fail(NEWSLETTER.invalidEmail)
         return
       }

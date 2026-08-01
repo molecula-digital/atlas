@@ -46,9 +46,11 @@ export default function NewJobPage() {
 
     // Reported on both outcomes so the job board has a funnel at all: until
     // now the only signal a posting produced was the pageview that preceded it.
+    // `job_` prefix throughout, matching job_application_started — the same
+    // concept under two keys cannot be broken down across the funnel.
     const jobProps = {
       job_type: data.type,
-      modality: data.modality,
+      job_modality: data.modality,
       has_city: Boolean(data.city),
       has_compensation: Boolean(data.compensation),
     }
