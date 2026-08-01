@@ -3,6 +3,7 @@ import { SectionTitle } from '@/components/ui/SectionTitle'
 import { CommunityPhotosCarousel } from '@/components/community/CommunityPhotosCarousel'
 import { getCommunityPhotos } from '@/lib/community-photos'
 import { WhatsAppCta } from '@/components/sections/WhatsAppCta'
+import { WHATSAPP_SURFACE } from '@/lib/analytics-events'
 
 export async function CommunitySection() {
   const photos = await getCommunityPhotos()
@@ -16,7 +17,7 @@ export async function CommunitySection() {
 
         {photos.length > 0 && <CommunityPhotosCarousel photos={photos} />}
 
-        <WhatsAppCta />
+        <WhatsAppCta surface={WHATSAPP_SURFACE.communitySection} />
       </div>
     </SectionBlock>
   )

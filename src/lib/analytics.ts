@@ -12,6 +12,7 @@ import {
   type EventLinkType,
   type EventSurface,
   type ShareContentType,
+  type WhatsAppSurface,
 } from '@/lib/analytics-events'
 
 /**
@@ -194,6 +195,11 @@ export function captureDirectoryCtaClicked(cta: DirectoryCta) {
   posthog.capture(ANALYTICS_EVENTS.directoryCtaClicked, { cta })
 }
 
+/** A WhatsApp join link was followed, from one of several placements. */
+export function captureWhatsAppJoinStarted(surface: WhatsAppSurface) {
+  posthog.capture(ANALYTICS_EVENTS.whatsappCommunityJoinStarted, { surface })
+}
+
 export function captureJobApplicationStarted(job: {
   slug: string
   title: string
@@ -214,6 +220,7 @@ export {
   DIRECTORY_CTA,
   ENTRY_SURFACE,
   EVENT_SURFACE,
+  WHATSAPP_SURFACE,
   calendarSidebarSurface,
   calendarSurface,
 } from '@/lib/analytics-events'
@@ -226,4 +233,5 @@ export type {
   EventLinkType,
   EventSurface,
   ShareContentType,
+  WhatsAppSurface,
 } from '@/lib/analytics-events'

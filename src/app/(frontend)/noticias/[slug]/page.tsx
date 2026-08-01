@@ -8,6 +8,7 @@ import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import { SITE_URL } from '@/config'
 import { formatDateEs, extractImageUrl } from '@/lib/format'
 import { WhatsAppCta } from '@/components/sections/WhatsAppCta'
+import { WHATSAPP_SURFACE } from '@/lib/analytics-events'
 import { safeJsonLd } from '@/lib/utils'
 
 export async function generateStaticParams() {
@@ -86,7 +87,7 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ slu
           <RichText data={article.body as any} />
         </div>
 
-        <WhatsAppCta className="mt-8" />
+        <WhatsAppCta className="mt-8" surface={WHATSAPP_SURFACE.newsDetail} />
       </div>
     </article>
   )

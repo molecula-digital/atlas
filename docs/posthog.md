@@ -82,8 +82,10 @@ Abandonment fires on unmount *and* `pagehide`, since tab close and refresh never
 | `newsletter_subscription_failed` | Signup rejected | `source`, + failure props |
 | `newsletter_unsubscribed` | Unsubscribe succeeded | `method` (email_link/form) |
 | `content_shared` | Shared or copied a link | `method`, `content_type`, `content_id` |
-| `whatsapp_community_join_started` | WhatsApp CTA clicked | — |
+| `whatsapp_community_join_started` | WhatsApp join link followed | `surface` |
 | `media_upload_failed` | Image rejected, at validation or upload | `stage`, `file_type`, `file_size`, + failure props |
+
+**WhatsApp surfaces:** `hero`, `community_section`, `entry_detail`, `news_detail`, `footer`. The community lives on WhatsApp so these links are everywhere; the surface is what says which placement recruits rather than just exists. `footer` is on every page — read it against `$current_url`. All of them go through `WhatsAppJoinLink`, so a new placement has to name itself.
 
 A failed upload aborts the submission holding it, so without `media_upload_failed` that drop-off looks like someone changing their mind.
 

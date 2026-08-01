@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import { MessageCircle } from 'lucide-react'
-import { ENTRY_TYPE_CONFIG, ENTRY_TYPES, SOCIAL_LINKS, SITE_TITLE, NEWSLETTER, WHATSAPP_URL } from '@/config'
+import { ENTRY_TYPE_CONFIG, ENTRY_TYPES, SOCIAL_LINKS, SITE_TITLE, NEWSLETTER } from '@/config'
+import { WhatsAppJoinLink } from '@/components/community/WhatsAppJoinLink'
+import { WHATSAPP_SURFACE } from '@/lib/analytics-events'
 import { GitHubIcon } from '@/components/icons/SocialIcons'
 import { AtlasLogo } from '@/components/layout/AtlasLogo'
 import { NewsletterSignup } from '@/components/newsletter/NewsletterSignup'
@@ -22,15 +24,13 @@ export function Footer() {
                 Directorio y comunidad del ecosistema tech de Sinaloa. Tecnología, IA, software y emprendimiento. Código abierto, hecho con cariño desde Sinaloa.
               </p>
               <div className="mt-4 flex flex-col items-start gap-3">
-                <a
-                  href={WHATSAPP_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <WhatsAppJoinLink
+                  surface={WHATSAPP_SURFACE.footer}
                   className={buttonVariants({ variant: 'accent', size: 'sm', className: 'uppercase' })}
                 >
                   <MessageCircle className="w-3.5 h-3.5" />
                   Comunidad WhatsApp
-                </a>
+                </WhatsAppJoinLink>
                 {SOCIAL_LINKS.map((link) => (
                   <a
                     key={link.platform}
