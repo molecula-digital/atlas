@@ -86,14 +86,21 @@ export default function UpcomingEventsSidebar({
         ) : pageEvents.length > 0 ? (
           pageEvents.map((ev, i) => {
             return (
-              <EventDialog
+              <div
                 key={`${i}-${ev.date}-${ev.title}`}
-                event={ev}
-                surface={surface}
-                onOpen={onEventSelect}
-                aria-label={`Ver detalles: ${ev.title}`}
-                className="w-full text-left rounded-lg border border-border bg-card p-3 flex items-start gap-3 transition-all duration-200 hover:border-accent/40 hover:bg-accent/5 group cursor-pointer"
+                className="relative w-full text-left rounded-lg border border-border bg-card p-3 flex items-start gap-3 transition-all duration-200 hover:border-accent/40 hover:bg-accent/5 group"
               >
+                {/* Stretched link: covers the card so the whole thing opens the
+                    dialog, without nesting the "Registrarse" anchor inside it. */}
+                <EventDialog
+                  event={ev}
+                  surface={surface}
+                  onOpen={onEventSelect}
+                  className="absolute inset-0 rounded-lg cursor-pointer"
+                >
+                  <span className="sr-only">Ver detalles: {ev.title}</span>
+                </EventDialog>
+
                 <EventDateBadge date={ev.date} />
 
                 <div className="flex-1 min-w-0">
@@ -131,11 +138,12 @@ export default function UpcomingEventsSidebar({
                       href={ev.registerUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        captureEventRegistrationStarted(ev, surface)
-                      }}
-                      className={buttonVariants({ variant: "accent", size: "xs", className: "mt-2" })}
+                      onClick={() => captureEventRegistrationStarted(ev, surface)}
+                      className={buttonVariants({
+                        variant: "accent",
+                        size: "xs",
+                        className: "relative z-10 mt-2",
+                      })}
                     >
                       <Ticket className="w-3 h-3" />
                       Registrarse
@@ -144,7 +152,7 @@ export default function UpcomingEventsSidebar({
                 </div>
 
                 <ArrowRight className="w-4 h-4 shrink-0 mt-1 text-muted group-hover:text-accent transition-colors" />
-              </EventDialog>
+              </div>
             );
           })
         ) : (
