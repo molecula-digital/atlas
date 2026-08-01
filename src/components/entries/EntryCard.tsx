@@ -18,6 +18,8 @@ interface EntryCardProps {
   href?: string
   /** Hide city row when not applicable. */
   hideCity?: boolean
+  /** Hide the type badge where the listing is already filtered to one type. */
+  hideTypeBadge?: boolean
 }
 
 export function EntryCard({
@@ -31,6 +33,7 @@ export function EntryCard({
   tags,
   href: hrefOverride,
   hideCity = false,
+  hideTypeBadge = false,
 }: EntryCardProps) {
   const href = hrefOverride ?? getEntryUrl(entryType, slug)
   const displayTags = (tags || []).slice(0, 3).map((t) => (typeof t === 'string' ? t : t.tag))
@@ -73,17 +76,19 @@ export function EntryCard({
       <div className="p-4 space-y-2 flex-1 flex flex-col">
         <h3 className="font-semibold text-primary text-sm group-hover:text-accent transition-colors">{name}</h3>
         {tagline && <p className="text-secondary text-sm mt-1 line-clamp-2">{tagline}</p>}
-        <div className="flex items-center justify-between gap-2 mt-2">
-          {!hideCity ? (
-            <p className="text-muted text-2xs font-mono flex items-center gap-1 min-w-0">
-              <MapPin className="w-3 h-3 shrink-0" />
-              <span className="truncate">{getCityName(city)}</span>
-            </p>
-          ) : (
-            <span />
-          )}
-          <EntryBadge entryType={entryType} className="shrink-0" />
-        </div>
+        {(!hideCity || !hideTypeBadge) && (
+          <div className="flex items-center justify-between gap-2 mt-2">
+            {!hideCity ? (
+              <p className="text-muted text-2xs font-mono flex items-center gap-1 min-w-0">
+                <MapPin className="w-3 h-3 shrink-0" />
+                <span className="truncate">{getCityName(city)}</span>
+              </p>
+            ) : (
+              <span />
+            )}
+            {!hideTypeBadge && <EntryBadge entryType={entryType} className="shrink-0" />}
+          </div>
+        )}
         {displayTags.length > 0 && (
           <div className="flex flex-wrap gap-1 mt-auto pt-2">
             {displayTags.map((tag) => <span key={tag} className="text-2xs font-mono px-1.5 py-0.5 rounded bg-elevated text-muted">{tag}</span>)}

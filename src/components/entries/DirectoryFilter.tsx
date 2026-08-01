@@ -30,7 +30,14 @@ interface Props {
   pageSize?: number
 }
 
-function renderEntryItem(entry: Entry & { kind?: string; href?: string; userId?: string }) {
+/**
+ * `hideTypeBadge` is set when the listing is already filtered to a single type —
+ * on /personas or /empresas the badge only repeats the page heading.
+ */
+function renderEntryItem(
+  entry: Entry & { kind?: string; href?: string; userId?: string },
+  hideTypeBadge: boolean,
+) {
   const logo = typeof entry.logo === 'object' && entry.logo !== null ? entry.logo as Media : null
   const coverImage = typeof entry.coverImage === 'object' && entry.coverImage !== null ? entry.coverImage as Media : null
   const isUserProfile = entry.kind === 'user-profile'
@@ -48,6 +55,7 @@ function renderEntryItem(entry: Entry & { kind?: string; href?: string; userId?:
         tags={entry.tags ?? undefined}
         href={isUserProfile ? entry.href : undefined}
         hideCity={isUserProfile}
+        hideTypeBadge={hideTypeBadge}
       />
     </div>
   )
@@ -262,7 +270,7 @@ export default function DirectoryFilter({
         <PaginatedView<Entry>
           endpoint="/api/directory/entries"
           params={apiParams}
-          renderItem={renderEntryItem}
+          renderItem={(entry) => renderEntryItem(entry, Boolean(activeType))}
           renderSkeleton={() => <EntryCardSkeleton />}
           layout="grid"
           gridCols="grid-cols-1 sm:grid-cols-2 xl:grid-cols-3"
