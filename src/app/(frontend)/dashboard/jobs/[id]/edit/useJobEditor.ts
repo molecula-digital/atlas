@@ -123,7 +123,7 @@ export function useJobEditor(id: string) {
 
   const save = useCallback(async () => {
     if (!job) return
-    const jobProps = { job_type: values.type, modality: values.modality }
+    const jobProps = { job_type: values.type, job_modality: values.modality }
 
     await submission.run(async () => {
       let res: Response

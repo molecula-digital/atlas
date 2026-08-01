@@ -105,11 +105,7 @@ El `Dockerfile` multi-stage construye la app en 3 fases:
 ```bash
 docker build \
   --build-arg DATABASE_URI="postgresql://..." \
-  --build-arg NEXT_PUBLIC_SITE_URL="https://atlas-sinaloa.tech" \
   --build-arg NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN="phc_..." \
-  --build-arg NEXT_PUBLIC_POSTHOG_HOST="https://t.molecula.digital" \
-  --build-arg NEXT_PUBLIC_POSTHOG_UI_HOST="https://us.posthog.com" \
-  --build-arg NEXT_PUBLIC_UMAMI_WEBSITE_ID="87276dcc-..." \
   -t atlas-tech .
 
 docker run -p 3000:3000 --env-file .env atlas-tech
@@ -117,7 +113,9 @@ docker run -p 3000:3000 --env-file .env atlas-tech
 
 > La base de datos debe estar accesible durante el build para que las migraciones se ejecuten.
 
-> Las variables `NEXT_PUBLIC_*` **tienen que ir en el build**, no en `docker run`: Next.js las incrusta en el bundle del navegador durante `pnpm build`. Pasarlas solo con `--env-file` llega tarde y analytics se despliega muerto, sin ningun error visible.
+> Las variables `NEXT_PUBLIC_*` de analytics **tienen que ir en el build**, no en `docker run`: Next.js las incrusta en el bundle durante `pnpm build`, asi que pasarlas solo con `--env-file` llega tarde y analytics se despliega muerto sin ningun error visible. Solo el token de PostHog es obligatorio; las demas tienen valores por defecto en el `Dockerfile` y unicamente hace falta pasarlas para apuntar a otro proyecto o a otro sitio de Umami.
+
+> `NEXT_PUBLIC_SITE_URL` es la excepcion: **no** se pasa como `--build-arg`. Se queda fuera del build a proposito para que siga leyendose en tiempo de ejecucion desde `--env-file`, que es como llega hoy. Convertirla en build-arg la congelaria y romperia cualquier despliegue que no sea produccion.
 
 ## Mapas
 

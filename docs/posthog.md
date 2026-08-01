@@ -56,7 +56,7 @@ Split one against the other to see whether curating the home page beats just poi
 |---|---|---|
 | `submit_wizard_started` | Wizard mounts | — |
 | `submit_wizard_step_completed` | Step advanced | `step_index`, `step_name`, `next_step_index`, `total_steps`, `entry_type` |
-| `submit_wizard_abandoned` | Left without submitting | `last_step_index`, `last_step_name`, `total_steps` |
+| `submit_wizard_abandoned` | Left without a successful submission | `last_step_index`, `last_step_name`, `total_steps` |
 | `directory_entry_submitted` | Entry created | `entry_type`, `has_images`, `tag_count` |
 | `directory_entry_submit_failed` | Create rejected | `entry_type`, `has_images`, + failure props |
 | `directory_entry_updated` | Entry edited | `entry_type` |
@@ -68,9 +68,9 @@ Abandonment fires on unmount *and* `pagehide`, since tab close and refresh never
 | Event | Fires when | Properties |
 |---|---|---|
 | `job_application_started` | Apply clicked | `job_slug`, `job_title`, `job_company`, `job_modality` |
-| `job_submitted` | Posting created | `job_type`, `modality`, `has_city`, `has_compensation` |
+| `job_submitted` | Posting created | `job_type`, `job_modality`, `has_city`, `has_compensation` |
 | `job_submit_failed` | Create rejected | same, + failure props |
-| `job_updated` | Posting edited | `job_type`, `modality` |
+| `job_updated` | Posting edited | `job_type`, `job_modality` |
 | `job_update_failed` | Edit rejected | same, + failure props |
 
 ## Account & community
@@ -100,7 +100,7 @@ Every `*_failed` event also carries:
 ## Adding an event
 
 1. Add the name to `ANALYTICS_EVENTS`. Never inline a string.
-2. Property *values* come from the constants too, never from UI copy — renaming a button must not split a metric.
+2. Property *values* come from constants or a TypeScript union, never from UI copy — renaming a button must not split a metric. Small closed sets (`provider`, `method`, `stage`) are inline literals constrained by their type; anything a chart groups by belongs in `analytics-events.ts`.
 3. Entity properties go in one helper per entity in `analytics.ts`, so a chart grouped by `entry_slug` keeps working whatever fires it.
 4. If a component can mount in more than one place, make `surface` a **required** prop. Optional tracking props get forgotten.
 

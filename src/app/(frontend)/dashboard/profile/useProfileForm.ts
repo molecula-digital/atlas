@@ -196,18 +196,19 @@ export function useProfileForm() {
   const save = useCallback(async () => {
     await submission.run(async () => {
       if (profile.name && profile.name !== session?.user?.name) {
-        // Runs before the profile request and aborts the whole save when it
-        // rejects, so it needs its own capture — otherwise a failed rename
-        // shows the user an error and reports nothing.
-        try {
-          await authClient.updateUser({ name: profile.name })
-        } catch (err) {
+        // Better Auth resolves with { error } rather than throwing, the same
+        // way uploadPhoto and removePhoto above handle it. A try/catch here
+        // would only ever see a transport failure and would let a rejected
+        // rename fall through to the profile request below — the user would
+        // be shown success for a name that never changed.
+        const renamed = await authClient.updateUser({ name: profile.name })
+        if (renamed.error) {
+          const message = renamed.error.message || 'No se pudo actualizar el nombre'
           captureRequestFailed(ANALYTICS_EVENTS.profileUpdateFailed, {
-            status: null,
-            reason: err instanceof Error ? err.message : null,
-            kind: 'response',
+            status: renamed.error.status ?? null,
+            reason: message,
           })
-          throw err
+          throw new Error(message)
         }
       }
 
