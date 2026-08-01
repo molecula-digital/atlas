@@ -78,6 +78,22 @@ Copia `.env.example` y configura segun tu entorno:
 | `S3_REGION` | Region (`us-east-1` para MinIO, `auto` para R2) |
 | `MEDIA_URL` | URL publica (CDN) donde se sirven las imagenes. Local: `http://localhost:9000/atlas-media`. Produccion: `https://cdn.atlas-sinaloa.tech` — no usar el endpoint R2 |
 
+**Analytics (opcionales):**
+
+Ninguna es obligatoria: sin ellas la app funciona igual y simplemente no registra nada. Todas empiezan con `NEXT_PUBLIC_`, asi que **se incrustan en el bundle durante el build, no se leen en tiempo de ejecucion** — hay que pasarlas como `--build-arg` (ver Docker). Si falta alguna el build no falla: queda como `undefined` y la captura se apaga en silencio.
+
+Analytics solo se inicializa en produccion, asi que en desarrollo (`pnpm dev`) no se envia nada y no hace falta configurarlas.
+
+| Variable | Descripcion |
+|---|---|
+| `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` | Token del proyecto de PostHog. En PostHog: Settings → Project → Project API Key |
+| `NEXT_PUBLIC_POSTHOG_HOST` | Endpoint de ingesta del navegador. Apunta al proxy inverso (`https://t.molecula.digital`) para esquivar los bloqueadores. Usa `https://us.i.posthog.com` para ir directo |
+| `NEXT_PUBLIC_POSTHOG_UI_HOST` | Donde vive PostHog, para los enlaces del toolbar. Solo importa si el anterior es un proxy. Por defecto `https://us.posthog.com` |
+| `NEXT_PUBLIC_UMAMI_WEBSITE_ID` | ID del sitio en Umami (conteo de visitas sin cookies). No es secreto: aparece en el HTML |
+| `NEXT_PUBLIC_UMAMI_SRC` | URL del script de Umami. Por defecto `https://analytics.molecula.digital/script.js` |
+
+Ver [`docs/posthog.md`](docs/posthog.md) para el detalle de que se registra y por que.
+
 ## Docker
 
 El `Dockerfile` multi-stage construye la app en 3 fases:
@@ -87,11 +103,21 @@ El `Dockerfile` multi-stage construye la app en 3 fases:
 3. **runner** — imagen minima de produccion con el output standalone de Next.js
 
 ```bash
-docker build --build-arg DATABASE_URI="postgresql://..." -t atlas-tech .
+docker build \
+  --build-arg DATABASE_URI="postgresql://..." \
+  --build-arg NEXT_PUBLIC_SITE_URL="https://atlas-sinaloa.tech" \
+  --build-arg NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN="phc_..." \
+  --build-arg NEXT_PUBLIC_POSTHOG_HOST="https://t.molecula.digital" \
+  --build-arg NEXT_PUBLIC_POSTHOG_UI_HOST="https://us.posthog.com" \
+  --build-arg NEXT_PUBLIC_UMAMI_WEBSITE_ID="87276dcc-..." \
+  -t atlas-tech .
+
 docker run -p 3000:3000 --env-file .env atlas-tech
 ```
 
 > La base de datos debe estar accesible durante el build para que las migraciones se ejecuten.
+
+> Las variables `NEXT_PUBLIC_*` **tienen que ir en el build**, no en `docker run`: Next.js las incrusta en el bundle del navegador durante `pnpm build`. Pasarlas solo con `--env-file` llega tarde y analytics se despliega muerto, sin ningun error visible.
 
 ## Mapas
 
