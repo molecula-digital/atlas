@@ -1,16 +1,22 @@
-'use client'
-
 import { MessageCircle } from 'lucide-react'
-import { WHATSAPP_URL } from '@/config'
 import { buttonVariants } from '@/components/ui/button-variants'
-import posthog from 'posthog-js'
-import { ANALYTICS_EVENTS } from '@/lib/analytics-events'
+import { WhatsAppJoinLink } from '@/components/community/WhatsAppJoinLink'
+import type { WhatsAppSurface } from '@/lib/analytics-events'
 
 /**
  * A content block, not a section — spacing belongs to whoever places it, so it
  * can sit inside an already-padded section without doubling up.
+ *
+ * `surface` is required because this block renders on three different page
+ * types, and without it every one of them reported the same thing.
  */
-export function WhatsAppCta({ className }: { className?: string }) {
+export function WhatsAppCta({
+  className,
+  surface,
+}: {
+  className?: string
+  surface: WhatsAppSurface
+}) {
   return (
     <div className={className}>
       <div className="bg-card border border-border rounded-lg p-6 md:p-8 flex flex-col lg:flex-row items-center gap-4 lg:gap-8">
@@ -30,16 +36,13 @@ export function WhatsAppCta({ className }: { className?: string }) {
         <p className="text-sm text-secondary text-center lg:text-left flex-1">
           Comparte ideas, encuentra colaboradores y entérate de todo lo que pasa en el ecosistema.
         </p>
-        <a
-          href={WHATSAPP_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={() => posthog.capture(ANALYTICS_EVENTS.whatsappCommunityJoinStarted)}
+        <WhatsAppJoinLink
+          surface={surface}
           className={buttonVariants({ variant: 'accent', size: 'md', className: 'shrink-0' })}
         >
           <MessageCircle className="w-3.5 h-3.5" />
           Unirme al grupo
-        </a>
+        </WhatsAppJoinLink>
       </div>
     </div>
   )

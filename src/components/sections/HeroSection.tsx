@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { Search, Plus, MessageCircle, ArrowUpRight, Mail } from 'lucide-react'
-import { SINALOA_CITIES, WHATSAPP_URL, ENTRY_TYPES, ENTRY_TYPE_CONFIG } from '@/config'
+import { SINALOA_CITIES, ENTRY_TYPES, ENTRY_TYPE_CONFIG } from '@/config'
 import type { AtlasEntryType } from '@/config'
 import SinaloaMap from '@/components/maps/SinaloaMapLazy'
 import { ENTRY_TYPE_ICON_MAP } from '@/lib/icons'
@@ -8,7 +8,8 @@ import { buttonVariants } from '@/components/ui/button-variants'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip'
 import { NewsletterSignup } from '@/components/newsletter/NewsletterSignup'
 import { DirectoryCtaLink } from '@/components/entries/DirectoryCtaLink'
-import { DIRECTORY_CTA } from '@/lib/analytics-events'
+import { WhatsAppJoinLink } from '@/components/community/WhatsAppJoinLink'
+import { DIRECTORY_CTA, WHATSAPP_SURFACE } from '@/lib/analytics-events'
 import {
   Dialog,
   DialogContent,
@@ -38,10 +39,8 @@ export function HeroSection({ cityCounts = {}, typeCounts = {} }: HeroSectionPro
       <div className="grid gap-8 lg:min-h-[34rem] lg:grid-cols-[minmax(0,1fr)_28rem] lg:gap-12 xl:grid-cols-[minmax(0,1fr)_31rem]">
         <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
           <div className="mt-14 space-y-6 lg:mt-auto">
-            <a
-              href={WHATSAPP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+            <WhatsAppJoinLink
+              surface={WHATSAPP_SURFACE.hero}
               className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 border border-accent/20 hover:bg-accent/20 transition-colors"
             >
               <MessageCircle className="w-3.5 h-3.5 text-accent" />
@@ -49,7 +48,7 @@ export function HeroSection({ cityCounts = {}, typeCounts = {} }: HeroSectionPro
                 // ÚNETE EN WHATSAPP
               </span>
               <ArrowUpRight className="w-3.5 h-3.5 text-accent" />
-            </a>
+            </WhatsAppJoinLink>
 
             <h1 className="text-3xl font-sans font-bold text-primary leading-[1] tracking-[-0.04em] uppercase sm:text-4xl lg:text-[2.65rem]">
               <span className="block">Descubre el</span>

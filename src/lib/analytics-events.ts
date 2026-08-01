@@ -97,6 +97,26 @@ export const ENTRY_SURFACE = {
 export type EntrySurface = (typeof ENTRY_SURFACE)[keyof typeof ENTRY_SURFACE]
 
 /**
+ * Which WhatsApp join link was followed. The community lives on WhatsApp, so
+ * these links are scattered across the site and every one of them looks the
+ * same in aggregate — the surface is the only way to tell which placement
+ * actually recruits people rather than just being present.
+ *
+ * `footer` appears on every page, so read it against `$current_url` to see
+ * where those clicks came from.
+ */
+export const WHATSAPP_SURFACE = {
+  hero: 'hero',
+  communitySection: 'community_section',
+  entryDetail: 'entry_detail',
+  newsDetail: 'news_detail',
+  footer: 'footer',
+} as const
+
+export type WhatsAppSurface =
+  (typeof WHATSAPP_SURFACE)[keyof typeof WHATSAPP_SURFACE]
+
+/**
  * Which "go to the directory" link was taken. These compete with the entry
  * cards for the same intent, so they share a vocabulary with them: the point
  * is comparing a browse-everything click against picking a specific entry.

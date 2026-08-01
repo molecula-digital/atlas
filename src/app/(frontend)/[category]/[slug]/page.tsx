@@ -45,6 +45,7 @@ import { ENTRY_TYPE_ICON_MAP } from '@/lib/icons'
 import { SocialLinkIcon } from '@/components/icons/SocialIcons'
 import { isStartupLike } from '@/config'
 import { WhatsAppCta } from '@/components/sections/WhatsAppCta'
+import { WHATSAPP_SURFACE } from '@/lib/analytics-events'
 import { buttonVariants } from '@/components/ui/button-variants'
 
 export async function generateStaticParams() {
@@ -560,7 +561,7 @@ export default async function EntryDetailPage({
       </div>
 
       <div className={!isCompactLayout ? 'max-w-3xl mx-auto lg:max-w-none' : ''}>
-        <WhatsAppCta className="mt-6" />
+        <WhatsAppCta className="mt-6" surface={WHATSAPP_SURFACE.entryDetail} />
 
         {/* Suggestions */}
         {suggestions.length > 0 && (
