@@ -186,61 +186,78 @@ html {
   }
 }
 
-/* Hero (index) — accent glow so the top of the page doesn't read as a flat
-   grid over the site-wide matrix canvas. Pure radial-gradient washes (no blur
-   filter) keep it cheap to paint; strength is per-theme because the dark accent
-   is much brighter than the light one. */
-.hero-glow {
-  --hero-glow-strong: 32%;
-  --hero-glow-soft: 18%;
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  overflow: hidden;
-  pointer-events: none;
+/* Hero backdrop (index only) — full-bleed ambient layer behind the hero: two
+   accent washes plus the marching-invaders canvas. Its predecessor lived
+   inside the hero section, so the glow clipped to the content column with
+   hard rectangle edges; mounting on the layout wrapper lets the light
+   originate at the true page corners and bleed through the translucent
+   header. Pure radial-gradient washes (no blur filter) keep it cheap to
+   paint; strength is per-theme because the dark accent is much brighter than
+   the light one. */
+.hero-backdrop {
+  --hero-wash-strong: 32%;
+  --hero-wash-soft: 18%;
+  /* Icon-field depth tiers. Per-theme like the wash — the light accent
+     (#4B7F52) carries far more contrast on white than the dark accent
+     (#7DD181) does on near-black, so equal alphas would read unequal.
+     Target: roughly the visual weight of the grid lines. */
+  --hero-icon-near: 0.18;
+  --hero-icon-mid: 0.13;
+  --hero-icon-far: 0.09;
+  /* The layer must fade out, never clip: any hard edge reads as a rectangle
+     over the matrix grid. no-repeat also hides everything outside the border
+     box, and the remaining clip edges (top/left/right) coincide with the
+     viewport, where there is nothing left to cut off. */
+  -webkit-mask-image: linear-gradient(to bottom, black 55%, transparent);
+  mask-image: linear-gradient(to bottom, black 55%, transparent);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
 }
 
-:root.dark .hero-glow {
-  --hero-glow-strong: 24%;
-  --hero-glow-soft: 14%;
+:root.dark .hero-backdrop {
+  --hero-wash-strong: 24%;
+  --hero-wash-soft: 14%;
+  --hero-icon-near: 0.13;
+  --hero-icon-mid: 0.09;
+  --hero-icon-far: 0.06;
 }
 
-.hero-glow::before,
-.hero-glow::after {
+.hero-backdrop::before,
+.hero-backdrop::after {
   content: "";
   position: absolute;
   border-radius: 9999px;
 }
 
-/* Large wash behind the headline (top-left). */
-.hero-glow::before {
+/* Large wash spilling in from the top-left page corner, behind the headline. */
+.hero-backdrop::before {
   width: 46rem;
   height: 34rem;
   top: -12rem;
   left: -10rem;
   background: radial-gradient(
     closest-side,
-    color-mix(in srgb, var(--color-accent) var(--hero-glow-strong), transparent),
+    color-mix(in srgb, var(--color-accent) var(--hero-wash-strong), transparent),
     transparent
   );
-  animation: hero-glow-drift 14s ease-in-out infinite alternate;
+  animation: hero-wash-drift 14s ease-in-out infinite alternate;
 }
 
-/* Smaller pool beneath the map card (right). */
-.hero-glow::after {
+/* Softer pool from the top-right corner, beneath the map card. */
+.hero-backdrop::after {
   width: 36rem;
   height: 28rem;
-  top: 2rem;
+  top: -8rem;
   right: -10rem;
   background: radial-gradient(
     closest-side,
-    color-mix(in srgb, var(--color-accent) var(--hero-glow-soft), transparent),
+    color-mix(in srgb, var(--color-accent) var(--hero-wash-soft), transparent),
     transparent
   );
-  animation: hero-glow-drift 18s ease-in-out infinite alternate-reverse;
+  animation: hero-wash-drift 18s ease-in-out infinite alternate-reverse;
 }
 
-@keyframes hero-glow-drift {
+@keyframes hero-wash-drift {
   from {
     transform: translate3d(0, 0, 0) scale(1);
     opacity: 0.8;
@@ -251,9 +268,69 @@ html {
   }
 }
 
+/* Floating icons of the 'icons' hero variant (see IconField). Same alternate
+   technique as the wash drift — it loops seamlessly with no pop at the wrap
+   point, where a scrolling loop would need one. steps() instead of an easing
+   curve: a smooth glide read as generic parallax, while discrete jumps rhyme
+   with the invader variant's staccato march and the terminal typography. The
+   whole transform steps at once, so rotation ticks in sync with translation
+   instead of gliding against it. */
+.hero-icon {
+  position: absolute;
+  color: var(--color-accent);
+  /* Center the glyph on its authored point (the independent translate
+     property composes with the animated transform, so the drift keyframes
+     don't overwrite it). Edge placements then stay symmetric instead of
+     hanging off their coordinate to the bottom-right. */
+  translate: -50% -50%;
+  animation: hero-icon-drift steps(var(--drift-steps, 8)) infinite alternate;
+}
+
+/* Size (set in IconField), opacity, and drift distance move together per
+   tier: big + bold + far-drifting reads as near, small + faint + slow reads
+   as deep. Decoupling any one of the three kills the parallax. The mid tier
+   drifts against the others so the field never sways as one sheet.
+   Step counts are tuned per tier against the drift distance so every jump
+   lands in the visible-but-small range (~2-6px): the near tier takes the
+   fewest, coarsest jumps — the most mechanical read — and the far tier can't
+   afford many steps or its short path would dissolve into sub-pixel moves. */
+.hero-icon-near {
+  opacity: var(--hero-icon-near);
+  --drift-x: 2.5rem;
+  --drift-y: -1.25rem;
+  --drift-rotate: 5deg;
+  --drift-steps: 6;
+}
+
+.hero-icon-mid {
+  opacity: var(--hero-icon-mid);
+  --drift-x: -1.75rem;
+  --drift-y: 1rem;
+  --drift-rotate: -3deg;
+  --drift-steps: 8;
+}
+
+.hero-icon-far {
+  opacity: var(--hero-icon-far);
+  --drift-x: 1rem;
+  --drift-y: -0.5rem;
+  --drift-rotate: 2deg;
+  --drift-steps: 6;
+}
+
+@keyframes hero-icon-drift {
+  from {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  to {
+    transform: translate3d(var(--drift-x), var(--drift-y), 0) rotate(var(--drift-rotate));
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .hero-glow::before,
-  .hero-glow::after {
+  .hero-backdrop::before,
+  .hero-backdrop::after,
+  .hero-icon {
     animation: none;
   }
 }

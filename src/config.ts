@@ -6,6 +6,23 @@ export const EVENT_TIMEZONE = 'America/Mazatlan'
 
 export const DEFAULT_PAGINATION = 18
 
+/**
+ * Cell size (px) of the site-wide background grid lattice. The hero's invader
+ * sprites are sized as an exact fraction of this cell and march in whole
+ * cells, so both layers must derive their size from this constant — if they
+ * drift apart the sprites fall out of phase with the lines and the effect
+ * breaks.
+ */
+export const MATRIX_BOX_SIZE = 26
+
+/**
+ * Which animated layer the landing hero renders behind the headline. Both
+ * variants share the accent wash and the full-bleed wrapper (see
+ * HeroBackdrop); flipping this string is the whole switch — no env var, no
+ * UI. 'invaders' is kept alive so the marching fleet is one edit away.
+ */
+export const HERO_BACKDROP: 'icons' | 'invaders' = 'icons'
+
 export const SITE_DESCRIPTION =
   'Directorio del ecosistema tecnológico de Sinaloa. Encuentra startups, consultorías, comunidades y talento tech construyendo desde nuestro estado.'
 

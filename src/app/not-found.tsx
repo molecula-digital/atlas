@@ -29,7 +29,7 @@ export default function NotFound() {
       <body className="bg-background">
         <ThemeProvider>
           <div className="font-sans w-full min-h-screen flex flex-col text-secondary selection:bg-accent selection:text-accent-foreground relative overflow-hidden">
-            <MatrixBackground boxSize={26} highlight={false} />
+            <MatrixBackground highlight={false} />
             <div className="relative z-10 flex flex-col flex-1">
               <Header />
               <main id="main" className="flex-1 md:px-6 lg:px-8 flex flex-col">

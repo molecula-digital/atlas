@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import { MATRIX_BOX_SIZE } from '@/config'
 
 type MovementDirection =
   | 'none'
@@ -26,7 +27,7 @@ interface MatrixBackgroundProps {
 export function MatrixBackground({
   highlight = true,
   highlightColor = 'rgba(20, 184, 166, 0.3)',
-  boxSize = 28,
+  boxSize = MATRIX_BOX_SIZE,
   movementDirection = 'none',
   movementSpeed = 0.5,
   animate = false,

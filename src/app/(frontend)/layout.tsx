@@ -7,6 +7,7 @@ import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { InfoBanner } from '@/components/layout/InfoBanner'
 import { MatrixBackground } from '@/components/layout/MatrixBackground'
+import { HeroBackdrop } from '@/components/layout/HeroBackdrop'
 import { SiteFrame } from '@/components/layout/SiteFrame'
 
 const jetbrainsMono = JetBrains_Mono({
@@ -54,7 +55,8 @@ export default function FrontendLayout({ children }: { children: React.ReactNode
         <ThemeProvider>
           <PostHogIdentify />
           <div className="font-sans w-full min-h-screen flex flex-col text-secondary selection:bg-accent selection:text-accent-foreground relative overflow-x-clip">
-            <MatrixBackground boxSize={26} highlight={false} />
+            <MatrixBackground highlight={false} />
+            <HeroBackdrop />
             <div className="relative z-10 flex flex-col flex-1">
               <Header />
               {/*
