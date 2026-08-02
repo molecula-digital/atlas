@@ -21,7 +21,7 @@ export const MATRIX_BOX_SIZE = 26
  * HeroBackdrop); flipping this string is the whole switch — no env var, no
  * UI. 'invaders' is kept alive so the marching fleet is one edit away.
  */
-export const HERO_BACKDROP: 'icons' | 'invaders' = 'icons'
+export const HERO_BACKDROP: 'icons' | 'invaders' = 'invaders'
 
 export const SITE_DESCRIPTION =
   'Directorio del ecosistema tecnológico de Sinaloa. Encuentra startups, consultorías, comunidades y talento tech construyendo desde nuestro estado.'
