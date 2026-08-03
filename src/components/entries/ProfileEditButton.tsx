@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useSyncExternalStore } from 'react'
 import Link from 'next/link'
 import { Pencil } from 'lucide-react'
 import { useSession } from '@/lib/auth-client'
@@ -19,8 +19,11 @@ export function ProfileEditButton({ userId }: { userId: string }) {
   // The session can resolve from its cookie cache before React hydrates, and
   // rendering the button on that first pass disagrees with the server HTML.
   // Staying empty until after hydration keeps the two in step.
-  const [hydrated, setHydrated] = useState(false)
-  useEffect(() => setHydrated(true), [])
+  const hydrated = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  )
 
   if (!hydrated || session?.user?.id !== userId) return null
 

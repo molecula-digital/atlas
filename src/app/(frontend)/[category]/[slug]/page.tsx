@@ -743,10 +743,12 @@ export default async function EntryDetailPage({
                   name={s.name as string}
                   tagline={s.tagline as string | undefined}
                   entryType={s.entryType as AtlasEntryType}
-                  logo={s.logo as any}
-                  coverImage={s.coverImage as any}
+                  logo={s.logo as { url: string; alt?: string } | null}
+                  coverImage={
+                    s.coverImage as { url: string; alt?: string } | null
+                  }
                   city={s.city as string}
-                  tags={s.tags as any}
+                  tags={s.tags as Array<{ tag: string }> | string[]}
                 />
               ))}
             </div>

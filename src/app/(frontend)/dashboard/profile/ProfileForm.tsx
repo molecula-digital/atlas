@@ -2,6 +2,7 @@
 
 import { signOut } from '@/lib/auth-client'
 import Link from 'next/link'
+import Image from 'next/image'
 import {
   Save,
   Loader2,
@@ -140,9 +141,11 @@ export function ProfileForm() {
           <div className="relative shrink-0 self-center sm:self-auto">
             <div className="w-20 h-20 rounded-full overflow-hidden border border-border bg-elevated flex items-center justify-center text-2xl font-mono font-bold text-accent">
               {profile.photo ? (
-                <img
+                <Image
                   src={profile.photo}
                   alt={profile.name || 'Foto de perfil'}
+                  width={80}
+                  height={80}
                   className="w-full h-full object-cover"
                 />
               ) : (

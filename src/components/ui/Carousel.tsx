@@ -62,11 +62,11 @@ function Carousel({
   const loop = opts?.loop ?? false
   const [canScrollPrev, setCanScrollPrev] = React.useState(loop)
   const [canScrollNext, setCanScrollNext] = React.useState(loop)
-  const [mounted, setMounted] = React.useState(false)
-
-  React.useEffect(() => {
-    setMounted(true)
-  }, [])
+  const mounted = React.useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  )
 
   const onSelect = React.useCallback((api: CarouselApi) => {
     if (!api) return
@@ -102,7 +102,7 @@ function Carousel({
 
   React.useEffect(() => {
     if (!api) return
-    onSelect(api)
+    queueMicrotask(() => onSelect(api))
     api.on('reInit', onSelect)
     api.on('select', onSelect)
 

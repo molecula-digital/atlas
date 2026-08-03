@@ -106,8 +106,28 @@ export default async function HomePage() {
 
       <CommunitySection />
       <FeaturedSection
-        entries={featured as any}
-        latestEntries={latest as any}
+        entries={featured.map((entry) => ({
+          slug: entry.slug,
+          name: entry.name,
+          tagline: entry.tagline,
+          entryType: entry.entryType,
+          city: entry.city,
+          logo:
+            typeof entry.logo === 'object' && entry.logo?.url
+              ? { url: entry.logo.url, alt: entry.logo.alt ?? undefined }
+              : null,
+        }))}
+        latestEntries={latest.map((entry) => ({
+          slug: entry.slug,
+          name: entry.name,
+          tagline: entry.tagline,
+          entryType: entry.entryType,
+          city: entry.city,
+          logo:
+            typeof entry.logo === 'object' && entry.logo?.url
+              ? { url: entry.logo.url, alt: entry.logo.alt ?? undefined }
+              : null,
+        }))}
       />
       <MapSection
         cityCounts={counts.byCity}

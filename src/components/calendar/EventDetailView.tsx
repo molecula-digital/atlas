@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import {
   EVENT_SURFACE,
@@ -248,15 +249,19 @@ function EventHeroImage({
 
   const image = (
     <>
-      <img
+      <Image
         src={event.image}
         alt=""
         aria-hidden
+        fill
+        sizes="(max-width: 768px) 100vw, 800px"
         className="absolute inset-0 h-full w-full scale-110 object-cover opacity-40 blur-2xl"
       />
-      <img
+      <Image
         src={event.image}
         alt={event.title}
+        fill
+        sizes="(max-width: 768px) 100vw, 800px"
         className="relative z-10 h-full w-full object-contain"
       />
       {onExpandImage && (

@@ -1,4 +1,5 @@
 import type { CollectionAfterChangeHook } from 'payload'
+import { revalidatePath, revalidateTag } from 'next/cache'
 import { ENTRY_TYPE_CONFIG, type AtlasEntryType } from '../../config'
 
 /**
@@ -8,7 +9,6 @@ import { ENTRY_TYPE_CONFIG, type AtlasEntryType } from '../../config'
  */
 function safeRevalidatePath(path: string) {
   try {
-    const { revalidatePath } = require('next/cache')
     revalidatePath(path)
   } catch {
     // Outside Next.js request context — skip silently
@@ -17,8 +17,7 @@ function safeRevalidatePath(path: string) {
 
 function safeRevalidateTag(tag: string) {
   try {
-    const { revalidateTag } = require('next/cache')
-    revalidateTag(tag)
+    revalidateTag(tag, 'max')
   } catch {
     // Outside Next.js request context — skip silently
   }

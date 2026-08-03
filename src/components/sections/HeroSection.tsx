@@ -52,7 +52,7 @@ export function HeroSection({
             >
               <MessageCircle className="w-3.5 h-3.5 text-accent" />
               <span className="text-xs font-mono font-semibold text-accent tracking-wide">
-                // ÚNETE EN WHATSAPP
+                {'// ÚNETE EN WHATSAPP'}
               </span>
               <ArrowUpRight className="w-3.5 h-3.5 text-accent" />
             </WhatsAppJoinLink>
@@ -128,7 +128,7 @@ export function HeroSection({
             {/* Map header */}
             <div className="flex items-center justify-between">
               <span className="text-xs font-mono font-medium text-muted tracking-wide">
-                // SINALOA.GEO
+                {'// SINALOA.GEO'}
               </span>
               <div className="flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />

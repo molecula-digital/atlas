@@ -65,7 +65,7 @@ export function useDirectoryFilters({
   // Read after mount: the server render has no window, and seeding from it
   // directly would make the first client render disagree with the HTML.
   useEffect(() => {
-    setCurrentSort(getSortFromURL())
+    queueMicrotask(() => setCurrentSort(getSortFromURL()))
   }, [])
 
   useEffect(() => {

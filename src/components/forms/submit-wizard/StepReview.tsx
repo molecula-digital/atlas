@@ -1,4 +1,5 @@
 import type { RefObject } from 'react'
+import Image from 'next/image'
 import { X, Loader2, AlertCircle } from 'lucide-react'
 import { ENTRY_TYPES, type StepProps, type CityOption } from './types'
 import { replaceObjectUrl } from '@/lib/object-url'
@@ -62,9 +63,12 @@ export default function StepReview({
           />
           {state.logoPreview && (
             <div className="mt-2 relative w-20 h-20">
-              <img
+              <Image
                 src={state.logoPreview}
                 alt="Logo preview"
+                width={80}
+                height={80}
+                unoptimized
                 className="w-20 h-20 rounded-lg border border-border object-cover"
               />
               <button
@@ -100,9 +104,13 @@ export default function StepReview({
           />
           {state.coverPreview && (
             <div className="mt-2 relative">
-              <img
+              <Image
                 src={state.coverPreview}
                 alt="Cover preview"
+                width={800}
+                height={384}
+                sizes="(max-width: 768px) 100vw, 672px"
+                unoptimized
                 className="w-full max-h-48 rounded-lg border border-border object-cover"
               />
               <button

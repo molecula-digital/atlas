@@ -1,8 +1,5 @@
 import {
   Rocket,
-  Users,
-  Briefcase,
-  User,
   LayoutGrid,
   FileText,
   SlidersHorizontal,

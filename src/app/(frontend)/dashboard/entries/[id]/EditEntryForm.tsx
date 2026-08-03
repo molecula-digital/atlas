@@ -1,19 +1,12 @@
 'use client'
 
 import { useParams, useRouter } from 'next/navigation'
+import Image from 'next/image'
 import { AuthGuard } from '@/components/auth/AuthGuard'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import { Card } from '@/components/ui/Card'
 import { EntryBadge } from '@/components/entries/EntryBadge'
-import {
-  XCircle,
-  X,
-  Plus,
-  ArrowLeft,
-  Save,
-  CheckCircle,
-  Loader2,
-} from 'lucide-react'
+import { XCircle, X, Plus, ArrowLeft, Save, CheckCircle } from 'lucide-react'
 import {
   SINALOA_CITIES,
   STAGE_OPTIONS,
@@ -113,9 +106,11 @@ export function EditEntryForm() {
     bodyMarkdown,
     setBodyMarkdown,
     logoPreview,
+    hasNewLogo,
     selectLogo,
     resetLogo,
     coverPreview,
+    hasNewCover,
     selectCover,
     resetCover,
     uploadingImages,
@@ -229,11 +224,13 @@ export function EditEntryForm() {
                     <div className="space-y-3">
                       <div>
                         <span className={`${labelClass} block mb-1`}>Logo</span>
-                        {logoPreview && !logoRef.current?.files?.[0] && (
+                        {logoPreview && !hasNewLogo && (
                           <div className="mb-2 relative w-20 h-20">
-                            <img
+                            <Image
                               src={logoPreview}
                               alt="Logo actual"
+                              width={80}
+                              height={80}
                               className="w-20 h-20 rounded-lg border border-border object-cover"
                             />
                           </div>
@@ -245,11 +242,14 @@ export function EditEntryForm() {
                           onChange={(e) => selectLogo(e.target.files?.[0])}
                           className="w-full text-xs text-muted font-mono file:mr-3 file:py-1 file:px-2.5 file:rounded file:border file:border-border file:text-xs file:font-mono file:font-semibold file:bg-transparent file:text-primary hover:file:border-accent hover:file:text-accent file:transition-colors file:cursor-pointer"
                         />
-                        {logoRef.current?.files?.[0] && logoPreview && (
+                        {hasNewLogo && logoPreview && (
                           <div className="mt-2 relative w-20 h-20">
-                            <img
+                            <Image
                               src={logoPreview}
                               alt="Logo preview"
+                              width={80}
+                              height={80}
+                              unoptimized
                               className="w-20 h-20 rounded-lg border border-border object-cover"
                             />
                             <button
@@ -266,11 +266,14 @@ export function EditEntryForm() {
                         <span className={`${labelClass} block mb-1`}>
                           Imagen de portada
                         </span>
-                        {coverPreview && !coverRef.current?.files?.[0] && (
+                        {coverPreview && !hasNewCover && (
                           <div className="mb-2 relative">
-                            <img
+                            <Image
                               src={coverPreview}
                               alt="Portada actual"
+                              width={800}
+                              height={384}
+                              sizes="(max-width: 768px) 100vw, 672px"
                               className="w-full max-h-48 rounded-lg border border-border object-cover"
                             />
                           </div>
@@ -282,11 +285,15 @@ export function EditEntryForm() {
                           onChange={(e) => selectCover(e.target.files?.[0])}
                           className="w-full text-xs text-muted font-mono file:mr-3 file:py-1 file:px-2.5 file:rounded file:border file:border-border file:text-xs file:font-mono file:font-semibold file:bg-transparent file:text-primary hover:file:border-accent hover:file:text-accent file:transition-colors file:cursor-pointer"
                         />
-                        {coverRef.current?.files?.[0] && coverPreview && (
+                        {hasNewCover && coverPreview && (
                           <div className="mt-2 relative">
-                            <img
+                            <Image
                               src={coverPreview}
                               alt="Cover preview"
+                              width={800}
+                              height={384}
+                              sizes="(max-width: 768px) 100vw, 672px"
+                              unoptimized
                               className="w-full max-h-48 rounded-lg border border-border object-cover"
                             />
                             <button

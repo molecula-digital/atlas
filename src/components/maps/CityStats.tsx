@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { ENTRY_TYPE_CONFIG } from '@/config'
 import type { AtlasEntryType } from '@/config'
@@ -173,7 +174,7 @@ function StatsEmpty({ name, onClose }: { name: string; onClose: () => void }) {
             Sé el primero en representar este municipio
           </p>
         </div>
-        <a
+        <Link
           href="/dashboard"
           className={buttonVariants({
             variant: 'accent',
@@ -183,7 +184,7 @@ function StatsEmpty({ name, onClose }: { name: string; onClose: () => void }) {
         >
           <Plus className="w-3.5 h-3.5" />
           REGISTRAR PERFIL/STARTUP
-        </a>
+        </Link>
       </div>
     </div>
   )

@@ -101,6 +101,8 @@ export function useEntryEditor(id: string) {
   // Images
   const [logoPreview, setLogoPreview] = useState<string | null>(null)
   const [coverPreview, setCoverPreview] = useState<string | null>(null)
+  const [hasNewLogo, setHasNewLogo] = useState(false)
+  const [hasNewCover, setHasNewCover] = useState(false)
   const [uploadingImages, setUploadingImages] = useState(false)
   const [uploadError, setUploadError] = useState<string | null>(null)
   const logoRef = useRef<HTMLInputElement>(null)
@@ -193,16 +195,19 @@ export function useEntryEditor(id: string) {
 
   const selectLogo = useCallback((file?: File) => {
     if (!file) return
+    setHasNewLogo(true)
     setLogoPreview((prev) => replaceObjectUrl(prev, file))
   }, [])
 
   const selectCover = useCallback((file?: File) => {
     if (!file) return
+    setHasNewCover(true)
     setCoverPreview((prev) => replaceObjectUrl(prev, file))
   }, [])
 
   /** Discards a newly picked file and falls back to the stored image. */
   const resetLogo = useCallback(() => {
+    setHasNewLogo(false)
     setLogoPreview((prev) => {
       revokeObjectUrl(prev)
       return entry?.logo &&
@@ -215,6 +220,7 @@ export function useEntryEditor(id: string) {
   }, [entry])
 
   const resetCover = useCallback(() => {
+    setHasNewCover(false)
     setCoverPreview((prev) => {
       revokeObjectUrl(prev)
       return entry?.coverImage &&
@@ -442,9 +448,11 @@ export function useEntryEditor(id: string) {
     bodyMarkdown,
     setBodyMarkdown,
     logoPreview,
+    hasNewLogo,
     selectLogo,
     resetLogo,
     coverPreview,
+    hasNewCover,
     selectCover,
     resetCover,
     uploadingImages,

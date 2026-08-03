@@ -107,7 +107,7 @@ export function useProfileForm() {
   }, [])
 
   useEffect(() => {
-    if (session) fetchProfile()
+    if (session) void Promise.resolve().then(fetchProfile)
   }, [session, fetchProfile])
 
   useEffect(() => {

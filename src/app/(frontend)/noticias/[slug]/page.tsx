@@ -113,7 +113,7 @@ export default async function NewsDetailPage({
         </h1>
 
         <div className="prose prose-sm dark:prose-invert max-w-none">
-          <RichText data={article.body as any} />
+          <RichText data={article.body} />
         </div>
 
         <WhatsAppCta className="mt-8" surface={WHATSAPP_SURFACE.newsDetail} />

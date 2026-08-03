@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useSyncExternalStore } from 'react'
 import { useTheme } from 'next-themes'
 import { Sun, Moon, Contrast, Check } from 'lucide-react'
 import { useDisclosure } from '@/hooks/useDisclosure'
@@ -21,12 +21,14 @@ export default function ThemeToggle({
 }) {
   const { theme, setTheme } = useTheme()
   const { open, setOpen, ref, toggle } = useDisclosure()
-  const [mounted, setMounted] = useState(false)
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  )
   // Bumped on every pick; remounting the icon under a new key replays the
   // CSS animation. Starts at 0 so the first paint stays still.
   const [swapCount, setSwapCount] = useState(0)
-
-  useEffect(() => setMounted(true), [])
 
   const ActiveIcon = mounted
     ? (OPTIONS.find((o) => o.value === theme)?.Icon ?? Contrast)
