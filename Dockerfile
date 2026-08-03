@@ -19,6 +19,10 @@ ENV DATABASE_DIRECT_URL=${DATABASE_DIRECT_URL}
 ENV SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN}
 ENV NODE_OPTIONS="--max-old-space-size=4096"
 
+# Source maps are uploaded by withSentryConfig during `pnpm build`. Refuse to
+# create a production image that cannot authenticate that upload.
+RUN test -n "${SENTRY_AUTH_TOKEN}"
+
 # Analytics only. NEXT_PUBLIC_* is inlined into the bundle by `next build`
 # below, not read at runtime — passing these at `docker run` is too late. A
 # missing one does not fail the build; it ships as undefined and the feature

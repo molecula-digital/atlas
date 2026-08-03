@@ -17,7 +17,17 @@ Sentry.init({
   // Enable logs to be sent to Sentry
   enableLogs: true,
 
-  // Enable sending user PII (Personally Identifiable Information)
-  // https://docs.sentry.io/platforms/javascript/guides/nextjs/configuration/options/#sendDefaultPii
-  sendDefaultPii: true,
+  // Requests can contain auth cookies and form data, none of which belongs in
+  // error monitoring. Keep only the method and path, without query values.
+  sendDefaultPii: false,
+  beforeSend(event) {
+    event.user = undefined
+    if (event.request) {
+      event.request = {
+        method: event.request.method,
+        url: event.request.url?.split('?')[0],
+      }
+    }
+    return event
+  },
 })

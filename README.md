@@ -107,6 +107,7 @@ El `Dockerfile` multi-stage construye la app en 3 fases:
 docker build \
   --build-arg DATABASE_URI="postgresql://..." \
   --build-arg DATABASE_DIRECT_URL="postgresql://..." \
+  --build-arg SENTRY_AUTH_TOKEN="sntrys_..." \
   --build-arg NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN="phc_..." \
   -t atlas-tech .
 
@@ -114,6 +115,8 @@ docker run -p 3000:3000 --env-file .env atlas-tech
 ```
 
 > La base de datos debe estar accesible durante el build para que las migraciones se ejecuten.
+
+> `SENTRY_AUTH_TOKEN` tambien es obligatorio durante el build. `withSentryConfig` lo usa para crear la release y subir source maps; si falta o la subida falla, el build falla y no produce una imagen desplegable.
 
 > Las variables `NEXT_PUBLIC_*` de analytics **tienen que ir en el build**, no en `docker run`: Next.js las incrusta en el bundle durante `pnpm build`, asi que pasarlas solo con `--env-file` llega tarde y analytics se despliega muerto sin ningun error visible. Solo el token de PostHog es obligatorio; las demas tienen valores por defecto en el `Dockerfile` y unicamente hace falta pasarlas para apuntar a otro proyecto o a otro sitio de Umami.
 

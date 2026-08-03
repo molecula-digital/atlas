@@ -5,6 +5,9 @@
 import * as Sentry from '@sentry/nextjs'
 import posthog from 'posthog-js'
 
+// ─────────────────────────────────────────────────────────────────────────────
+// SENTRY — Error monitoring, performance, and privacy-safe session replay
+// ─────────────────────────────────────────────────────────────────────────────
 Sentry.init({
   dsn: 'https://98263700eab0f985743b6e16c277d391@o4507567704506368.ingest.us.sentry.io/4511154327322624',
 
@@ -27,13 +30,26 @@ Sentry.init({
   // Define how likely Replay events are sampled when an error occurs.
   replaysOnErrorSampleRate: 1.0,
 
-  // Enable sending user PII (Personally Identifiable Information)
-  // https://docs.sentry.io/platforms/javascript/guides/nextjs/configuration/options/#sendDefaultPii
-  sendDefaultPii: true,
+  // Do not attach IP addresses, cookies, request headers, or user identity to
+  // error reports. Product analytics has its own deliberately limited ID.
+  sendDefaultPii: false,
+  beforeSend(event) {
+    event.user = undefined
+    if (event.request) {
+      event.request = {
+        method: event.request.method,
+        url: event.request.url?.split('?')[0],
+      }
+    }
+    return event
+  },
 })
 
 export const onRouterTransitionStart = Sentry.captureRouterTransitionStart
 
+// ─────────────────────────────────────────────────────────────────────────────
+// POSTHOG — Product analytics and explicit, privacy-conscious event tracking
+// ─────────────────────────────────────────────────────────────────────────────
 // PostHog product analytics. Next.js loads this file (not a root-level
 // instrumentation-client.ts) because the app lives under src/ — putting the
 // init anywhere else means it silently never runs and every capture is a no-op.
@@ -73,6 +89,20 @@ if (typeof window === 'undefined') {
     // Router history push, so pageviews would be missed. `defaults` opts into
     // `capture_pageview: 'history_change'`.
     defaults: '2026-05-30',
+    // Explicit product events provide the useful signal. Autocapture derives
+    // data from the DOM and can otherwise collect labels and element metadata.
+    autocapture: false,
+    mask_all_text: true,
+    mask_all_element_attributes: true,
+    property_denylist: [
+      'email',
+      'name',
+      'phone',
+      'password',
+      'token',
+      'authorization',
+      'cookie',
+    ],
     capture_exceptions: true,
   })
 }

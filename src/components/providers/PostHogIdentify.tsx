@@ -90,6 +90,9 @@ export function PostHogIdentify() {
       posthog.reset()
     }
 
+    // PostHog is our identified-user analytics system. Name and email make
+    // person lookup and support correlation possible; no other profile data is
+    // sent here.
     posthog.identify(user.id, {
       email: user.email,
       name: user.name,

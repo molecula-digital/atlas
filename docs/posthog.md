@@ -13,7 +13,7 @@
 | `src/lib/analytics.ts` | Capture helpers. |
 | `src/components/providers/PostHogIdentify.tsx` | `identify(user.id)` with `email` + `name`; `reset()` on sign-out. |
 
-Auto-captured: `$pageview` (on history change), `$pageleave`, `$autocapture`, `$rageclick`, `$exception`.
+Auto-captured: `$pageview` (on history change), `$pageleave`, `$rageclick`, `$exception`. DOM autocapture is disabled: the app uses the explicit events below, while avoiding collection of element labels and attributes.
 
 ## Auth
 | Event | Fires when | Properties |
