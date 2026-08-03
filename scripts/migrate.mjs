@@ -2,12 +2,16 @@ import { drizzle } from 'drizzle-orm/node-postgres'
 import { migrate } from 'drizzle-orm/node-postgres/migrator'
 import pg from 'pg'
 
-if (!process.env.DATABASE_URI) {
-  console.error('DATABASE_URI is not set')
+if (!process.env.DATABASE_DIRECT_URL) {
+  console.error('DATABASE_DIRECT_URL is not set')
   process.exit(1)
 }
 
-const pool = new pg.Pool({ connectionString: process.env.DATABASE_URI })
+const pool = new pg.Pool({
+  connectionString: process.env.DATABASE_DIRECT_URL,
+  max: 1,
+  connectionTimeoutMillis: 10_000,
+})
 
 try {
   const db = drizzle(pool)

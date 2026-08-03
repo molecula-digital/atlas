@@ -4,7 +4,7 @@ RUN corepack enable
 # --- Dependencies ---
 FROM base AS deps
 WORKDIR /app
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile
 
 # --- Build ---
@@ -14,8 +14,10 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 ARG DATABASE_URI
+ARG DATABASE_DIRECT_URL
 ARG SENTRY_AUTH_TOKEN
 ENV DATABASE_URI=${DATABASE_URI}
+ENV DATABASE_DIRECT_URL=${DATABASE_DIRECT_URL}
 ENV SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN}
 ENV NODE_OPTIONS="--max-old-space-size=4096"
 
@@ -48,7 +50,7 @@ ENV NEXT_PUBLIC_UMAMI_WEBSITE_ID=${NEXT_PUBLIC_UMAMI_WEBSITE_ID}
 ENV NEXT_PUBLIC_UMAMI_SRC=${NEXT_PUBLIC_UMAMI_SRC}
 
 RUN pnpm generate:importmap
-RUN npx payload migrate --force-accept-warning
+RUN pnpm payload:migrate -- --force-accept-warning
 RUN node scripts/migrate.mjs
 RUN pnpm build
 

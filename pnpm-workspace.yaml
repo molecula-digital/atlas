@@ -1,0 +1,14 @@
+allowBuilds:
+  '@sentry/cli': true
+  core-js: false
+  esbuild: true
+  unrs-resolver: true
+overrides:
+  dompurify@<3.4.9: 3.4.12
+  dompurify@<=3.4.10: 3.4.12
+  dompurify@<=3.4.11: 3.4.12
+  esbuild@<=0.24.2: 0.25.12
+  postcss@<8.5.10: 8.5.25
+  postcss@<=8.5.11: 8.5.25
+  postcss@<=8.5.17: 8.5.25
+  sharp@<0.35.0: 0.35.3
