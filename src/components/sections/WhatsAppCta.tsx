@@ -7,7 +7,7 @@ import type { WhatsAppSurface } from '@/lib/analytics-events'
  * A content block, not a section — spacing belongs to whoever places it, so it
  * can sit inside an already-padded section without doubling up.
  *
- * `surface` is required because this block renders on three different page
+ * `surface` is required because this block renders on multiple different page
  * types, and without it every one of them reported the same thing.
  */
 export function WhatsAppCta({

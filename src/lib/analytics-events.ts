@@ -108,6 +108,7 @@ export type EntrySurface = (typeof ENTRY_SURFACE)[keyof typeof ENTRY_SURFACE]
 export const WHATSAPP_SURFACE = {
   hero: 'hero',
   communitySection: 'community_section',
+  communityPage: 'community_page',
   entryDetail: 'entry_detail',
   newsDetail: 'news_detail',
   footer: 'footer',

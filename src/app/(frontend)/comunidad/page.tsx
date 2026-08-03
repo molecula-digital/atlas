@@ -4,6 +4,8 @@ import { PageHero } from '@/components/ui/PageHero'
 import { Pagination } from '@/components/ui/Pagination'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { CommunityPhotoGrid } from '@/components/community/CommunityPhotoGrid'
+import { WhatsAppCta } from '@/components/sections/WhatsAppCta'
+import { WHATSAPP_SURFACE } from '@/lib/analytics-events'
 import { getCommunityPhotosOrdered } from '@/lib/community-photos'
 import { safeJsonLd } from '@/lib/utils'
 import { SITE_URL } from '@/config'
@@ -107,6 +109,11 @@ export default async function ComunidadPage({ searchParams }: PageProps) {
           />
         </>
       )}
+
+      <WhatsAppCta
+        className="mx-auto mt-8 w-full max-w-6xl px-4 md:px-6"
+        surface={WHATSAPP_SURFACE.communityPage}
+      />
     </section>
   )
 }

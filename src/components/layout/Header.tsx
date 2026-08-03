@@ -11,6 +11,7 @@ import {
   CalendarDays,
   Plus,
   FolderOpen,
+  Images,
   Newspaper,
   LayoutDashboard,
 } from 'lucide-react'
@@ -125,6 +126,10 @@ export function Header() {
                 <Link href="/empleos" className={NAV_LINK}>
                   <Briefcase className="w-3 h-3" />
                   Empleos
+                </Link>
+                <Link href="/comunidad" className={NAV_LINK}>
+                  <Images className="w-3 h-3" />
+                  Comunidad
                 </Link>
                 <Link href="/#map" className={NAV_LINK}>
                   <Map className="w-3 h-3" />
@@ -242,6 +247,10 @@ export function Header() {
           <Link href="/empleos" className={MOBILE_LINK}>
             <Briefcase className="w-5 h-5" />
             Empleos
+          </Link>
+          <Link href="/comunidad" className={MOBILE_LINK}>
+            <Images className="w-5 h-5" />
+            Comunidad
           </Link>
           <Link href="/#map" className={MOBILE_LINK}>
             <Map className="w-5 h-5" />
