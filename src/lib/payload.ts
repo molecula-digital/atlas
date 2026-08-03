@@ -17,18 +17,20 @@ export const getPublishedEntries = cache(async (limit = 200) => {
   })
 })
 
-export const getEntriesByType = cache(async (entryType: AtlasEntryType, limit = 200) => {
-  const payload = await getPayloadClient()
-  return payload.find({
-    collection: 'entries',
-    where: {
-      _status: { equals: 'published' },
-      entryType: { equals: entryType },
-    },
-    limit,
-    sort: '-publishDate',
-  })
-})
+export const getEntriesByType = cache(
+  async (entryType: AtlasEntryType, limit = 200) => {
+    const payload = await getPayloadClient()
+    return payload.find({
+      collection: 'entries',
+      where: {
+        _status: { equals: 'published' },
+        entryType: { equals: entryType },
+      },
+      limit,
+      sort: '-publishDate',
+    })
+  },
+)
 
 export const getEntryBySlug = cache(async (slug: string) => {
   const payload = await getPayloadClient()
@@ -77,25 +79,27 @@ export const getFeaturedEntries = cache(async () => {
   })
 })
 
-export const getLatestEntries = cache(async (limit = 4, excludeSlugs: string[] = []) => {
-  const payload = await getPayloadClient()
-  const where: {
-    _status: { equals: 'published' }
-    slug?: { not_in: string[] }
-  } = { _status: { equals: 'published' } }
+export const getLatestEntries = cache(
+  async (limit = 4, excludeSlugs: string[] = []) => {
+    const payload = await getPayloadClient()
+    const where: {
+      _status: { equals: 'published' }
+      slug?: { not_in: string[] }
+    } = { _status: { equals: 'published' } }
 
-  if (excludeSlugs.length > 0) {
-    where.slug = { not_in: excludeSlugs }
-  }
+    if (excludeSlugs.length > 0) {
+      where.slug = { not_in: excludeSlugs }
+    }
 
-  return payload.find({
-    collection: 'entries',
-    where,
-    limit,
-    sort: '-publishDate',
-    select: STRIP_SELECT,
-  })
-})
+    return payload.find({
+      collection: 'entries',
+      where,
+      limit,
+      sort: '-publishDate',
+      select: STRIP_SELECT,
+    })
+  },
+)
 
 export const getPublishedNews = cache(async (limit = 20) => {
   const payload = await getPayloadClient()

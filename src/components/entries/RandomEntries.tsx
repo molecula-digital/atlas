@@ -11,7 +11,10 @@ export function RandomEntries() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetchPaginated<Entry>('/api/directory/entries', { limit: '3', sort: 'random' })
+    fetchPaginated<Entry>('/api/directory/entries', {
+      limit: '3',
+      sort: 'random',
+    })
       .then((res) => setEntries(res.docs))
       .catch(console.error)
       .finally(() => setLoading(false))
@@ -32,8 +35,14 @@ export function RandomEntries() {
   return (
     <div className="grid sm:grid-cols-3 gap-4">
       {entries.map((entry) => {
-        const logo = typeof entry.logo === 'object' && entry.logo !== null ? entry.logo as Media : null
-        const coverImage = typeof entry.coverImage === 'object' && entry.coverImage !== null ? entry.coverImage as Media : null
+        const logo =
+          typeof entry.logo === 'object' && entry.logo !== null
+            ? (entry.logo as Media)
+            : null
+        const coverImage =
+          typeof entry.coverImage === 'object' && entry.coverImage !== null
+            ? (entry.coverImage as Media)
+            : null
 
         return (
           <EntryCard
@@ -43,7 +52,11 @@ export function RandomEntries() {
             tagline={entry.tagline ?? undefined}
             entryType={entry.entryType}
             logo={logo && logo.url ? { url: logo.url, alt: logo.alt } : null}
-            coverImage={coverImage && coverImage.url ? { url: coverImage.url, alt: coverImage.alt } : null}
+            coverImage={
+              coverImage && coverImage.url
+                ? { url: coverImage.url, alt: coverImage.alt }
+                : null
+            }
             city={entry.city}
             tags={entry.tags ?? undefined}
           />

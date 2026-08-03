@@ -34,10 +34,7 @@ export type CommunityPhoto = {
 }
 
 function photoAlt(file: string): string {
-  const label = file
-    .replace(IMAGE_EXT, '')
-    .replace(/[-_]+/g, ' ')
-    .trim()
+  const label = file.replace(IMAGE_EXT, '').replace(/[-_]+/g, ' ').trim()
 
   return label
     ? `Comunidad Tech Atlas — ${label}`
@@ -81,7 +78,9 @@ async function listCommunityObjects(): Promise<ListedObject[]> {
   // Missing config is a standing condition, not a blip — cache the empty result so
   // an unconfigured environment warns once per window instead of on every request.
   if (!bucket || !client) {
-    console.warn('[community-photos] S3 is not configured; no photos will be listed.')
+    console.warn(
+      '[community-photos] S3 is not configured; no photos will be listed.',
+    )
     return []
   }
 
@@ -108,7 +107,9 @@ async function listCommunityObjects(): Promise<ListedObject[]> {
         })
       }
 
-      continuationToken = response.IsTruncated ? response.NextContinuationToken : undefined
+      continuationToken = response.IsTruncated
+        ? response.NextContinuationToken
+        : undefined
       page += 1
     } while (continuationToken && page < MAX_LIST_PAGES)
   } finally {
@@ -175,7 +176,9 @@ export async function getCommunityPhotosOrdered(): Promise<CommunityPhoto[]> {
  * A randomized slice for the marquee on the home page. Capped so the carousel
  * stays light no matter how large the bucket grows.
  */
-export async function getCommunityPhotos(limit = 24): Promise<CommunityPhoto[]> {
+export async function getCommunityPhotos(
+  limit = 24,
+): Promise<CommunityPhoto[]> {
   const objects = await getListing()
   return shuffle(objects).slice(0, limit).map(toPhoto)
 }

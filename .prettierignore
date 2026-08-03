@@ -1,0 +1,11 @@
+.agents/
+.next/
+build/
+coverage/
+docs/
+drizzle/
+node_modules/
+out/
+public/
+src/migrations/
+src/payload-types.ts

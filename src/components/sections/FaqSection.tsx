@@ -1,5 +1,13 @@
 import { SectionBlock } from '@/components/layout/SectionBlock'
-import { Sparkles, Compass, UserPlus, Gift, Users, HelpCircle, ChevronDown } from 'lucide-react'
+import {
+  Sparkles,
+  Compass,
+  UserPlus,
+  Gift,
+  Users,
+  HelpCircle,
+  ChevronDown,
+} from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { FAQS } from '@/config'
 import { SectionTitle } from '@/components/ui/SectionTitle'
@@ -28,7 +36,10 @@ export function FaqSection() {
           {FAQS.map((faq) => {
             const Icon = FAQ_ICON_MAP[faq.icon] ?? HelpCircle
             return (
-              <details key={faq.question} className="group bg-card border border-border rounded-lg">
+              <details
+                key={faq.question}
+                className="group bg-card border border-border rounded-lg"
+              >
                 <summary className="flex items-center gap-3 cursor-pointer px-5 py-4 font-sans font-semibold text-primary hover:text-accent transition-colors list-none">
                   <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-accent/20 bg-accent/10">
                     <Icon className="w-3.5 h-3.5 text-accent" />

@@ -68,27 +68,83 @@ interface FloatingIcon {
  */
 const FLOATING_ICONS: FloatingIcon[] = [
   // Left gutter, top to bottom.
-  { icon: Terminal, x: 3.5, y: 24, tier: 'near', duration: 40, delay: -7, mobile: true },
-  { icon: Rocket, x: 7, y: 38, tier: 'mid', duration: 54, delay: -31, mobile: true },
+  {
+    icon: Terminal,
+    x: 3.5,
+    y: 24,
+    tier: 'near',
+    duration: 40,
+    delay: -7,
+    mobile: true,
+  },
+  {
+    icon: Rocket,
+    x: 7,
+    y: 38,
+    tier: 'mid',
+    duration: 54,
+    delay: -31,
+    mobile: true,
+  },
   { icon: Cpu, x: 6.5, y: 52, tier: 'mid', duration: 56, delay: -23 },
-  { icon: GitBranch, x: 2.5, y: 72, tier: 'far', duration: 72, delay: -44, mobile: true },
+  {
+    icon: GitBranch,
+    x: 2.5,
+    y: 72,
+    tier: 'far',
+    duration: 72,
+    delay: -44,
+    mobile: true,
+  },
   { icon: Package, x: 7, y: 88, tier: 'far', duration: 80, delay: -12 },
   // Strip above the headline, behind the translucent header.
   { icon: Braces, x: 14, y: 9, tier: 'far', duration: 76, delay: -15 },
   { icon: Command, x: 22, y: 13, tier: 'mid', duration: 58, delay: -40 },
   { icon: Bot, x: 30, y: 6, tier: 'mid', duration: 52, delay: -33 },
   { icon: Binary, x: 44, y: 11, tier: 'far', duration: 68, delay: -52 },
-  { icon: Radio, x: 58, y: 7, tier: 'near', duration: 44, delay: -18, mobile: true },
+  {
+    icon: Radio,
+    x: 58,
+    y: 7,
+    tier: 'near',
+    duration: 44,
+    delay: -18,
+    mobile: true,
+  },
   { icon: Bug, x: 70, y: 10, tier: 'far', duration: 84, delay: -27 },
   // Fade band under the hero content — the mask keeps these the faintest.
   { icon: Code, x: 24, y: 86, tier: 'mid', duration: 60, delay: -10 },
   { icon: HardDrive, x: 38, y: 80, tier: 'near', duration: 48, delay: -36 },
-  { icon: Zap, x: 52, y: 78, tier: 'far', duration: 64, delay: -26, mobile: true },
+  {
+    icon: Zap,
+    x: 52,
+    y: 78,
+    tier: 'far',
+    duration: 64,
+    delay: -26,
+    mobile: true,
+  },
   { icon: Blocks, x: 66, y: 84, tier: 'mid', duration: 50, delay: -47 },
   // Right gutter, top to bottom.
-  { icon: Cloud, x: 94, y: 14, tier: 'near', duration: 42, delay: -16, mobile: true },
+  {
+    icon: Cloud,
+    x: 94,
+    y: 14,
+    tier: 'near',
+    duration: 42,
+    delay: -16,
+    mobile: true,
+  },
   { icon: Wifi, x: 91.5, y: 30, tier: 'far', duration: 76, delay: -58 },
-  { icon: Database, x: 95.5, y: 44, tier: 'mid', duration: 52, delay: -37, mobile: true },
+  {
+    icon: Database,
+    x: 95.5,
+    y: 44,
+    tier: 'mid',
+    duration: 52,
+    delay: -37,
+    mobile: true,
+  },
   { icon: CircuitBoard, x: 91, y: 62, tier: 'far', duration: 88, delay: -5 },
   { icon: Server, x: 93.5, y: 82, tier: 'mid', duration: 58, delay: -49 },
 ]
@@ -104,20 +160,22 @@ const FLOATING_ICONS: FloatingIcon[] = [
 export function IconField() {
   return (
     <>
-      {FLOATING_ICONS.map(({ icon: Icon, x, y, tier, duration, delay, mobile }) => (
-        <Icon
-          key={`${x}-${y}`}
-          size={TIER_SIZE[tier]}
-          strokeWidth={1.5}
-          className={`hero-icon hero-icon-${tier}${mobile ? '' : ' hidden md:block'}`}
-          style={{
-            left: `${x}%`,
-            top: `${y}%`,
-            animationDuration: `${duration}s`,
-            animationDelay: `${delay}s`,
-          }}
-        />
-      ))}
+      {FLOATING_ICONS.map(
+        ({ icon: Icon, x, y, tier, duration, delay, mobile }) => (
+          <Icon
+            key={`${x}-${y}`}
+            size={TIER_SIZE[tier]}
+            strokeWidth={1.5}
+            className={`hero-icon hero-icon-${tier}${mobile ? '' : ' hidden md:block'}`}
+            style={{
+              left: `${x}%`,
+              top: `${y}%`,
+              animationDuration: `${duration}s`,
+              animationDelay: `${delay}s`,
+            }}
+          />
+        ),
+      )}
     </>
   )
 }

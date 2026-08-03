@@ -16,8 +16,13 @@ const PAGE_SIZE = 42
 
 type PageProps = { searchParams: Promise<{ page?: string }> }
 
-export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
-  const [{ page }, photos] = await Promise.all([searchParams, getCommunityPhotosOrdered()])
+export async function generateMetadata({
+  searchParams,
+}: PageProps): Promise<Metadata> {
+  const [{ page }, photos] = await Promise.all([
+    searchParams,
+    getCommunityPhotosOrdered(),
+  ])
   // Same clamp as the page body, so `?page=99` canonicalizes to the page it actually
   // renders instead of self-canonicalizing a duplicate.
   const pageNumber = clampPage(parsePage(page), photos.length)
@@ -53,7 +58,10 @@ function pageUrl(page: number, base = ''): string {
 }
 
 export default async function ComunidadPage({ searchParams }: PageProps) {
-  const [{ page }, photos] = await Promise.all([searchParams, getCommunityPhotosOrdered()])
+  const [{ page }, photos] = await Promise.all([
+    searchParams,
+    getCommunityPhotosOrdered(),
+  ])
 
   const totalPages = totalPagesFor(photos.length)
   const currentPage = clampPage(parsePage(page), photos.length)
@@ -62,18 +70,27 @@ export default async function ComunidadPage({ searchParams }: PageProps) {
 
   return (
     <section>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{
-        __html: safeJsonLd({
-          '@context': 'https://schema.org',
-          '@type': 'CollectionPage',
-          name: TITLE,
-          description: DESCRIPTION,
-          url: `${SITE_URL}/comunidad`,
-        }),
-      }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: safeJsonLd({
+            '@context': 'https://schema.org',
+            '@type': 'CollectionPage',
+            name: TITLE,
+            description: DESCRIPTION,
+            url: `${SITE_URL}/comunidad`,
+          }),
+        }}
+      />
       <PageHero
         icon={Images}
-        title={<>La comunidad<br />en fotos</>}
+        title={
+          <>
+            La comunidad
+            <br />
+            en fotos
+          </>
+        }
         description={DESCRIPTION}
         breadcrumb={[{ label: 'Inicio', href: '/' }, { label: 'Comunidad' }]}
       />

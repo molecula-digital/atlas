@@ -34,11 +34,16 @@ export function WhatsAppCta({
           </div>
         </div>
         <p className="text-sm text-secondary text-center lg:text-left flex-1">
-          Comparte ideas, encuentra colaboradores y entérate de todo lo que pasa en el ecosistema.
+          Comparte ideas, encuentra colaboradores y entérate de todo lo que pasa
+          en el ecosistema.
         </p>
         <WhatsAppJoinLink
           surface={surface}
-          className={buttonVariants({ variant: 'accent', size: 'md', className: 'shrink-0' })}
+          className={buttonVariants({
+            variant: 'accent',
+            size: 'md',
+            className: 'shrink-0',
+          })}
         >
           <MessageCircle className="w-3.5 h-3.5" />
           Unirme al grupo

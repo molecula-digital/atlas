@@ -1,34 +1,34 @@
-"use client"
+'use client'
 
-import { useMemo } from "react";
-import AutoScroll from "embla-carousel-auto-scroll";
+import { useMemo } from 'react'
+import AutoScroll from 'embla-carousel-auto-scroll'
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselPrevious,
   CarouselNext,
-} from "@/components/ui/Carousel";
-import { FeaturedEntryTile } from "@/components/entries/FeaturedEntryTile";
-import type { EntrySurface } from "@/lib/analytics";
-import type { AtlasEntryType } from "@/config";
+} from '@/components/ui/Carousel'
+import { FeaturedEntryTile } from '@/components/entries/FeaturedEntryTile'
+import type { EntrySurface } from '@/lib/analytics'
+import type { AtlasEntryType } from '@/config'
 
 interface CarouselEntry {
-  slug: string;
-  name: string;
-  tagline?: string | null;
-  entryType: AtlasEntryType;
-  logo?: { url: string; alt?: string } | null;
-  coverImage?: { url: string; alt?: string } | null;
-  city: string;
+  slug: string
+  name: string
+  tagline?: string | null
+  entryType: AtlasEntryType
+  logo?: { url: string; alt?: string } | null
+  coverImage?: { url: string; alt?: string } | null
+  city: string
 }
 
 export default function FeaturedCarousel({
   entries,
   surface,
 }: {
-  entries: CarouselEntry[];
-  surface: EntrySurface;
+  entries: CarouselEntry[]
+  surface: EntrySurface
 }) {
   const plugins = useMemo(
     () => [
@@ -39,11 +39,11 @@ export default function FeaturedCarousel({
       }),
     ],
     [],
-  );
+  )
 
   return (
     <Carousel
-      opts={{ align: "start", loop: true }}
+      opts={{ align: 'start', loop: true }}
       plugins={plugins}
       className="w-full"
     >
@@ -78,5 +78,5 @@ export default function FeaturedCarousel({
         />
       </div>
     </Carousel>
-  );
+  )
 }

@@ -16,9 +16,7 @@ export function EventDateBadge({
     <div
       className={cn(
         'w-12 h-12 rounded-lg flex flex-col items-center justify-center shrink-0 border',
-        muted
-          ? 'bg-elevated border-border'
-          : 'bg-accent/10 border-accent/20',
+        muted ? 'bg-elevated border-border' : 'bg-accent/10 border-accent/20',
       )}
     >
       <span

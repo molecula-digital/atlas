@@ -14,7 +14,13 @@ interface EmptyStateProps {
  * The one "nothing here" state: a large, faint glyph over mono copy.
  * Listings use it bare; the dashboard adds a subtitle and an action.
  */
-export function EmptyState({ icon: Icon, title, subtitle, action, className }: EmptyStateProps) {
+export function EmptyState({
+  icon: Icon,
+  title,
+  subtitle,
+  action,
+  className,
+}: EmptyStateProps) {
   return (
     <div className={cn('text-center py-20', className)}>
       <Icon
@@ -23,7 +29,9 @@ export function EmptyState({ icon: Icon, title, subtitle, action, className }: E
         aria-hidden
       />
       <p className="text-muted font-mono text-sm">{title}</p>
-      {subtitle && <p className="mt-1.5 text-xs text-muted/70 font-mono">{subtitle}</p>}
+      {subtitle && (
+        <p className="mt-1.5 text-xs text-muted/70 font-mono">{subtitle}</p>
+      )}
       {action && <div className="mt-5">{action}</div>}
     </div>
   )

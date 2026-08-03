@@ -73,7 +73,10 @@ export function useProfileForm() {
   const [photoError, setPhotoError] = useState<string | null>(null)
   const previewUrlRef = useRef<string | null>(null)
   /** Last persisted public state — the link only shows when this is live. */
-  const [published, setPublished] = useState<{ isPublic: boolean; slug: string }>({
+  const [published, setPublished] = useState<{
+    isPublic: boolean
+    slug: string
+  }>({
     isPublic: false,
     slug: '',
   })
@@ -92,7 +95,10 @@ export function useProfileForm() {
       }
       const next = parseProfilePayload(parsed.data)
       setProfile(next)
-      setPublished({ isPublic: next.isPublic, slug: next.isPublic ? next.slug : '' })
+      setPublished({
+        isPublic: next.isPublic,
+        slug: next.isPublic ? next.slug : '',
+      })
     } catch {
       // No profile yet — use empty form
     } finally {
@@ -124,7 +130,10 @@ export function useProfileForm() {
       setProfile((prev) => ({
         ...prev,
         isPublic: next,
-        slug: next && !prev.slug && prev.name ? slugifyProfile(prev.name) : prev.slug,
+        slug:
+          next && !prev.slug && prev.name
+            ? slugifyProfile(prev.name)
+            : prev.slug,
       }))
       submission.reset()
     },
@@ -167,7 +176,8 @@ export function useProfileForm() {
       previewUrlRef.current = null
       setProfile((prev) => ({ ...prev, photo: media.url }))
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'No se pudo subir la foto'
+      const message =
+        err instanceof Error ? err.message : 'No se pudo subir la foto'
       setPhotoError(message)
       // Keep the blob preview so the user still sees what they picked; clear on next success.
     } finally {
@@ -187,7 +197,9 @@ export function useProfileForm() {
       previewUrlRef.current = null
       setProfile((prev) => ({ ...prev, photo: '' }))
     } catch (err) {
-      setPhotoError(err instanceof Error ? err.message : 'No se pudo quitar la foto')
+      setPhotoError(
+        err instanceof Error ? err.message : 'No se pudo quitar la foto',
+      )
     } finally {
       setUploadingPhoto(false)
     }
@@ -203,7 +215,8 @@ export function useProfileForm() {
         // be shown success for a name that never changed.
         const renamed = await authClient.updateUser({ name: profile.name })
         if (renamed.error) {
-          const message = renamed.error.message || 'No se pudo actualizar el nombre'
+          const message =
+            renamed.error.message || 'No se pudo actualizar el nombre'
           captureRequestFailed(ANALYTICS_EVENTS.profileUpdateFailed, {
             status: renamed.error.status ?? null,
             reason: message,
@@ -233,7 +246,9 @@ export function useProfileForm() {
           }),
         })
       } catch (err) {
-        captureRequestFailed(ANALYTICS_EVENTS.profileUpdateFailed, { status: null })
+        captureRequestFailed(ANALYTICS_EVENTS.profileUpdateFailed, {
+          status: null,
+        })
         throw err
       }
 
@@ -270,8 +285,13 @@ export function useProfileForm() {
         email: savedProfile.email || profile.email,
       })
       setProfile(next)
-      setPublished({ isPublic: next.isPublic, slug: next.isPublic ? next.slug : '' })
-      posthog.capture(ANALYTICS_EVENTS.profileUpdated, { is_public: next.isPublic })
+      setPublished({
+        isPublic: next.isPublic,
+        slug: next.isPublic ? next.slug : '',
+      })
+      posthog.capture(ANALYTICS_EVENTS.profileUpdated, {
+        is_public: next.isPublic,
+      })
     })
   }, [profile, session, submission])
 

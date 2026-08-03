@@ -1,5 +1,11 @@
 import type { Metadata } from 'next'
-import { ENTRY_TYPE_CONFIG, URL_CATEGORY_MAP, SINALOA_CITIES, SITE_URL, type AtlasEntryType } from '@/config'
+import {
+  ENTRY_TYPE_CONFIG,
+  URL_CATEGORY_MAP,
+  SINALOA_CITIES,
+  SITE_URL,
+  type AtlasEntryType,
+} from '@/config'
 import DirectoryFilter from '@/components/entries/DirectoryFilter'
 import { notFound } from 'next/navigation'
 
@@ -30,7 +36,11 @@ export async function generateMetadata({
   }
 }
 
-const staticCities = SINALOA_CITIES.map((m) => ({ id: m.id, name: m.name, count: 0 }))
+const staticCities = SINALOA_CITIES.map((m) => ({
+  id: m.id,
+  name: m.name,
+  count: 0,
+}))
 
 export default async function CategoryPage({
   params,
@@ -43,7 +53,11 @@ export default async function CategoryPage({
 
   return (
     <section>
-      <DirectoryFilter cities={staticCities} initialType={entryType} pageSize={12} />
+      <DirectoryFilter
+        cities={staticCities}
+        initialType={entryType}
+        pageSize={12}
+      />
     </section>
   )
 }

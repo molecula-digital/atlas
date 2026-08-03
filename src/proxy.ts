@@ -6,7 +6,9 @@ const PROTECTED_ROUTES = ['/dashboard']
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  const isProtected = PROTECTED_ROUTES.some((route) => pathname.startsWith(route))
+  const isProtected = PROTECTED_ROUTES.some((route) =>
+    pathname.startsWith(route),
+  )
   if (!isProtected) return NextResponse.next()
 
   const sessionCookie =

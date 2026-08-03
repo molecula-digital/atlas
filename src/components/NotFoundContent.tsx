@@ -2,7 +2,13 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { FolderOpen, CalendarDays, Newspaper, Briefcase, ArrowLeft } from 'lucide-react'
+import {
+  FolderOpen,
+  CalendarDays,
+  Newspaper,
+  Briefcase,
+  ArrowLeft,
+} from 'lucide-react'
 import { buttonVariants } from '@/components/ui/button-variants'
 
 const LINES = [
@@ -79,7 +85,9 @@ export function NotFoundContent() {
             <p key={LINES[i] ?? i} className="text-secondary leading-relaxed">
               {line}
               {typing && i === currentLine && (
-                <span aria-hidden="true" className="animate-pulse text-accent">▌</span>
+                <span aria-hidden="true" className="animate-pulse text-accent">
+                  ▌
+                </span>
               )}
             </p>
           ))}
@@ -87,7 +95,9 @@ export function NotFoundContent() {
           {/* Cursor on empty state */}
           {displayedLines.length === 0 && typing && (
             <p className="text-secondary">
-              <span aria-hidden="true" className="animate-pulse text-accent">▌</span>
+              <span aria-hidden="true" className="animate-pulse text-accent">
+                ▌
+              </span>
             </p>
           )}
 
@@ -101,7 +111,10 @@ export function NotFoundContent() {
               <Link
                 key={href}
                 href={href}
-                className={buttonVariants({ size: 'md', className: 'justify-start' })}
+                className={buttonVariants({
+                  size: 'md',
+                  className: 'justify-start',
+                })}
               >
                 <Icon className="w-3.5 h-3.5" />
                 {label}

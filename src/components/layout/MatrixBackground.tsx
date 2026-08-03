@@ -169,9 +169,7 @@ export function MatrixBackground({
     }
 
     // Static grids need an explicit repaint when the theme flips.
-    const themeObserver = needsLoop
-      ? null
-      : new MutationObserver(() => draw())
+    const themeObserver = needsLoop ? null : new MutationObserver(() => draw())
     themeObserver?.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ['class'],
@@ -188,7 +186,14 @@ export function MatrixBackground({
       window.removeEventListener('mousemove', handleMouseMove)
       document.removeEventListener('mouseleave', handleMouseLeave)
     }
-  }, [highlight, highlightColor, boxSize, movementDirection, movementSpeed, animate])
+  }, [
+    highlight,
+    highlightColor,
+    boxSize,
+    movementDirection,
+    movementSpeed,
+    animate,
+  ])
 
   // h-full/w-full pin the CSS box to the parent; without them the width and
   // height attributes act as the canvas's intrinsic size and can overflow the page.

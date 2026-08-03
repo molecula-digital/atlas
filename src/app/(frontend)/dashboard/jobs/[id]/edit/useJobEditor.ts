@@ -10,7 +10,9 @@ export interface JobData {
   id: string
   title: string
   slug: string
-  description?: { root?: { children?: Array<{ children?: Array<{ text?: string }> }> } }
+  description?: {
+    root?: { children?: Array<{ children?: Array<{ text?: string }> }> }
+  }
   type: string
   modality: string
   city?: string
@@ -46,8 +48,9 @@ const EMPTY: JobFormValues = {
 export function extractPlainText(description?: JobData['description']): string {
   if (!description?.root?.children) return ''
   return description.root.children
-    .map((paragraph) =>
-      paragraph.children?.map((child) => child.text || '').join('') ?? '',
+    .map(
+      (paragraph) =>
+        paragraph.children?.map((child) => child.text || '').join('') ?? '',
     )
     .join('\n')
 }
@@ -57,11 +60,13 @@ function toLexical(text: string) {
   return {
     root: {
       type: 'root',
-      children: [{
-        type: 'paragraph',
-        children: [{ type: 'text', text, version: 1 }],
-        version: 1,
-      }],
+      children: [
+        {
+          type: 'paragraph',
+          children: [{ type: 'text', text, version: 1 }],
+          version: 1,
+        },
+      ],
       direction: 'ltr',
       format: '',
       indent: 0,
@@ -111,7 +116,9 @@ export function useJobEditor(id: string) {
     }
 
     fetchJob()
-    return () => { cancelled = true }
+    return () => {
+      cancelled = true
+    }
   }, [id])
 
   const setField = useCallback(
@@ -143,7 +150,11 @@ export function useJobEditor(id: string) {
           }),
         })
       } catch (err) {
-        captureRequestFailed(ANALYTICS_EVENTS.jobUpdateFailed, { status: null }, jobProps)
+        captureRequestFailed(
+          ANALYTICS_EVENTS.jobUpdateFailed,
+          { status: null },
+          jobProps,
+        )
         throw err
       }
 

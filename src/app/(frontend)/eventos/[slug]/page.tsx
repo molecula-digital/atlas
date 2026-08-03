@@ -73,11 +73,15 @@ export default async function EventDetailPage({
 
   const event = eventDocToTechEvent(doc)
   const canonical = `${SITE_URL}/eventos/${event.slug}`
-  const mapEmbedUrl = event.location ? await resolveMapEmbedUrl(event.mapsUrl) : null
+  const mapEmbedUrl = event.location
+    ? await resolveMapEmbedUrl(event.mapsUrl)
+    : null
   const showLocationPanel = Boolean(event.location && event.mapsUrl)
   const showSidebar = showLocationPanel
 
-  const allEvents = (await getPublishedEvents(200)).docs.map(eventDocToTechEvent)
+  const allEvents = (await getPublishedEvents(200)).docs.map(
+    eventDocToTechEvent,
+  )
   const today = new Date().toISOString().slice(0, 10)
   const otherEvents = selectOtherEvents(allEvents, {
     excludeId: event.id,
@@ -196,12 +200,17 @@ export default async function EventDetailPage({
                 </div>
               )}
 
-              <div className={mapEmbedUrl ? 'p-3' : 'border-t border-border p-3'}>
+              <div
+                className={mapEmbedUrl ? 'p-3' : 'border-t border-border p-3'}
+              >
                 <EventExternalLink
                   event={event}
                   linkType="maps"
                   surface={EVENT_SURFACE.detailPage}
-                  className={buttonVariants({ size: 'md', className: 'w-full justify-center' })}
+                  className={buttonVariants({
+                    size: 'md',
+                    className: 'w-full justify-center',
+                  })}
                 >
                   Abrir en Google Maps
                   <ArrowUpRight size={13} />

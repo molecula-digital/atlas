@@ -15,15 +15,20 @@ export function AuthGuard({ children, fallback }: AuthGuardProps) {
 
   useEffect(() => {
     if (!isPending && !session) {
-      router.push('/auth/sign-in?redirect=' + encodeURIComponent(window.location.pathname))
+      router.push(
+        '/auth/sign-in?redirect=' +
+          encodeURIComponent(window.location.pathname),
+      )
     }
   }, [session, isPending, router])
 
   if (isPending) {
-    return fallback || (
-      <div className="flex items-center justify-center py-20">
-        <div className="w-6 h-6 border-2 border-accent border-t-transparent rounded-full animate-spin" />
-      </div>
+    return (
+      fallback || (
+        <div className="flex items-center justify-center py-20">
+          <div className="w-6 h-6 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+        </div>
+      )
     )
   }
 

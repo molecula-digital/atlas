@@ -4,7 +4,10 @@ import { Loader2, CheckCircle, Mail } from 'lucide-react'
 import { NEWSLETTER } from '@/config'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { cn } from '@/lib/utils'
-import { useNewsletterSignup, type NewsletterSignupSource } from './useNewsletterSignup'
+import {
+  useNewsletterSignup,
+  type NewsletterSignupSource,
+} from './useNewsletterSignup'
 
 type NewsletterSignupVariant = 'compact' | 'section' | 'hero'
 
@@ -19,7 +22,8 @@ export function NewsletterSignup({
   variant = 'compact',
   className,
 }: NewsletterSignupProps) {
-  const { email, setEmail, submit, submitting, succeeded, message } = useNewsletterSignup(source)
+  const { email, setEmail, submit, submitting, succeeded, message } =
+    useNewsletterSignup(source)
 
   const inputClass = cn(
     'w-full px-3 py-2 rounded-lg border border-border bg-card text-primary font-mono text-sm',
@@ -48,7 +52,11 @@ export function NewsletterSignup({
           <button
             type="submit"
             disabled={submitting}
-            className={buttonVariants({ variant: 'accent', size: 'md', className: 'shrink-0' })}
+            className={buttonVariants({
+              variant: 'accent',
+              size: 'md',
+              className: 'shrink-0',
+            })}
           >
             {submitting ? (
               <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -143,7 +151,11 @@ export function NewsletterSignup({
         <button
           type="submit"
           disabled={submitting}
-          className={buttonVariants({ variant: 'accent', size: 'sm', className: 'shrink-0' })}
+          className={buttonVariants({
+            variant: 'accent',
+            size: 'sm',
+            className: 'shrink-0',
+          })}
           aria-label={NEWSLETTER.cta}
         >
           {submitting ? (

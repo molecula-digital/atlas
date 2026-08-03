@@ -75,7 +75,9 @@ export function PastEventsTimeline({ events }: { events: TechEvent[] }) {
             onClick={() => setExpanded((v) => !v)}
             className={buttonVariants({ variant: 'ghost', size: 'md' })}
           >
-            {expanded ? 'Mostrar menos' : `Mostrar más (${events.length - INITIAL_VISIBLE})`}
+            {expanded
+              ? 'Mostrar menos'
+              : `Mostrar más (${events.length - INITIAL_VISIBLE})`}
           </button>
         </div>
       )}

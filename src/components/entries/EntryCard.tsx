@@ -36,7 +36,9 @@ export function EntryCard({
   hideTypeBadge = false,
 }: EntryCardProps) {
   const href = hrefOverride ?? getEntryUrl(entryType, slug)
-  const displayTags = (tags || []).slice(0, 3).map((t) => (typeof t === 'string' ? t : t.tag))
+  const displayTags = (tags || [])
+    .slice(0, 3)
+    .map((t) => (typeof t === 'string' ? t : t.tag))
   const coverUrl =
     typeof coverImage === 'object' && coverImage?.url
       ? toPublicMediaUrl(coverImage.url)
@@ -45,10 +47,19 @@ export function EntryCard({
     typeof logo === 'object' && logo?.url ? toPublicMediaUrl(logo.url) : null
 
   return (
-    <Link href={href} className="group flex flex-col h-full bg-card/90 backdrop-blur-sm border border-border rounded-lg overflow-hidden hover:border-accent/50 transition-colors">
+    <Link
+      href={href}
+      className="group flex flex-col h-full bg-card/90 backdrop-blur-sm border border-border rounded-lg overflow-hidden hover:border-accent/50 transition-colors"
+    >
       <div className="relative h-36 bg-elevated overflow-hidden">
         {coverUrl ? (
-          <Image src={coverUrl} alt={name} fill className="object-cover group-hover:scale-105 transition-transform duration-300" sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw" />
+          <Image
+            src={coverUrl}
+            alt={name}
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-300"
+            sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
+          />
         ) : logoUrl ? (
           /* No cover — wash the backdrop with the logo's own colors */
           <div className="relative flex items-center justify-center h-full p-6 overflow-hidden">
@@ -62,20 +73,38 @@ export function EntryCard({
               className="absolute inset-0 h-full w-full object-cover scale-150 blur-2xl opacity-70 saturate-150"
             />
             <div className="absolute inset-0 bg-gradient-to-br from-card/20 via-transparent to-card/60" />
-            <Image src={logoUrl} alt={name} width={80} height={80} className="relative max-h-20 max-w-[80%] object-contain drop-shadow-md" />
+            <Image
+              src={logoUrl}
+              alt={name}
+              width={80}
+              height={80}
+              className="relative max-h-20 max-w-[80%] object-contain drop-shadow-md"
+            />
           </div>
         ) : (
-          <div className="flex items-center justify-center h-full bg-gradient-to-br from-accent/25 via-elevated to-card text-accent text-5xl font-mono font-bold">{name.charAt(0)}</div>
+          <div className="flex items-center justify-center h-full bg-gradient-to-br from-accent/25 via-elevated to-card text-accent text-5xl font-mono font-bold">
+            {name.charAt(0)}
+          </div>
         )}
         {coverUrl && logoUrl && (
           <div className="absolute bottom-2 right-2 border border-border rounded-md bg-card p-0.5">
-            <Image src={logoUrl} alt={`${name} logo`} width={40} height={40} className="w-10 h-10 object-contain" />
+            <Image
+              src={logoUrl}
+              alt={`${name} logo`}
+              width={40}
+              height={40}
+              className="w-10 h-10 object-contain"
+            />
           </div>
         )}
       </div>
       <div className="p-4 space-y-2 flex-1 flex flex-col">
-        <h3 className="font-semibold text-primary text-sm group-hover:text-accent transition-colors">{name}</h3>
-        {tagline && <p className="text-secondary text-sm mt-1 line-clamp-2">{tagline}</p>}
+        <h3 className="font-semibold text-primary text-sm group-hover:text-accent transition-colors">
+          {name}
+        </h3>
+        {tagline && (
+          <p className="text-secondary text-sm mt-1 line-clamp-2">{tagline}</p>
+        )}
         {(!hideCity || !hideTypeBadge) && (
           <div className="flex items-center justify-between gap-2 mt-2">
             {!hideCity ? (
@@ -86,12 +115,21 @@ export function EntryCard({
             ) : (
               <span />
             )}
-            {!hideTypeBadge && <EntryBadge entryType={entryType} className="shrink-0" />}
+            {!hideTypeBadge && (
+              <EntryBadge entryType={entryType} className="shrink-0" />
+            )}
           </div>
         )}
         {displayTags.length > 0 && (
           <div className="flex flex-wrap gap-1 mt-auto pt-2">
-            {displayTags.map((tag) => <span key={tag} className="text-2xs font-mono px-1.5 py-0.5 rounded bg-elevated text-muted">{tag}</span>)}
+            {displayTags.map((tag) => (
+              <span
+                key={tag}
+                className="text-2xs font-mono px-1.5 py-0.5 rounded bg-elevated text-muted"
+              >
+                {tag}
+              </span>
+            ))}
           </div>
         )}
       </div>

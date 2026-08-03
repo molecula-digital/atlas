@@ -10,7 +10,10 @@ type EventRichDescriptionProps = {
 }
 
 /** Renders a Payload Lexical event description with shared prose styles. */
-export function EventRichDescription({ data, className }: EventRichDescriptionProps) {
+export function EventRichDescription({
+  data,
+  className,
+}: EventRichDescriptionProps) {
   return (
     <div
       className={cn(

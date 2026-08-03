@@ -1,6 +1,11 @@
 'use client'
 
-import { useRef, useState, type ReactNode, type TextareaHTMLAttributes } from 'react'
+import {
+  useRef,
+  useState,
+  type ReactNode,
+  type TextareaHTMLAttributes,
+} from 'react'
 import {
   Bold,
   Eye,
@@ -43,8 +48,16 @@ const TOOLBAR_TOOLS: Array<{
   icon: typeof Bold
   options: WrapOptions
 }> = [
-  { label: 'Negritas', icon: Bold, options: { before: '**', after: '**', placeholder: 'texto' } },
-  { label: 'Cursiva', icon: Italic, options: { before: '*', after: '*', placeholder: 'texto' } },
+  {
+    label: 'Negritas',
+    icon: Bold,
+    options: { before: '**', after: '**', placeholder: 'texto' },
+  },
+  {
+    label: 'Cursiva',
+    icon: Italic,
+    options: { before: '*', after: '*', placeholder: 'texto' },
+  },
   {
     label: 'Encabezado',
     icon: Heading2,
@@ -81,10 +94,17 @@ function applyWrap(
   const { before, after = before, placeholder = '', block = false } = options
   const selected = value.slice(selectionStart, selectionEnd)
   const content = selected || placeholder
-  const prefix = block && selectionStart > 0 && value[selectionStart - 1] !== '\n' ? '\n' : ''
-  const suffix = block && selectionEnd < value.length && value[selectionEnd] !== '\n' ? '\n' : ''
+  const prefix =
+    block && selectionStart > 0 && value[selectionStart - 1] !== '\n'
+      ? '\n'
+      : ''
+  const suffix =
+    block && selectionEnd < value.length && value[selectionEnd] !== '\n'
+      ? '\n'
+      : ''
   const insertion = `${prefix}${before}${content}${after}${suffix}`
-  const next = value.slice(0, selectionStart) + insertion + value.slice(selectionEnd)
+  const next =
+    value.slice(0, selectionStart) + insertion + value.slice(selectionEnd)
   const start = selectionStart + prefix.length + before.length
   const end = start + content.length
   return { next, start, end }
@@ -111,7 +131,12 @@ export function MarkdownEditor({
       return
     }
 
-    const { next, start, end } = applyWrap(value, el.selectionStart, el.selectionEnd, options)
+    const { next, start, end } = applyWrap(
+      value,
+      el.selectionStart,
+      el.selectionEnd,
+      options,
+    )
     if (maxLength != null && next.length > maxLength) return
 
     onChange(next)
@@ -122,7 +147,12 @@ export function MarkdownEditor({
   }
 
   return (
-    <div className={cn('rounded-lg border border-border bg-card overflow-hidden', className)}>
+    <div
+      className={cn(
+        'rounded-lg border border-border bg-card overflow-hidden',
+        className,
+      )}
+    >
       <div className="flex items-center justify-between gap-2 border-b border-border bg-elevated/50 px-2 py-1.5">
         <div className="flex items-center gap-0.5">
           {MODE_TABS.map((tab) => {
@@ -184,7 +214,9 @@ export function MarkdownEditor({
           {value.trim() ? (
             <MarkdownContent>{value}</MarkdownContent>
           ) : (
-            <p className="text-sm text-muted font-mono">Nada que previsualizar aún.</p>
+            <p className="text-sm text-muted font-mono">
+              Nada que previsualizar aún.
+            </p>
           )}
         </div>
       )}
@@ -193,7 +225,9 @@ export function MarkdownEditor({
         <div className="flex items-center justify-between gap-2 border-t border-border px-3 py-1.5 text-2xs text-muted font-mono">
           <span>{hint}</span>
           {maxLength != null && (
-            <span className={value.length >= maxLength ? 'text-accent' : undefined}>
+            <span
+              className={value.length >= maxLength ? 'text-accent' : undefined}
+            >
               {value.length}/{maxLength}
             </span>
           )}

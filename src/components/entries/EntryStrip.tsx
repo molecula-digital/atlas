@@ -83,7 +83,9 @@ export function EntryStrip({
               />
             )}
             {tagline && city && (
-              <span className="hidden shrink-0 text-xs text-muted sm:inline">·</span>
+              <span className="hidden shrink-0 text-xs text-muted sm:inline">
+                ·
+              </span>
             )}
             {city && (
               <span className="inline-flex shrink-0 items-center gap-1 text-2xs font-mono text-muted">

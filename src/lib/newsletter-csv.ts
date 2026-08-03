@@ -28,7 +28,9 @@ export async function buildNewsletterCsv(payload: Payload): Promise<string> {
     const email = normalizeEmail(String(doc.email))
     if (seen.has(email)) continue
     seen.add(email)
-    lines.push(`${escapeCsv(email)},${escapeCsv(String(doc.source ?? 'manual'))}`)
+    lines.push(
+      `${escapeCsv(email)},${escapeCsv(String(doc.source ?? 'manual'))}`,
+    )
   }
 
   for (const row of profileRows) {

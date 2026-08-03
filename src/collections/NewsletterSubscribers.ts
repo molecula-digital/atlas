@@ -86,7 +86,8 @@ export const NewsletterSubscribers: CollectionConfig = {
       admin: {
         position: 'sidebar',
         readOnly: true,
-        description: 'Se genera automáticamente. Usar en enlaces de baja del newsletter.',
+        description:
+          'Se genera automáticamente. Usar en enlaces de baja del newsletter.',
       },
     },
     {

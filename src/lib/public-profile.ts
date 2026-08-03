@@ -22,7 +22,9 @@ export type PublicProfile = {
 }
 
 /** Returns a public profile by slug, or null if missing / not public. */
-export async function getPublicProfileBySlug(slug: string): Promise<PublicProfile | null> {
+export async function getPublicProfileBySlug(
+  slug: string,
+): Promise<PublicProfile | null> {
   const [row] = await db
     .select({
       userId: profiles.userId,
@@ -65,7 +67,8 @@ export async function getPublicProfileBySlug(slug: string): Promise<PublicProfil
   }
 }
 
-export type PublicProfileSort = 'name-asc' | 'name-desc' | 'date-desc' | 'date-asc'
+export type PublicProfileSort =
+  'name-asc' | 'name-desc' | 'date-desc' | 'date-asc'
 
 /** All public user profiles for the /personas directory (independent of Payload person entries). */
 export async function listPublicProfiles(
@@ -140,7 +143,8 @@ export async function countPublicProfiles(): Promise<number> {
 
 /** Shape compatible with directory EntryCard rendering. */
 export function publicProfileToDirectoryItem(profile: PublicProfile) {
-  const tagline = [profile.title, profile.company].filter(Boolean).join(' · ') || null
+  const tagline =
+    [profile.title, profile.company].filter(Boolean).join(' · ') || null
   return {
     id: `user-profile:${profile.userId}`,
     kind: 'user-profile' as const,
@@ -149,9 +153,7 @@ export function publicProfileToDirectoryItem(profile: PublicProfile) {
     name: profile.name,
     tagline,
     entryType: 'person' as const,
-    logo: profile.photo
-      ? { url: profile.photo, alt: profile.name }
-      : null,
+    logo: profile.photo ? { url: profile.photo, alt: profile.name } : null,
     coverImage: null,
     city: 'global',
     tags: [],

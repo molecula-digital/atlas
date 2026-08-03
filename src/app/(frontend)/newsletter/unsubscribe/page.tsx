@@ -14,9 +14,9 @@ function UnsubscribeForm() {
   const token = searchParams.get('token')
 
   const [email, setEmail] = useState('')
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>(
-    token ? 'loading' : 'idle',
-  )
+  const [status, setStatus] = useState<
+    'idle' | 'loading' | 'success' | 'error'
+  >(token ? 'loading' : 'idle')
   const [message, setMessage] = useState<string | null>(null)
 
   useEffect(() => {
@@ -65,7 +65,9 @@ function UnsubscribeForm() {
         body: JSON.stringify({ email: email.trim() }),
       })
       if (!res.ok) throw new Error('failed')
-      posthog.capture(ANALYTICS_EVENTS.newsletterUnsubscribed, { method: 'form' })
+      posthog.capture(ANALYTICS_EVENTS.newsletterUnsubscribed, {
+        method: 'form',
+      })
       setStatus('success')
       setMessage(NEWSLETTER.unsubscribeSuccess)
       setEmail('')
@@ -80,14 +82,19 @@ function UnsubscribeForm() {
       <h1 className="terminal-title text-2xl font-sans font-bold text-primary mb-2">
         {NEWSLETTER.unsubscribeTitle}
       </h1>
-      <p className="text-sm text-secondary mb-8">{NEWSLETTER.unsubscribeDescription}</p>
+      <p className="text-sm text-secondary mb-8">
+        {NEWSLETTER.unsubscribeDescription}
+      </p>
 
       {status === 'success' ? (
         <div className="flex items-start gap-2 text-sm text-accent font-mono">
           <CheckCircle className="w-4 h-4 mt-0.5 shrink-0" />
           <div>
             <p>{message}</p>
-            <Link href="/" className="inline-block mt-4 text-xs text-muted hover:text-accent transition-colors">
+            <Link
+              href="/"
+              className="inline-block mt-4 text-xs text-muted hover:text-accent transition-colors"
+            >
               Volver al inicio
             </Link>
           </div>
@@ -103,7 +110,10 @@ function UnsubscribeForm() {
 
           {(!token || status === 'error') && (
             <form onSubmit={handleSubmit} className="space-y-3">
-              <label className="text-xs font-mono text-muted uppercase tracking-wider" htmlFor="unsub-email">
+              <label
+                className="text-xs font-mono text-muted uppercase tracking-wider"
+                htmlFor="unsub-email"
+              >
                 Email
               </label>
               <input

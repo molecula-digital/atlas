@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react'
 import posthog from 'posthog-js'
 import { useSession } from '@/lib/auth-client'
-import { ANALYTICS_EVENTS } from "@/lib/analytics-events";
+import { ANALYTICS_EVENTS } from '@/lib/analytics-events'
 
 /**
  * Marker written by SignInButton immediately before handing off to Google.

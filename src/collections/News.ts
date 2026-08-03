@@ -9,7 +9,8 @@ export const News: CollectionConfig = {
     useAsTitle: 'title',
     defaultColumns: ['title', 'author', '_status', 'publishDate'],
     listSearchableFields: ['title', 'excerpt'],
-    description: 'Publica artículos, noticias y actualizaciones para la comunidad de Atlas Tech',
+    description:
+      'Publica artículos, noticias y actualizaciones para la comunidad de Atlas Tech',
   },
   access: {
     create: isAdminOrEditor,
@@ -34,7 +35,8 @@ export const News: CollectionConfig = {
       unique: true,
       admin: {
         position: 'sidebar',
-        description: 'Se genera automáticamente a partir del título si se deja vacío.',
+        description:
+          'Se genera automáticamente a partir del título si se deja vacío.',
       },
       hooks: {
         beforeValidate: [
@@ -90,7 +92,8 @@ export const News: CollectionConfig = {
               label: 'Extracto',
               type: 'textarea',
               admin: {
-                description: 'Resumen corto para listados y SEO (máx. 200 caracteres)',
+                description:
+                  'Resumen corto para listados y SEO (máx. 200 caracteres)',
               },
               maxLength: 200,
             },
@@ -116,7 +119,14 @@ export const News: CollectionConfig = {
               label: 'Etiquetas',
               type: 'array',
               maxRows: 10,
-              fields: [{ name: 'tag', label: 'Etiqueta', type: 'text', required: true }],
+              fields: [
+                {
+                  name: 'tag',
+                  label: 'Etiqueta',
+                  type: 'text',
+                  required: true,
+                },
+              ],
             },
           ],
         },

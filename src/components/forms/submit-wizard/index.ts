@@ -1,1 +1,1 @@
-export { default } from "./SubmitWizard";
+export { default } from './SubmitWizard'

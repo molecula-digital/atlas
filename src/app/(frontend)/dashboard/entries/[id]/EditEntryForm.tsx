@@ -5,7 +5,15 @@ import { AuthGuard } from '@/components/auth/AuthGuard'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import { Card } from '@/components/ui/Card'
 import { EntryBadge } from '@/components/entries/EntryBadge'
-import { XCircle, X, Plus, ArrowLeft, Save, CheckCircle, Loader2 } from 'lucide-react'
+import {
+  XCircle,
+  X,
+  Plus,
+  ArrowLeft,
+  Save,
+  CheckCircle,
+  Loader2,
+} from 'lucide-react'
 import {
   SINALOA_CITIES,
   STAGE_OPTIONS,
@@ -29,7 +37,8 @@ const inputClass =
 const selectClass =
   'mt-1 w-full px-3 py-2 rounded-lg border border-border bg-card text-primary font-mono text-base sm:text-sm focus:outline-hidden focus:border-accent transition-colors'
 const labelClass = 'text-xs font-mono text-muted uppercase tracking-wider'
-const checkboxClass = 'w-4 h-4 rounded border-border text-accent focus:ring-accent'
+const checkboxClass =
+  'w-4 h-4 rounded border-border text-accent focus:ring-accent'
 
 export function EditEntryForm() {
   const params = useParams()
@@ -37,40 +46,82 @@ export function EditEntryForm() {
   const id = params.id as string
 
   const {
-    entry, loading, error, saving, saved,
-    name, setName,
-    tagline, setTagline,
-    city, setCity,
-    website, setWebsite,
-    x, setX,
-    instagram, setInstagram,
-    linkedin, setLinkedin,
-    github, setGithub,
-    youtube, setYoutube,
-    discord, setDiscord,
-    telegram, setTelegram,
-    tags, tagInput, setTagInput, addTag, removeTag,
-    foundedYear, setFoundedYear,
-    stage, setStage,
-    teamSize, setTeamSize,
-    sector, setSector,
-    technologies, setTechnologies,
-    hiring, setHiring,
-    hiringUrl, setHiringUrl,
-    businessModel, setBusinessModel,
-    memberCount, setMemberCount,
-    meetupFrequency, setMeetupFrequency,
-    role, setRole,
-    company, setCompany,
-    email, setEmail,
-    portfolio, setPortfolio,
-    availableForHire, setAvailableForHire,
-    availableForMentoring, setAvailableForMentoring,
-    bodyMarkdown, setBodyMarkdown,
-    logoPreview, selectLogo, resetLogo,
-    coverPreview, selectCover, resetCover,
-    uploadingImages, uploadError,
-    logoRef, coverRef,
+    entry,
+    loading,
+    error,
+    saving,
+    saved,
+    name,
+    setName,
+    tagline,
+    setTagline,
+    city,
+    setCity,
+    website,
+    setWebsite,
+    x,
+    setX,
+    instagram,
+    setInstagram,
+    linkedin,
+    setLinkedin,
+    github,
+    setGithub,
+    youtube,
+    setYoutube,
+    discord,
+    setDiscord,
+    telegram,
+    setTelegram,
+    tags,
+    tagInput,
+    setTagInput,
+    addTag,
+    removeTag,
+    foundedYear,
+    setFoundedYear,
+    stage,
+    setStage,
+    teamSize,
+    setTeamSize,
+    sector,
+    setSector,
+    technologies,
+    setTechnologies,
+    hiring,
+    setHiring,
+    hiringUrl,
+    setHiringUrl,
+    businessModel,
+    setBusinessModel,
+    memberCount,
+    setMemberCount,
+    meetupFrequency,
+    setMeetupFrequency,
+    role,
+    setRole,
+    company,
+    setCompany,
+    email,
+    setEmail,
+    portfolio,
+    setPortfolio,
+    availableForHire,
+    setAvailableForHire,
+    availableForMentoring,
+    setAvailableForMentoring,
+    bodyMarkdown,
+    setBodyMarkdown,
+    logoPreview,
+    selectLogo,
+    resetLogo,
+    coverPreview,
+    selectCover,
+    resetCover,
+    uploadingImages,
+    uploadError,
+    logoRef,
+    coverRef,
     handleSave,
   } = useEntryEditor(id)
 
@@ -112,17 +163,23 @@ export function EditEntryForm() {
               <div className="flex items-center gap-3 mb-6">
                 <button
                   onClick={() => router.push('/dashboard')}
-                  className={buttonVariants({ variant: "ghost", size: "icon-md" })}
+                  className={buttonVariants({
+                    variant: 'ghost',
+                    size: 'icon-md',
+                  })}
                 >
                   <ArrowLeft className="w-4 h-4" />
                 </button>
                 <div>
                   <div className="flex items-center gap-2 mb-0.5">
-                    <h1 className="text-xl font-bold text-primary">Editar entrada</h1>
+                    <h1 className="text-xl font-bold text-primary">
+                      Editar entrada
+                    </h1>
                     <EntryBadge entryType={entry.entryType} />
                   </div>
                   <p className="text-xs text-muted font-mono">
-                    {ENTRY_TYPE_CONFIG[entry.entryType]?.label} &middot; {entry.slug}
+                    {ENTRY_TYPE_CONFIG[entry.entryType]?.label} &middot;{' '}
+                    {entry.slug}
                   </p>
                 </div>
               </div>
@@ -132,7 +189,9 @@ export function EditEntryForm() {
                 <div className="mb-6 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-sm text-red-700 dark:text-red-400 flex items-start gap-2">
                   <XCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="font-medium text-xs uppercase font-mono mb-1">Nota de moderacion</p>
+                    <p className="font-medium text-xs uppercase font-mono mb-1">
+                      Nota de moderacion
+                    </p>
                     <p>{entry.moderationNote}</p>
                   </div>
                 </div>
@@ -143,8 +202,13 @@ export function EditEntryForm() {
                 <div className="mb-6 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg text-sm text-green-700 dark:text-green-400 flex items-start gap-2">
                   <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="font-medium text-xs uppercase font-mono mb-1">Cambios guardados</p>
-                    <p>Tu entrada ha sido actualizada y sera revisada nuevamente por el equipo de moderacion.</p>
+                    <p className="font-medium text-xs uppercase font-mono mb-1">
+                      Cambios guardados
+                    </p>
+                    <p>
+                      Tu entrada ha sido actualizada y sera revisada nuevamente
+                      por el equipo de moderacion.
+                    </p>
                   </div>
                 </div>
               )}
@@ -159,13 +223,19 @@ export function EditEntryForm() {
                 >
                   {/* ── Images ── */}
                   <div className="space-y-4">
-                    <h2 className="text-lg font-sans font-bold text-primary">Imagenes</h2>
+                    <h2 className="text-lg font-sans font-bold text-primary">
+                      Imagenes
+                    </h2>
                     <div className="space-y-3">
                       <div>
                         <span className={`${labelClass} block mb-1`}>Logo</span>
                         {logoPreview && !logoRef.current?.files?.[0] && (
                           <div className="mb-2 relative w-20 h-20">
-                            <img src={logoPreview} alt="Logo actual" className="w-20 h-20 rounded-lg border border-border object-cover" />
+                            <img
+                              src={logoPreview}
+                              alt="Logo actual"
+                              className="w-20 h-20 rounded-lg border border-border object-cover"
+                            />
                           </div>
                         )}
                         <input
@@ -177,7 +247,11 @@ export function EditEntryForm() {
                         />
                         {logoRef.current?.files?.[0] && logoPreview && (
                           <div className="mt-2 relative w-20 h-20">
-                            <img src={logoPreview} alt="Logo preview" className="w-20 h-20 rounded-lg border border-border object-cover" />
+                            <img
+                              src={logoPreview}
+                              alt="Logo preview"
+                              className="w-20 h-20 rounded-lg border border-border object-cover"
+                            />
                             <button
                               type="button"
                               onClick={resetLogo}
@@ -189,10 +263,16 @@ export function EditEntryForm() {
                         )}
                       </div>
                       <div>
-                        <span className={`${labelClass} block mb-1`}>Imagen de portada</span>
+                        <span className={`${labelClass} block mb-1`}>
+                          Imagen de portada
+                        </span>
                         {coverPreview && !coverRef.current?.files?.[0] && (
                           <div className="mb-2 relative">
-                            <img src={coverPreview} alt="Portada actual" className="w-full max-h-48 rounded-lg border border-border object-cover" />
+                            <img
+                              src={coverPreview}
+                              alt="Portada actual"
+                              className="w-full max-h-48 rounded-lg border border-border object-cover"
+                            />
                           </div>
                         )}
                         <input
@@ -204,7 +284,11 @@ export function EditEntryForm() {
                         />
                         {coverRef.current?.files?.[0] && coverPreview && (
                           <div className="mt-2 relative">
-                            <img src={coverPreview} alt="Cover preview" className="w-full max-h-48 rounded-lg border border-border object-cover" />
+                            <img
+                              src={coverPreview}
+                              alt="Cover preview"
+                              className="w-full max-h-48 rounded-lg border border-border object-cover"
+                            />
                             <button
                               type="button"
                               onClick={resetCover}
@@ -225,7 +309,9 @@ export function EditEntryForm() {
 
                   {/* ── Basic info ── */}
                   <div className="space-y-4">
-                    <h2 className="text-lg font-sans font-bold text-primary">Informacion basica</h2>
+                    <h2 className="text-lg font-sans font-bold text-primary">
+                      Informacion basica
+                    </h2>
                     <div className="space-y-3">
                       <label className="block">
                         <span className={labelClass}>Nombre *</span>
@@ -278,7 +364,9 @@ export function EditEntryForm() {
 
                   {/* ���─ Body (Markdown) ── */}
                   <div className="space-y-4">
-                    <h2 className="text-lg font-sans font-bold text-primary">Descripcion</h2>
+                    <h2 className="text-lg font-sans font-bold text-primary">
+                      Descripcion
+                    </h2>
                     <label className="block">
                       <span className={labelClass}>Contenido (Markdown)</span>
                       <textarea
@@ -289,7 +377,8 @@ export function EditEntryForm() {
                         className={`${inputClass} resize-y`}
                       />
                       <p className="text-xs text-muted mt-1 font-mono">
-                        Soporta: encabezados (#), **negritas**, *italicas*, `codigo`, [enlaces](url), listas (- o 1.)
+                        Soporta: encabezados (#), **negritas**, *italicas*,
+                        `codigo`, [enlaces](url), listas (- o 1.)
                       </p>
                     </label>
                   </div>
@@ -297,14 +386,22 @@ export function EditEntryForm() {
                   {/* ── Type-specific: Startup-like ── */}
                   {isStartupLike(entry.entryType) && (
                     <div className="space-y-4">
-                      <h2 className="text-lg font-sans font-bold text-primary">Detalles</h2>
+                      <h2 className="text-lg font-sans font-bold text-primary">
+                        Detalles
+                      </h2>
                       <div className="space-y-3">
                         <label className="block">
                           <span className={labelClass}>Sector</span>
-                          <select value={sector} onChange={(e) => setSector(e.target.value)} className={selectClass}>
+                          <select
+                            value={sector}
+                            onChange={(e) => setSector(e.target.value)}
+                            className={selectClass}
+                          >
                             <option value="">Selecciona</option>
                             {SECTOR_OPTIONS.map((o) => (
-                              <option key={o.value} value={o.value}>{o.label}</option>
+                              <option key={o.value} value={o.value}>
+                                {o.label}
+                              </option>
                             ))}
                           </select>
                         </label>
@@ -323,20 +420,32 @@ export function EditEntryForm() {
                         {entry.entryType === 'startup' && (
                           <label className="block">
                             <span className={labelClass}>Etapa</span>
-                            <select value={stage} onChange={(e) => setStage(e.target.value)} className={selectClass}>
+                            <select
+                              value={stage}
+                              onChange={(e) => setStage(e.target.value)}
+                              className={selectClass}
+                            >
                               <option value="">Selecciona</option>
                               {STAGE_OPTIONS.map((o) => (
-                                <option key={o.value} value={o.value}>{o.label}</option>
+                                <option key={o.value} value={o.value}>
+                                  {o.label}
+                                </option>
                               ))}
                             </select>
                           </label>
                         )}
                         <label className="block">
                           <span className={labelClass}>Tamano del equipo</span>
-                          <select value={teamSize} onChange={(e) => setTeamSize(e.target.value)} className={selectClass}>
+                          <select
+                            value={teamSize}
+                            onChange={(e) => setTeamSize(e.target.value)}
+                            className={selectClass}
+                          >
                             <option value="">Selecciona</option>
                             {TEAM_SIZE_OPTIONS.map((o) => (
-                              <option key={o.value} value={o.value}>{o.label}</option>
+                              <option key={o.value} value={o.value}>
+                                {o.label}
+                              </option>
                             ))}
                           </select>
                         </label>
@@ -376,10 +485,16 @@ export function EditEntryForm() {
                         )}
                         <label className="block">
                           <span className={labelClass}>Modelo de negocio</span>
-                          <select value={businessModel} onChange={(e) => setBusinessModel(e.target.value)} className={selectClass}>
+                          <select
+                            value={businessModel}
+                            onChange={(e) => setBusinessModel(e.target.value)}
+                            className={selectClass}
+                          >
                             <option value="">Selecciona</option>
                             {BUSINESS_MODEL_OPTIONS.map((o) => (
-                              <option key={o.value} value={o.value}>{o.label}</option>
+                              <option key={o.value} value={o.value}>
+                                {o.label}
+                              </option>
                             ))}
                           </select>
                         </label>
@@ -390,7 +505,9 @@ export function EditEntryForm() {
                   {/* ── Type-specific: Community ── */}
                   {entry.entryType === 'community' && (
                     <div className="space-y-4">
-                      <h2 className="text-lg font-sans font-bold text-primary">Detalles de comunidad</h2>
+                      <h2 className="text-lg font-sans font-bold text-primary">
+                        Detalles de comunidad
+                      </h2>
                       <div className="space-y-3">
                         <label className="block">
                           <span className={labelClass}>Numero de miembros</span>
@@ -403,11 +520,19 @@ export function EditEntryForm() {
                           />
                         </label>
                         <label className="block">
-                          <span className={labelClass}>Frecuencia de meetups</span>
-                          <select value={meetupFrequency} onChange={(e) => setMeetupFrequency(e.target.value)} className={selectClass}>
+                          <span className={labelClass}>
+                            Frecuencia de meetups
+                          </span>
+                          <select
+                            value={meetupFrequency}
+                            onChange={(e) => setMeetupFrequency(e.target.value)}
+                            className={selectClass}
+                          >
                             <option value="">Selecciona</option>
                             {MEETUP_FREQUENCY_OPTIONS.map((o) => (
-                              <option key={o.value} value={o.value}>{o.label}</option>
+                              <option key={o.value} value={o.value}>
+                                {o.label}
+                              </option>
                             ))}
                           </select>
                         </label>
@@ -418,7 +543,9 @@ export function EditEntryForm() {
                   {/* ── Type-specific: Person ── */}
                   {entry.entryType === 'person' && (
                     <div className="space-y-4">
-                      <h2 className="text-lg font-sans font-bold text-primary">Perfil profesional</h2>
+                      <h2 className="text-lg font-sans font-bold text-primary">
+                        Perfil profesional
+                      </h2>
                       <div className="space-y-3">
                         <label className="block">
                           <span className={labelClass}>Rol</span>
@@ -464,11 +591,16 @@ export function EditEntryForm() {
                           <input
                             type="checkbox"
                             checked={availableForHire}
-                            onChange={(e) => setAvailableForHire(e.target.checked)}
+                            onChange={(e) =>
+                              setAvailableForHire(e.target.checked)
+                            }
                             id="availableForHire"
                             className={checkboxClass}
                           />
-                          <label htmlFor="availableForHire" className={labelClass}>
+                          <label
+                            htmlFor="availableForHire"
+                            className={labelClass}
+                          >
                             Disponible para contratacion
                           </label>
                         </div>
@@ -476,11 +608,16 @@ export function EditEntryForm() {
                           <input
                             type="checkbox"
                             checked={availableForMentoring}
-                            onChange={(e) => setAvailableForMentoring(e.target.checked)}
+                            onChange={(e) =>
+                              setAvailableForMentoring(e.target.checked)
+                            }
                             id="availableForMentoring"
                             className={checkboxClass}
                           />
-                          <label htmlFor="availableForMentoring" className={labelClass}>
+                          <label
+                            htmlFor="availableForMentoring"
+                            className={labelClass}
+                          >
                             Disponible para mentoria
                           </label>
                         </div>
@@ -490,7 +627,9 @@ export function EditEntryForm() {
 
                   {/* ── Social links ── */}
                   <div className="space-y-4">
-                    <h2 className="text-lg font-sans font-bold text-primary">Redes sociales</h2>
+                    <h2 className="text-lg font-sans font-bold text-primary">
+                      Redes sociales
+                    </h2>
                     <div className="space-y-3">
                       <label className="block">
                         <span className={labelClass}>X (Twitter)</span>
@@ -571,8 +710,12 @@ export function EditEntryForm() {
 
                   {/* ── Tags ── */}
                   <div className="space-y-4">
-                    <h2 className="text-lg font-sans font-bold text-primary">Etiquetas</h2>
-                    <p className="text-sm text-secondary">Agrega hasta 10 etiquetas descriptivas.</p>
+                    <h2 className="text-lg font-sans font-bold text-primary">
+                      Etiquetas
+                    </h2>
+                    <p className="text-sm text-secondary">
+                      Agrega hasta 10 etiquetas descriptivas.
+                    </p>
                     <div className="flex gap-2">
                       <input
                         type="text"
@@ -591,7 +734,7 @@ export function EditEntryForm() {
                         type="button"
                         onClick={addTag}
                         disabled={tags.length >= 10}
-                        className={buttonVariants({ size: "icon-lg" })}
+                        className={buttonVariants({ size: 'icon-lg' })}
                       >
                         <Plus className="w-4 h-4" />
                       </button>
@@ -615,7 +758,9 @@ export function EditEntryForm() {
                         ))}
                       </div>
                     )}
-                    <p className="text-xs text-muted font-mono">{tags.length}/10 etiquetas</p>
+                    <p className="text-xs text-muted font-mono">
+                      {tags.length}/10 etiquetas
+                    </p>
                   </div>
 
                   {/* ── Submit ── */}
@@ -629,11 +774,20 @@ export function EditEntryForm() {
                     </button>
                     <button
                       type="submit"
-                      disabled={saving || uploadingImages || !name.trim() || !city}
-                      className={buttonVariants({ variant: "accent", size: "md" })}
+                      disabled={
+                        saving || uploadingImages || !name.trim() || !city
+                      }
+                      className={buttonVariants({
+                        variant: 'accent',
+                        size: 'md',
+                      })}
                     >
                       <Save className="w-3.5 h-3.5" />
-                      {uploadingImages ? 'Subiendo imagenes...' : saving ? 'Guardando...' : 'Guardar cambios'}
+                      {uploadingImages
+                        ? 'Subiendo imagenes...'
+                        : saving
+                          ? 'Guardando...'
+                          : 'Guardar cambios'}
                     </button>
                   </div>
                 </form>

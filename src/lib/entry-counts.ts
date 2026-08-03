@@ -23,7 +23,7 @@ export const getEntryCounts = cache(async (): Promise<EntryCounts> => {
     sql`SELECT entry_type, city, COUNT(*)::int AS count
         FROM payload.entries
         WHERE _status = 'published'
-        GROUP BY entry_type, city`
+        GROUP BY entry_type, city`,
   )
 
   const byType: Record<string, number> = { ...emptyTypeCounts() }
@@ -63,7 +63,10 @@ export const getEntryCounts = cache(async (): Promise<EntryCounts> => {
   } catch (err) {
     // Matches the directory route: if app.profiles is unavailable (e.g. pending
     // migration), fall back to Payload-only counts rather than failing the page.
-    console.error('Public profile count unavailable; reporting entry counts only:', err)
+    console.error(
+      'Public profile count unavailable; reporting entry counts only:',
+      err,
+    )
   }
 
   return { byType, byCity, byCityAndType, total }

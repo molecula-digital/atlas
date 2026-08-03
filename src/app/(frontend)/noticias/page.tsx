@@ -21,7 +21,13 @@ export default function NoticiasPage() {
     <section>
       <PageHero
         icon={Newspaper}
-        title={<>Noticias del<br />ecosistema tech</>}
+        title={
+          <>
+            Noticias del
+            <br />
+            ecosistema tech
+          </>
+        }
         description="Lanzamientos, convocatorias y movimientos del ecosistema tecnológico de Sinaloa, en un solo lugar."
         breadcrumb={[{ label: 'Inicio', href: '/' }, { label: 'Noticias' }]}
       />

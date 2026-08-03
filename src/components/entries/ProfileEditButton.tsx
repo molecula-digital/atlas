@@ -27,7 +27,11 @@ export function ProfileEditButton({ userId }: { userId: string }) {
   return (
     <Link
       href="/dashboard/profile"
-      className={buttonVariants({ variant: 'neutral', size: 'sm', className: 'shrink-0' })}
+      className={buttonVariants({
+        variant: 'neutral',
+        size: 'sm',
+        className: 'shrink-0',
+      })}
     >
       <Pencil className="w-3.5 h-3.5" />
       Editar perfil

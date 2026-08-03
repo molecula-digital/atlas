@@ -14,14 +14,17 @@ interface RateLimitEntry {
 const store = new Map<string, RateLimitEntry>()
 
 // Clean up stale entries every 5 minutes to prevent memory leaks
-setInterval(() => {
-  const now = Date.now()
-  for (const [key, entry] of store) {
-    if (now - entry.lastRefill > 15 * 60 * 1000) {
-      store.delete(key)
+setInterval(
+  () => {
+    const now = Date.now()
+    for (const [key, entry] of store) {
+      if (now - entry.lastRefill > 15 * 60 * 1000) {
+        store.delete(key)
+      }
     }
-  }
-}, 5 * 60 * 1000).unref()
+  },
+  5 * 60 * 1000,
+).unref()
 
 export interface RateLimitConfig {
   limit: number
@@ -29,7 +32,10 @@ export interface RateLimitConfig {
   keyPrefix: string
 }
 
-export function checkRateLimit(identifier: string, config: RateLimitConfig): { success: boolean; remaining: number } {
+export function checkRateLimit(
+  identifier: string,
+  config: RateLimitConfig,
+): { success: boolean; remaining: number } {
   const key = `${config.keyPrefix}:${identifier}`
   const now = Date.now()
   const entry = store.get(key)
@@ -48,15 +54,17 @@ export function checkRateLimit(identifier: string, config: RateLimitConfig): { s
 }
 
 export function getClientIp(request: NextRequest): string {
-  return request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
-    || request.headers.get('x-real-ip')
-    || 'unknown'
+  return (
+    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+    request.headers.get('x-real-ip') ||
+    'unknown'
+  )
 }
 
 export function withRateLimit(
   request: NextRequest,
   config: RateLimitConfig,
-  userId?: string
+  userId?: string,
 ): NextResponse | null {
   if (process.env.RATE_LIMIT_DISABLED === 'true') return null
 
@@ -69,7 +77,7 @@ export function withRateLimit(
       {
         status: 429,
         headers: { 'Retry-After': String(Math.ceil(config.windowMs / 1000)) },
-      }
+      },
     )
   }
 

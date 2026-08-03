@@ -11,74 +11,75 @@ import { MATRIX_BOX_SIZE } from '@/config'
  * of a background-grid cell (see SPRITE_PIXEL_DIVISOR), which is why the
  * bitmaps are this small.
  */
-const SPRITES: ReadonlyArray<readonly [readonly string[], readonly string[]]> = [
+const SPRITES: ReadonlyArray<readonly [readonly string[], readonly string[]]> =
   [
     [
-      '.....#.....',
-      '....###....',
-      '...#####...',
-      '..##.#.##..',
-      '..#######..',
-      '....#.#....',
-      '...#.#.#...',
-      '..#.#.#.#..',
+      [
+        '.....#.....',
+        '....###....',
+        '...#####...',
+        '..##.#.##..',
+        '..#######..',
+        '....#.#....',
+        '...#.#.#...',
+        '..#.#.#.#..',
+      ],
+      [
+        '.....#.....',
+        '....###....',
+        '...#####...',
+        '..##.#.##..',
+        '..#######..',
+        '...#.#.#...',
+        '..#.....#..',
+        '...#...#...',
+      ],
     ],
     [
-      '.....#.....',
-      '....###....',
-      '...#####...',
-      '..##.#.##..',
-      '..#######..',
-      '...#.#.#...',
-      '..#.....#..',
-      '...#...#...',
-    ],
-  ],
-  [
-    [
-      '.#.......#.',
-      '..#.....#..',
-      '..#######..',
-      '.##.###.##.',
-      '###########',
-      '#.#######.#',
-      '#.#.....#.#',
-      '...##.##...',
-    ],
-    [
-      '.#.......#.',
-      '#.#.....#.#',
-      '#.#######.#',
-      '###.###.###',
-      '.#########.',
-      '..#######..',
-      '..#.....#..',
-      '.#.......#.',
-    ],
-  ],
-  [
-    [
-      '...#####...',
-      '.#########.',
-      '###########',
-      '###.###.###',
-      '###########',
-      '...##.##...',
-      '..##...##..',
-      '.##.....##.',
+      [
+        '.#.......#.',
+        '..#.....#..',
+        '..#######..',
+        '.##.###.##.',
+        '###########',
+        '#.#######.#',
+        '#.#.....#.#',
+        '...##.##...',
+      ],
+      [
+        '.#.......#.',
+        '#.#.....#.#',
+        '#.#######.#',
+        '###.###.###',
+        '.#########.',
+        '..#######..',
+        '..#.....#..',
+        '.#.......#.',
+      ],
     ],
     [
-      '...#####...',
-      '.#########.',
-      '###########',
-      '###.###.###',
-      '###########',
-      '..##.#.##..',
-      '.#.......#.',
-      '..#.....#..',
+      [
+        '...#####...',
+        '.#########.',
+        '###########',
+        '###.###.###',
+        '###########',
+        '...##.##...',
+        '..##...##..',
+        '.##.....##.',
+      ],
+      [
+        '...#####...',
+        '.#########.',
+        '###########',
+        '###.###.###',
+        '###########',
+        '..##.#.##..',
+        '.#.......#.',
+        '..#.....#..',
+      ],
     ],
-  ],
-]
+  ]
 
 const SPRITE_COLS = 11
 const SPRITE_ROWS = 8
@@ -159,7 +160,9 @@ export function InvaderField() {
 
       // Column count comes from what fits the band with march room to spare,
       // capped at the classic formation width.
-      const fit = Math.floor((bandCols - MIN_MARCH_CELLS + COL_GAP) / (SPRITE_CELLS_W + COL_GAP))
+      const fit = Math.floor(
+        (bandCols - MIN_MARCH_CELLS + COL_GAP) / (SPRITE_CELLS_W + COL_GAP),
+      )
       cols = Math.max(1, Math.min(fit, MAX_FORMATION_COLS))
 
       // A resize can strand the formation outside the band; pull it back in.
@@ -180,7 +183,11 @@ export function InvaderField() {
       return { color, alpha: isDark ? 0.07 : 0.09 }
     }
 
-    function drawSprite(bitmap: readonly string[], cellX: number, cellY: number) {
+    function drawSprite(
+      bitmap: readonly string[],
+      cellX: number,
+      cellY: number,
+    ) {
       if (!ctx) return
       const originX = cellX * box
       const originY = cellY * box
@@ -191,7 +198,12 @@ export function InvaderField() {
           // 1px inset per block keeps a visible seam between adjacent pixels
           // so the sprites read as pixel art built from the lattice, not a
           // solid smear painted over it.
-          ctx.fillRect(originX + x * PIXEL + 1, originY + y * PIXEL + 1, PIXEL - 2, PIXEL - 2)
+          ctx.fillRect(
+            originX + x * PIXEL + 1,
+            originY + y * PIXEL + 1,
+            PIXEL - 2,
+            PIXEL - 2,
+          )
         }
       }
     }
@@ -253,8 +265,12 @@ export function InvaderField() {
     // interval is the right driver here — a requestAnimationFrame loop would
     // burn 60 repaints a second to show a once-a-second change. Reduced
     // motion keeps the single static frame drawn above.
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const intervalId = prefersReducedMotion ? null : window.setInterval(step, STEP_MS)
+    const prefersReducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches
+    const intervalId = prefersReducedMotion
+      ? null
+      : window.setInterval(step, STEP_MS)
 
     return () => {
       if (intervalId !== null) window.clearInterval(intervalId)
@@ -265,5 +281,11 @@ export function InvaderField() {
 
   // h-full/w-full pin the CSS box to the parent, same as MatrixBackground —
   // without them the intrinsic width/height attributes would size the box.
-  return <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" aria-hidden="true" />
+  return (
+    <canvas
+      ref={canvasRef}
+      className="absolute inset-0 h-full w-full"
+      aria-hidden="true"
+    />
+  )
 }

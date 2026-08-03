@@ -20,21 +20,42 @@ function JobCard({ job }: { job: Job }) {
     >
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1">
-          <h2 className="text-base font-semibold text-primary">{job.title as string}</h2>
-          {entryName && <p className="text-xs text-muted font-mono mt-0.5">{entryName}</p>}
+          <h2 className="text-base font-semibold text-primary">
+            {job.title as string}
+          </h2>
+          {entryName && (
+            <p className="text-xs text-muted font-mono mt-0.5">{entryName}</p>
+          )}
           <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-muted font-mono">
-            <span className="flex items-center gap-1"><Briefcase className="w-3 h-3" />{JOB_TYPE_LABELS[job.type as string] || job.type}</span>
-            <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{MODALITY_LABELS[job.modality as string] || job.modality}</span>
-            {job.city && <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{getCityName(job.city as string)}</span>}
+            <span className="flex items-center gap-1">
+              <Briefcase className="w-3 h-3" />
+              {JOB_TYPE_LABELS[job.type as string] || job.type}
+            </span>
+            <span className="flex items-center gap-1">
+              <Clock className="w-3 h-3" />
+              {MODALITY_LABELS[job.modality as string] || job.modality}
+            </span>
+            {job.city && (
+              <span className="flex items-center gap-1">
+                <MapPin className="w-3 h-3" />
+                {getCityName(job.city as string)}
+              </span>
+            )}
           </div>
           {tags.length > 0 && (
             <div className="flex flex-wrap gap-1 mt-2">
-              {tags.slice(0, 4).map((tag) => <Badge key={tag} className="text-[10px]">{tag}</Badge>)}
+              {tags.slice(0, 4).map((tag) => (
+                <Badge key={tag} className="text-[10px]">
+                  {tag}
+                </Badge>
+              ))}
             </div>
           )}
         </div>
         {job.compensation && (
-          <span className="text-sm font-mono font-medium text-accent whitespace-nowrap">{job.compensation as string}</span>
+          <span className="text-sm font-mono font-medium text-accent whitespace-nowrap">
+            {job.compensation as string}
+          </span>
         )}
       </div>
     </Link>

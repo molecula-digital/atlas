@@ -17,7 +17,10 @@ import {
   toCalendarEvent,
   yahooCalendarUrl,
 } from '@/lib/calendar-links'
-import { buttonVariants, type ButtonSize } from '@/components/ui/button-variants'
+import {
+  buttonVariants,
+  type ButtonSize,
+} from '@/components/ui/button-variants'
 import {
   Dialog,
   DialogContent,
@@ -85,11 +88,16 @@ export function AddToCalendar({
   surface: EventSurface
 }) {
   const [open, setOpen] = useState(false)
-  const calEvent = toCalendarEvent(event, `${SITE_URL}${getEventPath(event.slug)}`)
+  const calEvent = toCalendarEvent(
+    event,
+    `${SITE_URL}${getEventPath(event.slug)}`,
+  )
 
   const downloadIcs = () => {
     const ics = buildIcs(calEvent, `${event.slug}@atlas.tech`)
-    const url = URL.createObjectURL(new Blob([ics], { type: 'text/calendar;charset=utf-8' }))
+    const url = URL.createObjectURL(
+      new Blob([ics], { type: 'text/calendar;charset=utf-8' }),
+    )
     const a = document.createElement('a')
     a.href = url
     a.download = `${event.slug || 'evento'}.ics`
@@ -107,9 +115,24 @@ export function AddToCalendar({
     href: string
     Icon: () => React.JSX.Element
   }[] = [
-    { label: 'Google Calendar', provider: 'google', href: googleCalendarUrl(calEvent), Icon: GoogleIcon },
-    { label: 'Outlook', provider: 'outlook', href: outlookCalendarUrl(calEvent), Icon: OutlookIcon },
-    { label: 'Yahoo', provider: 'yahoo', href: yahooCalendarUrl(calEvent), Icon: YahooIcon },
+    {
+      label: 'Google Calendar',
+      provider: 'google',
+      href: googleCalendarUrl(calEvent),
+      Icon: GoogleIcon,
+    },
+    {
+      label: 'Outlook',
+      provider: 'outlook',
+      href: outlookCalendarUrl(calEvent),
+      Icon: OutlookIcon,
+    },
+    {
+      label: 'Yahoo',
+      provider: 'yahoo',
+      href: yahooCalendarUrl(calEvent),
+      Icon: YahooIcon,
+    },
   ]
 
   const trigger = (

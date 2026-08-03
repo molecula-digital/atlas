@@ -23,11 +23,13 @@ export default function NewEntryPage() {
     <AuthGuard>
       <section>
         <div className="max-w-2xl mx-auto">
-          <Breadcrumb items={[
-            { label: 'Dashboard', href: '/dashboard' },
-            { label: 'Mis Registros', href: '/dashboard' },
-            { label: 'Agregar registro' },
-          ]} />
+          <Breadcrumb
+            items={[
+              { label: 'Dashboard', href: '/dashboard' },
+              { label: 'Mis Registros', href: '/dashboard' },
+              { label: 'Agregar registro' },
+            ]}
+          />
 
           <div className="flex items-center gap-3 mb-6">
             <Link
@@ -37,7 +39,9 @@ export default function NewEntryPage() {
               <ArrowLeft className="w-4 h-4" />
             </Link>
             <div>
-              <h1 className="text-xl font-bold text-primary mb-0.5">Agregar registro</h1>
+              <h1 className="text-xl font-bold text-primary mb-0.5">
+                Agregar registro
+              </h1>
               <p className="text-xs text-muted font-mono">
                 Startup, consultora, comunidad o perfil
               </p>

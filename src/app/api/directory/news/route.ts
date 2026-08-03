@@ -4,7 +4,11 @@ import { withRateLimit } from '@/lib/rate-limit'
 import { parsePagination, toPaginatedResponse } from '@/lib/api-route'
 
 export async function GET(request: NextRequest) {
-  const limited = await withRateLimit(request, { limit: 60, windowMs: 60 * 1000, keyPrefix: 'api-news' })
+  const limited = await withRateLimit(request, {
+    limit: 60,
+    windowMs: 60 * 1000,
+    keyPrefix: 'api-news',
+  })
   if (limited) return limited
 
   try {

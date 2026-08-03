@@ -9,6 +9,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
+    "lint:check": "pnpm lint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
     "generate:types": "payload generate:types",
     "generate:importmap": "payload generate:importmap",
@@ -73,6 +76,7 @@
     "drizzle-kit": "0.31.10",
     "eslint": "9.39.5",
     "eslint-config-next": "16.2.12",
+    "prettier": "3.9.6",
     "tsx": "4.22.0",
     "typescript": "6.0.2"
   },

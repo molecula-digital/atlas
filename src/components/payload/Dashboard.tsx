@@ -46,9 +46,17 @@ const QUICK_ACTIONS = [
   },
 ]
 
-type DraftItem = { id: number | string; collection: string; title: string; updatedAt: string }
+type DraftItem = {
+  id: number | string
+  collection: string
+  title: string
+  updatedAt: string
+}
 
-export default async function Dashboard({ payload, user }: AdminViewServerProps) {
+export default async function Dashboard({
+  payload,
+  user,
+}: AdminViewServerProps) {
   const collections = ['news', 'entries', 'jobs', 'events'] as const
 
   const results = await Promise.all(
@@ -75,10 +83,14 @@ export default async function Dashboard({ payload, user }: AdminViewServerProps)
         }
       }),
     )
-    .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
+    .sort(
+      (a, b) =>
+        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+    )
     .slice(0, 15)
 
-  const displayName = user?.displayName || user?.email?.split('@')[0] || 'usuario'
+  const displayName =
+    user?.displayName || user?.email?.split('@')[0] || 'usuario'
 
   return (
     <Gutter>
@@ -108,59 +120,85 @@ export default async function Dashboard({ payload, user }: AdminViewServerProps)
 
         {/* Quick Actions */}
         <div style={{ marginBottom: '32px' }}>
-          <h2 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '12px' }}>
+          <h2
+            style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '12px' }}
+          >
             Acciones rápidas
           </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '12px' }}>
-            {QUICK_ACTIONS.map(({ label, description, href, Icon, iconBg, iconColor }) => (
-              <a
-                key={href}
-                href={href}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '14px',
-                  padding: '16px',
-                  borderRadius: '10px',
-                  background: 'var(--theme-elevation-50)',
-                  color: 'var(--theme-text)',
-                  textDecoration: 'none',
-                  border: '1px solid var(--theme-elevation-150)',
-                  transition: 'background 0.15s, border-color 0.15s',
-                }}
-              >
-                <div
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
+              gap: '12px',
+            }}
+          >
+            {QUICK_ACTIONS.map(
+              ({ label, description, href, Icon, iconBg, iconColor }) => (
+                <a
+                  key={href}
+                  href={href}
                   style={{
-                    flexShrink: 0,
-                    width: '42px',
-                    height: '42px',
-                    borderRadius: '10px',
-                    background: iconBg,
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center',
+                    gap: '14px',
+                    padding: '16px',
+                    borderRadius: '10px',
+                    background: 'var(--theme-elevation-50)',
+                    color: 'var(--theme-text)',
+                    textDecoration: 'none',
+                    border: '1px solid var(--theme-elevation-150)',
+                    transition: 'background 0.15s, border-color 0.15s',
                   }}
                 >
-                  <Icon size={20} color={iconColor} />
-                </div>
-                <div>
-                  <div style={{ fontSize: '0.9rem', fontWeight: 600 }}>{label}</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--theme-elevation-500)', marginTop: '2px', lineHeight: 1.3 }}>
-                    {description}
+                  <div
+                    style={{
+                      flexShrink: 0,
+                      width: '42px',
+                      height: '42px',
+                      borderRadius: '10px',
+                      background: iconBg,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Icon size={20} color={iconColor} />
                   </div>
-                </div>
-              </a>
-            ))}
+                  <div>
+                    <div style={{ fontSize: '0.9rem', fontWeight: 600 }}>
+                      {label}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: '0.75rem',
+                        color: 'var(--theme-elevation-500)',
+                        marginTop: '2px',
+                        lineHeight: 1.3,
+                      }}
+                    >
+                      {description}
+                    </div>
+                  </div>
+                </a>
+              ),
+            )}
           </div>
         </div>
 
         {/* Drafts Queue */}
         <div>
-          <h2 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '12px' }}>
+          <h2
+            style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '12px' }}
+          >
             Borradores pendientes
           </h2>
           {drafts.length === 0 ? (
-            <p style={{ color: 'var(--theme-elevation-500)', fontSize: '0.9rem' }}>
+            <p
+              style={{
+                color: 'var(--theme-elevation-500)',
+                fontSize: '0.9rem',
+              }}
+            >
               No hay borradores pendientes.
             </p>
           ) : (
@@ -220,7 +258,8 @@ export default async function Dashboard({ payload, user }: AdminViewServerProps)
                             fontSize: '0.8rem',
                           }}
                         >
-                          {COLLECTION_LABELS[draft.collection] || draft.collection}
+                          {COLLECTION_LABELS[draft.collection] ||
+                            draft.collection}
                         </span>
                       </td>
                       <td

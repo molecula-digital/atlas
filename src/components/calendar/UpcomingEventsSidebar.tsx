@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react'
 import {
   CalendarDays,
   Clock,
@@ -9,19 +9,19 @@ import {
   ChevronLeft,
   ChevronRight,
   Mail,
-} from "lucide-react";
-import EventTypeBadge from "./EventTypeBadge";
-import type { TechEvent } from "@/hooks/useEventsData";
-import { buttonVariants } from '@/components/ui/button-variants';
-import { EventDialog } from "./EventDialog";
-import { EventDateBadge } from "./EventDateBadge";
-import { selectUpcomingEvents } from "@/lib/events";
+} from 'lucide-react'
+import EventTypeBadge from './EventTypeBadge'
+import type { TechEvent } from '@/hooks/useEventsData'
+import { buttonVariants } from '@/components/ui/button-variants'
+import { EventDialog } from './EventDialog'
+import { EventDateBadge } from './EventDateBadge'
+import { selectUpcomingEvents } from '@/lib/events'
 import {
   captureEventRegistrationStarted,
   type EventSurface,
-} from "@/lib/analytics";
+} from '@/lib/analytics'
 
-const PAGE_SIZE = 3;
+const PAGE_SIZE = 3
 
 export default function UpcomingEventsSidebar({
   events,
@@ -30,25 +30,25 @@ export default function UpcomingEventsSidebar({
   onEventSelect,
   surface,
 }: {
-  events: TechEvent[];
-  status: string;
-  refetch: () => void;
+  events: TechEvent[]
+  status: string
+  refetch: () => void
   /** Lets the parent calendar jump to the month of the opened event. */
-  onEventSelect?: (event: TechEvent) => void;
+  onEventSelect?: (event: TechEvent) => void
   /** Which calendar this sidebar belongs to, for discovery-path attribution. */
-  surface: EventSurface;
+  surface: EventSurface
 }) {
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(0)
 
-  const todayStr = new Date().toISOString().slice(0, 10);
-  const upcoming = selectUpcomingEvents(events, todayStr);
+  const todayStr = new Date().toISOString().slice(0, 10)
+  const upcoming = selectUpcomingEvents(events, todayStr)
 
-  const totalPages = Math.ceil(upcoming.length / PAGE_SIZE);
-  const pageEvents = upcoming.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+  const totalPages = Math.ceil(upcoming.length / PAGE_SIZE)
+  const pageEvents = upcoming.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
 
   useEffect(() => {
-    setPage(0);
-  }, [events.length]);
+    setPage(0)
+  }, [events.length])
 
   return (
     <div className="lg:col-span-2 p-4 md:p-6 flex flex-col min-w-0">
@@ -63,19 +63,28 @@ export default function UpcomingEventsSidebar({
         </div>
         <button
           onClick={refetch}
-          disabled={status === "loading"}
-          className={buttonVariants({ variant: "ghost", size: "icon-md", className: "text-muted shrink-0" })}
+          disabled={status === 'loading'}
+          className={buttonVariants({
+            variant: 'ghost',
+            size: 'icon-md',
+            className: 'text-muted shrink-0',
+          })}
           aria-label="Actualizar eventos"
           title="Actualizar eventos"
         >
-          <RefreshCw className={`w-3.5 h-3.5 ${status === "loading" ? "animate-spin" : ""}`} />
+          <RefreshCw
+            className={`w-3.5 h-3.5 ${status === 'loading' ? 'animate-spin' : ''}`}
+          />
         </button>
       </div>
 
       <div className="space-y-2 flex-1">
-        {events.length === 0 && (status === "loading" || status === "idle") ? (
+        {events.length === 0 && (status === 'loading' || status === 'idle') ? (
           Array.from({ length: PAGE_SIZE }).map((_, i) => (
-            <div key={i} className="rounded-lg border border-border p-3 flex items-center gap-3">
+            <div
+              key={i}
+              className="rounded-lg border border-border p-3 flex items-center gap-3"
+            >
               <div className="w-12 h-12 rounded-lg bg-elevated animate-pulse shrink-0" />
               <div className="flex-1 space-y-2">
                 <div className="h-4 w-3/4 rounded bg-elevated animate-pulse" />
@@ -116,7 +125,7 @@ export default function UpcomingEventsSidebar({
                       <span className="inline-flex items-center gap-1 text-2xs text-muted font-mono">
                         <Clock className="w-3 h-3 shrink-0" />
                         {ev.startTime}
-                        {ev.endTime ? `–${ev.endTime}` : ""}
+                        {ev.endTime ? `–${ev.endTime}` : ''}
                       </span>
                     )}
                     {ev.location && (
@@ -138,11 +147,13 @@ export default function UpcomingEventsSidebar({
                       href={ev.registerUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      onClick={() => captureEventRegistrationStarted(ev, surface)}
+                      onClick={() =>
+                        captureEventRegistrationStarted(ev, surface)
+                      }
                       className={buttonVariants({
-                        variant: "accent",
-                        size: "xs",
-                        className: "relative z-10 mt-2",
+                        variant: 'accent',
+                        size: 'xs',
+                        className: 'relative z-10 mt-2',
                       })}
                     >
                       <Ticket className="w-3 h-3" />
@@ -153,14 +164,15 @@ export default function UpcomingEventsSidebar({
 
                 <ArrowRight className="w-4 h-4 shrink-0 mt-1 text-muted group-hover:text-accent transition-colors" />
               </div>
-            );
+            )
           })
         ) : (
           <div className="rounded-lg border border-dashed border-border bg-elevated/40 p-8 text-center space-y-3 flex-1 flex flex-col items-center justify-center">
             <CalendarDays className="w-10 h-10 text-muted/50" />
             <p className="text-sm text-muted font-mono">Sin eventos próximos</p>
             <p className="text-xs text-secondary max-w-xs">
-              ¿Conoces algún evento tech en Sinaloa? Ayúdanos a mantener el calendario actualizado.
+              ¿Conoces algún evento tech en Sinaloa? Ayúdanos a mantener el
+              calendario actualizado.
             </p>
             <a
               href="mailto:alfonso@molecula.digital?subject=Sugerencia de evento para Tech Atlas"
@@ -174,11 +186,14 @@ export default function UpcomingEventsSidebar({
       </div>
 
       {totalPages > 1 && (
-        <nav className="flex items-center justify-center gap-2 mt-4 pt-4 border-t border-border" aria-label="Paginación de eventos">
+        <nav
+          className="flex items-center justify-center gap-2 mt-4 pt-4 border-t border-border"
+          aria-label="Paginación de eventos"
+        >
           <button
             onClick={() => setPage((p) => p - 1)}
             disabled={page === 0}
-            className={buttonVariants({ size: "icon-md" })}
+            className={buttonVariants({ size: 'icon-md' })}
             aria-label="Página anterior"
           >
             <ChevronLeft className="w-4 h-4" />
@@ -191,7 +206,7 @@ export default function UpcomingEventsSidebar({
           <button
             onClick={() => setPage((p) => p + 1)}
             disabled={page === totalPages - 1}
-            className={buttonVariants({ size: "icon-md" })}
+            className={buttonVariants({ size: 'icon-md' })}
             aria-label="Página siguiente"
           >
             <ChevronRight className="w-4 h-4" />
@@ -199,5 +214,5 @@ export default function UpcomingEventsSidebar({
         </nav>
       )}
     </div>
-  );
+  )
 }

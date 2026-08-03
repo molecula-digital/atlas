@@ -38,6 +38,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: true })
   } catch (err) {
     console.error('Newsletter unsubscribe failed:', err)
-    return NextResponse.json({ error: 'No se pudo cancelar la suscripción' }, { status: 500 })
+    return NextResponse.json(
+      { error: 'No se pudo cancelar la suscripción' },
+      { status: 500 },
+    )
   }
 }

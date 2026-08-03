@@ -14,7 +14,10 @@ interface AtlasLogoProps {
  * Wordmark that swaps with the theme. Both variants ship in the markup and CSS
  * picks one, so there is no flash or hydration mismatch on the theme class.
  */
-export function AtlasLogo({ className = 'h-4 w-auto', priority = false }: AtlasLogoProps) {
+export function AtlasLogo({
+  className = 'h-4 w-auto',
+  priority = false,
+}: AtlasLogoProps) {
   return (
     <>
       <Image

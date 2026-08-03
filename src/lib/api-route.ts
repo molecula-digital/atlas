@@ -12,7 +12,11 @@ export function parsePagination(
 ): { page: number; limit: number } {
   const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10) || 1)
   const limit = Math.min(
-    Math.max(1, parseInt(searchParams.get('limit') || String(defaultLimit), 10) || defaultLimit),
+    Math.max(
+      1,
+      parseInt(searchParams.get('limit') || String(defaultLimit), 10) ||
+        defaultLimit,
+    ),
     maxLimit,
   )
   return { page, limit }

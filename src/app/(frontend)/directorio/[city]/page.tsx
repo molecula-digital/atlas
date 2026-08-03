@@ -6,7 +6,11 @@ export async function generateStaticParams() {
   return ALL_CITY_IDS.filter((id) => id !== 'global').map((city) => ({ city }))
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ city: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ city: string }>
+}): Promise<Metadata> {
   const { city } = await params
   const cityName = getCityName(city)
   const description = `Empresas, startups, comunidades y talento tech en ${cityName}, Sinaloa.`
@@ -24,9 +28,17 @@ export async function generateMetadata({ params }: { params: Promise<{ city: str
   }
 }
 
-const staticCities = SINALOA_CITIES.map((m) => ({ id: m.id, name: m.name, count: 0 }))
+const staticCities = SINALOA_CITIES.map((m) => ({
+  id: m.id,
+  name: m.name,
+  count: 0,
+}))
 
-export default async function CityDirectoryPage({ params }: { params: Promise<{ city: string }> }) {
+export default async function CityDirectoryPage({
+  params,
+}: {
+  params: Promise<{ city: string }>
+}) {
   const { city } = await params
 
   return (

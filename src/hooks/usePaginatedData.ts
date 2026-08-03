@@ -32,7 +32,10 @@ export function usePaginatedData<T>({
   const [loading, setLoading] = useState(true)
   const [page, setPageState] = useState(() => {
     if (typeof window === 'undefined') return 1
-    const p = parseInt(new URLSearchParams(window.location.search).get('page') || '1', 10)
+    const p = parseInt(
+      new URLSearchParams(window.location.search).get('page') || '1',
+      10,
+    )
     return p > 0 ? p : 1
   })
 
@@ -77,7 +80,9 @@ export function usePaginatedData<T>({
       else url.searchParams.set('page', String(target))
       window.history.pushState({}, '', url.pathname + url.search)
       if (scrollTargetId) {
-        document.getElementById(scrollTargetId)?.scrollIntoView({ behavior: 'smooth' })
+        document
+          .getElementById(scrollTargetId)
+          ?.scrollIntoView({ behavior: 'smooth' })
       } else {
         window.scrollTo({ top: 0, behavior: 'smooth' })
       }

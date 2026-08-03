@@ -1,4 +1,4 @@
-import { ENTRY_TYPES, type StepProps } from "./types";
+import { ENTRY_TYPES, type StepProps } from './types'
 
 export default function StepTypeSelect({ state, setField }: StepProps) {
   return (
@@ -14,22 +14,22 @@ export default function StepTypeSelect({ state, setField }: StepProps) {
           <button
             key={type}
             type="button"
-            onClick={() => setField("entryType", type)}
+            onClick={() => setField('entryType', type)}
             className={`flex items-start gap-3 p-4 rounded-lg border text-left transition-colors ${
               state.entryType === type
-                ? "border-accent bg-accent/10"
-                : "border-border bg-card hover:border-accent/30"
+                ? 'border-accent bg-accent/10'
+                : 'border-border bg-card hover:border-accent/30'
             }`}
           >
             <Icon
               className={`w-5 h-5 mt-0.5 shrink-0 ${
-                state.entryType === type ? "text-accent" : "text-muted"
+                state.entryType === type ? 'text-accent' : 'text-muted'
               }`}
             />
             <div>
               <div
                 className={`font-mono text-sm font-semibold ${
-                  state.entryType === type ? "text-accent" : "text-primary"
+                  state.entryType === type ? 'text-accent' : 'text-primary'
                 }`}
               >
                 {label}
@@ -40,5 +40,5 @@ export default function StepTypeSelect({ state, setField }: StepProps) {
         ))}
       </div>
     </div>
-  );
+  )
 }

@@ -14,7 +14,12 @@ interface PageHeroProps {
  * uppercase title with an accent icon centered against it, and a mono standfirst.
  * Bottom padding only — top spacing comes from the layout, like every route.
  */
-export function PageHero({ icon: Icon, title, description, breadcrumb }: PageHeroProps) {
+export function PageHero({
+  icon: Icon,
+  title,
+  description,
+  breadcrumb,
+}: PageHeroProps) {
   return (
     <section className="pb-8">
       <Breadcrumb items={breadcrumb} />

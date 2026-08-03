@@ -1,5 +1,6 @@
 export const SITE_TITLE = 'Tech Atlas'
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://atlas-sinaloa.tech'
+export const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || 'https://atlas-sinaloa.tech'
 
 /** Pacific Time — all of Sinaloa uses America/Mazatlan (UTC-7, no DST). */
 export const EVENT_TIMEZONE = 'America/Mazatlan'
@@ -90,20 +91,25 @@ export const ENTRY_TYPE_CONFIG: Record<AtlasEntryType, EntryTypeConfig> = {
   },
 }
 
-export const CATEGORY_URL_MAP: Record<AtlasEntryType, string> = Object.fromEntries(
-  Object.entries(ENTRY_TYPE_CONFIG).map(([k, v]) => [k, v.slug]),
-) as Record<AtlasEntryType, string>
+export const CATEGORY_URL_MAP: Record<AtlasEntryType, string> =
+  Object.fromEntries(
+    Object.entries(ENTRY_TYPE_CONFIG).map(([k, v]) => [k, v.slug]),
+  ) as Record<AtlasEntryType, string>
 
-export const URL_CATEGORY_MAP: Record<string, AtlasEntryType> = Object.fromEntries(
-  Object.entries(CATEGORY_URL_MAP).map(([k, v]) => [v, k as AtlasEntryType]),
-) as Record<string, AtlasEntryType>
+export const URL_CATEGORY_MAP: Record<string, AtlasEntryType> =
+  Object.fromEntries(
+    Object.entries(CATEGORY_URL_MAP).map(([k, v]) => [v, k as AtlasEntryType]),
+  ) as Record<string, AtlasEntryType>
 
 export function getEntryUrl(entryType: AtlasEntryType, slug: string): string {
   return `/${CATEGORY_URL_MAP[entryType]}/${slug}`
 }
 
 export function emptyTypeCounts(): Record<AtlasEntryType, number> {
-  return Object.fromEntries(ENTRY_TYPES.map((t) => [t, 0])) as Record<AtlasEntryType, number>
+  return Object.fromEntries(ENTRY_TYPES.map((t) => [t, 0])) as Record<
+    AtlasEntryType,
+    number
+  >
 }
 
 export interface City {
@@ -160,8 +166,12 @@ export const MODALITY_LABELS: Record<string, string> = {
   hybrid: 'Híbrido',
 }
 
-export const JOB_TYPE_OPTIONS = Object.entries(JOB_TYPE_LABELS).map(([value, label]) => ({ value, label }))
-export const MODALITY_OPTIONS = Object.entries(MODALITY_LABELS).map(([value, label]) => ({ value, label }))
+export const JOB_TYPE_OPTIONS = Object.entries(JOB_TYPE_LABELS).map(
+  ([value, label]) => ({ value, label }),
+)
+export const MODALITY_OPTIONS = Object.entries(MODALITY_LABELS).map(
+  ([value, label]) => ({ value, label }),
+)
 
 export const STAGE_OPTIONS = [
   { value: 'Idea', label: 'Idea' },
@@ -292,21 +302,32 @@ export interface AtlasCategory {
   slug: string
 }
 
-const DISPLAY_CATEGORIES: AtlasEntryType[] = ['startup', 'business', 'consultory', 'community', 'person', 'research-center']
+const DISPLAY_CATEGORIES: AtlasEntryType[] = [
+  'startup',
+  'business',
+  'consultory',
+  'community',
+  'person',
+  'research-center',
+]
 
-export const ATLAS_CATEGORIES: AtlasCategory[] = DISPLAY_CATEGORIES.map((type) => ({
-  type,
-  label: ENTRY_TYPE_CONFIG[type].labelPlural,
-  description: ENTRY_TYPE_CONFIG[type].description,
-  icon: ENTRY_TYPE_CONFIG[type].icon,
-  slug: ENTRY_TYPE_CONFIG[type].slug,
-}))
+export const ATLAS_CATEGORIES: AtlasCategory[] = DISPLAY_CATEGORIES.map(
+  (type) => ({
+    type,
+    label: ENTRY_TYPE_CONFIG[type].labelPlural,
+    description: ENTRY_TYPE_CONFIG[type].description,
+    icon: ENTRY_TYPE_CONFIG[type].icon,
+    slug: ENTRY_TYPE_CONFIG[type].slug,
+  }),
+)
 
-export const WHATSAPP_URL = 'https://chat.whatsapp.com/G9ddxpZ7NUtEOT0M6UzUkY?mode=gi_t'
+export const WHATSAPP_URL =
+  'https://chat.whatsapp.com/G9ddxpZ7NUtEOT0M6UzUkY?mode=gi_t'
 
 export const NEWSLETTER = {
   title: 'Newsletter',
-  description: 'Noticias, eventos y proyectos del ecosistema tech de Sinaloa. Un correo al mes.',
+  description:
+    'Noticias, eventos y proyectos del ecosistema tech de Sinaloa. Un correo al mes.',
   placeholder: 'tu@email.com',
   cta: 'Suscribirme',
   success: 'Listo — te avisaremos cuando haya novedades.',
@@ -320,7 +341,6 @@ export const NEWSLETTER = {
   unsubscribeCta: 'Cancelar suscripción',
   unsubscribeEmailPlaceholder: 'tu@email.com',
 } as const
-
 
 export const SOCIAL_LINKS = [
   {

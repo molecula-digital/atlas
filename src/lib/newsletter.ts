@@ -22,7 +22,10 @@ export async function findUserByEmail(email: string) {
   return row ?? null
 }
 
-export async function setProfileNewsletterEnabled(userId: string, enabled: boolean) {
+export async function setProfileNewsletterEnabled(
+  userId: string,
+  enabled: boolean,
+) {
   const now = new Date()
   await db
     .insert(profiles)
@@ -107,7 +110,10 @@ export async function subscribeEmail(email: string, source: NewsletterSource) {
 }
 
 /** Unsubscribe by email and/or token. Always safe to call (no enumeration). */
-export async function unsubscribeNewsletter(opts: { email?: string; token?: string }) {
+export async function unsubscribeNewsletter(opts: {
+  email?: string
+  token?: string
+}) {
   const payload = await getPayloadClient()
   const now = new Date().toISOString()
 
@@ -161,7 +167,10 @@ export async function removeAnonymousSubscriber(email: string) {
  * active subscription is carried over to the profile flag first — otherwise
  * signing up would silently unsubscribe someone who had already opted in.
  */
-export async function claimAnonymousSubscription(userId: string, email: string) {
+export async function claimAnonymousSubscription(
+  userId: string,
+  email: string,
+) {
   const payload = await getPayloadClient()
   const existing = await findSubscriberByEmail(payload, email)
   if (!existing) return
@@ -188,7 +197,9 @@ export async function syncSubscriptionForEmails(
   enabled: boolean,
   emails: (string | null | undefined)[],
 ) {
-  const unique = [...new Set(emails.filter(Boolean).map((e) => normalizeEmail(e as string)))]
+  const unique = [
+    ...new Set(emails.filter(Boolean).map((e) => normalizeEmail(e as string))),
+  ]
 
   for (const email of unique) {
     if (enabled) {

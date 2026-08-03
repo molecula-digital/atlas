@@ -10,11 +10,18 @@ export const MEDIA_CDN_HOST = 'cdn.atlas-sinaloa.tech'
 const LEGACY_MEDIA_HOSTS = new Set(['media.atlas-sinaloa.tech'])
 
 function isR2Hostname(hostname: string): boolean {
-  return hostname === 'r2.cloudflarestorage.com' || hostname.endsWith('.r2.cloudflarestorage.com')
+  return (
+    hostname === 'r2.cloudflarestorage.com' ||
+    hostname.endsWith('.r2.cloudflarestorage.com')
+  )
 }
 
 function isBucketPublicHost(hostname: string): boolean {
-  return hostname === MEDIA_CDN_HOST || LEGACY_MEDIA_HOSTS.has(hostname) || isR2Hostname(hostname)
+  return (
+    hostname === MEDIA_CDN_HOST ||
+    LEGACY_MEDIA_HOSTS.has(hostname) ||
+    isR2Hostname(hostname)
+  )
 }
 
 /** MEDIA_URL with no trailing slash. Local MinIO or the CDN in production. */
@@ -30,15 +37,22 @@ export function getMediaBaseUrl(): string {
  */
 export function buildMediaFileUrl(filename: string, prefix = ''): string {
   const base = getMediaBaseUrl()
-  const filePath = prefix ? `${prefix.replace(/\/+$/, '')}/${filename}` : filename
-  return toPublicMediaUrl(`${base}/${filePath.replace(/^\/+/, '')}`) ?? `${base}/${filePath.replace(/^\/+/, '')}`
+  const filePath = prefix
+    ? `${prefix.replace(/\/+$/, '')}/${filename}`
+    : filename
+  return (
+    toPublicMediaUrl(`${base}/${filePath.replace(/^\/+/, '')}`) ??
+    `${base}/${filePath.replace(/^\/+/, '')}`
+  )
 }
 
 /**
  * Rewrite bucket / legacy media hosts to the CDN. Leaves Google avatars,
  * blob previews, and local MinIO URLs untouched.
  */
-export function toPublicMediaUrl(input: string | null | undefined): string | null {
+export function toPublicMediaUrl(
+  input: string | null | undefined,
+): string | null {
   if (input == null) return null
   const value = input.trim()
   if (!value) return null

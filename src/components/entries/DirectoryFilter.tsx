@@ -38,8 +38,14 @@ function renderEntryItem(
   entry: Entry & { kind?: string; href?: string; userId?: string },
   hideTypeBadge: boolean,
 ) {
-  const logo = typeof entry.logo === 'object' && entry.logo !== null ? entry.logo as Media : null
-  const coverImage = typeof entry.coverImage === 'object' && entry.coverImage !== null ? entry.coverImage as Media : null
+  const logo =
+    typeof entry.logo === 'object' && entry.logo !== null
+      ? (entry.logo as Media)
+      : null
+  const coverImage =
+    typeof entry.coverImage === 'object' && entry.coverImage !== null
+      ? (entry.coverImage as Media)
+      : null
   const isUserProfile = entry.kind === 'user-profile'
 
   return (
@@ -49,8 +55,16 @@ function renderEntryItem(
         name={entry.name}
         tagline={entry.tagline ?? undefined}
         entryType={entry.entryType}
-        logo={logo && logo.url ? { url: logo.url, alt: logo.alt ?? undefined } : null}
-        coverImage={coverImage && coverImage.url ? { url: coverImage.url, alt: coverImage.alt ?? undefined } : null}
+        logo={
+          logo && logo.url
+            ? { url: logo.url, alt: logo.alt ?? undefined }
+            : null
+        }
+        coverImage={
+          coverImage && coverImage.url
+            ? { url: coverImage.url, alt: coverImage.alt ?? undefined }
+            : null
+        }
         city={entry.city}
         tags={entry.tags ?? undefined}
         href={isUserProfile ? entry.href : undefined}
@@ -92,7 +106,9 @@ export default function DirectoryFilter({
     <>
       {/* Category filters */}
       <div>
-        <h3 className="font-mono text-xs text-muted uppercase tracking-wider mb-3">Categorías</h3>
+        <h3 className="font-mono text-xs text-muted uppercase tracking-wider mb-3">
+          Categorías
+        </h3>
         <div className="space-y-1">
           <a
             href="/directorio"
@@ -113,7 +129,9 @@ export default function DirectoryFilter({
             />
             <span
               className={`text-sm ${
-                !activeType && !activeCity ? 'text-accent font-medium' : 'text-primary'
+                !activeType && !activeCity
+                  ? 'text-accent font-medium'
+                  : 'text-primary'
               }`}
             >
               Todos
@@ -121,7 +139,8 @@ export default function DirectoryFilter({
           </a>
 
           {Object.entries(ENTRY_TYPE_LABELS).map(([type, label]) => {
-            const IconComponent = ENTRY_TYPE_ICON_MAP[ENTRY_TYPE_ICONS[type]] || LayoutGrid
+            const IconComponent =
+              ENTRY_TYPE_ICON_MAP[ENTRY_TYPE_ICONS[type]] || LayoutGrid
             const isActive = activeType === type
             return (
               <a
@@ -132,7 +151,9 @@ export default function DirectoryFilter({
                   selectType(type)
                 }}
                 className={`w-full flex items-center gap-2.5 py-2 px-3 rounded text-left transition-colors ${
-                  isActive ? 'bg-accent/10 border-l-2 border-accent' : 'hover:bg-elevated'
+                  isActive
+                    ? 'bg-accent/10 border-l-2 border-accent'
+                    : 'hover:bg-elevated'
                 }`}
               >
                 <IconComponent
@@ -153,7 +174,9 @@ export default function DirectoryFilter({
 
       {/* City filters */}
       <div>
-        <h3 className="font-mono text-xs text-muted uppercase tracking-wider mb-3">Municipios</h3>
+        <h3 className="font-mono text-xs text-muted uppercase tracking-wider mb-3">
+          Municipios
+        </h3>
         <div className="space-y-1">
           {sortedCities.map((mun) => (
             <button
@@ -167,7 +190,9 @@ export default function DirectoryFilter({
             >
               <span
                 className={`text-sm ${
-                  activeCity === mun.id ? 'text-accent font-medium' : 'text-primary'
+                  activeCity === mun.id
+                    ? 'text-accent font-medium'
+                    : 'text-primary'
                 }`}
               >
                 {mun.name}
@@ -182,7 +207,9 @@ export default function DirectoryFilter({
 
       {/* Sort options */}
       <div>
-        <h3 className="font-mono text-xs text-muted uppercase tracking-wider mb-3">Ordenar</h3>
+        <h3 className="font-mono text-xs text-muted uppercase tracking-wider mb-3">
+          Ordenar
+        </h3>
         <div className="space-y-1">
           {SORT_OPTIONS.map((opt) => {
             const isActive = currentSort === opt.value
@@ -191,7 +218,9 @@ export default function DirectoryFilter({
                 key={opt.value}
                 onClick={() => setSort(opt.value)}
                 className={`w-full flex items-center gap-2.5 py-2 px-3 rounded text-left transition-colors cursor-pointer ${
-                  isActive ? 'bg-accent/10 border-l-2 border-accent' : 'hover:bg-elevated'
+                  isActive
+                    ? 'bg-accent/10 border-l-2 border-accent'
+                    : 'hover:bg-elevated'
                 }`}
               >
                 <ArrowUpDown
@@ -225,7 +254,9 @@ export default function DirectoryFilter({
       />
 
       {/* Heading */}
-      <h1 className="terminal-title text-3xl md:text-4xl font-sans font-bold text-primary">{heading}</h1>
+      <h1 className="terminal-title text-3xl md:text-4xl font-sans font-bold text-primary">
+        {heading}
+      </h1>
       <p className="mt-2 text-secondary mb-6">
         Explora el directorio del ecosistema tech.
       </p>
@@ -234,13 +265,18 @@ export default function DirectoryFilter({
       <div className="lg:hidden mb-6">
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className={buttonVariants({ size: "md", className: "w-full justify-between backdrop-blur-sm" })}
+          className={buttonVariants({
+            size: 'md',
+            className: 'w-full justify-between backdrop-blur-sm',
+          })}
         >
           <span className="flex items-center gap-2">
             <SlidersHorizontal className="w-4 h-4 text-muted" />
             Filtros
             {(activeType || activeCity) && (
-              <span className="px-1.5 py-0.5 text-[10px] rounded bg-accent/20 text-accent">1</span>
+              <span className="px-1.5 py-0.5 text-[10px] rounded bg-accent/20 text-accent">
+                1
+              </span>
             )}
           </span>
           <ChevronDown
@@ -252,9 +288,7 @@ export default function DirectoryFilter({
 
         <div className={`collapse-grid ${mobileOpen ? 'open' : ''}`}>
           <div className="collapse-content">
-            <Card className="mt-2 p-4 space-y-4">
-              {sidebarContent}
-            </Card>
+            <Card className="mt-2 p-4 space-y-4">{sidebarContent}</Card>
           </div>
         </div>
       </div>
@@ -262,7 +296,10 @@ export default function DirectoryFilter({
       {/* Desktop: sidebar + content grid */}
       <div className="grid lg:grid-cols-[240px_1fr] gap-6">
         {/* Desktop sidebar */}
-        <Card as="aside" className="hidden lg:block p-4 h-fit lg:max-h-[calc(100vh-12rem)] lg:overflow-y-auto space-y-4">
+        <Card
+          as="aside"
+          className="hidden lg:block p-4 h-fit lg:max-h-[calc(100vh-12rem)] lg:overflow-y-auto space-y-4"
+        >
           {sidebarContent}
         </Card>
 

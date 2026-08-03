@@ -17,8 +17,7 @@ export default function GlobalError({
           alignItems: 'center',
           justifyContent: 'center',
           backgroundColor: '#101010',
-          fontFamily:
-            '"Space Grotesk", ui-sans-serif, system-ui, sans-serif',
+          fontFamily: '"Space Grotesk", ui-sans-serif, system-ui, sans-serif',
           color: '#ffffff',
         }}
       >

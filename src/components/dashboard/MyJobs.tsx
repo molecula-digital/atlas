@@ -49,7 +49,10 @@ export function MyJobs() {
         </div>
         <div className="h-[4.5rem] rounded-lg border border-dashed border-border bg-elevated/40" />
         {[1, 2, 3].map((i) => (
-          <div key={i} className="bg-card border border-border rounded-lg p-4 flex items-start gap-3">
+          <div
+            key={i}
+            className="bg-card border border-border rounded-lg p-4 flex items-start gap-3"
+          >
             <div className="w-9 h-9 rounded-lg bg-elevated" />
             <div className="flex-1 space-y-2">
               <div className="flex gap-2">
@@ -110,7 +113,9 @@ export function MyJobs() {
         </div>
         <div className="flex-1 bg-card border border-border rounded-lg px-4 py-3 text-center">
           <div className="text-lg font-bold text-muted">{expiredCount}</div>
-          <div className="text-2xs font-mono text-muted uppercase">Expirados</div>
+          <div className="text-2xs font-mono text-muted uppercase">
+            Expirados
+          </div>
         </div>
       </div>
 
@@ -149,10 +154,13 @@ export function MyJobs() {
                     </span>
                   )}
                 </div>
-                <h3 className="font-semibold text-primary text-sm">{job.title}</h3>
+                <h3 className="font-semibold text-primary text-sm">
+                  {job.title}
+                </h3>
                 <p className="text-2xs text-muted font-mono">
                   {JOB_TYPE_LABELS[job.type] || job.type}
-                  {job.modality && ` · ${MODALITY_LABELS[job.modality] || job.modality}`}
+                  {job.modality &&
+                    ` · ${MODALITY_LABELS[job.modality] || job.modality}`}
                   {job.city && ` · ${getCityName(job.city)}`}
                 </p>
                 <p className="text-2xs text-muted font-mono mt-1">

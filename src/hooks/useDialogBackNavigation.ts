@@ -44,20 +44,12 @@ export function useDialogBackNavigation(
     if (!isOpen || !enabled) return
 
     const nextUrl = urlRef.current
-    history.pushState(
-      { [HISTORY_FLAG]: true },
-      '',
-      nextUrl ?? undefined,
-    )
+    history.pushState({ [HISTORY_FLAG]: true }, '', nextUrl ?? undefined)
 
     const handlePopState = () => {
       if (onBackRef.current?.()) {
         const restoreUrl = urlRef.current
-        history.pushState(
-          { [HISTORY_FLAG]: true },
-          '',
-          restoreUrl ?? undefined,
-        )
+        history.pushState({ [HISTORY_FLAG]: true }, '', restoreUrl ?? undefined)
         return
       }
       onCloseRef.current()

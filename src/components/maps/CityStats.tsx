@@ -1,7 +1,7 @@
-import React from "react";
-import { buttonVariants } from '@/components/ui/button-variants';
-import { ENTRY_TYPE_CONFIG } from "@/config";
-import type { AtlasEntryType } from "@/config";
+import React from 'react'
+import { buttonVariants } from '@/components/ui/button-variants'
+import { ENTRY_TYPE_CONFIG } from '@/config'
+import type { AtlasEntryType } from '@/config'
 import {
   MapPin,
   Rocket,
@@ -12,18 +12,18 @@ import {
   ArrowRight,
   Plus,
   X,
-} from "lucide-react";
+} from 'lucide-react'
 
-type TypeCounts = Record<AtlasEntryType, number>;
+type TypeCounts = Record<AtlasEntryType, number>
 
 interface CityStatsProps {
   selectedData: {
-    name: string;
-    id: string;
-    stats: TypeCounts;
-    total: number;
-  } | null;
-  onClose: () => void;
+    name: string
+    id: string
+    stats: TypeCounts
+    total: number
+  } | null
+  onClose: () => void
 }
 
 export default function CityStats({ selectedData, onClose }: CityStatsProps) {
@@ -45,7 +45,7 @@ export default function CityStats({ selectedData, onClose }: CityStatsProps) {
         <StatsEmpty name={selectedData.name} onClose={onClose} />
       )}
     </div>
-  );
+  )
 }
 
 function StatsPlaceholder() {
@@ -56,7 +56,7 @@ function StatsPlaceholder() {
         Selecciona un municipio de la lista
       </span>
     </div>
-  );
+  )
 }
 
 function StatsContent({
@@ -65,10 +65,10 @@ function StatsContent({
   stats,
   onClose,
 }: {
-  name: string;
-  id: string;
-  stats: TypeCounts;
-  onClose: () => void;
+  name: string
+  id: string
+  stats: TypeCounts
+  onClose: () => void
 }) {
   return (
     <div>
@@ -77,7 +77,7 @@ function StatsContent({
         <button
           type="button"
           onClick={onClose}
-          className={buttonVariants({ variant: "ghost", size: "icon-md" })}
+          className={buttonVariants({ variant: 'ghost', size: 'icon-md' })}
           aria-label="Cerrar resumen"
         >
           <X className="w-4 h-4" />
@@ -112,13 +112,17 @@ function StatsContent({
       </div>
       <a
         href={`/directorio/${id}`}
-        className={buttonVariants({ variant: 'accent', size: 'md', className: 'mt-3 w-full' })}
+        className={buttonVariants({
+          variant: 'accent',
+          size: 'md',
+          className: 'mt-3 w-full',
+        })}
       >
         VER COMUNIDAD
         <ArrowRight className="w-3.5 h-3.5" />
       </a>
     </div>
-  );
+  )
 }
 
 function StatCard({
@@ -126,9 +130,9 @@ function StatCard({
   value,
   label,
 }: {
-  icon: React.ReactNode;
-  value: number;
-  label: string;
+  icon: React.ReactNode
+  value: number
+  label: string
 }) {
   return (
     <div className="flex items-center gap-3 p-3 bg-elevated rounded-lg">
@@ -140,7 +144,7 @@ function StatCard({
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 function StatsEmpty({ name, onClose }: { name: string; onClose: () => void }) {
@@ -151,7 +155,7 @@ function StatsEmpty({ name, onClose }: { name: string; onClose: () => void }) {
         <button
           type="button"
           onClick={onClose}
-          className={buttonVariants({ variant: "ghost", size: "icon-md" })}
+          className={buttonVariants({ variant: 'ghost', size: 'icon-md' })}
           aria-label="Cerrar resumen"
         >
           <X className="w-4 h-4" />
@@ -171,12 +175,16 @@ function StatsEmpty({ name, onClose }: { name: string; onClose: () => void }) {
         </div>
         <a
           href="/dashboard"
-          className={buttonVariants({ variant: 'accent', size: 'md', className: 'w-full border-dashed' })}
+          className={buttonVariants({
+            variant: 'accent',
+            size: 'md',
+            className: 'w-full border-dashed',
+          })}
         >
           <Plus className="w-3.5 h-3.5" />
           REGISTRAR PERFIL/STARTUP
         </a>
       </div>
     </div>
-  );
+  )
 }

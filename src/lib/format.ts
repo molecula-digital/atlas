@@ -37,7 +37,10 @@ const MAX_SOCIAL_IMAGE_BYTES = 1_000_000
  * derivative is heavier than 1 MB, use the smaller card derivative instead.
  * Falls back to the original upload when neither generated size is available.
  */
-export function extractSocialImage(field: unknown, fallbackAlt?: string): SocialImage | null {
+export function extractSocialImage(
+  field: unknown,
+  fallbackAlt?: string,
+): SocialImage | null {
   if (typeof field !== 'object' || field === null) return null
 
   const media = field as {
@@ -98,9 +101,8 @@ export function truncateMetadataText(value: string, maxLength: number): string {
 
   const slice = normalized.slice(0, Math.max(1, maxLength - 1))
   const lastSpace = slice.lastIndexOf(' ')
-  const boundary = lastSpace >= Math.floor(maxLength * 0.7)
-    ? lastSpace
-    : slice.length
+  const boundary =
+    lastSpace >= Math.floor(maxLength * 0.7) ? lastSpace : slice.length
 
   return `${slice.slice(0, boundary).trimEnd()}…`
 }

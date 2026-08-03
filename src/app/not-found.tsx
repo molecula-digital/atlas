@@ -25,7 +25,11 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
   return (
-    <html lang="es-MX" className={`${jetbrainsMono.variable} ${spaceGrotesk.variable}`} suppressHydrationWarning>
+    <html
+      lang="es-MX"
+      className={`${jetbrainsMono.variable} ${spaceGrotesk.variable}`}
+      suppressHydrationWarning
+    >
       <body className="bg-background">
         <ThemeProvider>
           <div className="font-sans w-full min-h-screen flex flex-col text-secondary selection:bg-accent selection:text-accent-foreground relative overflow-hidden">

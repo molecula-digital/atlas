@@ -6,14 +6,30 @@ import { withRateLimit } from '@/lib/rate-limit'
 
 /** Allowlisted fields that callers may set on job submissions */
 const JOB_ALLOWED_FIELDS = [
-  'title', 'slug', 'description', 'type', 'modality', 'city',
-  'compensation', 'tags', 'contactUrl', 'entry', 'expiresAt',
+  'title',
+  'slug',
+  'description',
+  'type',
+  'modality',
+  'city',
+  'compensation',
+  'tags',
+  'contactUrl',
+  'entry',
+  'expiresAt',
 ] as const
 
 /** Fields editable via PATCH (excludes slug and expiresAt) */
 const JOB_EDIT_FIELDS = [
-  'title', 'description', 'type', 'modality', 'city',
-  'compensation', 'tags', 'contactUrl', 'entry',
+  'title',
+  'description',
+  'type',
+  'modality',
+  'city',
+  'compensation',
+  'tags',
+  'contactUrl',
+  'entry',
 ] as const
 
 export async function GET(request: NextRequest) {
@@ -55,7 +71,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const limited = withRateLimit(request, { limit: 10, windowMs: 15 * 60 * 1000, keyPrefix: 'submit-job' }, session.user.id)
+  const limited = withRateLimit(
+    request,
+    { limit: 10, windowMs: 15 * 60 * 1000, keyPrefix: 'submit-job' },
+    session.user.id,
+  )
   if (limited) return limited
 
   try {
@@ -92,7 +112,11 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const limited = withRateLimit(request, { limit: 10, windowMs: 15 * 60 * 1000, keyPrefix: 'submit-job' }, session.user.id)
+  const limited = withRateLimit(
+    request,
+    { limit: 10, windowMs: 15 * 60 * 1000, keyPrefix: 'submit-job' },
+    session.user.id,
+  )
   if (limited) return limited
 
   try {
@@ -105,13 +129,20 @@ export async function PATCH(request: NextRequest) {
 
     const payload = await getPayloadClient()
 
-    const existing = await payload.findByID({ collection: 'jobs', id, draft: true })
+    const existing = await payload.findByID({
+      collection: 'jobs',
+      id,
+      draft: true,
+    })
     if (!existing || existing.postedBy !== session.user.id) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
     if (existing._status !== 'draft') {
-      return NextResponse.json({ error: 'Only draft jobs can be edited' }, { status: 400 })
+      return NextResponse.json(
+        { error: 'Only draft jobs can be edited' },
+        { status: 400 },
+      )
     }
 
     const data = pickAllowedFields(body, JOB_EDIT_FIELDS)

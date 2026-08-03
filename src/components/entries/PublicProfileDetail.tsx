@@ -8,11 +8,16 @@ import { buttonVariants } from '@/components/ui/button-variants'
 import { GitHubIcon, LinkedInIcon, XIcon } from '@/components/icons/SocialIcons'
 import { ProfileEditButton } from './ProfileEditButton'
 
-function normalizeHref(value: string, kind: 'url' | 'linkedin' | 'x' | 'github'): string {
+function normalizeHref(
+  value: string,
+  kind: 'url' | 'linkedin' | 'x' | 'github',
+): string {
   if (/^https?:\/\//i.test(value)) return value
   switch (kind) {
     case 'linkedin':
-      return value.includes('linkedin.com') ? `https://${value}` : `https://linkedin.com/in/${value.replace(/^\/+/, '')}`
+      return value.includes('linkedin.com')
+        ? `https://${value}`
+        : `https://linkedin.com/in/${value.replace(/^\/+/, '')}`
     case 'x':
       return `https://x.com/${value.replace(/^@/, '')}`
     case 'github':
@@ -31,18 +36,34 @@ export function PublicProfileDetail({ profile }: { profile: PublicProfile }) {
   const subtitle = [profile.title, profile.company].filter(Boolean).join(' · ')
   const links = [
     profile.website
-      ? { href: normalizeHref(profile.website, 'url'), label: 'Sitio web', icon: 'globe' as const }
+      ? {
+          href: normalizeHref(profile.website, 'url'),
+          label: 'Sitio web',
+          icon: 'globe' as const,
+        }
       : null,
     profile.linkedin
-      ? { href: normalizeHref(profile.linkedin, 'linkedin'), label: 'LinkedIn', icon: 'linkedin' as const }
+      ? {
+          href: normalizeHref(profile.linkedin, 'linkedin'),
+          label: 'LinkedIn',
+          icon: 'linkedin' as const,
+        }
       : null,
     profile.x
       ? { href: normalizeHref(profile.x, 'x'), label: 'X', icon: 'x' as const }
       : null,
     profile.github
-      ? { href: normalizeHref(profile.github, 'github'), label: 'GitHub', icon: 'github' as const }
+      ? {
+          href: normalizeHref(profile.github, 'github'),
+          label: 'GitHub',
+          icon: 'github' as const,
+        }
       : null,
-  ].filter(Boolean) as Array<{ href: string; label: string; icon: 'globe' | 'linkedin' | 'x' | 'github' }>
+  ].filter(Boolean) as Array<{
+    href: string
+    label: string
+    icon: 'globe' | 'linkedin' | 'x' | 'github'
+  }>
 
   return (
     <div>
@@ -77,7 +98,9 @@ export function PublicProfileDetail({ profile }: { profile: PublicProfile }) {
                 {profile.name}
               </h1>
               {subtitle && (
-                <p className="mt-1 text-sm text-secondary font-mono">{subtitle}</p>
+                <p className="mt-1 text-sm text-secondary font-mono">
+                  {subtitle}
+                </p>
               )}
 
               {links.length > 0 && (
@@ -88,12 +111,21 @@ export function PublicProfileDetail({ profile }: { profile: PublicProfile }) {
                         href={link.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className={buttonVariants({ variant: 'neutral', size: 'sm' })}
+                        className={buttonVariants({
+                          variant: 'neutral',
+                          size: 'sm',
+                        })}
                       >
-                        {link.icon === 'globe' && <Globe className="w-3.5 h-3.5" />}
-                        {link.icon === 'linkedin' && <LinkedInIcon className="w-3.5 h-3.5" />}
+                        {link.icon === 'globe' && (
+                          <Globe className="w-3.5 h-3.5" />
+                        )}
+                        {link.icon === 'linkedin' && (
+                          <LinkedInIcon className="w-3.5 h-3.5" />
+                        )}
                         {link.icon === 'x' && <XIcon className="w-3.5 h-3.5" />}
-                        {link.icon === 'github' && <GitHubIcon className="w-3.5 h-3.5" />}
+                        {link.icon === 'github' && (
+                          <GitHubIcon className="w-3.5 h-3.5" />
+                        )}
                         {link.label}
                       </a>
                     </li>

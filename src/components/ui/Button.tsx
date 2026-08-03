@@ -2,7 +2,11 @@
 
 import * as React from 'react'
 import { Slot } from '@radix-ui/react-slot'
-import { buttonVariants, type ButtonVariant, type ButtonSize } from './button-variants'
+import {
+  buttonVariants,
+  type ButtonVariant,
+  type ButtonSize,
+} from './button-variants'
 
 function Button({
   className,
@@ -27,4 +31,8 @@ function Button({
 }
 
 export { Button }
-export { buttonVariants, type ButtonVariant, type ButtonSize } from './button-variants'
+export {
+  buttonVariants,
+  type ButtonVariant,
+  type ButtonSize,
+} from './button-variants'

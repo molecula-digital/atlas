@@ -32,13 +32,23 @@ const spaceGrotesk = Space_Grotesk({
  * is about being able to point it somewhere per environment.
  */
 const UMAMI_SRC =
-  process.env.NEXT_PUBLIC_UMAMI_SRC || 'https://analytics.molecula.digital/script.js'
+  process.env.NEXT_PUBLIC_UMAMI_SRC ||
+  'https://analytics.molecula.digital/script.js'
 const umamiWebsiteId = process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID
 const analyticsEnabled = process.env.NODE_ENV === 'production'
 
-export default function FrontendLayout({ children }: { children: React.ReactNode }) {
+export default function FrontendLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <html lang="es-MX" className={`${jetbrainsMono.variable} ${spaceGrotesk.variable}`} data-scroll-behavior="smooth" suppressHydrationWarning>
+    <html
+      lang="es-MX"
+      className={`${jetbrainsMono.variable} ${spaceGrotesk.variable}`}
+      data-scroll-behavior="smooth"
+      suppressHydrationWarning
+    >
       <head>
         {analyticsEnabled && umamiWebsiteId && (
           // No `defer`: next/script injects this itself once the page is

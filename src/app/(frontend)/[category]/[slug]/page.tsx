@@ -1,7 +1,11 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
-import { getEntryBySlug, getPublishedEntries, getSuggestedEntries } from '@/lib/payload'
+import {
+  getEntryBySlug,
+  getPublishedEntries,
+  getSuggestedEntries,
+} from '@/lib/payload'
 import { getPublicProfileBySlug } from '@/lib/public-profile'
 import { stripMarkdown } from '@/lib/profile-fields'
 import { PublicProfileDetail } from '@/components/entries/PublicProfileDetail'
@@ -70,7 +74,8 @@ export async function generateMetadata({
   const entryType = URL_CATEGORY_MAP[category] as AtlasEntryType | undefined
   if (!entry) {
     // Mirrors the page's fallback: /personas also serves public user profiles.
-    const profile = entryType === 'person' ? await getPublicProfileBySlug(slug) : null
+    const profile =
+      entryType === 'person' ? await getPublicProfileBySlug(slug) : null
     if (!profile) return { title: 'Not Found' }
 
     const description =
@@ -87,7 +92,9 @@ export async function generateMetadata({
         title: `${profile.name} — Perfil`,
         description,
         url: profileCanonical,
-        ...(profile.photo?.trim() ? { images: [{ url: profile.photo.trim() }] } : {}),
+        ...(profile.photo?.trim()
+          ? { images: [{ url: profile.photo.trim() }] }
+          : {}),
       },
     }
   }
@@ -126,7 +133,8 @@ export default async function EntryDetailPage({
   const entry = await getEntryBySlug(slug)
   if (!entry || entry.entryType !== entryType) {
     // /personas is shared with public user profiles, which live outside Payload.
-    const profile = entryType === 'person' ? await getPublicProfileBySlug(slug) : null
+    const profile =
+      entryType === 'person' ? await getPublicProfileBySlug(slug) : null
     if (profile) return <PublicProfileDetail profile={profile} />
     notFound()
   }
@@ -153,25 +161,76 @@ export default async function EntryDetailPage({
   const EntryIcon = ENTRY_TYPE_ICON_MAP[entryIcon] ?? Target
 
   /* ---------- Details for sidebar ---------- */
-  const details: { label: string; value: string | number | undefined; Icon: LucideIcon; ValueIcon?: LucideIcon }[] = [
-    { label: 'Categoria', value: ENTRY_TYPE_LABELS[entry.entryType as string], Icon: TagIcon, ValueIcon: EntryIcon },
-    { label: 'Fundada', value: entry.foundedYear as number | undefined, Icon: Calendar },
-    { label: 'Equipo', value: entry.teamSize as string | undefined, Icon: Users },
-    { label: 'Etapa', value: entry.stage as string | undefined, Icon: TrendingUp },
-    { label: 'Sector', value: entry.sector as string | undefined, Icon: Building2 },
-    { label: 'Miembros', value: entry.memberCount as number | undefined, Icon: Users },
-    { label: 'Frecuencia', value: entry.meetupFrequency as string | undefined, Icon: Clock },
+  const details: {
+    label: string
+    value: string | number | undefined
+    Icon: LucideIcon
+    ValueIcon?: LucideIcon
+  }[] = [
+    {
+      label: 'Categoria',
+      value: ENTRY_TYPE_LABELS[entry.entryType as string],
+      Icon: TagIcon,
+      ValueIcon: EntryIcon,
+    },
+    {
+      label: 'Fundada',
+      value: entry.foundedYear as number | undefined,
+      Icon: Calendar,
+    },
+    {
+      label: 'Equipo',
+      value: entry.teamSize as string | undefined,
+      Icon: Users,
+    },
+    {
+      label: 'Etapa',
+      value: entry.stage as string | undefined,
+      Icon: TrendingUp,
+    },
+    {
+      label: 'Sector',
+      value: entry.sector as string | undefined,
+      Icon: Building2,
+    },
+    {
+      label: 'Miembros',
+      value: entry.memberCount as number | undefined,
+      Icon: Users,
+    },
+    {
+      label: 'Frecuencia',
+      value: entry.meetupFrequency as string | undefined,
+      Icon: Clock,
+    },
     { label: 'Rol', value: entry.role as string | undefined, Icon: UserCheck },
-    { label: 'Empresa', value: entry.company as string | undefined, Icon: Building },
-    { label: 'Modelo', value: entry.businessModel as string | undefined, Icon: Target },
-  ].filter((d) => d.value != null && d.value !== '') as { label: string; value: string | number; Icon: LucideIcon; ValueIcon?: LucideIcon }[]
+    {
+      label: 'Empresa',
+      value: entry.company as string | undefined,
+      Icon: Building,
+    },
+    {
+      label: 'Modelo',
+      value: entry.businessModel as string | undefined,
+      Icon: Target,
+    },
+  ].filter((d) => d.value != null && d.value !== '') as {
+    label: string
+    value: string | number
+    Icon: LucideIcon
+    ValueIcon?: LucideIcon
+  }[]
 
   /* ---------- Links for sidebar ---------- */
   const track = (url: string | undefined) =>
     url ? buildTrackedUrl(url, entry.slug as string) : undefined
 
   const links: { label: string; url: string | undefined; icon: string }[] = [
-    { label: 'Sitio web', url: track(entry.website as string | undefined), icon: 'globe' },
+    {
+      label: 'Sitio web',
+      url: track(entry.website as string | undefined),
+      icon: 'globe',
+    },
     {
       label: 'X',
       url: track(entry.x ? `https://x.com/${entry.x}` : undefined),
@@ -190,12 +249,18 @@ export default async function EntryDetailPage({
     },
     {
       label: 'GitHub',
-      url: track(entry.github ? `https://github.com/${entry.github}` : undefined),
+      url: track(
+        entry.github ? `https://github.com/${entry.github}` : undefined,
+      ),
       icon: 'github',
     },
     {
       label: 'Instagram',
-      url: track(entry.instagram ? `https://instagram.com/${entry.instagram}` : undefined),
+      url: track(
+        entry.instagram
+          ? `https://instagram.com/${entry.instagram}`
+          : undefined,
+      ),
       icon: 'instagram',
     },
     {
@@ -209,15 +274,31 @@ export default async function EntryDetailPage({
       ),
       icon: 'youtube',
     },
-    { label: 'Discord', url: track(entry.discord as string | undefined), icon: 'discord' },
-    { label: 'Telegram', url: track(entry.telegram as string | undefined), icon: 'telegram' },
-    { label: 'Portafolio', url: track(entry.portfolio as string | undefined), icon: 'globe' },
+    {
+      label: 'Discord',
+      url: track(entry.discord as string | undefined),
+      icon: 'discord',
+    },
+    {
+      label: 'Telegram',
+      url: track(entry.telegram as string | undefined),
+      icon: 'telegram',
+    },
+    {
+      label: 'Portafolio',
+      url: track(entry.portfolio as string | undefined),
+      icon: 'globe',
+    },
     {
       label: 'Email',
       url: entry.email ? `mailto:${entry.email}` : undefined,
       icon: 'mail',
     },
-  ].filter((l) => l.url !== undefined) as { label: string; url: string; icon: string }[]
+  ].filter((l) => l.url !== undefined) as {
+    label: string
+    url: string
+    icon: string
+  }[]
 
   /* ---------- Layout mode ---------- */
   const isCompactLayout = false
@@ -226,68 +307,100 @@ export default async function EntryDetailPage({
 
   return (
     <article>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{
-        __html: safeJsonLd({
-          '@context': 'https://schema.org',
-          '@type': 'BreadcrumbList',
-          itemListElement: [
-            { '@type': 'ListItem', position: 1, name: 'Inicio', item: SITE_URL },
-            { '@type': 'ListItem', position: 2, name: 'Directorio', item: `${SITE_URL}/directorio` },
-            { '@type': 'ListItem', position: 3, name: config.labelPlural, item: `${SITE_URL}/${config.slug}` },
-            { '@type': 'ListItem', position: 4, name: entry.name },
-          ],
-        }),
-      }} />
-      {/* Entity structured data */}
-      <script type="application/ld+json" dangerouslySetInnerHTML={{
-        __html: safeJsonLd(
-          entry.entryType === 'person'
-            ? {
-                '@context': 'https://schema.org',
-                '@type': 'Person',
-                name: entry.name,
-                url: entry.website || undefined,
-                jobTitle: (entry.role as string) || undefined,
-                sameAs: [
-                  entry.x ? `https://x.com/${entry.x}` : null,
-                  entry.linkedin
-                    ? String(entry.linkedin).startsWith('http')
-                      ? String(entry.linkedin)
-                      : `https://linkedin.com/in/${entry.linkedin}`
-                    : null,
-                  entry.github ? `https://github.com/${entry.github}` : null,
-                  entry.instagram ? `https://instagram.com/${entry.instagram}` : null,
-                ].filter(Boolean),
-              }
-            : {
-                '@context': 'https://schema.org',
-                '@type': 'Organization',
-                name: entry.name,
-                url: entry.website || undefined,
-                description: (entry.tagline as string) || undefined,
-                logo: logoUrl || undefined,
-                address: entry.city && entry.city !== 'global'
-                  ? { '@type': 'PostalAddress', addressLocality: getCityName(entry.city as string), addressRegion: 'Sinaloa' }
-                  : undefined,
-                sameAs: [
-                  entry.x ? `https://x.com/${entry.x}` : null,
-                  entry.linkedin
-                    ? String(entry.linkedin).startsWith('http')
-                      ? String(entry.linkedin)
-                      : `https://linkedin.com/in/${entry.linkedin}`
-                    : null,
-                  entry.github ? `https://github.com/${entry.github}` : null,
-                  entry.instagram ? `https://instagram.com/${entry.instagram}` : null,
-                ].filter(Boolean),
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: safeJsonLd({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              {
+                '@type': 'ListItem',
+                position: 1,
+                name: 'Inicio',
+                item: SITE_URL,
               },
-        ),
-      }} />
-      <Breadcrumb items={[
-        { label: 'Inicio', href: '/' },
-        { label: 'Directorio', href: '/directorio' },
-        { label: config.labelPlural, href: `/${config.slug}` },
-        { label: entry.name as string },
-      ]} />
+              {
+                '@type': 'ListItem',
+                position: 2,
+                name: 'Directorio',
+                item: `${SITE_URL}/directorio`,
+              },
+              {
+                '@type': 'ListItem',
+                position: 3,
+                name: config.labelPlural,
+                item: `${SITE_URL}/${config.slug}`,
+              },
+              { '@type': 'ListItem', position: 4, name: entry.name },
+            ],
+          }),
+        }}
+      />
+      {/* Entity structured data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: safeJsonLd(
+            entry.entryType === 'person'
+              ? {
+                  '@context': 'https://schema.org',
+                  '@type': 'Person',
+                  name: entry.name,
+                  url: entry.website || undefined,
+                  jobTitle: (entry.role as string) || undefined,
+                  sameAs: [
+                    entry.x ? `https://x.com/${entry.x}` : null,
+                    entry.linkedin
+                      ? String(entry.linkedin).startsWith('http')
+                        ? String(entry.linkedin)
+                        : `https://linkedin.com/in/${entry.linkedin}`
+                      : null,
+                    entry.github ? `https://github.com/${entry.github}` : null,
+                    entry.instagram
+                      ? `https://instagram.com/${entry.instagram}`
+                      : null,
+                  ].filter(Boolean),
+                }
+              : {
+                  '@context': 'https://schema.org',
+                  '@type': 'Organization',
+                  name: entry.name,
+                  url: entry.website || undefined,
+                  description: (entry.tagline as string) || undefined,
+                  logo: logoUrl || undefined,
+                  address:
+                    entry.city && entry.city !== 'global'
+                      ? {
+                          '@type': 'PostalAddress',
+                          addressLocality: getCityName(entry.city as string),
+                          addressRegion: 'Sinaloa',
+                        }
+                      : undefined,
+                  sameAs: [
+                    entry.x ? `https://x.com/${entry.x}` : null,
+                    entry.linkedin
+                      ? String(entry.linkedin).startsWith('http')
+                        ? String(entry.linkedin)
+                        : `https://linkedin.com/in/${entry.linkedin}`
+                      : null,
+                    entry.github ? `https://github.com/${entry.github}` : null,
+                    entry.instagram
+                      ? `https://instagram.com/${entry.instagram}`
+                      : null,
+                  ].filter(Boolean),
+                },
+          ),
+        }}
+      />
+      <Breadcrumb
+        items={[
+          { label: 'Inicio', href: '/' },
+          { label: 'Directorio', href: '/directorio' },
+          { label: config.labelPlural, href: `/${config.slug}` },
+          { label: entry.name as string },
+        ]}
+      />
 
       {/* Two-layout mode: compact (single column) vs full (grid with sidebar) */}
       <div
@@ -300,11 +413,13 @@ export default async function EntryDetailPage({
         {/* ============================================================ */}
         {/*  Main column                                                 */}
         {/* ============================================================ */}
-        <div className={`space-y-8${!isCompactLayout ? ' max-w-3xl mx-auto lg:mx-0 lg:max-w-none' : ''}`}>
+        <div
+          className={`space-y-8${!isCompactLayout ? ' max-w-3xl mx-auto lg:mx-0 lg:max-w-none' : ''}`}
+        >
           {/* Cover image, with a consistent fallback hero for entries without one. */}
           <div className="relative">
-              <div className="group relative aspect-video rounded-lg overflow-hidden bg-elevated">
-                {coverUrl ? (
+            <div className="group relative aspect-video rounded-lg overflow-hidden bg-elevated">
+              {coverUrl ? (
                 <Image
                   src={coverUrl}
                   alt={entry.name as string}
@@ -313,57 +428,64 @@ export default async function EntryDetailPage({
                   sizes="(max-width: 768px) 100vw, 1200px"
                   priority
                 />
-                ) : (
-                  <div className="relative flex h-full overflow-hidden bg-gradient-to-br from-accent/25 via-elevated to-card p-6 sm:p-8">
-                    <div className="absolute inset-0 opacity-25 [background-image:linear-gradient(to_right,color-mix(in_srgb,var(--color-accent)_35%,transparent)_1px,transparent_1px),linear-gradient(to_bottom,color-mix(in_srgb,var(--color-accent)_35%,transparent)_1px,transparent_1px)] [background-size:28px_28px]" />
-                    <div className="relative flex w-full flex-col justify-between">
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl border border-accent/25 bg-card/80 p-3 shadow-sm backdrop-blur-sm">
-                          {logoUrl ? (
-                            <Image
-                              src={logoUrl}
-                              alt={`${entry.name as string} logo`}
-                              width={64}
-                              height={64}
-                              className="h-full w-full object-contain"
-                            />
-                          ) : (
-                            <EntryIcon className="h-7 w-7 text-accent" strokeWidth={1.5} />
-                          )}
-                        </div>
-                        <EntryBadge entryType={entry.entryType as AtlasEntryType} />
-                      </div>
-                      <div className="max-w-2xl">
-                        <h1 className="terminal-title text-2xl font-bold text-primary sm:text-3xl">
-                          {entry.name as string}
-                        </h1>
-                        {entry.tagline && (
-                          <p className="mt-3 text-base text-secondary sm:text-lg">
-                            {entry.tagline as string}
-                          </p>
+              ) : (
+                <div className="relative flex h-full overflow-hidden bg-gradient-to-br from-accent/25 via-elevated to-card p-6 sm:p-8">
+                  <div className="absolute inset-0 opacity-25 [background-image:linear-gradient(to_right,color-mix(in_srgb,var(--color-accent)_35%,transparent)_1px,transparent_1px),linear-gradient(to_bottom,color-mix(in_srgb,var(--color-accent)_35%,transparent)_1px,transparent_1px)] [background-size:28px_28px]" />
+                  <div className="relative flex w-full flex-col justify-between">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl border border-accent/25 bg-card/80 p-3 shadow-sm backdrop-blur-sm">
+                        {logoUrl ? (
+                          <Image
+                            src={logoUrl}
+                            alt={`${entry.name as string} logo`}
+                            width={64}
+                            height={64}
+                            className="h-full w-full object-contain"
+                          />
+                        ) : (
+                          <EntryIcon
+                            className="h-7 w-7 text-accent"
+                            strokeWidth={1.5}
+                          />
                         )}
-                        <p className="mt-4 flex items-center gap-1.5 text-xs font-mono text-muted">
-                          <MapPin className="h-3.5 w-3.5 text-accent" />
-                          {entry.city === 'global' ? 'Global' : getCityName(entry.city as string)}
-                          {entry.state ? `, ${entry.state as string}` : ''}
-                        </p>
                       </div>
+                      <EntryBadge
+                        entryType={entry.entryType as AtlasEntryType}
+                      />
+                    </div>
+                    <div className="max-w-2xl">
+                      <h1 className="terminal-title text-2xl font-bold text-primary sm:text-3xl">
+                        {entry.name as string}
+                      </h1>
+                      {entry.tagline && (
+                        <p className="mt-3 text-base text-secondary sm:text-lg">
+                          {entry.tagline as string}
+                        </p>
+                      )}
+                      <p className="mt-4 flex items-center gap-1.5 text-xs font-mono text-muted">
+                        <MapPin className="h-3.5 w-3.5 text-accent" />
+                        {entry.city === 'global'
+                          ? 'Global'
+                          : getCityName(entry.city as string)}
+                        {entry.state ? `, ${entry.state as string}` : ''}
+                      </p>
                     </div>
                   </div>
-                )}
-              </div>
-              {/* Logo overlapping cover at bottom-left */}
-              {coverUrl && logoUrl && (
-                <div className="absolute -bottom-7 left-5">
-                  <Image
-                    src={logoUrl}
-                    alt={`${entry.name as string} logo`}
-                    width={56}
-                    height={56}
-                    className="object-contain rounded-xl border-4 border-card bg-card shadow-lg"
-                  />
                 </div>
               )}
+            </div>
+            {/* Logo overlapping cover at bottom-left */}
+            {coverUrl && logoUrl && (
+              <div className="absolute -bottom-7 left-5">
+                <Image
+                  src={logoUrl}
+                  alt={`${entry.name as string} logo`}
+                  width={56}
+                  height={56}
+                  className="object-contain rounded-xl border-4 border-card bg-card shadow-lg"
+                />
+              </div>
+            )}
           </div>
 
           {/* Header */}
@@ -390,7 +512,9 @@ export default async function EntryDetailPage({
             )}
 
             {coverUrl && entry.tagline && (
-              <p className="text-lg text-secondary">{entry.tagline as string}</p>
+              <p className="text-lg text-secondary">
+                {entry.tagline as string}
+              </p>
             )}
 
             {/* Action buttons */}
@@ -398,7 +522,10 @@ export default async function EntryDetailPage({
               {entry.website && (
                 <ExternalLink
                   href={track(entry.website as string)!}
-                  className={buttonVariants({ variant: "accent-filled", size: "md" })}
+                  className={buttonVariants({
+                    variant: 'accent-filled',
+                    size: 'md',
+                  })}
                 >
                   Visitar sitio
                   <ExternalLinkIcon className="w-4 h-4" />
@@ -441,16 +568,23 @@ export default async function EntryDetailPage({
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-secondary">
                 <span className="inline-flex items-center gap-1.5">
                   <MapPin className="w-3.5 h-3.5 text-accent" />
-                  {entry.city === 'global' ? 'Global' : getCityName(entry.city as string)}
+                  {entry.city === 'global'
+                    ? 'Global'
+                    : getCityName(entry.city as string)}
                   {entry.state ? `, ${entry.state as string}` : ''}
                 </span>
                 {details
                   .filter((d) => d.label !== 'Categoria')
                   .map((detail) => (
-                    <span key={detail.label} className="inline-flex items-center gap-1.5">
+                    <span
+                      key={detail.label}
+                      className="inline-flex items-center gap-1.5"
+                    >
                       <detail.Icon className="w-3.5 h-3.5 text-accent" />
                       {detail.label}:{' '}
-                      <span className="font-mono text-primary">{detail.value}</span>
+                      <span className="font-mono text-primary">
+                        {detail.value}
+                      </span>
                     </span>
                   ))}
                 {links.map((link) => (
@@ -521,7 +655,6 @@ export default async function EntryDetailPage({
               </div>
             </Card>
           )}
-
         </div>
 
         {/* ============================================================ */}
@@ -543,7 +676,9 @@ export default async function EntryDetailPage({
                     Ubicacion
                   </span>
                   <span className="block text-sm font-mono text-primary break-words">
-                    {entry.city === 'global' ? 'Global' : getCityName(entry.city as string)}
+                    {entry.city === 'global'
+                      ? 'Global'
+                      : getCityName(entry.city as string)}
                     {entry.state ? `, ${entry.state as string}` : ''}
                   </span>
                 </div>
@@ -591,7 +726,9 @@ export default async function EntryDetailPage({
         )}
       </div>
 
-      <div className={!isCompactLayout ? 'max-w-3xl mx-auto lg:max-w-none' : ''}>
+      <div
+        className={!isCompactLayout ? 'max-w-3xl mx-auto lg:max-w-none' : ''}
+      >
         <WhatsAppCta className="mt-6" surface={WHATSAPP_SURFACE.entryDetail} />
 
         {/* Suggestions */}

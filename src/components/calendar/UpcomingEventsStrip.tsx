@@ -1,22 +1,22 @@
 'use client'
 
-import { useMemo } from "react";
-import Link from "next/link";
-import { CalendarDays, MapPin, ArrowRight, ArrowUpRight } from "lucide-react";
-import AutoScroll from "embla-carousel-auto-scroll";
+import { useMemo } from 'react'
+import Link from 'next/link'
+import { CalendarDays, MapPin, ArrowRight, ArrowUpRight } from 'lucide-react'
+import AutoScroll from 'embla-carousel-auto-scroll'
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselPrevious,
   CarouselNext,
-} from "@/components/ui/Carousel";
-import { useEventsData } from "@/hooks/useEventsData";
-import type { TechEvent } from "@/hooks/useEventsData";
-import { getEventPath, selectUpcomingEvents } from "@/lib/events";
-import { EVENT_SURFACE, captureEventCardClicked } from "@/lib/analytics";
-import { EventDateBadge } from "./EventDateBadge";
-import EventTypeBadge from "./EventTypeBadge";
+} from '@/components/ui/Carousel'
+import { useEventsData } from '@/hooks/useEventsData'
+import type { TechEvent } from '@/hooks/useEventsData'
+import { getEventPath, selectUpcomingEvents } from '@/lib/events'
+import { EVENT_SURFACE, captureEventCardClicked } from '@/lib/analytics'
+import { EventDateBadge } from './EventDateBadge'
+import EventTypeBadge from './EventTypeBadge'
 
 function EventCard({ ev }: { ev: TechEvent }) {
   return (
@@ -25,7 +25,7 @@ function EventCard({ ev }: { ev: TechEvent }) {
       target="_blank"
       rel="noopener noreferrer"
       onClick={() =>
-        captureEventCardClicked(ev, EVENT_SURFACE.homeStrip, "page")
+        captureEventCardClicked(ev, EVENT_SURFACE.homeStrip, 'page')
       }
       className="w-full h-full bg-card border border-border rounded-lg p-3 flex items-center gap-3 text-left transition-all duration-200 hover:border-accent/40 hover:shadow-sm cursor-pointer group"
     >
@@ -64,7 +64,7 @@ function EventCard({ ev }: { ev: TechEvent }) {
       {/* Opens in a new tab */}
       <ArrowUpRight className="w-4 h-4 text-muted group-hover:text-accent transition-colors shrink-0" />
     </a>
-  );
+  )
 }
 
 function SkeletonCard() {
@@ -76,11 +76,11 @@ function SkeletonCard() {
         <div className="h-3 w-1/2 rounded bg-elevated animate-pulse" />
       </div>
     </div>
-  );
+  )
 }
 
 export default function UpcomingEventsStrip() {
-  const { events, status } = useEventsData();
+  const { events, status } = useEventsData()
 
   const plugins = useMemo(
     () => [
@@ -91,14 +91,15 @@ export default function UpcomingEventsStrip() {
       }),
     ],
     [],
-  );
+  )
 
-  const todayStr = new Date().toISOString().slice(0, 10);
-  const upcoming = selectUpcomingEvents(events, todayStr).slice(0, 3);
+  const todayStr = new Date().toISOString().slice(0, 10)
+  const upcoming = selectUpcomingEvents(events, todayStr).slice(0, 3)
 
-  const isLoading = (status === "loading" || status === "idle") && events.length === 0;
+  const isLoading =
+    (status === 'loading' || status === 'idle') && events.length === 0
 
-  if (!isLoading && upcoming.length === 0) return null;
+  if (!isLoading && upcoming.length === 0) return null
 
   const items = isLoading
     ? Array.from({ length: 3 }).map((_, i) => ({
@@ -109,7 +110,7 @@ export default function UpcomingEventsStrip() {
         key: `${i}-${ev.date}-${ev.title}`,
         skeleton: false as const,
         ev,
-      }));
+      }))
 
   return (
     <div>
@@ -133,13 +134,16 @@ export default function UpcomingEventsStrip() {
       {/* Mobile carousel */}
       <div className="sm:hidden">
         <Carousel
-          opts={{ align: "start", loop: true }}
+          opts={{ align: 'start', loop: true }}
           plugins={plugins}
           className="w-full"
         >
           <CarouselContent className="-ml-3">
             {items.map((item) => (
-              <CarouselItem key={item.key} className={`pl-3 ${items.length === 1 ? "basis-full" : "basis-[85%]"}`}>
+              <CarouselItem
+                key={item.key}
+                className={`pl-3 ${items.length === 1 ? 'basis-full' : 'basis-[85%]'}`}
+              >
                 {item.skeleton ? <SkeletonCard /> : <EventCard ev={item.ev} />}
               </CarouselItem>
             ))}
@@ -168,5 +172,5 @@ export default function UpcomingEventsStrip() {
         )}
       </div>
     </div>
-  );
+  )
 }

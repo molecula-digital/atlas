@@ -17,7 +17,9 @@ export function SiteFrame({
 }) {
   return (
     <div className="px-4 md:px-6 lg:px-8">
-      <div className={cn('mx-auto w-full max-w-280', className)}>{children}</div>
+      <div className={cn('mx-auto w-full max-w-280', className)}>
+        {children}
+      </div>
     </div>
   )
 }

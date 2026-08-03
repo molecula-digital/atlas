@@ -7,7 +7,9 @@ export async function readJson<T = unknown>(
     return {
       ok: false,
       data: null,
-      error: res.ok ? 'Respuesta vacía del servidor' : `Error del servidor (${res.status})`,
+      error: res.ok
+        ? 'Respuesta vacía del servidor'
+        : `Error del servidor (${res.status})`,
     }
   }
 

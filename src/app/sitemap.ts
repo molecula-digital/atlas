@@ -1,14 +1,24 @@
 import type { MetadataRoute } from 'next'
 import { getPayloadClient } from '@/lib/payload'
 import { listPublicProfiles } from '@/lib/public-profile'
-import { ENTRY_TYPE_CONFIG, SITE_URL, SINALOA_CITIES, type AtlasEntryType } from '@/config'
+import {
+  ENTRY_TYPE_CONFIG,
+  SITE_URL,
+  SINALOA_CITIES,
+  type AtlasEntryType,
+} from '@/config'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const payload = await getPayloadClient()
 
   // Static pages
   const staticPages: MetadataRoute.Sitemap = [
-    { url: SITE_URL, lastModified: new Date(), changeFrequency: 'daily', priority: 1 },
+    {
+      url: SITE_URL,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 1,
+    },
     { url: `${SITE_URL}/directorio`, changeFrequency: 'daily', priority: 0.9 },
     { url: `${SITE_URL}/eventos`, changeFrequency: 'weekly', priority: 0.7 },
     { url: `${SITE_URL}/noticias`, changeFrequency: 'weekly', priority: 0.7 },
@@ -17,7 +27,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]
 
   // Category pages
-  const categoryPages: MetadataRoute.Sitemap = Object.values(ENTRY_TYPE_CONFIG).map((c) => ({
+  const categoryPages: MetadataRoute.Sitemap = Object.values(
+    ENTRY_TYPE_CONFIG,
+  ).map((c) => ({
     url: `${SITE_URL}/${c.slug}`,
     changeFrequency: 'weekly' as const,
     priority: 0.8,
@@ -39,7 +51,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   })
 
   const entryPages: MetadataRoute.Sitemap = entries.docs.map((entry) => {
-    const categorySlug = ENTRY_TYPE_CONFIG[entry.entryType as AtlasEntryType]?.slug
+    const categorySlug =
+      ENTRY_TYPE_CONFIG[entry.entryType as AtlasEntryType]?.slug
     return {
       url: `${SITE_URL}/${categorySlug}/${entry.slug}`,
       lastModified: entry.updatedAt ? new Date(entry.updatedAt) : undefined,

@@ -18,7 +18,8 @@ export function NewsletterSection() {
                 Recibe novedades del ecosistema
               </h2>
               <p className="max-w-md text-sm leading-relaxed text-secondary">
-                Startups, eventos y lo que se está construyendo en Sinaloa — directo a tu inbox.
+                Startups, eventos y lo que se está construyendo en Sinaloa —
+                directo a tu inbox.
               </p>
             </div>
             <NewsletterSignup source="homepage" variant="section" />

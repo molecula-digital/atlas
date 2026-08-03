@@ -19,7 +19,11 @@ function pageList(currentPage: number, totalPages: number): (number | '...')[] {
   const pages: (number | '...')[] = []
 
   for (let i = 1; i <= totalPages; i++) {
-    if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+    if (
+      i === 1 ||
+      i === totalPages ||
+      (i >= currentPage - 1 && i <= currentPage + 1)
+    ) {
       pages.push(i)
     } else if (pages[pages.length - 1] !== '...') {
       pages.push('...')
@@ -38,8 +42,16 @@ export function Pagination({
   if (totalPages <= 1) return null
 
   const surface = 'min-w-7 bg-card/90 backdrop-blur-sm'
-  const active = buttonVariants({ variant: 'accent', size: 'md', className: surface })
-  const inactive = buttonVariants({ variant: 'neutral', size: 'md', className: surface })
+  const active = buttonVariants({
+    variant: 'accent',
+    size: 'md',
+    className: surface,
+  })
+  const inactive = buttonVariants({
+    variant: 'neutral',
+    size: 'md',
+    className: surface,
+  })
   const disabled = buttonVariants({
     variant: 'neutral',
     size: 'md',
@@ -57,7 +69,11 @@ export function Pagination({
     key: string,
     page: number,
     content: React.ReactNode,
-    { isCurrent = false, isDisabled = false, label }: {
+    {
+      isCurrent = false,
+      isDisabled = false,
+      label,
+    }: {
       isCurrent?: boolean
       isDisabled?: boolean
       label?: string
@@ -77,7 +93,12 @@ export function Pagination({
           {content}
         </span>
       ) : (
-        <Link key={key} href={hrefFor(page)} className={className} aria-label={label}>
+        <Link
+          key={key}
+          href={hrefFor(page)}
+          className={className}
+          aria-label={label}
+        >
           {content}
         </Link>
       )
@@ -99,7 +120,10 @@ export function Pagination({
   }
 
   return (
-    <nav aria-label="Paginación" className="flex items-center justify-center gap-1 mt-8">
+    <nav
+      aria-label="Paginación"
+      className="flex items-center justify-center gap-1 mt-8"
+    >
       {cell('prev', currentPage - 1, <ChevronLeft className="w-3.5 h-3.5" />, {
         isDisabled: isFirst,
         label: 'Página anterior',

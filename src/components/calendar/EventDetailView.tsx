@@ -29,7 +29,10 @@ import type { LucideIcon } from 'lucide-react'
 import type { TechEvent } from '@/lib/events'
 import { getEventPath, isPastEventDate } from '@/lib/events'
 import { SITE_URL } from '@/config'
-import { buttonVariants, type ButtonSize } from '@/components/ui/button-variants'
+import {
+  buttonVariants,
+  type ButtonSize,
+} from '@/components/ui/button-variants'
 import { Card } from '@/components/ui/Card'
 import ShareButton from '@/components/ui/ShareButton'
 import {
@@ -145,9 +148,7 @@ export function EventDetailsCard({
         {showLocation && event.location && (
           <DetailRow label="Ubicación" Icon={MapPin}>
             {event.location}
-            {event.isInPerson && (
-              <EventTypeBadge isInPerson className="ml-2" />
-            )}
+            {event.isInPerson && <EventTypeBadge isInPerson className="ml-2" />}
           </DetailRow>
         )}
       </div>
@@ -319,7 +320,11 @@ export function EventDetailView({
   }, [event, surface])
 
   const hero = hasImage ? (
-    <EventHeroImage event={event} isPage={isPage} onExpandImage={onExpandImage} />
+    <EventHeroImage
+      event={event}
+      isPage={isPage}
+      onExpandImage={onExpandImage}
+    />
   ) : null
 
   const body = (
@@ -341,8 +346,12 @@ export function EventDetailView({
               <Users size={14} />
             </span>
             <div className="min-w-0">
-              <p className="text-2xs font-mono uppercase tracking-wider text-muted">Organiza</p>
-              <p className="text-sm font-medium text-primary">{event.organizer}</p>
+              <p className="text-2xs font-mono uppercase tracking-wider text-muted">
+                Organiza
+              </p>
+              <p className="text-sm font-medium text-primary">
+                {event.organizer}
+              </p>
             </div>
           </div>
         )}
@@ -359,15 +368,14 @@ export function EventDetailView({
           </div>
         )}
 
-        {(event.descriptionRich || event.description) && (
-          event.descriptionRich ? (
+        {(event.descriptionRich || event.description) &&
+          (event.descriptionRich ? (
             <EventRichDescription data={event.descriptionRich} />
           ) : (
             <p className="text-secondary whitespace-pre-line text-sm leading-relaxed">
               {event.description}
             </p>
-          )
-        )}
+          ))}
       </div>
     </>
   )

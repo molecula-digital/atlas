@@ -4,7 +4,11 @@ import { useParams, useRouter } from 'next/navigation'
 import { AuthGuard } from '@/components/auth/AuthGuard'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import { Card } from '@/components/ui/Card'
-import { CITY_SELECT_OPTIONS, JOB_TYPE_OPTIONS, MODALITY_OPTIONS } from '@/config'
+import {
+  CITY_SELECT_OPTIONS,
+  JOB_TYPE_OPTIONS,
+  MODALITY_OPTIONS,
+} from '@/config'
 import { XCircle, ArrowLeft, Save, CheckCircle } from 'lucide-react'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { useJobEditor } from './useJobEditor'
@@ -69,12 +73,17 @@ export default function EditJobPage() {
               <div className="flex items-center gap-3 mb-6">
                 <button
                   onClick={() => router.push('/dashboard')}
-                  className={buttonVariants({ variant: "ghost", size: "icon-md" })}
+                  className={buttonVariants({
+                    variant: 'ghost',
+                    size: 'icon-md',
+                  })}
                 >
                   <ArrowLeft className="w-4 h-4" />
                 </button>
                 <div>
-                  <h1 className="text-xl font-bold text-primary mb-0.5">Editar empleo</h1>
+                  <h1 className="text-xl font-bold text-primary mb-0.5">
+                    Editar empleo
+                  </h1>
                   <p className="text-xs text-muted font-mono">{job.slug}</p>
                 </div>
               </div>
@@ -84,7 +93,9 @@ export default function EditJobPage() {
                 <div className="mb-6 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-sm text-red-700 dark:text-red-400 flex items-start gap-2">
                   <XCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="font-medium text-xs uppercase font-mono mb-1">Nota de moderacion</p>
+                    <p className="font-medium text-xs uppercase font-mono mb-1">
+                      Nota de moderacion
+                    </p>
                     <p>{job.moderationNote}</p>
                   </div>
                 </div>
@@ -95,8 +106,13 @@ export default function EditJobPage() {
                 <div className="mb-6 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg text-sm text-green-700 dark:text-green-400 flex items-start gap-2">
                   <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="font-medium text-xs uppercase font-mono mb-1">Cambios guardados</p>
-                    <p>Tu empleo ha sido actualizado y sera revisado nuevamente por el equipo de moderacion.</p>
+                    <p className="font-medium text-xs uppercase font-mono mb-1">
+                      Cambios guardados
+                    </p>
+                    <p>
+                      Tu empleo ha sido actualizado y sera revisado nuevamente
+                      por el equipo de moderacion.
+                    </p>
                   </div>
                 </div>
               )}
@@ -110,7 +126,9 @@ export default function EditJobPage() {
                   className="space-y-4"
                 >
                   <div>
-                    <label htmlFor="title" className={labelClass}>Titulo *</label>
+                    <label htmlFor="title" className={labelClass}>
+                      Titulo *
+                    </label>
                     <input
                       id="title"
                       required
@@ -123,7 +141,9 @@ export default function EditJobPage() {
 
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
-                      <label htmlFor="type" className={labelClass}>Tipo *</label>
+                      <label htmlFor="type" className={labelClass}>
+                        Tipo *
+                      </label>
                       <select
                         id="type"
                         required
@@ -132,12 +152,16 @@ export default function EditJobPage() {
                         className={selectClass}
                       >
                         {JOB_TYPE_OPTIONS.map((t) => (
-                          <option key={t.value} value={t.value}>{t.label}</option>
+                          <option key={t.value} value={t.value}>
+                            {t.label}
+                          </option>
                         ))}
                       </select>
                     </div>
                     <div>
-                      <label htmlFor="modality" className={labelClass}>Modalidad *</label>
+                      <label htmlFor="modality" className={labelClass}>
+                        Modalidad *
+                      </label>
                       <select
                         id="modality"
                         required
@@ -146,7 +170,9 @@ export default function EditJobPage() {
                         className={selectClass}
                       >
                         {MODALITY_OPTIONS.map((m) => (
-                          <option key={m.value} value={m.value}>{m.label}</option>
+                          <option key={m.value} value={m.value}>
+                            {m.label}
+                          </option>
                         ))}
                       </select>
                     </div>
@@ -154,7 +180,9 @@ export default function EditJobPage() {
 
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
-                      <label htmlFor="city" className={labelClass}>Ciudad (si aplica)</label>
+                      <label htmlFor="city" className={labelClass}>
+                        Ciudad (si aplica)
+                      </label>
                       <select
                         id="city"
                         value={values.city}
@@ -163,16 +191,22 @@ export default function EditJobPage() {
                       >
                         <option value="">No aplica</option>
                         {CITY_SELECT_OPTIONS.map((c) => (
-                          <option key={c.value} value={c.value}>{c.label}</option>
+                          <option key={c.value} value={c.value}>
+                            {c.label}
+                          </option>
                         ))}
                       </select>
                     </div>
                     <div>
-                      <label htmlFor="compensation" className={labelClass}>Compensacion</label>
+                      <label htmlFor="compensation" className={labelClass}>
+                        Compensacion
+                      </label>
                       <input
                         id="compensation"
                         value={values.compensation}
-                        onChange={(e) => setField('compensation', e.target.value)}
+                        onChange={(e) =>
+                          setField('compensation', e.target.value)
+                        }
                         className={inputClass}
                         placeholder="Ej: $15k/mo, Equity, Voluntario"
                       />
@@ -180,7 +214,9 @@ export default function EditJobPage() {
                   </div>
 
                   <div>
-                    <label htmlFor="contactUrl" className={labelClass}>URL o email de contacto *</label>
+                    <label htmlFor="contactUrl" className={labelClass}>
+                      URL o email de contacto *
+                    </label>
                     <input
                       id="contactUrl"
                       required
@@ -192,7 +228,9 @@ export default function EditJobPage() {
                   </div>
 
                   <div>
-                    <label htmlFor="description" className={labelClass}>Descripcion *</label>
+                    <label htmlFor="description" className={labelClass}>
+                      Descripcion *
+                    </label>
                     <textarea
                       id="description"
                       required
@@ -205,7 +243,9 @@ export default function EditJobPage() {
                   </div>
 
                   {saveError && (
-                    <p className="text-sm text-red-600" role="status">{saveError}</p>
+                    <p className="text-sm text-red-600" role="status">
+                      {saveError}
+                    </p>
                   )}
 
                   {/* Submit */}
@@ -226,7 +266,10 @@ export default function EditJobPage() {
                         !values.modality ||
                         !values.contactUrl.trim()
                       }
-                      className={buttonVariants({ variant: "accent", size: "md" })}
+                      className={buttonVariants({
+                        variant: 'accent',
+                        size: 'md',
+                      })}
                     >
                       <Save className="w-3.5 h-3.5" />
                       {saving ? 'Guardando...' : 'Guardar cambios'}

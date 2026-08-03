@@ -69,7 +69,9 @@ export function captureRequestFailed(
  * caller's own parsing — every call site here has already read, or is about to
  * read, the same body.
  */
-export async function readErrorReason(response: Response): Promise<string | null> {
+export async function readErrorReason(
+  response: Response,
+): Promise<string | null> {
   try {
     const body = (await response.clone().json()) as { error?: unknown }
     return typeof body.error === 'string' ? body.error : null
@@ -178,7 +180,12 @@ export function captureContentShared(
  * the directory.
  */
 export function captureEntryCardClicked(
-  entry: { slug: string; name: string; entryType: string; city?: string | null },
+  entry: {
+    slug: string
+    name: string
+    entryType: string
+    city?: string | null
+  },
   surface: EntrySurface,
 ) {
   posthog.capture(ANALYTICS_EVENTS.entryCardClicked, {

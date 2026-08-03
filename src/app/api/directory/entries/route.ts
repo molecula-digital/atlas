@@ -29,7 +29,11 @@ function sortMerged(docs: DirectoryDoc[], sortKey: string): DirectoryDoc[] {
   const copy = [...docs]
   copy.sort((a, b) => {
     if (sortKey === 'name-asc' || sortKey === 'name-desc') {
-      const cmp = String(a.name ?? '').localeCompare(String(b.name ?? ''), 'es', { sensitivity: 'base' })
+      const cmp = String(a.name ?? '').localeCompare(
+        String(b.name ?? ''),
+        'es',
+        { sensitivity: 'base' },
+      )
       return sortKey === 'name-asc' ? cmp : -cmp
     }
     const aDate = a.publishDate ? Date.parse(String(a.publishDate)) : 0
@@ -40,7 +44,11 @@ function sortMerged(docs: DirectoryDoc[], sortKey: string): DirectoryDoc[] {
 }
 
 export async function GET(request: NextRequest) {
-  const limited = await withRateLimit(request, { limit: 60, windowMs: 60 * 1000, keyPrefix: 'api-entries' })
+  const limited = await withRateLimit(request, {
+    limit: 60,
+    windowMs: 60 * 1000,
+    keyPrefix: 'api-entries',
+  })
   if (limited) return limited
 
   try {
@@ -68,7 +76,7 @@ export async function GET(request: NextRequest) {
       const whereClause = sql.join(conditions, sql` AND `)
 
       const result = await db.execute<{ id: number }>(
-        sql`SELECT id FROM payload.entries WHERE ${whereClause} ORDER BY RANDOM() LIMIT ${limit}`
+        sql`SELECT id FROM payload.entries WHERE ${whereClause} ORDER BY RANDOM() LIMIT ${limit}`,
       )
 
       const ids = result.rows.map((r) => r.id)
@@ -126,7 +134,10 @@ export async function GET(request: NextRequest) {
       try {
         publicProfiles = await listPublicProfiles(profileSort)
       } catch (err) {
-        console.error('Public user profiles unavailable; serving Payload persons only:', err)
+        console.error(
+          'Public user profiles unavailable; serving Payload persons only:',
+          err,
+        )
       }
 
       const entryDocs: DirectoryDoc[] = entriesResult.docs.map((doc) => ({
@@ -181,6 +192,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(toPaginatedResponse(result))
   } catch (error) {
     console.error('Entries API failed:', error)
-    return NextResponse.json({ error: 'Failed to fetch entries' }, { status: 500 })
+    return NextResponse.json(
+      { error: 'Failed to fetch entries' },
+      { status: 500 },
+    )
   }
 }

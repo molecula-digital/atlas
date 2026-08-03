@@ -3,16 +3,20 @@ import type { Access, FieldAccess } from 'payload'
 export type Role = 'admin' | 'editor'
 
 /** Check if the logged-in user has one of the given roles */
-export const hasRole = (...roles: Role[]): Access => ({ req: { user } }) => {
-  if (!user) return false
-  return roles.includes(user.role as Role)
-}
+export const hasRole =
+  (...roles: Role[]): Access =>
+  ({ req: { user } }) => {
+    if (!user) return false
+    return roles.includes(user.role as Role)
+  }
 
 /** Check if the logged-in user has one of the given roles (field-level) */
-export const hasRoleField = (...roles: Role[]): FieldAccess => ({ req: { user } }) => {
-  if (!user) return false
-  return roles.includes(user.role as Role)
-}
+export const hasRoleField =
+  (...roles: Role[]): FieldAccess =>
+  ({ req: { user } }) => {
+    if (!user) return false
+    return roles.includes(user.role as Role)
+  }
 
 /** Admin-only access */
 export const isAdmin: Access = hasRole('admin')

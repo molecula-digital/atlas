@@ -106,9 +106,15 @@ export function EventDialog({
           onOpenAutoFocus={(e) => e.preventDefault()}
         >
           <div className="flex shrink-0 items-start justify-between gap-3 px-5 pt-5 pb-2">
-            <DialogTitle className="pr-2 text-lg leading-snug">{event.title}</DialogTitle>
+            <DialogTitle className="pr-2 text-lg leading-snug">
+              {event.title}
+            </DialogTitle>
             <DialogClose
-              className={buttonVariants({ variant: 'ghost', size: 'icon-md', className: 'shrink-0' })}
+              className={buttonVariants({
+                variant: 'ghost',
+                size: 'icon-md',
+                className: 'shrink-0',
+              })}
               aria-label="Cerrar"
             >
               <X size={18} className="text-muted" />

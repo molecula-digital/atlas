@@ -19,7 +19,9 @@ interface CommunityPhotosCarouselProps {
   photos: CommunityPhoto[]
 }
 
-export function CommunityPhotosCarousel({ photos }: CommunityPhotosCarouselProps) {
+export function CommunityPhotosCarousel({
+  photos,
+}: CommunityPhotosCarouselProps) {
   const [api, setApi] = useState<CarouselApi>()
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
 

@@ -17,16 +17,26 @@ function NewsCard({ article }: { article: News }) {
       <div className="flex flex-col sm:flex-row">
         {coverUrl && (
           <div className="relative sm:w-48 h-40 sm:h-auto flex-shrink-0">
-            <Image src={coverUrl} alt={article.title as string} fill className="object-cover" sizes="192px" />
+            <Image
+              src={coverUrl}
+              alt={article.title as string}
+              fill
+              className="object-cover"
+              sizes="192px"
+            />
           </div>
         )}
         <div className="p-4 flex-1">
           <p className="text-2xs font-mono text-muted mb-1">
             {formatDateEs(article.publishDate as string)}
           </p>
-          <h2 className="text-lg font-semibold text-primary mb-1">{article.title as string}</h2>
+          <h2 className="text-lg font-semibold text-primary mb-1">
+            {article.title as string}
+          </h2>
           {article.excerpt && (
-            <p className="text-sm text-secondary line-clamp-2">{article.excerpt as string}</p>
+            <p className="text-sm text-secondary line-clamp-2">
+              {article.excerpt as string}
+            </p>
           )}
         </div>
       </div>

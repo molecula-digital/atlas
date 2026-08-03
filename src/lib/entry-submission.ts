@@ -65,12 +65,15 @@ export function toEntrySubmission(
     linkedin: values.linkedin || undefined,
     github: values.github || undefined,
     youtube: values.youtube || undefined,
-    tags: values.tags.length > 0 ? values.tags.map((tag) => ({ tag })) : undefined,
+    tags:
+      values.tags.length > 0 ? values.tags.map((tag) => ({ tag })) : undefined,
     body: values.body.trim() || undefined,
   }
 
   if (isStartupLike(entryType)) {
-    payload.foundedYear = values.foundedYear ? Number(values.foundedYear) : undefined
+    payload.foundedYear = values.foundedYear
+      ? Number(values.foundedYear)
+      : undefined
     payload.stage = values.stage || undefined
     payload.teamSize = values.teamSize || undefined
     payload.sector = values.sector || undefined
@@ -78,12 +81,15 @@ export function toEntrySubmission(
     payload.technologies =
       techs.length > 0 ? techs.map((technology) => ({ technology })) : undefined
     // The checkbox is a UI gate: a URL left behind after unchecking is not sent.
-    payload.hiringUrl = values.hiring && values.hiringUrl ? values.hiringUrl : undefined
+    payload.hiringUrl =
+      values.hiring && values.hiringUrl ? values.hiringUrl : undefined
     payload.businessModel = values.businessModel || undefined
   }
 
   if (entryType === 'community') {
-    payload.memberCount = values.memberCount ? Number(values.memberCount) : undefined
+    payload.memberCount = values.memberCount
+      ? Number(values.memberCount)
+      : undefined
     payload.meetupFrequency = values.meetupFrequency || undefined
     payload.discord = values.discord || undefined
     payload.telegram = values.telegram || undefined

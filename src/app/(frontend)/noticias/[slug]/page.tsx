@@ -16,7 +16,11 @@ export async function generateStaticParams() {
   return result.docs.map((article) => ({ slug: article.slug as string }))
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}): Promise<Metadata> {
   const { slug } = await params
   const article = await getNewsBySlug(slug)
   if (!article) return { title: 'Not Found' }
@@ -36,43 +40,66 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 }
 
-export default async function NewsDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function NewsDetailPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}) {
   const { slug } = await params
   const article = await getNewsBySlug(slug)
   if (!article) notFound()
 
   const coverUrl = extractImageUrl(article.coverImage)
-  const authorName = (article.author as { displayName?: string; email: string } | null)?.displayName || (article.author as { email: string } | null)?.email
+  const authorName =
+    (article.author as { displayName?: string; email: string } | null)
+      ?.displayName || (article.author as { email: string } | null)?.email
 
   return (
     <article>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{
-        __html: safeJsonLd({
-          '@context': 'https://schema.org',
-          '@type': 'NewsArticle',
-          headline: article.title,
-          description: article.excerpt || undefined,
-          datePublished: article.publishDate,
-          author: authorName ? { '@type': 'Person', name: authorName } : undefined,
-          image: coverUrl || undefined,
-          url: `${SITE_URL}/noticias/${article.slug}`,
-          publisher: {
-            '@type': 'Organization',
-            name: 'Tech Atlas',
-            logo: { '@type': 'ImageObject', url: `${SITE_URL}/android-chrome-512x512.png` },
-          },
-        }),
-      }} />
-      <Breadcrumb items={[
-        { label: 'Inicio', href: '/' },
-        { label: 'Noticias', href: '/noticias' },
-        { label: article.title as string },
-      ]} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: safeJsonLd({
+            '@context': 'https://schema.org',
+            '@type': 'NewsArticle',
+            headline: article.title,
+            description: article.excerpt || undefined,
+            datePublished: article.publishDate,
+            author: authorName
+              ? { '@type': 'Person', name: authorName }
+              : undefined,
+            image: coverUrl || undefined,
+            url: `${SITE_URL}/noticias/${article.slug}`,
+            publisher: {
+              '@type': 'Organization',
+              name: 'Tech Atlas',
+              logo: {
+                '@type': 'ImageObject',
+                url: `${SITE_URL}/android-chrome-512x512.png`,
+              },
+            },
+          }),
+        }}
+      />
+      <Breadcrumb
+        items={[
+          { label: 'Inicio', href: '/' },
+          { label: 'Noticias', href: '/noticias' },
+          { label: article.title as string },
+        ]}
+      />
 
       <div className="max-w-3xl mx-auto">
         {coverUrl && (
           <div className="relative rounded-lg overflow-hidden mb-6 h-64">
-            <Image src={coverUrl} alt={article.title as string} fill className="object-cover" sizes="(max-width: 768px) 100vw, 768px" priority />
+            <Image
+              src={coverUrl}
+              alt={article.title as string}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 768px"
+              priority
+            />
           </div>
         )}
 
@@ -81,7 +108,9 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ slu
           {authorName && ` — ${authorName}`}
         </SectionHeading>
 
-        <h1 className="text-3xl md:text-4xl font-bold text-primary mb-6">{article.title as string}</h1>
+        <h1 className="text-3xl md:text-4xl font-bold text-primary mb-6">
+          {article.title as string}
+        </h1>
 
         <div className="prose prose-sm dark:prose-invert max-w-none">
           <RichText data={article.body as any} />

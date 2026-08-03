@@ -22,7 +22,10 @@ interface FeaturedSectionProps {
   latestEntries: FeaturedEntry[]
 }
 
-export function FeaturedSection({ entries, latestEntries }: FeaturedSectionProps) {
+export function FeaturedSection({
+  entries,
+  latestEntries,
+}: FeaturedSectionProps) {
   if (entries.length === 0) return null
 
   const displayEntries = entries.slice(0, 6)

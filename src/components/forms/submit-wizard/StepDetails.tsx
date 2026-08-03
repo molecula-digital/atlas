@@ -5,21 +5,21 @@ import {
   MEETUP_FREQUENCY_OPTIONS,
   BUSINESS_MODEL_OPTIONS,
   isStartupLike,
-} from "@/config";
-import type { StepProps } from "./types";
+} from '@/config'
+import type { StepProps } from './types'
 
 export default function StepDetails({ state, setField }: StepProps) {
-  const { entryType } = state;
+  const { entryType } = state
 
   return (
     <div className="space-y-4">
       <h2 className="text-xl font-sans font-bold text-primary">Detalles</h2>
       <p className="text-sm text-secondary">
-        {entryType === "person"
-          ? "Información sobre tu perfil profesional. Todos opcionales."
-          : entryType === "community"
-            ? "Información sobre tu comunidad. Todos opcionales."
-            : "Campos específicos según el tipo de registro. Todos opcionales."}
+        {entryType === 'person'
+          ? 'Información sobre tu perfil profesional. Todos opcionales.'
+          : entryType === 'community'
+            ? 'Información sobre tu comunidad. Todos opcionales.'
+            : 'Campos específicos según el tipo de registro. Todos opcionales.'}
       </p>
       <div className="space-y-3">
         <label className="block">
@@ -28,7 +28,7 @@ export default function StepDetails({ state, setField }: StepProps) {
           </span>
           <select
             value={state.sector}
-            onChange={(e) => setField("sector", e.target.value)}
+            onChange={(e) => setField('sector', e.target.value)}
             className="mt-1 w-full px-3 py-2 rounded-lg border border-border bg-card text-primary font-mono text-sm focus:outline-hidden focus:border-accent transition-colors"
           >
             <option value="">Selecciona</option>
@@ -48,21 +48,21 @@ export default function StepDetails({ state, setField }: StepProps) {
               <input
                 type="number"
                 value={state.foundedYear}
-                onChange={(e) => setField("foundedYear", e.target.value)}
+                onChange={(e) => setField('foundedYear', e.target.value)}
                 placeholder="2024"
                 min="1900"
                 max="2100"
                 className="mt-1 w-full px-3 py-2 rounded-lg border border-border bg-card text-primary font-mono text-sm placeholder:text-muted/50 focus:outline-hidden focus:border-accent transition-colors"
               />
             </label>
-            {entryType === "startup" && (
+            {entryType === 'startup' && (
               <label className="block">
                 <span className="text-xs font-mono text-muted uppercase tracking-wider">
                   Etapa
                 </span>
                 <select
                   value={state.stage}
-                  onChange={(e) => setField("stage", e.target.value)}
+                  onChange={(e) => setField('stage', e.target.value)}
                   className="mt-1 w-full px-3 py-2 rounded-lg border border-border bg-card text-primary font-mono text-sm focus:outline-hidden focus:border-accent transition-colors"
                 >
                   <option value="">Selecciona</option>
@@ -80,7 +80,7 @@ export default function StepDetails({ state, setField }: StepProps) {
               </span>
               <select
                 value={state.teamSize}
-                onChange={(e) => setField("teamSize", e.target.value)}
+                onChange={(e) => setField('teamSize', e.target.value)}
                 className="mt-1 w-full px-3 py-2 rounded-lg border border-border bg-card text-primary font-mono text-sm focus:outline-hidden focus:border-accent transition-colors"
               >
                 <option value="">Selecciona</option>
@@ -98,7 +98,7 @@ export default function StepDetails({ state, setField }: StepProps) {
               <input
                 type="text"
                 value={state.technologies}
-                onChange={(e) => setField("technologies", e.target.value)}
+                onChange={(e) => setField('technologies', e.target.value)}
                 placeholder="ej. React, Python, AWS (separadas por coma)"
                 className="mt-1 w-full px-3 py-2 rounded-lg border border-border bg-card text-primary font-mono text-sm placeholder:text-muted/50 focus:outline-hidden focus:border-accent transition-colors"
               />
@@ -107,7 +107,7 @@ export default function StepDetails({ state, setField }: StepProps) {
               <input
                 type="checkbox"
                 checked={state.hiring}
-                onChange={(e) => setField("hiring", e.target.checked)}
+                onChange={(e) => setField('hiring', e.target.checked)}
                 id="hiring"
                 className="w-4 h-4 rounded border-border text-accent focus:ring-accent"
               />
@@ -126,7 +126,7 @@ export default function StepDetails({ state, setField }: StepProps) {
                 <input
                   type="url"
                   value={state.hiringUrl}
-                  onChange={(e) => setField("hiringUrl", e.target.value)}
+                  onChange={(e) => setField('hiringUrl', e.target.value)}
                   placeholder="https://tu-empresa.com/careers"
                   className="mt-1 w-full px-3 py-2 rounded-lg border border-border bg-card text-primary font-mono text-sm placeholder:text-muted/50 focus:outline-hidden focus:border-accent transition-colors"
                 />
@@ -138,7 +138,7 @@ export default function StepDetails({ state, setField }: StepProps) {
               </span>
               <select
                 value={state.businessModel}
-                onChange={(e) => setField("businessModel", e.target.value)}
+                onChange={(e) => setField('businessModel', e.target.value)}
                 className="mt-1 w-full px-3 py-2 rounded-lg border border-border bg-card text-primary font-mono text-sm focus:outline-hidden focus:border-accent transition-colors"
               >
                 <option value="">Selecciona</option>
@@ -151,7 +151,7 @@ export default function StepDetails({ state, setField }: StepProps) {
             </label>
           </>
         )}
-        {entryType === "community" && (
+        {entryType === 'community' && (
           <>
             <label className="block">
               <span className="text-xs font-mono text-muted uppercase tracking-wider">
@@ -160,7 +160,7 @@ export default function StepDetails({ state, setField }: StepProps) {
               <input
                 type="number"
                 value={state.memberCount}
-                onChange={(e) => setField("memberCount", e.target.value)}
+                onChange={(e) => setField('memberCount', e.target.value)}
                 placeholder="100"
                 className="mt-1 w-full px-3 py-2 rounded-lg border border-border bg-card text-primary font-mono text-sm placeholder:text-muted/50 focus:outline-hidden focus:border-accent transition-colors"
               />
@@ -171,7 +171,7 @@ export default function StepDetails({ state, setField }: StepProps) {
               </span>
               <select
                 value={state.meetupFrequency}
-                onChange={(e) => setField("meetupFrequency", e.target.value)}
+                onChange={(e) => setField('meetupFrequency', e.target.value)}
                 className="mt-1 w-full px-3 py-2 rounded-lg border border-border bg-card text-primary font-mono text-sm focus:outline-hidden focus:border-accent transition-colors"
               >
                 <option value="">Selecciona</option>
@@ -184,7 +184,7 @@ export default function StepDetails({ state, setField }: StepProps) {
             </label>
           </>
         )}
-        {entryType === "person" && (
+        {entryType === 'person' && (
           <>
             <label className="block">
               <span className="text-xs font-mono text-muted uppercase tracking-wider">
@@ -193,7 +193,7 @@ export default function StepDetails({ state, setField }: StepProps) {
               <input
                 type="text"
                 value={state.role}
-                onChange={(e) => setField("role", e.target.value)}
+                onChange={(e) => setField('role', e.target.value)}
                 placeholder="ej. Frontend Developer, CTO"
                 className="mt-1 w-full px-3 py-2 rounded-lg border border-border bg-card text-primary font-mono text-sm placeholder:text-muted/50 focus:outline-hidden focus:border-accent transition-colors"
               />
@@ -205,7 +205,7 @@ export default function StepDetails({ state, setField }: StepProps) {
               <input
                 type="text"
                 value={state.company}
-                onChange={(e) => setField("company", e.target.value)}
+                onChange={(e) => setField('company', e.target.value)}
                 placeholder="Empresa actual"
                 className="mt-1 w-full px-3 py-2 rounded-lg border border-border bg-card text-primary font-mono text-sm placeholder:text-muted/50 focus:outline-hidden focus:border-accent transition-colors"
               />
@@ -217,7 +217,7 @@ export default function StepDetails({ state, setField }: StepProps) {
               <input
                 type="email"
                 value={state.email}
-                onChange={(e) => setField("email", e.target.value)}
+                onChange={(e) => setField('email', e.target.value)}
                 placeholder="tu@email.com"
                 className="mt-1 w-full px-3 py-2 rounded-lg border border-border bg-card text-primary font-mono text-sm placeholder:text-muted/50 focus:outline-hidden focus:border-accent transition-colors"
               />
@@ -229,7 +229,7 @@ export default function StepDetails({ state, setField }: StepProps) {
               <input
                 type="url"
                 value={state.portfolio}
-                onChange={(e) => setField("portfolio", e.target.value)}
+                onChange={(e) => setField('portfolio', e.target.value)}
                 placeholder="https://tu-portafolio.com"
                 className="mt-1 w-full px-3 py-2 rounded-lg border border-border bg-card text-primary font-mono text-sm placeholder:text-muted/50 focus:outline-hidden focus:border-accent transition-colors"
               />
@@ -238,7 +238,7 @@ export default function StepDetails({ state, setField }: StepProps) {
               <input
                 type="checkbox"
                 checked={state.availableForHire}
-                onChange={(e) => setField("availableForHire", e.target.checked)}
+                onChange={(e) => setField('availableForHire', e.target.checked)}
                 id="availableForHire"
                 className="w-4 h-4 rounded border-border text-accent focus:ring-accent"
               />
@@ -253,7 +253,9 @@ export default function StepDetails({ state, setField }: StepProps) {
               <input
                 type="checkbox"
                 checked={state.availableForMentoring}
-                onChange={(e) => setField("availableForMentoring", e.target.checked)}
+                onChange={(e) =>
+                  setField('availableForMentoring', e.target.checked)
+                }
                 id="availableForMentoring"
                 className="w-4 h-4 rounded border-border text-accent focus:ring-accent"
               />
@@ -268,5 +270,5 @@ export default function StepDetails({ state, setField }: StepProps) {
         )}
       </div>
     </div>
-  );
+  )
 }

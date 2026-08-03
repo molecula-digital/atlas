@@ -12,7 +12,10 @@ import {
   isStartupLike as isStartupLikeType,
 } from '../config'
 
-const entryTypeOptions = ENTRY_TYPES.map((t) => ({ label: t.charAt(0).toUpperCase() + t.slice(1), value: t }))
+const entryTypeOptions = ENTRY_TYPES.map((t) => ({
+  label: t.charAt(0).toUpperCase() + t.slice(1),
+  value: t,
+}))
 
 const isStartupLike = (siblingData: Record<string, unknown>) =>
   isStartupLikeType(siblingData.entryType as string)
@@ -30,7 +33,8 @@ export const Entries: CollectionConfig = {
     useAsTitle: 'name',
     defaultColumns: ['name', 'entryType', 'city', '_status', 'updatedAt'],
     listSearchableFields: ['name', 'tagline', 'tags'],
-    description: 'Gestiona startups, empresas, comunidades y personas en el directorio',
+    description:
+      'Gestiona startups, empresas, comunidades y personas en el directorio',
   },
   access: {
     create: isAdminOrEditor,
@@ -66,7 +70,8 @@ export const Entries: CollectionConfig = {
       unique: true,
       admin: {
         position: 'sidebar',
-        description: 'Se genera automáticamente a partir del nombre si se deja vacío.',
+        description:
+          'Se genera automáticamente a partir del nombre si se deja vacío.',
       },
       hooks: {
         beforeValidate: [
@@ -197,15 +202,38 @@ export const Entries: CollectionConfig = {
             {
               type: 'row',
               fields: [
-                { name: 'x', label: 'X / Twitter', type: 'text', admin: { width: '50%', description: 'Handle de X/Twitter' } },
-                { name: 'instagram', label: 'Instagram', type: 'text', admin: { width: '50%', description: 'Handle de Instagram' } },
+                {
+                  name: 'x',
+                  label: 'X / Twitter',
+                  type: 'text',
+                  admin: { width: '50%', description: 'Handle de X/Twitter' },
+                },
+                {
+                  name: 'instagram',
+                  label: 'Instagram',
+                  type: 'text',
+                  admin: { width: '50%', description: 'Handle de Instagram' },
+                },
               ],
             },
             {
               type: 'row',
               fields: [
-                { name: 'linkedin', label: 'LinkedIn', type: 'text', admin: { width: '50%', description: 'URL o handle de LinkedIn' } },
-                { name: 'github', label: 'GitHub', type: 'text', admin: { width: '50%', description: 'Usuario de GitHub' } },
+                {
+                  name: 'linkedin',
+                  label: 'LinkedIn',
+                  type: 'text',
+                  admin: {
+                    width: '50%',
+                    description: 'URL o handle de LinkedIn',
+                  },
+                },
+                {
+                  name: 'github',
+                  label: 'GitHub',
+                  type: 'text',
+                  admin: { width: '50%', description: 'Usuario de GitHub' },
+                },
               ],
             },
             {
@@ -262,7 +290,14 @@ export const Entries: CollectionConfig = {
               admin: {
                 condition: (_, siblingData) => isStartupLike(siblingData),
               },
-              fields: [{ name: 'technology', label: 'Tecnología', type: 'text', required: true }],
+              fields: [
+                {
+                  name: 'technology',
+                  label: 'Tecnología',
+                  type: 'text',
+                  required: true,
+                },
+              ],
             },
             {
               name: 'hiringUrl',

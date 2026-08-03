@@ -32,7 +32,9 @@ export function getEventDateToday(now = new Date()): string {
     month: '2-digit',
     day: '2-digit',
   }).formatToParts(now)
-  const values = Object.fromEntries(parts.map(({ type, value }) => [type, value]))
+  const values = Object.fromEntries(
+    parts.map(({ type, value }) => [type, value]),
+  )
 
   return `${values.year}-${values.month}-${values.day}`
 }
@@ -65,13 +67,17 @@ function lexicalToPlainText(data: Event['description']): string {
     if (typeof node.text === 'string') return node.text
     if (Array.isArray(node.children)) {
       return node.children
-        .map((child) => extractText(child as { text?: string; children?: unknown[] }))
+        .map((child) =>
+          extractText(child as { text?: string; children?: unknown[] }),
+        )
         .join('')
     }
     return ''
   }
   return data.root.children
-    .map((child) => extractText(child as { text?: string; children?: unknown[] }))
+    .map((child) =>
+      extractText(child as { text?: string; children?: unknown[] }),
+    )
     .join('\n')
     .trim()
 }
@@ -116,7 +122,7 @@ export function eventDocToTechEvent(doc: Event): TechEvent {
     startTime: payloadTimeAsStored(doc.startTime),
     endTime: payloadTimeAsStored(doc.endTime),
     description,
-    descriptionRich: description ? doc.description ?? undefined : undefined,
+    descriptionRich: description ? (doc.description ?? undefined) : undefined,
     url: doc.url || '',
     location: doc.location || '',
     mapsUrl: doc.mapsUrl || '',
@@ -131,11 +137,24 @@ export function eventDocToTechEvent(doc: Event): TechEvent {
 // Fixed table instead of toLocaleDateString — ICU output differs between Node and
 // browsers ("sept" vs "sep"), which shows up as a hydration mismatch.
 const MONTH_ABBR = [
-  'ene', 'feb', 'mar', 'abr', 'may', 'jun',
-  'jul', 'ago', 'sep', 'oct', 'nov', 'dic',
+  'ene',
+  'feb',
+  'mar',
+  'abr',
+  'may',
+  'jun',
+  'jul',
+  'ago',
+  'sep',
+  'oct',
+  'nov',
+  'dic',
 ]
 
-export function formatEventDateBadge(dateStr: string): { day: string; month: string } {
+export function formatEventDateBadge(dateStr: string): {
+  day: string
+  month: string
+} {
   const [, m, d] = dateStr.split('-').map(Number)
   return {
     day: String(d),
@@ -162,26 +181,37 @@ export function formatEventDateLong(dateStr: string): string {
 }
 
 /** Time range with spaced dash (e.g. "8:00 AM - 7:30 PM"). */
-export function formatEventTimeRange(startTime: string, endTime: string): string {
+export function formatEventTimeRange(
+  startTime: string,
+  endTime: string,
+): string {
   if (startTime && endTime) return `${startTime} - ${endTime}`
   return startTime || endTime
 }
 
 /** Events from `today` onward, soonest first. Pass the day explicitly so it stays pure. */
-export function selectUpcomingEvents(events: TechEvent[], today: string): TechEvent[] {
+export function selectUpcomingEvents(
+  events: TechEvent[],
+  today: string,
+): TechEvent[] {
   return events
     .filter((ev) => ev.date >= today)
     .sort(
-      (a, b) => a.date.localeCompare(b.date) || a.startTime.localeCompare(b.startTime),
+      (a, b) =>
+        a.date.localeCompare(b.date) || a.startTime.localeCompare(b.startTime),
     )
 }
 
 /** Events before `today`, most recent first. Pass the day explicitly so it stays pure. */
-export function selectPastEvents(events: TechEvent[], today: string): TechEvent[] {
+export function selectPastEvents(
+  events: TechEvent[],
+  today: string,
+): TechEvent[] {
   return events
     .filter((ev) => ev.date < today)
     .sort(
-      (a, b) => b.date.localeCompare(a.date) || b.startTime.localeCompare(a.startTime),
+      (a, b) =>
+        b.date.localeCompare(a.date) || b.startTime.localeCompare(a.startTime),
     )
 }
 
@@ -191,7 +221,12 @@ export function selectPastEvents(events: TechEvent[], today: string): TechEvent[
  */
 export function selectOtherEvents(
   events: TechEvent[],
-  options: { excludeId: string; excludeSlug?: string; today: string; limit?: number },
+  options: {
+    excludeId: string
+    excludeSlug?: string
+    today: string
+    limit?: number
+  },
 ): TechEvent[] {
   const { excludeId, excludeSlug, today, limit = 3 } = options
   const others = events.filter(
@@ -200,7 +235,9 @@ export function selectOtherEvents(
   return selectUpcomingEvents(others, today).slice(0, limit)
 }
 
-export function groupEventsByDate(events: TechEvent[]): Record<string, TechEvent[]> {
+export function groupEventsByDate(
+  events: TechEvent[],
+): Record<string, TechEvent[]> {
   const map: Record<string, TechEvent[]> = {}
   for (const ev of events) {
     const dateKey = ev.date?.split('T')[0]

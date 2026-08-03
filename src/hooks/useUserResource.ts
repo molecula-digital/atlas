@@ -24,7 +24,9 @@ export function useUserResource<T>(url: string) {
         const parsed = await readJson<{ docs?: T[] }>(res)
         if (cancelled) return
         if (!res.ok || !parsed.ok) {
-          setError(parsed.ok ? `Error del servidor (${res.status})` : parsed.error)
+          setError(
+            parsed.ok ? `Error del servidor (${res.status})` : parsed.error,
+          )
           return
         }
         setData(parsed.data.docs ?? [])
@@ -36,7 +38,9 @@ export function useUserResource<T>(url: string) {
     }
 
     load()
-    return () => { cancelled = true }
+    return () => {
+      cancelled = true
+    }
   }, [url])
 
   return { data, loading, error }

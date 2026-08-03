@@ -2,7 +2,11 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import posthog from 'posthog-js'
-import { CATEGORY_URL_MAP, ENTRY_TYPE_LABELS, type AtlasEntryType } from '@/config'
+import {
+  CATEGORY_URL_MAP,
+  ENTRY_TYPE_LABELS,
+  type AtlasEntryType,
+} from '@/config'
 import { ANALYTICS_EVENTS } from '@/lib/analytics-events'
 
 export interface CityInfo {
@@ -36,7 +40,9 @@ export function typeToPath(type: string): string {
 function getSortFromURL(): SortOption {
   if (typeof window === 'undefined') return DEFAULT_SORT
   const s = new URLSearchParams(window.location.search).get('sort')
-  return SORT_OPTIONS.some((o) => o.value === s) ? (s as SortOption) : DEFAULT_SORT
+  return SORT_OPTIONS.some((o) => o.value === s)
+    ? (s as SortOption)
+    : DEFAULT_SORT
 }
 
 /**

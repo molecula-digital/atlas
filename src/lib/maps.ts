@@ -56,7 +56,9 @@ export function extractLatLng(mapsUrl: string): LatLng | null {
   }
 
   // The place's own pin, tagged `!8m2` in the data blob.
-  const placePin = url.href.match(/!8m2!3d(-?\d+(?:\.\d+)?)!4d(-?\d+(?:\.\d+)?)/)
+  const placePin = url.href.match(
+    /!8m2!3d(-?\d+(?:\.\d+)?)!4d(-?\d+(?:\.\d+)?)/,
+  )
   if (placePin) {
     const coords = toLatLng(placePin[1], placePin[2])
     if (coords) return coords
@@ -65,7 +67,9 @@ export function extractLatLng(mapsUrl: string): LatLng | null {
   // Explicit coordinates, e.g. `?q=24.79,-107.42` or the Maps URL API's `query`.
   for (const key of COORD_PARAMS) {
     const value = url.searchParams.get(key)
-    const pair = value?.match(/^\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*$/)
+    const pair = value?.match(
+      /^\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*$/,
+    )
     if (pair) {
       const coords = toLatLng(pair[1], pair[2])
       if (coords) return coords
@@ -134,7 +138,9 @@ export function buildMapEmbedUrl({ lat, lng }: LatLng): string {
  * the map entirely in that case — showing a guessed location is the bug this
  * module exists to prevent.
  */
-export async function resolveMapEmbedUrl(mapsUrl: string): Promise<string | null> {
+export async function resolveMapEmbedUrl(
+  mapsUrl: string,
+): Promise<string | null> {
   if (!mapsUrl) return null
 
   const direct = extractLatLng(mapsUrl)

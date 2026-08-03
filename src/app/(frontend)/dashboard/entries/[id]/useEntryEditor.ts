@@ -144,7 +144,9 @@ export function useEntryEditor(id: string) {
         setStage(data.stage || '')
         setTeamSize(data.teamSize || '')
         setSector(data.sector || '')
-        setTechnologies(data.technologies?.map((t) => t.technology).join(', ') || '')
+        setTechnologies(
+          data.technologies?.map((t) => t.technology).join(', ') || '',
+        )
         setHiring(Boolean(data.hiringUrl))
         setHiringUrl(data.hiringUrl || '')
         setBusinessModel(data.businessModel || '')
@@ -163,7 +165,11 @@ export function useEntryEditor(id: string) {
         if (data.logo && typeof data.logo === 'object' && 'url' in data.logo) {
           setLogoPreview(data.logo.url || null)
         }
-        if (data.coverImage && typeof data.coverImage === 'object' && 'url' in data.coverImage) {
+        if (
+          data.coverImage &&
+          typeof data.coverImage === 'object' &&
+          'url' in data.coverImage
+        ) {
           setCoverPreview(data.coverImage.url || null)
         }
       } catch {
@@ -177,10 +183,13 @@ export function useEntryEditor(id: string) {
   }, [id])
 
   // Release any blob preview we still hold when the form goes away.
-  useEffect(() => () => {
-    revokeObjectUrl(logoPreviewRef.current)
-    revokeObjectUrl(coverPreviewRef.current)
-  }, [])
+  useEffect(
+    () => () => {
+      revokeObjectUrl(logoPreviewRef.current)
+      revokeObjectUrl(coverPreviewRef.current)
+    },
+    [],
+  )
 
   const selectLogo = useCallback((file?: File) => {
     if (!file) return
@@ -196,7 +205,9 @@ export function useEntryEditor(id: string) {
   const resetLogo = useCallback(() => {
     setLogoPreview((prev) => {
       revokeObjectUrl(prev)
-      return entry?.logo && typeof entry.logo === 'object' && 'url' in entry.logo
+      return entry?.logo &&
+        typeof entry.logo === 'object' &&
+        'url' in entry.logo
         ? entry.logo.url || null
         : null
     })
@@ -229,10 +240,34 @@ export function useEntryEditor(id: string) {
   )
 
   const values: EntryFormValues = {
-    name, tagline, body: bodyMarkdown, city, website, x, instagram, linkedin,
-    github, youtube, discord, telegram, tags, foundedYear, stage, teamSize,
-    sector, technologies, hiring, hiringUrl, businessModel, memberCount,
-    meetupFrequency, role, company, email, portfolio, availableForHire,
+    name,
+    tagline,
+    body: bodyMarkdown,
+    city,
+    website,
+    x,
+    instagram,
+    linkedin,
+    github,
+    youtube,
+    discord,
+    telegram,
+    tags,
+    foundedYear,
+    stage,
+    teamSize,
+    sector,
+    technologies,
+    hiring,
+    hiringUrl,
+    businessModel,
+    memberCount,
+    meetupFrequency,
+    role,
+    company,
+    email,
+    portfolio,
+    availableForHire,
     availableForMentoring,
   }
 
@@ -255,7 +290,8 @@ export function useEntryEditor(id: string) {
         if (logoFile) logoId = await uploadEntryImage(logoFile)
         if (coverFile) coverImageId = await uploadEntryImage(coverFile)
       } catch (err) {
-        const message = err instanceof Error ? err.message : 'Error al subir imagenes'
+        const message =
+          err instanceof Error ? err.message : 'Error al subir imagenes'
         setUploadError(message)
         setUploadingImages(false)
         setSaving(false)
@@ -279,7 +315,9 @@ export function useEntryEditor(id: string) {
       })
 
       if (res.ok) {
-        posthog.capture(ANALYTICS_EVENTS.directoryEntryUpdated, { entry_type: entry.entryType })
+        posthog.capture(ANALYTICS_EVENTS.directoryEntryUpdated, {
+          entry_type: entry.entryType,
+        })
         setSaved(true)
       } else {
         const data = await res.json().catch(() => ({}))
@@ -304,47 +342,115 @@ export function useEntryEditor(id: string) {
     // `values` is rebuilt each render from the fields below, so they are the real deps.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    entry, name, tagline, city, website, x, instagram, linkedin, github, youtube,
-    discord, telegram, tags, bodyMarkdown, foundedYear, stage, teamSize, sector,
-    technologies, hiring, hiringUrl, businessModel, memberCount, meetupFrequency,
-    role, company, email, portfolio, availableForHire, availableForMentoring,
+    entry,
+    name,
+    tagline,
+    city,
+    website,
+    x,
+    instagram,
+    linkedin,
+    github,
+    youtube,
+    discord,
+    telegram,
+    tags,
+    bodyMarkdown,
+    foundedYear,
+    stage,
+    teamSize,
+    sector,
+    technologies,
+    hiring,
+    hiringUrl,
+    businessModel,
+    memberCount,
+    meetupFrequency,
+    role,
+    company,
+    email,
+    portfolio,
+    availableForHire,
+    availableForMentoring,
   ])
 
   return {
-    entry, loading, error, saving, saved,
-    name, setName,
-    tagline, setTagline,
-    city, setCity,
-    website, setWebsite,
-    x, setX,
-    instagram, setInstagram,
-    linkedin, setLinkedin,
-    github, setGithub,
-    youtube, setYoutube,
-    discord, setDiscord,
-    telegram, setTelegram,
-    tags, tagInput, setTagInput, addTag, removeTag,
-    foundedYear, setFoundedYear,
-    stage, setStage,
-    teamSize, setTeamSize,
-    sector, setSector,
-    technologies, setTechnologies,
-    hiring, setHiring,
-    hiringUrl, setHiringUrl,
-    businessModel, setBusinessModel,
-    memberCount, setMemberCount,
-    meetupFrequency, setMeetupFrequency,
-    role, setRole,
-    company, setCompany,
-    email, setEmail,
-    portfolio, setPortfolio,
-    availableForHire, setAvailableForHire,
-    availableForMentoring, setAvailableForMentoring,
-    bodyMarkdown, setBodyMarkdown,
-    logoPreview, selectLogo, resetLogo,
-    coverPreview, selectCover, resetCover,
-    uploadingImages, uploadError,
-    logoRef, coverRef,
+    entry,
+    loading,
+    error,
+    saving,
+    saved,
+    name,
+    setName,
+    tagline,
+    setTagline,
+    city,
+    setCity,
+    website,
+    setWebsite,
+    x,
+    setX,
+    instagram,
+    setInstagram,
+    linkedin,
+    setLinkedin,
+    github,
+    setGithub,
+    youtube,
+    setYoutube,
+    discord,
+    setDiscord,
+    telegram,
+    setTelegram,
+    tags,
+    tagInput,
+    setTagInput,
+    addTag,
+    removeTag,
+    foundedYear,
+    setFoundedYear,
+    stage,
+    setStage,
+    teamSize,
+    setTeamSize,
+    sector,
+    setSector,
+    technologies,
+    setTechnologies,
+    hiring,
+    setHiring,
+    hiringUrl,
+    setHiringUrl,
+    businessModel,
+    setBusinessModel,
+    memberCount,
+    setMemberCount,
+    meetupFrequency,
+    setMeetupFrequency,
+    role,
+    setRole,
+    company,
+    setCompany,
+    email,
+    setEmail,
+    portfolio,
+    setPortfolio,
+    availableForHire,
+    setAvailableForHire,
+    availableForMentoring,
+    setAvailableForMentoring,
+    bodyMarkdown,
+    setBodyMarkdown,
+    logoPreview,
+    selectLogo,
+    resetLogo,
+    coverPreview,
+    selectCover,
+    resetCover,
+    uploadingImages,
+    uploadError,
+    logoRef,
+    coverRef,
     handleSave,
   }
 }

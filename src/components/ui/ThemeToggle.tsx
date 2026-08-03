@@ -14,7 +14,11 @@ const OPTIONS = [
   { value: 'system', label: 'Sistema', Icon: Contrast },
 ] as const
 
-export default function ThemeToggle({ className = '' }: { className?: string }) {
+export default function ThemeToggle({
+  className = '',
+}: {
+  className?: string
+}) {
   const { theme, setTheme } = useTheme()
   const { open, setOpen, ref, toggle } = useDisclosure()
   const [mounted, setMounted] = useState(false)
@@ -32,7 +36,10 @@ export default function ThemeToggle({ className = '' }: { className?: string }) 
     <div ref={ref} className={cn('relative', className)}>
       <button
         type="button"
-        onClick={(e) => { e.stopPropagation(); toggle() }}
+        onClick={(e) => {
+          e.stopPropagation()
+          toggle()
+        }}
         aria-label="Cambiar tema"
         aria-haspopup="true"
         aria-expanded={open}
@@ -68,7 +75,9 @@ export default function ThemeToggle({ className = '' }: { className?: string }) 
             >
               <Icon className="w-4 h-4" />
               {label}
-              {theme === value && <Check className="w-3 h-3 ml-auto text-accent" />}
+              {theme === value && (
+                <Check className="w-3 h-3 ml-auto text-accent" />
+              )}
             </button>
           ))}
         </div>

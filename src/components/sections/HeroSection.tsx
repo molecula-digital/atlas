@@ -5,7 +5,11 @@ import type { AtlasEntryType } from '@/config'
 import SinaloaMap from '@/components/maps/SinaloaMapLazy'
 import { ENTRY_TYPE_ICON_MAP } from '@/lib/icons'
 import { buttonVariants } from '@/components/ui/button-variants'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/Tooltip'
 import { NewsletterSignup } from '@/components/newsletter/NewsletterSignup'
 import { DirectoryCtaLink } from '@/components/entries/DirectoryCtaLink'
 import { WhatsAppJoinLink } from '@/components/community/WhatsAppJoinLink'
@@ -24,7 +28,10 @@ interface HeroSectionProps {
   typeCounts?: Record<string, number>
 }
 
-export function HeroSection({ cityCounts = {}, typeCounts = {} }: HeroSectionProps) {
+export function HeroSection({
+  cityCounts = {},
+  typeCounts = {},
+}: HeroSectionProps) {
   const ecosystemStats = ENTRY_TYPES.map((type: AtlasEntryType) => ({
     type,
     label: ENTRY_TYPE_CONFIG[type].labelPlural,
@@ -52,8 +59,15 @@ export function HeroSection({ cityCounts = {}, typeCounts = {} }: HeroSectionPro
 
             <h1 className="text-3xl font-sans font-bold text-primary leading-[1] tracking-[-0.04em] uppercase sm:text-4xl lg:text-[2.65rem]">
               <span className="block">Descubre el</span>
-              <span className="block text-accent terminal-glow">ecosistema tech</span>
-              <span className="block">de Sinaloa<span className="text-accent" aria-hidden="true">_</span></span>
+              <span className="block text-accent terminal-glow">
+                ecosistema tech
+              </span>
+              <span className="block">
+                de Sinaloa
+                <span className="text-accent" aria-hidden="true">
+                  _
+                </span>
+              </span>
             </h1>
 
             <p className="text-xs md:text-sm font-mono text-muted leading-relaxed max-w-110">
@@ -64,12 +78,22 @@ export function HeroSection({ cityCounts = {}, typeCounts = {} }: HeroSectionPro
             <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
               <DirectoryCtaLink
                 cta={DIRECTORY_CTA.hero}
-                className={buttonVariants({ variant: 'accent-filled', size: 'md', className: 'uppercase' })}
+                className={buttonVariants({
+                  variant: 'accent-filled',
+                  size: 'md',
+                  className: 'uppercase',
+                })}
               >
                 <Search className="w-3.5 h-3.5" />
                 Explorar directorio
               </DirectoryCtaLink>
-              <Link href="/dashboard" className={buttonVariants({ size: 'md', className: 'uppercase' })}>
+              <Link
+                href="/dashboard"
+                className={buttonVariants({
+                  size: 'md',
+                  className: 'uppercase',
+                })}
+              >
                 <Plus className="w-3.5 h-3.5" />
                 Crear perfil
               </Link>
@@ -88,14 +112,14 @@ export function HeroSection({ cityCounts = {}, typeCounts = {} }: HeroSectionPro
                   <DialogHeader>
                     <DialogTitle>Newsletter de Tech Atlas</DialogTitle>
                     <DialogDescription>
-                      Noticias, eventos y proyectos del ecosistema tech de Sinaloa. Un correo al mes.
+                      Noticias, eventos y proyectos del ecosistema tech de
+                      Sinaloa. Un correo al mes.
                     </DialogDescription>
                   </DialogHeader>
                   <NewsletterSignup source="homepage" variant="section" />
                 </DialogContent>
               </Dialog>
             </div>
-
           </div>
         </div>
 
@@ -116,7 +140,13 @@ export function HeroSection({ cityCounts = {}, typeCounts = {} }: HeroSectionPro
 
             {/* Map container */}
             <div className="relative flex-1 bg-elevated border border-border rounded overflow-hidden">
-              <SinaloaMap compact linkOnClick dither pulseActive cityCounts={cityCounts} />
+              <SinaloaMap
+                compact
+                linkOnClick
+                dither
+                pulseActive
+                cityCounts={cityCounts}
+              />
             </div>
           </div>
         </div>
@@ -124,31 +154,32 @@ export function HeroSection({ cityCounts = {}, typeCounts = {} }: HeroSectionPro
 
       {/* Ecosystem stats */}
       <div className="mt-8 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-3 lg:grid-cols-6">
-        {ecosystemStats.map(({ type, label, description, slug, Icon, count }) => (
-          <Tooltip key={type}>
-            <TooltipTrigger asChild>
-              <Link
-                href={`/${slug}`}
-                className="group bg-card px-3 py-3 transition-colors hover:bg-elevated"
-              >
-                <div className="flex items-center gap-2">
-                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-accent/10 transition-colors group-hover:bg-accent/20">
-                    {Icon && <Icon className="h-3.5 w-3.5 text-accent" />}
-                  </span>
-                  <span className="font-mono text-xl font-bold leading-none text-primary">
-                    {count}
-                  </span>
-                </div>
-                <p className="mt-2 truncate font-mono text-[10px] uppercase tracking-wider text-muted group-hover:text-accent transition-colors">
-                  {label}
-                </p>
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent>{description}</TooltipContent>
-          </Tooltip>
-        ))}
+        {ecosystemStats.map(
+          ({ type, label, description, slug, Icon, count }) => (
+            <Tooltip key={type}>
+              <TooltipTrigger asChild>
+                <Link
+                  href={`/${slug}`}
+                  className="group bg-card px-3 py-3 transition-colors hover:bg-elevated"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-accent/10 transition-colors group-hover:bg-accent/20">
+                      {Icon && <Icon className="h-3.5 w-3.5 text-accent" />}
+                    </span>
+                    <span className="font-mono text-xl font-bold leading-none text-primary">
+                      {count}
+                    </span>
+                  </div>
+                  <p className="mt-2 truncate font-mono text-[10px] uppercase tracking-wider text-muted group-hover:text-accent transition-colors">
+                    {label}
+                  </p>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent>{description}</TooltipContent>
+            </Tooltip>
+          ),
+        )}
       </div>
-
     </section>
   )
 }

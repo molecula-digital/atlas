@@ -32,7 +32,10 @@ export const auth = betterAuth({
           try {
             await claimAnonymousSubscription(createdUser.id, createdUser.email)
           } catch (err) {
-            console.error('Failed to claim anonymous newsletter subscriber:', err)
+            console.error(
+              'Failed to claim anonymous newsletter subscriber:',
+              err,
+            )
           }
         },
       },

@@ -1,4 +1,10 @@
-import { boolean, pgSchema, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core'
+import {
+  boolean,
+  pgSchema,
+  text,
+  timestamp,
+  uniqueIndex,
+} from 'drizzle-orm/pg-core'
 import { user } from './auth'
 
 export const appSchema = pgSchema('app')

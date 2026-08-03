@@ -12,7 +12,8 @@ const badgeVariants = cva(
     variants: {
       tone: {
         accent: 'bg-accent/10 text-accent border-accent/25',
-        success: 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-transparent',
+        success:
+          'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-transparent',
         info: 'bg-blue-500/15 text-blue-600 dark:text-blue-400 border-transparent',
         neutral: 'bg-elevated text-muted border-border',
       },
@@ -30,10 +31,16 @@ const badgeVariants = cva(
 
 export type BadgeTone = NonNullable<VariantProps<typeof badgeVariants>['tone']>
 
-type BadgeProps = React.ComponentPropsWithoutRef<'span'> & VariantProps<typeof badgeVariants>
+type BadgeProps = React.ComponentPropsWithoutRef<'span'> &
+  VariantProps<typeof badgeVariants>
 
 export function Badge({ className, tone, shape, ...props }: BadgeProps) {
-  return <span className={cn(badgeVariants({ tone, shape, className }))} {...props} />
+  return (
+    <span
+      className={cn(badgeVariants({ tone, shape, className }))}
+      {...props}
+    />
+  )
 }
 
 export { badgeVariants }

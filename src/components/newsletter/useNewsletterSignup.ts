@@ -15,7 +15,8 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 export function useNewsletterSignup(source: NewsletterSignupSource) {
   const [email, setEmailValue] = useState('')
   const submission = useFormSubmission({
-    getErrorMessage: (err) => (err instanceof Error ? err.message : NEWSLETTER.error),
+    getErrorMessage: (err) =>
+      err instanceof Error ? err.message : NEWSLETTER.error,
   })
 
   // Typing again clears a settled result so the old message doesn't linger.

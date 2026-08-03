@@ -48,7 +48,13 @@ export function YouTubeIcon({ className }: { className?: string }) {
 /*  Dispatcher: render social/link icon by key                        */
 /* ------------------------------------------------------------------ */
 
-export function SocialLinkIcon({ icon, className }: { icon: string; className?: string }) {
+export function SocialLinkIcon({
+  icon,
+  className,
+}: {
+  icon: string
+  className?: string
+}) {
   switch (icon) {
     case 'globe':
       return <Globe className={className} />

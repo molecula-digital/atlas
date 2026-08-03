@@ -40,7 +40,8 @@ export const Events: CollectionConfig = {
       unique: true,
       admin: {
         position: 'sidebar',
-        description: 'Se genera automáticamente a partir del título y la fecha si se deja vacío.',
+        description:
+          'Se genera automáticamente a partir del título y la fecha si se deja vacío.',
       },
       hooks: {
         beforeValidate: [
@@ -52,7 +53,9 @@ export const Events: CollectionConfig = {
                 .replace(/[\u0300-\u036f]/g, '')
                 .replace(/[^a-z0-9]+/g, '-')
                 .replace(/(^-|-$)/g, '')
-              const datePart = ((siblingData.date as string) || '').split('T')[0]
+              const datePart = ((siblingData.date as string) || '').split(
+                'T',
+              )[0]
               return datePart ? `${base}-${datePart}` : base
             }
             return value
@@ -84,13 +87,19 @@ export const Events: CollectionConfig = {
           name: 'startTime',
           label: 'Hora de inicio',
           type: 'date',
-          admin: { width: '50%', date: { pickerAppearance: 'timeOnly', displayFormat: 'hh:mm a' } },
+          admin: {
+            width: '50%',
+            date: { pickerAppearance: 'timeOnly', displayFormat: 'hh:mm a' },
+          },
         },
         {
           name: 'endTime',
           label: 'Hora de fin',
           type: 'date',
-          admin: { width: '50%', date: { pickerAppearance: 'timeOnly', displayFormat: 'hh:mm a' } },
+          admin: {
+            width: '50%',
+            date: { pickerAppearance: 'timeOnly', displayFormat: 'hh:mm a' },
+          },
         },
       ],
     },

@@ -48,10 +48,13 @@ function DashboardContent() {
             {user?.name ? getInitials(user.name) : '?'}
           </div>
           <div>
-            <h1 className="text-xl font-bold text-primary">Hola, {firstName}</h1>
+            <h1 className="text-xl font-bold text-primary">
+              Hola, {firstName}
+            </h1>
             <p className="text-xs font-mono text-muted">
               {user?.email}
-              {user?.createdAt && ` · Miembro desde ${getMemberSince(user.createdAt)}`}
+              {user?.createdAt &&
+                ` · Miembro desde ${getMemberSince(user.createdAt)}`}
             </p>
           </div>
         </div>

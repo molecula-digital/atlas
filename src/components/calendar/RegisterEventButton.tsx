@@ -4,7 +4,10 @@ import { Ticket, ArrowRight, CircleCheck } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { TechEvent } from '@/lib/events'
 import { isPastEventDate } from '@/lib/events'
-import { captureEventRegistrationStarted, type EventSurface } from '@/lib/analytics'
+import {
+  captureEventRegistrationStarted,
+  type EventSurface,
+} from '@/lib/analytics'
 
 /**
  * Primary Registrarse CTA on event pages: a compact, perforated admission
@@ -52,7 +55,10 @@ export function RegisterEventButton({
         </span>
       </span>
 
-      <span aria-hidden className="event-cta__tear relative z-2 my-3.5 w-px shrink-0" />
+      <span
+        aria-hidden
+        className="event-cta__tear relative z-2 my-3.5 w-px shrink-0"
+      />
 
       <span className="event-cta__stub relative z-2 flex w-24 shrink-0 flex-col items-center justify-center gap-2 px-3">
         {disabled ? (

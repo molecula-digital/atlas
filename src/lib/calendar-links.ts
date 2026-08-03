@@ -74,7 +74,9 @@ function getTimeZoneOffsetMinutes(utcDate: Date, timeZone: string): number {
  * Returns null when the value is absent or unrecognised, which callers treat as
  * an all-day event rather than guessing at a wrong time.
  */
-function parseClockTime(time: string | undefined): { hour: number; minute: number } | null {
+function parseClockTime(
+  time: string | undefined,
+): { hour: number; minute: number } | null {
   if (!time) return null
   const value = time.trim()
 
@@ -86,9 +88,13 @@ function parseClockTime(time: string | undefined): { hour: number; minute: numbe
     return null
   }
 
-  const twelveHour = value.match(/^(\d{1,2})(?::(\d{2}))?\s*([AaPp])\.?[Mm]\.?$/)
+  const twelveHour = value.match(
+    /^(\d{1,2})(?::(\d{2}))?\s*([AaPp])\.?[Mm]\.?$/,
+  )
   if (twelveHour) {
-    const hour = (Number(twelveHour[1]) % 12) + (twelveHour[3].toLowerCase() === 'p' ? 12 : 0)
+    const hour =
+      (Number(twelveHour[1]) % 12) +
+      (twelveHour[3].toLowerCase() === 'p' ? 12 : 0)
     const minute = Number(twelveHour[2] ?? 0)
     if (hour <= 23 && minute <= 59) return { hour, minute }
     return null

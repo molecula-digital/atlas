@@ -9,7 +9,11 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const limited = withRateLimit(request, { limit: 30, windowMs: 60 * 1000, keyPrefix: 'user-jobs' }, session.user.id)
+  const limited = withRateLimit(
+    request,
+    { limit: 30, windowMs: 60 * 1000, keyPrefix: 'user-jobs' },
+    session.user.id,
+  )
   if (limited) return limited
 
   try {

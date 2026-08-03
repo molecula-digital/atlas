@@ -1,4 +1,4 @@
-import { withSentryConfig } from '@sentry/nextjs';
+import { withSentryConfig } from '@sentry/nextjs'
 import { withPayload } from '@payloadcms/next/withPayload'
 import type { NextConfig } from 'next'
 
@@ -32,9 +32,9 @@ export default withSentryConfig(withPayload(nextConfig), {
   // For all available options, see:
   // https://www.npmjs.com/package/@sentry/webpack-plugin#options
 
-  org: "molecula-digital",
+  org: 'molecula-digital',
 
-  project: "atlas-tech",
+  project: 'atlas-tech',
 
   // Only print logs for uploading source maps in CI
   silent: !process.env.CI,
@@ -50,7 +50,8 @@ export default withSentryConfig(withPayload(nextConfig), {
   // Note: Check that the configured route will not match with your Next.js proxy, otherwise reporting of client-
   // side errors will fail.
   // Dev has no route to Sentry's ingest host, so the proxy only produces ETIMEDOUT noise.
-  tunnelRoute: process.env.NODE_ENV === "production" ? "/monitoring" : undefined,
+  tunnelRoute:
+    process.env.NODE_ENV === 'production' ? '/monitoring' : undefined,
 
   webpack: {
     // Enables automatic instrumentation of Vercel Cron Monitors. (Does not yet work with App Router route handlers.)
@@ -65,4 +66,4 @@ export default withSentryConfig(withPayload(nextConfig), {
       removeDebugLogging: true,
     },
   },
-});
+})

@@ -25,7 +25,11 @@ export function Breadcrumb({ items }: { items: BreadcrumbItem[] }) {
               {item.label}
             </Link>
           ) : item.onClick ? (
-            <button type="button" onClick={item.onClick} className={`${CRUMB_INTERACTIVE} cursor-pointer uppercase`}>
+            <button
+              type="button"
+              onClick={item.onClick}
+              className={`${CRUMB_INTERACTIVE} cursor-pointer uppercase`}
+            >
               {item.label}
             </button>
           ) : (

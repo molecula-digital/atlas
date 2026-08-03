@@ -6,7 +6,11 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function buildTrackedUrl(url: string, slug: string, medium = 'directorio'): string {
+export function buildTrackedUrl(
+  url: string,
+  slug: string,
+  medium = 'directorio',
+): string {
   try {
     const u = new URL(url)
     u.searchParams.set('utm_source', new URL(SITE_URL).hostname)
@@ -19,7 +23,10 @@ export function buildTrackedUrl(url: string, slug: string, medium = 'directorio'
 }
 
 /** Flatten Payload array fields: [{tag: "x"}, {tag: "y"}] → ["x", "y"] */
-export function flattenArray<T>(arr: Array<Record<string, T>> | undefined | null, key: string): T[] {
+export function flattenArray<T>(
+  arr: Array<Record<string, T>> | undefined | null,
+  key: string,
+): T[] {
   if (!arr) return []
   return arr.map((item) => item[key]).filter(Boolean)
 }
@@ -34,9 +41,14 @@ export function timeAgo(dateStr: string): string {
   const diffDays = Math.floor(diffMs / 86400000)
 
   if (diffMins < 60) return 'hace unos minutos'
-  if (diffHours < 24) return `hace ${diffHours} hora${diffHours === 1 ? '' : 's'}`
+  if (diffHours < 24)
+    return `hace ${diffHours} hora${diffHours === 1 ? '' : 's'}`
   if (diffDays < 30) return `hace ${diffDays} día${diffDays === 1 ? '' : 's'}`
-  return new Date(dateStr).toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' })
+  return new Date(dateStr).toLocaleDateString('es-MX', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  })
 }
 
 /** Safely serialize data for JSON-LD script blocks, preventing XSS via </script> injection */

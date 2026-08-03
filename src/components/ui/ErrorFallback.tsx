@@ -43,7 +43,10 @@ export function ErrorFallback({
         )}
 
         <div className="flex items-center gap-3">
-          <button onClick={reset} className={buttonVariants({ variant: 'accent-filled', size: 'md' })}>
+          <button
+            onClick={reset}
+            className={buttonVariants({ variant: 'accent-filled', size: 'md' })}
+          >
             Reintentar
           </button>
           <Link href="/" className={buttonVariants({ size: 'md' })}>

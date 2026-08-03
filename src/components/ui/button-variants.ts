@@ -64,9 +64,16 @@ type ButtonVariantsProps = VariantProps<typeof buttonVariantsConfig> & {
 }
 
 /** Resolve variant classes and merge any `className` overrides via twMerge. */
-export function buttonVariants({ className, ...variants }: ButtonVariantsProps = {}) {
+export function buttonVariants({
+  className,
+  ...variants
+}: ButtonVariantsProps = {}) {
   return cn(buttonVariantsConfig(variants), className)
 }
 
-export type ButtonVariant = NonNullable<VariantProps<typeof buttonVariantsConfig>['variant']>
-export type ButtonSize = NonNullable<VariantProps<typeof buttonVariantsConfig>['size']>
+export type ButtonVariant = NonNullable<
+  VariantProps<typeof buttonVariantsConfig>['variant']
+>
+export type ButtonSize = NonNullable<
+  VariantProps<typeof buttonVariantsConfig>['size']
+>

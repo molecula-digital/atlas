@@ -11,12 +11,15 @@ export function CtaSection() {
             Pon a Sinaloa en el mapa
           </h2>
           <p className="text-secondary max-w-lg mx-auto">
-            Ya seas una startup, consultoría, comunidad, empresa o profesional tech,
-            si estás construyendo desde Sinaloa mereces ser visible. Únete al
-            directorio y conecta con el ecosistema.
+            Ya seas una startup, consultoría, comunidad, empresa o profesional
+            tech, si estás construyendo desde Sinaloa mereces ser visible. Únete
+            al directorio y conecta con el ecosistema.
           </p>
           <div className="flex flex-wrap justify-center gap-3">
-            <Link href="/dashboard" className={buttonVariants({ variant: 'accent', size: 'md' })}>
+            <Link
+              href="/dashboard"
+              className={buttonVariants({ variant: 'accent', size: 'md' })}
+            >
               Registrarme
               <svg
                 className="w-3.5 h-3.5"

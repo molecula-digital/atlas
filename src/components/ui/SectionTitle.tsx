@@ -50,7 +50,9 @@ export function SectionTitle({
         {children}
       </h2>
       {description && (
-        <p className={cn('mt-2 text-secondary', centered && 'max-w-xl mx-auto')}>
+        <p
+          className={cn('mt-2 text-secondary', centered && 'max-w-xl mx-auto')}
+        >
           {description}
         </p>
       )}

@@ -31,7 +31,11 @@ interface Entry {
 }
 
 export function MyEntries() {
-  const { data: entries, loading, error } = useUserResource<Entry>('/api/user/entries')
+  const {
+    data: entries,
+    loading,
+    error,
+  } = useUserResource<Entry>('/api/user/entries')
 
   if (loading) {
     return (
@@ -48,7 +52,10 @@ export function MyEntries() {
         </div>
         <div className="h-[4.5rem] rounded-lg border border-dashed border-border bg-elevated/40" />
         {[1, 2, 3].map((i) => (
-          <div key={i} className="bg-card border border-border rounded-lg p-4 flex items-start gap-3">
+          <div
+            key={i}
+            className="bg-card border border-border rounded-lg p-4 flex items-start gap-3"
+          >
             <div className="w-9 h-9 rounded-lg bg-elevated" />
             <div className="flex-1 space-y-2">
               <div className="flex gap-2">
@@ -101,11 +108,15 @@ export function MyEntries() {
       <div className="flex gap-3">
         <div className="flex-1 bg-card border border-border rounded-lg px-4 py-3 text-center">
           <div className="text-lg font-bold text-accent">{publishedCount}</div>
-          <div className="text-2xs font-mono text-muted uppercase">Publicados</div>
+          <div className="text-2xs font-mono text-muted uppercase">
+            Publicados
+          </div>
         </div>
         <div className="flex-1 bg-card border border-border rounded-lg px-4 py-3 text-center">
           <div className="text-lg font-bold text-secondary">{pendingCount}</div>
-          <div className="text-2xs font-mono text-muted uppercase">Pendientes</div>
+          <div className="text-2xs font-mono text-muted uppercase">
+            Pendientes
+          </div>
         </div>
       </div>
 
@@ -122,7 +133,10 @@ export function MyEntries() {
         const entryUrl = `/${config?.slug}/${entry.slug}`
 
         return (
-          <div key={entry.id} className="bg-card border border-border rounded-lg p-4">
+          <div
+            key={entry.id}
+            className="bg-card border border-border rounded-lg p-4"
+          >
             <div className="flex items-start gap-3">
               <div className="w-9 h-9 rounded-lg bg-elevated border border-border flex items-center justify-center shrink-0">
                 {Icon && <Icon className="w-4 h-4 text-muted" />}
@@ -143,7 +157,9 @@ export function MyEntries() {
                     </span>
                   )}
                 </div>
-                <h3 className="font-semibold text-primary text-sm">{entry.name}</h3>
+                <h3 className="font-semibold text-primary text-sm">
+                  {entry.name}
+                </h3>
                 <p className="text-2xs text-muted font-mono">
                   {getCityName(entry.city)} · {timeAgo(entry.updatedAt)}
                 </p>
@@ -163,7 +179,10 @@ export function MyEntries() {
                   <Pencil className="w-3 h-3" /> Editar
                 </Link>
                 {entry._status === 'published' && (
-                  <Link href={entryUrl} className={buttonVariants({ size: 'sm' })}>
+                  <Link
+                    href={entryUrl}
+                    className={buttonVariants({ size: 'sm' })}
+                  >
                     <ExternalLink className="w-3 h-3" /> Ver
                   </Link>
                 )}

@@ -98,7 +98,10 @@ export function FeaturedEntryTile({
           {name}
         </h3>
         {tagline && (
-          <ClampedText text={tagline} className="line-clamp-2 text-xs text-secondary" />
+          <ClampedText
+            text={tagline}
+            className="line-clamp-2 text-xs text-secondary"
+          />
         )}
         <div className="mt-auto flex flex-col gap-1.5 pt-1 sm:flex-row sm:items-center sm:justify-between sm:gap-2">
           <p className="flex min-w-0 items-center gap-1 text-2xs font-mono text-muted">

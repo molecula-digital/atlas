@@ -41,7 +41,8 @@ export const Jobs: CollectionConfig = {
       unique: true,
       admin: {
         position: 'sidebar',
-        description: 'Se genera automáticamente a partir del título si se deja vacío.',
+        description:
+          'Se genera automáticamente a partir del título si se deja vacío.',
       },
       hooks: {
         beforeValidate: [
@@ -105,21 +106,27 @@ export const Jobs: CollectionConfig = {
       name: 'compensation',
       label: 'Compensación',
       type: 'text',
-      admin: { description: 'Formato libre: "$15k/mes", "Voluntario", "Equity", etc.' },
+      admin: {
+        description: 'Formato libre: "$15k/mes", "Voluntario", "Equity", etc.',
+      },
     },
     {
       name: 'tags',
       label: 'Etiquetas',
       type: 'array',
       maxRows: 10,
-      fields: [{ name: 'tag', label: 'Etiqueta', type: 'text', required: true }],
+      fields: [
+        { name: 'tag', label: 'Etiqueta', type: 'text', required: true },
+      ],
     },
     {
       name: 'contactUrl',
       label: 'URL de contacto',
       type: 'text',
       required: true,
-      admin: { description: 'URL o correo para que los postulantes se comuniquen' },
+      admin: {
+        description: 'URL o correo para que los postulantes se comuniquen',
+      },
     },
     {
       name: 'postedBy',
@@ -148,7 +155,8 @@ export const Jobs: CollectionConfig = {
       relationTo: 'entries',
       admin: {
         position: 'sidebar',
-        description: 'Empresa u organización que publicó este empleo (opcional)',
+        description:
+          'Empresa u organización que publicó este empleo (opcional)',
       },
     },
     {

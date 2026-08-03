@@ -59,25 +59,25 @@ Copia `.env.example` y configura segun tu entorno:
 
 **Requeridas:**
 
-| Variable | Descripcion | Como obtenerla |
-|---|---|---|
-| `DATABASE_URI` | Conexion PostgreSQL pooled para runtime | Local: `postgresql://user:pass@localhost:5432/db`. En Neon usa el hostname con `-pooler`. |
-| `DATABASE_DIRECT_URL` | Conexion PostgreSQL directa para migraciones | Local puede ser la misma que `DATABASE_URI`. En Neon usa el hostname sin `-pooler`. |
-| `PAYLOAD_SECRET` | Secret para Payload CMS | Genera con `openssl rand -hex 16` |
-| `BETTER_AUTH_SECRET` | Secret para autenticacion | Genera con `openssl rand -base64 32` |
-| `NEXT_PUBLIC_SITE_URL` | URL publica del sitio | `http://localhost:3000` en desarrollo |
-| `GOOGLE_CLIENT_ID` | ID de cliente OAuth de Google | Crea un proyecto en [Google Cloud Console](https://console.cloud.google.com/apis/credentials), configura la pantalla de consentimiento OAuth y crea credenciales tipo "ID de cliente de OAuth" para aplicacion web |
-| `GOOGLE_CLIENT_SECRET` | Secret del cliente OAuth | Se genera junto con el Client ID en el paso anterior |
+| Variable               | Descripcion                                  | Como obtenerla                                                                                                                                                                                                     |
+| ---------------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `DATABASE_URI`         | Conexion PostgreSQL pooled para runtime      | Local: `postgresql://user:pass@localhost:5432/db`. En Neon usa el hostname con `-pooler`.                                                                                                                          |
+| `DATABASE_DIRECT_URL`  | Conexion PostgreSQL directa para migraciones | Local puede ser la misma que `DATABASE_URI`. En Neon usa el hostname sin `-pooler`.                                                                                                                                |
+| `PAYLOAD_SECRET`       | Secret para Payload CMS                      | Genera con `openssl rand -hex 16`                                                                                                                                                                                  |
+| `BETTER_AUTH_SECRET`   | Secret para autenticacion                    | Genera con `openssl rand -base64 32`                                                                                                                                                                               |
+| `NEXT_PUBLIC_SITE_URL` | URL publica del sitio                        | `http://localhost:3000` en desarrollo                                                                                                                                                                              |
+| `GOOGLE_CLIENT_ID`     | ID de cliente OAuth de Google                | Crea un proyecto en [Google Cloud Console](https://console.cloud.google.com/apis/credentials), configura la pantalla de consentimiento OAuth y crea credenciales tipo "ID de cliente de OAuth" para aplicacion web |
+| `GOOGLE_CLIENT_SECRET` | Secret del cliente OAuth                     | Se genera junto con el Client ID en el paso anterior                                                                                                                                                               |
 
 **Almacenamiento S3 (imagenes):**
 
-| Variable | Descripcion |
-|---|---|
-| `S3_ENDPOINT` | URL del endpoint S3. Local: `http://localhost:9000` (MinIO). Produccion: `https://<account-id>.r2.cloudflarestorage.com` ([Cloudflare R2](https://developers.cloudflare.com/r2/)) |
-| `S3_BUCKET` | Nombre del bucket |
-| `S3_ACCESS_KEY_ID` / `S3_SECRET_ACCESS_KEY` | Credenciales de acceso al bucket |
-| `S3_REGION` | Region (`us-east-1` para MinIO, `auto` para R2) |
-| `MEDIA_URL` | URL publica (CDN) donde se sirven las imagenes. Local: `http://localhost:9000/atlas-media`. Produccion: `https://cdn.atlas-sinaloa.tech` — no usar el endpoint R2 |
+| Variable                                    | Descripcion                                                                                                                                                                       |
+| ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `S3_ENDPOINT`                               | URL del endpoint S3. Local: `http://localhost:9000` (MinIO). Produccion: `https://<account-id>.r2.cloudflarestorage.com` ([Cloudflare R2](https://developers.cloudflare.com/r2/)) |
+| `S3_BUCKET`                                 | Nombre del bucket                                                                                                                                                                 |
+| `S3_ACCESS_KEY_ID` / `S3_SECRET_ACCESS_KEY` | Credenciales de acceso al bucket                                                                                                                                                  |
+| `S3_REGION`                                 | Region (`us-east-1` para MinIO, `auto` para R2)                                                                                                                                   |
+| `MEDIA_URL`                                 | URL publica (CDN) donde se sirven las imagenes. Local: `http://localhost:9000/atlas-media`. Produccion: `https://cdn.atlas-sinaloa.tech` — no usar el endpoint R2                 |
 
 **Analytics (opcionales):**
 
@@ -85,13 +85,13 @@ Ninguna es obligatoria: sin ellas la app funciona igual y simplemente no registr
 
 Analytics solo se inicializa en produccion, asi que en desarrollo (`pnpm dev`) no se envia nada y no hace falta configurarlas.
 
-| Variable | Descripcion |
-|---|---|
-| `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` | Token del proyecto de PostHog. En PostHog: Settings → Project → Project API Key |
-| `NEXT_PUBLIC_POSTHOG_HOST` | Endpoint de ingesta del navegador. Apunta al proxy inverso (`https://t.molecula.digital`) para esquivar los bloqueadores. Usa `https://us.i.posthog.com` para ir directo |
-| `NEXT_PUBLIC_POSTHOG_UI_HOST` | Donde vive PostHog, para los enlaces del toolbar. Solo importa si el anterior es un proxy. Por defecto `https://us.posthog.com` |
-| `NEXT_PUBLIC_UMAMI_WEBSITE_ID` | ID del sitio en Umami (conteo de visitas sin cookies). No es secreto: aparece en el HTML |
-| `NEXT_PUBLIC_UMAMI_SRC` | URL del script de Umami. Por defecto `https://analytics.molecula.digital/script.js` |
+| Variable                            | Descripcion                                                                                                                                                              |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` | Token del proyecto de PostHog. En PostHog: Settings → Project → Project API Key                                                                                          |
+| `NEXT_PUBLIC_POSTHOG_HOST`          | Endpoint de ingesta del navegador. Apunta al proxy inverso (`https://t.molecula.digital`) para esquivar los bloqueadores. Usa `https://us.i.posthog.com` para ir directo |
+| `NEXT_PUBLIC_POSTHOG_UI_HOST`       | Donde vive PostHog, para los enlaces del toolbar. Solo importa si el anterior es un proxy. Por defecto `https://us.posthog.com`                                          |
+| `NEXT_PUBLIC_UMAMI_WEBSITE_ID`      | ID del sitio en Umami (conteo de visitas sin cookies). No es secreto: aparece en el HTML                                                                                 |
+| `NEXT_PUBLIC_UMAMI_SRC`             | URL del script de Umami. Por defecto `https://analytics.molecula.digital/script.js`                                                                                      |
 
 Ver [`docs/posthog.md`](docs/posthog.md) para el detalle de que se registra y por que.
 

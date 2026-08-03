@@ -1,9 +1,9 @@
-"use client"
+'use client'
 
-import * as React from "react";
-import * as TooltipPrimitive from "@radix-ui/react-tooltip";
+import * as React from 'react'
+import * as TooltipPrimitive from '@radix-ui/react-tooltip'
 
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils'
 
 function TooltipProvider({
   delayDuration = 200,
@@ -15,7 +15,7 @@ function TooltipProvider({
       delayDuration={delayDuration}
       {...props}
     />
-  );
+  )
 }
 
 function Tooltip({
@@ -25,13 +25,13 @@ function Tooltip({
     <TooltipProvider>
       <TooltipPrimitive.Root data-slot="tooltip" {...props} />
     </TooltipProvider>
-  );
+  )
 }
 
 function TooltipTrigger({
   ...props
 }: React.ComponentProps<typeof TooltipPrimitive.Trigger>) {
-  return <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />;
+  return <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />
 }
 
 function TooltipContent({
@@ -46,7 +46,7 @@ function TooltipContent({
         data-slot="tooltip-content"
         sideOffset={sideOffset}
         className={cn(
-          "tooltip-content z-100 w-fit max-w-xs rounded-md border border-border bg-card px-3 py-2 text-xs leading-relaxed text-secondary shadow-lg",
+          'tooltip-content z-100 w-fit max-w-xs rounded-md border border-border bg-card px-3 py-2 text-xs leading-relaxed text-secondary shadow-lg',
           className,
         )}
         {...props}
@@ -55,7 +55,7 @@ function TooltipContent({
         <TooltipPrimitive.Arrow className="z-100 size-2.5 translate-y-[calc(-50%_-_1px)] rotate-45 rounded-[2px] border-r border-b border-border bg-card fill-card" />
       </TooltipPrimitive.Content>
     </TooltipPrimitive.Portal>
-  );
+  )
 }
 
-export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider };
+export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider }

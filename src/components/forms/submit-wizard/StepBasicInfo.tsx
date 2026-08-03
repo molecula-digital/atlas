@@ -1,17 +1,15 @@
-import { TYPE_COPY, type StepProps, type CityOption } from "./types";
+import { TYPE_COPY, type StepProps, type CityOption } from './types'
 
 interface Props extends StepProps {
-  cities: CityOption[];
+  cities: CityOption[]
 }
 
 export default function StepBasicInfo({ state, setField, cities }: Props) {
-  const copy = state.entryType ? TYPE_COPY[state.entryType] : null;
+  const copy = state.entryType ? TYPE_COPY[state.entryType] : null
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-sans font-bold text-primary">
-        Información
-      </h2>
+      <h2 className="text-xl font-sans font-bold text-primary">Información</h2>
       <div className="space-y-3">
         <label className="block">
           <span className="text-xs font-mono text-muted uppercase tracking-wider">
@@ -20,9 +18,9 @@ export default function StepBasicInfo({ state, setField, cities }: Props) {
           <input
             type="text"
             value={state.name}
-            onChange={(e) => setField("name", e.target.value)}
+            onChange={(e) => setField('name', e.target.value)}
             required
-            placeholder={copy?.namePlaceholder ?? "Nombre"}
+            placeholder={copy?.namePlaceholder ?? 'Nombre'}
             className="mt-1 w-full px-3 py-2 rounded-lg border border-border bg-card text-primary font-mono text-sm placeholder:text-muted/50 focus:outline-hidden focus:border-accent transition-colors"
           />
         </label>
@@ -33,9 +31,9 @@ export default function StepBasicInfo({ state, setField, cities }: Props) {
           <input
             type="text"
             value={state.tagline}
-            onChange={(e) => setField("tagline", e.target.value)}
+            onChange={(e) => setField('tagline', e.target.value)}
             placeholder={
-              copy?.taglinePlaceholder ?? "Una frase corta descriptiva"
+              copy?.taglinePlaceholder ?? 'Una frase corta descriptiva'
             }
             className="mt-1 w-full px-3 py-2 rounded-lg border border-border bg-card text-primary font-mono text-sm placeholder:text-muted/50 focus:outline-hidden focus:border-accent transition-colors"
           />
@@ -46,12 +44,10 @@ export default function StepBasicInfo({ state, setField, cities }: Props) {
           </span>
           <textarea
             value={state.description}
-            onChange={(e) => setField("description", e.target.value)}
+            onChange={(e) => setField('description', e.target.value)}
             required
             rows={4}
-            placeholder={
-              copy?.descriptionPlaceholder ?? "Describe en detalle"
-            }
+            placeholder={copy?.descriptionPlaceholder ?? 'Describe en detalle'}
             className="mt-1 w-full px-3 py-2 rounded-lg border border-border bg-card text-primary font-mono text-sm placeholder:text-muted/50 focus:outline-hidden focus:border-accent transition-colors resize-y"
           />
           <p className="text-xs text-muted mt-1 font-mono">
@@ -65,7 +61,7 @@ export default function StepBasicInfo({ state, setField, cities }: Props) {
           </span>
           <select
             value={state.city}
-            onChange={(e) => setField("city", e.target.value)}
+            onChange={(e) => setField('city', e.target.value)}
             required
             className="mt-1 w-full px-3 py-2 rounded-lg border border-border bg-card text-primary font-mono text-sm focus:outline-hidden focus:border-accent transition-colors"
           >
@@ -79,5 +75,5 @@ export default function StepBasicInfo({ state, setField, cities }: Props) {
         </label>
       </div>
     </div>
-  );
+  )
 }

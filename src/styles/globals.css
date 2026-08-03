@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 @plugin "@tailwindcss/typography";
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -15,8 +15,10 @@
 }
 
 @theme {
-  --font-mono: var(--font-mono), "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
-  --font-sans: var(--font-sans), "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono:
+    var(--font-mono), 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+  --font-sans:
+    var(--font-sans), 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
   --breakpoint-xs: 30rem;
   --text-2xs: 0.625rem;
   --text-2xs--line-height: 1.2;
@@ -31,7 +33,7 @@ html {
 /* Theme CSS Custom Properties */
 :root {
   /* Light theme (default) — warm neutrals with a subtle brand-green canvas. */
-  --color-accent: #4B7F52;
+  --color-accent: #4b7f52;
   --color-background: color-mix(in srgb, var(--color-accent) 2%, #e9e6e0);
   --color-primary: #1c1917;
   --color-secondary: #44403c;
@@ -44,7 +46,7 @@ html {
 
 :root.dark {
   /* Dark theme */
-  --color-accent: #7DD181;
+  --color-accent: #7dd181;
   --color-background: color-mix(in srgb, var(--color-accent) 2%, #060606);
   --color-primary: #ffffff;
   --color-secondary: #a1a1a1;
@@ -58,10 +60,18 @@ html {
 
 /* Header logo wink animation */
 @keyframes wink {
-  0%   { transform: rotate(0deg) scale(1) translateY(0); }
-  30%  { transform: rotate(-20deg) scale(1.2) translateY(-2px); }
-  70%  { transform: rotate(8deg) scale(0.95) translateY(1px); }
-  100% { transform: rotate(0deg) scale(1) translateY(0); }
+  0% {
+    transform: rotate(0deg) scale(1) translateY(0);
+  }
+  30% {
+    transform: rotate(-20deg) scale(1.2) translateY(-2px);
+  }
+  70% {
+    transform: rotate(8deg) scale(0.95) translateY(1px);
+  }
+  100% {
+    transform: rotate(0deg) scale(1) translateY(0);
+  }
 }
 
 .animate-wink {
@@ -70,9 +80,18 @@ html {
 
 /* Theme toggle — the icon spins in whenever the active theme changes. */
 @keyframes theme-icon-swap {
-  0%   { opacity: 0; transform: rotate(-140deg) scale(0.4); }
-  60%  { opacity: 1; transform: rotate(12deg) scale(1.15); }
-  100% { opacity: 1; transform: rotate(0deg) scale(1); }
+  0% {
+    opacity: 0;
+    transform: rotate(-140deg) scale(0.4);
+  }
+  60% {
+    opacity: 1;
+    transform: rotate(12deg) scale(1.15);
+  }
+  100% {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
 }
 
 .animate-theme-icon {
@@ -87,10 +106,10 @@ html {
 
 /* Terminal-inspired headings */
 .terminal-title::before {
-  content: ">";
+  content: '>';
   margin-right: 0.42em;
   color: var(--color-accent);
-  font-family: var(--font-mono), "JetBrains Mono", ui-monospace, monospace;
+  font-family: var(--font-mono), 'JetBrains Mono', ui-monospace, monospace;
   font-weight: 700;
   text-shadow:
     0 0 0.35rem color-mix(in srgb, var(--color-accent) 70%, transparent),
@@ -99,9 +118,12 @@ html {
 
 /* Neon halo for icons standing in for the terminal `>` on headings. */
 .icon-glow {
-  filter:
-    drop-shadow(0 0 0.3rem color-mix(in srgb, var(--color-accent) 55%, transparent))
-    drop-shadow(0 0 0.85rem color-mix(in srgb, var(--color-accent) 30%, transparent));
+  filter: drop-shadow(
+      0 0 0.3rem color-mix(in srgb, var(--color-accent) 55%, transparent)
+    )
+    drop-shadow(
+      0 0 0.85rem color-mix(in srgb, var(--color-accent) 30%, transparent)
+    );
 }
 
 .terminal-glow {
@@ -116,7 +138,7 @@ html {
   z-index: 20;
   inset: 0;
   pointer-events: none;
-  content: "";
+  content: '';
   background-image: radial-gradient(
     circle,
     color-mix(in srgb, var(--color-primary) 30%, transparent) 0.65px,
@@ -125,7 +147,11 @@ html {
   background-size: 4px 4px;
   opacity: 0.28;
   mix-blend-mode: multiply;
-  -webkit-mask-image: linear-gradient(to bottom right, black 5%, transparent 82%);
+  -webkit-mask-image: linear-gradient(
+    to bottom right,
+    black 5%,
+    transparent 82%
+  );
   mask-image: linear-gradient(to bottom right, black 5%, transparent 82%);
 }
 
@@ -241,7 +267,7 @@ html {
 
 .hero-backdrop::before,
 .hero-backdrop::after {
-  content: "";
+  content: '';
   position: absolute;
   border-radius: 9999px;
 }
@@ -254,7 +280,11 @@ html {
   left: -10rem;
   background: radial-gradient(
     closest-side,
-    color-mix(in srgb, var(--color-accent) var(--hero-wash-strong), transparent),
+    color-mix(
+      in srgb,
+      var(--color-accent) var(--hero-wash-strong),
+      transparent
+    ),
     transparent
   );
   animation: hero-wash-drift 14s ease-in-out infinite alternate;
@@ -340,7 +370,8 @@ html {
     transform: translate3d(0, 0, 0) rotate(0deg);
   }
   to {
-    transform: translate3d(var(--drift-x), var(--drift-y), 0) rotate(var(--drift-rotate));
+    transform: translate3d(var(--drift-x), var(--drift-y), 0)
+      rotate(var(--drift-rotate));
   }
 }
 
@@ -371,10 +402,24 @@ html {
 .tron-grid {
   background-color: #050806;
   background-image:
-    linear-gradient(to right, color-mix(in srgb, var(--color-accent) 28%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in srgb, var(--color-accent) 22%, transparent) 1px, transparent 1px);
-  background-size: 28px 28px, 28px 28px;
-  mask-image: radial-gradient(ellipse 85% 80% at 50% 45%, black 20%, transparent 78%);
+    linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-accent) 28%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-accent) 22%, transparent) 1px,
+      transparent 1px
+    );
+  background-size:
+    28px 28px,
+    28px 28px;
+  mask-image: radial-gradient(
+    ellipse 85% 80% at 50% 45%,
+    black 20%,
+    transparent 78%
+  );
 }
 
 /* Radix tooltip entrance (no animation plugin in this project) */
@@ -467,13 +512,12 @@ html {
   overflow: hidden;
   border: 0;
   background-color: var(--event-cta-fill);
-  background-image:
-    linear-gradient(
-      180deg,
-      color-mix(in srgb, #fff 13%, transparent),
-      transparent 35%,
-      color-mix(in srgb, #000 10%, transparent)
-    );
+  background-image: linear-gradient(
+    180deg,
+    color-mix(in srgb, #fff 13%, transparent),
+    transparent 35%,
+    color-mix(in srgb, #000 10%, transparent)
+  );
   color: var(--event-cta-ink);
   box-shadow:
     inset 0 1px 0 color-mix(in srgb, #fff 34%, transparent),
@@ -488,11 +532,14 @@ html {
       #000 100%
     ),
     radial-gradient(
-      circle var(--event-cta-notch-r) at calc(100% - var(--event-cta-stub-w)) 100%,
+      circle var(--event-cta-notch-r) at calc(100% - var(--event-cta-stub-w))
+        100%,
       transparent 98%,
       #000 100%
     );
-  -webkit-mask-size: 100% 51%, 100% 51%;
+  -webkit-mask-size:
+    100% 51%,
+    100% 51%;
   -webkit-mask-position: top, bottom;
   -webkit-mask-repeat: no-repeat;
   mask-image:
@@ -502,11 +549,14 @@ html {
       #000 100%
     ),
     radial-gradient(
-      circle var(--event-cta-notch-r) at calc(100% - var(--event-cta-stub-w)) 100%,
+      circle var(--event-cta-notch-r) at calc(100% - var(--event-cta-stub-w))
+        100%,
       transparent 98%,
       #000 100%
     );
-  mask-size: 100% 51%, 100% 51%;
+  mask-size:
+    100% 51%,
+    100% 51%;
   mask-position: top, bottom;
   mask-repeat: no-repeat;
 }
@@ -547,15 +597,21 @@ html {
   z-index: 1;
   inset: 0;
   pointer-events: none;
-  content: "";
+  content: '';
   background-image:
-    radial-gradient(circle, color-mix(in srgb, #fff 45%, transparent) 0.5px, transparent 0.7px),
+    radial-gradient(
+      circle,
+      color-mix(in srgb, #fff 45%, transparent) 0.5px,
+      transparent 0.7px
+    ),
     repeating-linear-gradient(
       7deg,
       transparent 0 4px,
       color-mix(in srgb, #000 8%, transparent) 4px 5px
     );
-  background-size: 5px 5px, 13px 13px;
+  background-size:
+    5px 5px,
+    13px 13px;
   opacity: 0.22;
   mix-blend-mode: soft-light;
 }
@@ -566,7 +622,7 @@ html {
   z-index: 3;
   inset: 0;
   pointer-events: none;
-  content: "";
+  content: '';
   background-image: linear-gradient(
     100deg,
     transparent 30%,

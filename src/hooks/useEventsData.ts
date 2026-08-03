@@ -40,7 +40,9 @@ export function useEventsData(): UseEventsDataResult {
     }
   }, [])
 
-  useEffect(() => { fetchEvents() }, [fetchEvents])
+  useEffect(() => {
+    fetchEvents()
+  }, [fetchEvents])
 
   return { events, eventsByDate, status, refetch: fetchEvents }
 }

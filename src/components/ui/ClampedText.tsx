@@ -1,7 +1,11 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/Tooltip'
 
 interface ClampedTextProps {
   text: string
@@ -14,7 +18,11 @@ interface ClampedTextProps {
  * Text that reveals its full string on hover, but only when the clamp actually cut it off —
  * a tooltip repeating text you can already read is noise.
  */
-export function ClampedText({ text, className, side = 'bottom' }: ClampedTextProps) {
+export function ClampedText({
+  text,
+  className,
+  side = 'bottom',
+}: ClampedTextProps) {
   const ref = useRef<HTMLParagraphElement>(null)
   const [isClamped, setIsClamped] = useState(false)
 
@@ -24,7 +32,10 @@ export function ClampedText({ text, className, side = 'bottom' }: ClampedTextPro
 
     // 1px slack: sub-pixel line heights make scrollHeight drift past clientHeight on some zoom levels
     const measure = () =>
-      setIsClamped(el.scrollHeight > el.clientHeight + 1 || el.scrollWidth > el.clientWidth + 1)
+      setIsClamped(
+        el.scrollHeight > el.clientHeight + 1 ||
+          el.scrollWidth > el.clientWidth + 1,
+      )
 
     measure()
     const observer = new ResizeObserver(measure)

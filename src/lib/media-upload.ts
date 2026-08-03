@@ -8,11 +8,20 @@ export type UploadedMedia = {
   url: string
 }
 
-const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'] as const
+const ALLOWED_MIME_TYPES = [
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'image/gif',
+] as const
 const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5 MB
 
 export function validateImageFile(file: File): string | null {
-  if (!ALLOWED_MIME_TYPES.includes(file.type as (typeof ALLOWED_MIME_TYPES)[number])) {
+  if (
+    !ALLOWED_MIME_TYPES.includes(
+      file.type as (typeof ALLOWED_MIME_TYPES)[number],
+    )
+  ) {
     return `Tipo de archivo no válido. Usa: ${ALLOWED_MIME_TYPES.join(', ')}`
   }
   if (file.size > MAX_FILE_SIZE) {
@@ -45,13 +54,21 @@ export async function uploadMediaFile(file: File): Promise<UploadedMedia> {
   const formData = new FormData()
   formData.append('file', file)
 
-  const uploadProps = { stage: 'request', file_type: file.type, file_size: file.size }
+  const uploadProps = {
+    stage: 'request',
+    file_type: file.type,
+    file_size: file.size,
+  }
 
   let res: Response
   try {
     res = await fetch('/api/media/upload', { method: 'POST', body: formData })
   } catch (err) {
-    captureRequestFailed(ANALYTICS_EVENTS.mediaUploadFailed, { status: null }, uploadProps)
+    captureRequestFailed(
+      ANALYTICS_EVENTS.mediaUploadFailed,
+      { status: null },
+      uploadProps,
+    )
     throw err
   }
 

@@ -2,78 +2,77 @@
 
 import { SectionBlock } from '@/components/layout/SectionBlock'
 
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import dynamic from 'next/dynamic'
-import { SINALOA_CITIES, emptyTypeCounts } from "@/config";
-import type { AtlasEntryType } from "@/config";
-import { SectionTitle } from "@/components/ui/SectionTitle";
-import CityList from "@/components/maps/CityList";
-import CityStats from "@/components/maps/CityStats";
-import { MapPin, Globe } from "lucide-react";
+import { SINALOA_CITIES, emptyTypeCounts } from '@/config'
+import type { AtlasEntryType } from '@/config'
+import { SectionTitle } from '@/components/ui/SectionTitle'
+import CityList from '@/components/maps/CityList'
+import CityStats from '@/components/maps/CityStats'
+import { MapPin, Globe } from 'lucide-react'
 
 const SinaloaMap = dynamic(() => import('@/components/maps/SinaloaMap'), {
   ssr: false,
-  loading: () => <div className="w-full h-full bg-elevated animate-pulse rounded-lg" />,
-});
+  loading: () => (
+    <div className="w-full h-full bg-elevated animate-pulse rounded-lg" />
+  ),
+})
 
-type TypeCounts = Record<AtlasEntryType, number>;
+type TypeCounts = Record<AtlasEntryType, number>
 
 interface MapSectionProps {
-  cityCounts: Record<string, number>;
-  cityTypeCounts: Record<string, TypeCounts>;
+  cityCounts: Record<string, number>
+  cityTypeCounts: Record<string, TypeCounts>
 }
 
-const EMPTY_TYPE_COUNTS: TypeCounts = emptyTypeCounts();
+const EMPTY_TYPE_COUNTS: TypeCounts = emptyTypeCounts()
 
 export default function MapSection({
   cityCounts,
   cityTypeCounts,
 }: MapSectionProps) {
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null)
 
   // Selected city data
   const selectedData = useMemo(() => {
-    if (!selectedId) return null;
-    const mun = SINALOA_CITIES.find((m) => m.id === selectedId);
-    if (!mun) return null;
+    if (!selectedId) return null
+    const mun = SINALOA_CITIES.find((m) => m.id === selectedId)
+    if (!mun) return null
     const stats = cityTypeCounts[selectedId] || {
       ...EMPTY_TYPE_COUNTS,
-    };
-    const total = Object.values(stats).reduce((a, b) => a + b, 0);
-    return { name: mun.name, id: selectedId, stats, total };
-  }, [selectedId, cityTypeCounts]);
+    }
+    const total = Object.values(stats).reduce((a, b) => a + b, 0)
+    return { name: mun.name, id: selectedId, stats, total }
+  }, [selectedId, cityTypeCounts])
 
-  const handleCityClick = useCallback(
-    (id: string) => {
-      setSelectedId((prev) => (prev === id ? null : id));
-    },
-    [],
-  );
+  const handleCityClick = useCallback((id: string) => {
+    setSelectedId((prev) => (prev === id ? null : id))
+  }, [])
 
   const clearSelection = useCallback(() => {
-    setSelectedId(null);
-  }, []);
+    setSelectedId(null)
+  }, [])
 
   // Clear on outside click
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
+      const target = e.target as HTMLElement
       if (
-        !target.closest("[data-city]") &&
-        !target.closest("[data-stats-panel]") &&
-        !target.closest("[data-map-popup]") &&
-        !target.closest("[data-mun-search]")
+        !target.closest('[data-city]') &&
+        !target.closest('[data-stats-panel]') &&
+        !target.closest('[data-map-popup]') &&
+        !target.closest('[data-mun-search]')
       ) {
-        setSelectedId(null);
+        setSelectedId(null)
       }
-    };
-    window.addEventListener("click", handler);
-    return () => window.removeEventListener("click", handler);
-  }, []);
+    }
+    window.addEventListener('click', handler)
+    return () => window.removeEventListener('click', handler)
+  }, [])
 
   // Municipalities that actually have entries — counting keys alone would also
   // count any city that happened to be present with a zero count.
-  const activeCityCount = Object.values(cityCounts).filter((n) => n > 0).length;
+  const activeCityCount = Object.values(cityCounts).filter((n) => n > 0).length
 
   return (
     <SectionBlock id="map">
@@ -92,7 +91,12 @@ export default function MapSection({
               <div className="mb-1 flex items-center gap-2">
                 <MapPin className="h-5 w-5 text-accent" />
                 <h3 className="font-mono text-sm font-bold uppercase text-primary">
-                  <span className="text-accent terminal-glow" aria-hidden="true">{'>'}</span>{' '}
+                  <span
+                    className="text-accent terminal-glow"
+                    aria-hidden="true"
+                  >
+                    {'>'}
+                  </span>{' '}
                   Selecciona municipio
                 </h3>
               </div>
@@ -119,7 +123,8 @@ export default function MapSection({
                   <div className="flex items-center gap-2">
                     <Globe className="h-5 w-5 text-accent" />
                     <h3 className="font-mono text-sm font-bold uppercase text-primary">
-                      <span className="text-accent terminal-glow">{'>'}</span> Sinaloa.geo
+                      <span className="text-accent terminal-glow">{'>'}</span>{' '}
+                      Sinaloa.geo
                     </h3>
                   </div>
                   <div className="flex items-center gap-1.5">
@@ -141,5 +146,5 @@ export default function MapSection({
         </div>
       </div>
     </SectionBlock>
-  );
+  )
 }

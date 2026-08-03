@@ -76,7 +76,15 @@ export default async function HomePage() {
           __html: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'SiteNavigationElement',
-            name: ['Startups', 'Consultorías', 'Comunidades', 'Centros de Investigación', 'Personas', 'Eventos', 'Directorio'],
+            name: [
+              'Startups',
+              'Consultorías',
+              'Comunidades',
+              'Centros de Investigación',
+              'Personas',
+              'Eventos',
+              'Directorio',
+            ],
             url: [
               `${SITE_URL}/startups`,
               `${SITE_URL}/consultoras`,
@@ -97,8 +105,14 @@ export default async function HomePage() {
       </SectionBlock>
 
       <CommunitySection />
-      <FeaturedSection entries={featured as any} latestEntries={latest as any} />
-      <MapSection cityCounts={counts.byCity} cityTypeCounts={counts.byCityAndType} />
+      <FeaturedSection
+        entries={featured as any}
+        latestEntries={latest as any}
+      />
+      <MapSection
+        cityCounts={counts.byCity}
+        cityTypeCounts={counts.byCityAndType}
+      />
       <CalendarSection placement="home" />
       <FaqSection />
       <CombinedCtaSection />

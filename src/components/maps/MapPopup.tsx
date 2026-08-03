@@ -1,23 +1,23 @@
-import React from "react";
-import { buttonVariants } from '@/components/ui/button-variants';
+import React from 'react'
+import { buttonVariants } from '@/components/ui/button-variants'
 
 function clamp(value: number, min: number, max: number) {
-  return Math.max(min, Math.min(max, value));
+  return Math.max(min, Math.min(max, value))
 }
 
 export interface PopupState {
-  x: number;
-  y: number;
-  id: string;
-  name: string;
-  count: number;
+  x: number
+  y: number
+  id: string
+  name: string
+  count: number
 }
 
 interface MapPopupProps {
-  popup: PopupState;
-  containerWidth: number;
-  containerHeight: number;
-  onClose: () => void;
+  popup: PopupState
+  containerWidth: number
+  containerHeight: number
+  onClose: () => void
 }
 
 export default function MapPopup({
@@ -30,7 +30,7 @@ export default function MapPopup({
     <div
       data-map-popup
       style={{
-        position: "absolute",
+        position: 'absolute',
         left: clamp(popup.x - 100, 8, containerWidth - 208),
         top: clamp(popup.y - 120, 8, containerHeight - 8),
         zIndex: 20,
@@ -45,8 +45,8 @@ export default function MapPopup({
         </span>
         <button
           onClick={(e) => {
-            e.stopPropagation();
-            onClose();
+            e.stopPropagation()
+            onClose()
           }}
           className="text-muted hover:text-primary transition-colors text-xs leading-none"
           aria-label="Cerrar"
@@ -59,33 +59,37 @@ export default function MapPopup({
       {popup.count > 0 ? (
         <div className="px-3 py-2.5 space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-mono text-muted">
-              Registros
-            </span>
+            <span className="text-xs font-mono text-muted">Registros</span>
             <span className="text-xs font-mono font-bold text-primary">
               {popup.count}
             </span>
           </div>
           <a
             href={`/directorio/${popup.id}`}
-            className={buttonVariants({ variant: "accent", size: "sm", className: "w-full" })}
+            className={buttonVariants({
+              variant: 'accent',
+              size: 'sm',
+              className: 'w-full',
+            })}
           >
             VER COMUNIDAD →
           </a>
         </div>
       ) : (
         <div className="px-3 py-2.5 space-y-2 text-center">
-          <p className="text-xs text-muted font-mono">
-            Aún no hay registros
-          </p>
+          <p className="text-xs text-muted font-mono">Aún no hay registros</p>
           <a
             href="/dashboard"
-            className={buttonVariants({ variant: "accent", size: "sm", className: "w-full border-dashed" })}
+            className={buttonVariants({
+              variant: 'accent',
+              size: 'sm',
+              className: 'w-full border-dashed',
+            })}
           >
             REGISTRAR →
           </a>
         </div>
       )}
     </div>
-  );
+  )
 }

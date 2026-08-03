@@ -56,7 +56,9 @@ function FormSection({
         <div className="min-w-0">
           <h2 className="text-sm font-semibold text-primary">{title}</h2>
           {description && (
-            <p className="mt-0.5 text-xs text-muted font-mono leading-relaxed">{description}</p>
+            <p className="mt-0.5 text-xs text-muted font-mono leading-relaxed">
+              {description}
+            </p>
           )}
         </div>
       </div>
@@ -75,7 +77,10 @@ function FieldLabel({
   children: ReactNode
 }) {
   return (
-    <label className={`${labelClass} inline-flex items-center gap-1.5`} htmlFor={htmlFor}>
+    <label
+      className={`${labelClass} inline-flex items-center gap-1.5`}
+      htmlFor={htmlFor}
+    >
       <Icon className="h-3 w-3 text-muted" />
       {children}
     </label>
@@ -141,7 +146,9 @@ export function ProfileForm() {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                (profile.name || session?.user?.name || '?').charAt(0).toUpperCase()
+                (profile.name || session?.user?.name || '?')
+                  .charAt(0)
+                  .toUpperCase()
               )}
             </div>
             {uploadingPhoto && (
@@ -153,7 +160,8 @@ export function ProfileForm() {
 
           <div className="min-w-0 flex-1 space-y-2 text-center sm:text-left">
             <p className="text-xs text-muted font-mono leading-relaxed">
-              Foto de perfil (JPEG, PNG, WebP o GIF · máx. 5 MB). Se muestra en /personas.
+              Foto de perfil (JPEG, PNG, WebP o GIF · máx. 5 MB). Se muestra en
+              /personas.
             </p>
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
               <input
@@ -341,8 +349,12 @@ export function ProfileForm() {
             className="mt-0.5 size-4 rounded border-border accent-[var(--accent)]"
           />
           <span>
-            <span className="text-sm text-primary font-medium">{NEWSLETTER.profileLabel}</span>
-            <span className="block text-xs text-muted mt-0.5">{NEWSLETTER.profileHint}</span>
+            <span className="text-sm text-primary font-medium">
+              {NEWSLETTER.profileLabel}
+            </span>
+            <span className="block text-xs text-muted mt-0.5">
+              {NEWSLETTER.profileHint}
+            </span>
           </span>
         </label>
       </FormSection>
@@ -368,7 +380,8 @@ export function ProfileForm() {
                 Perfil público
               </span>
               <span className="block text-xs text-muted mt-0.5">
-                Aparece en /personas. Desactivado por defecto. No publica tu correo ni teléfono.
+                Aparece en /personas. Desactivado por defecto. No publica tu
+                correo ni teléfono.
               </span>
             </span>
           </label>
@@ -379,18 +392,23 @@ export function ProfileForm() {
                 Slug público
               </FieldLabel>
               <div className="mt-1 flex items-center gap-2">
-                <span className="text-xs font-mono text-muted shrink-0">/personas/</span>
+                <span className="text-xs font-mono text-muted shrink-0">
+                  /personas/
+                </span>
                 <input
                   id="profile-slug"
                   className={inputClass.replace('mt-1 ', '')}
                   value={profile.slug}
-                  onChange={(e) => setField('slug', slugifyProfile(e.target.value))}
+                  onChange={(e) =>
+                    setField('slug', slugifyProfile(e.target.value))
+                  }
                   placeholder="tu-nombre"
                   required
                 />
               </div>
               <p className="mt-1 text-2xs text-muted font-mono">
-                Obligatorio. Solo minúsculas, números y guiones. Guarda para publicar.
+                Obligatorio. Solo minúsculas, números y guiones. Guarda para
+                publicar.
               </p>
               {showPublicLink ? (
                 <Link
@@ -403,7 +421,8 @@ export function ProfileForm() {
                 </Link>
               ) : (
                 <p className="mt-1.5 text-2xs text-muted font-mono">
-                  Guarda el perfil para publicar el enlace en /personas/{profile.slug || '…'}
+                  Guarda el perfil para publicar el enlace en /personas/
+                  {profile.slug || '…'}
                 </p>
               )}
             </div>
@@ -441,7 +460,8 @@ export function ProfileForm() {
           <div>
             <h2 className="text-sm font-semibold text-primary">Cuenta</h2>
             <p className="mt-0.5 text-xs text-muted font-mono">
-              Sesión iniciada con Google{session?.user?.email ? ` (${session.user.email})` : ''}.
+              Sesión iniciada con Google
+              {session?.user?.email ? ` (${session.user.email})` : ''}.
             </p>
           </div>
         </div>

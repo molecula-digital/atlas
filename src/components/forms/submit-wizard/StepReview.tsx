@@ -1,12 +1,12 @@
-import type { RefObject } from "react";
-import { X, Loader2, AlertCircle } from "lucide-react";
-import { ENTRY_TYPES, type StepProps, type CityOption } from "./types";
-import { replaceObjectUrl } from "@/lib/object-url";
+import type { RefObject } from 'react'
+import { X, Loader2, AlertCircle } from 'lucide-react'
+import { ENTRY_TYPES, type StepProps, type CityOption } from './types'
+import { replaceObjectUrl } from '@/lib/object-url'
 
 interface Props extends StepProps {
-  cities: CityOption[];
-  logoRef: RefObject<HTMLInputElement | null>;
-  coverRef: RefObject<HTMLInputElement | null>;
+  cities: CityOption[]
+  logoRef: RefObject<HTMLInputElement | null>
+  coverRef: RefObject<HTMLInputElement | null>
 }
 
 function handleFilePreview(
@@ -15,20 +15,26 @@ function handleFilePreview(
   field: string,
   current: string | null,
 ) {
-  setField(field, replaceObjectUrl(current, file));
+  setField(field, replaceObjectUrl(current, file))
 }
 
 function SummaryRow({ label, value }: { label: string; value?: string }) {
-  if (!value) return null;
+  if (!value) return null
   return (
     <div className="flex items-start justify-between gap-4">
       <span className="text-xs text-muted shrink-0">{label}</span>
       <span className="text-xs font-mono text-primary text-right">{value}</span>
     </div>
-  );
+  )
 }
 
-export default function StepReview({ state, setField, cities, logoRef, coverRef }: Props) {
+export default function StepReview({
+  state,
+  setField,
+  cities,
+  logoRef,
+  coverRef,
+}: Props) {
   return (
     <div className="space-y-6">
       <h2 className="text-xl font-sans font-bold text-primary">
@@ -45,7 +51,12 @@ export default function StepReview({ state, setField, cities, logoRef, coverRef 
             type="file"
             accept="image/*"
             onChange={(e) =>
-              handleFilePreview(e.target.files?.[0], setField, "logoPreview", state.logoPreview)
+              handleFilePreview(
+                e.target.files?.[0],
+                setField,
+                'logoPreview',
+                state.logoPreview,
+              )
             }
             className="w-full text-xs text-muted font-mono file:mr-3 file:py-1 file:px-2.5 file:rounded file:border file:border-border file:text-xs file:font-mono file:font-semibold file:bg-transparent file:text-primary hover:file:border-accent hover:file:text-accent file:transition-colors file:cursor-pointer"
           />
@@ -59,8 +70,8 @@ export default function StepReview({ state, setField, cities, logoRef, coverRef 
               <button
                 type="button"
                 onClick={() => {
-                  setField("logoPreview", null);
-                  if (logoRef.current) logoRef.current.value = "";
+                  setField('logoPreview', null)
+                  if (logoRef.current) logoRef.current.value = ''
                 }}
                 className="absolute -top-2 -right-2 w-5 h-5 rounded-full border border-red-500/70 bg-transparent text-red-500 backdrop-blur-sm flex items-center justify-center hover:border-red-500 hover:bg-red-500/10 transition-colors cursor-pointer"
               >
@@ -78,7 +89,12 @@ export default function StepReview({ state, setField, cities, logoRef, coverRef 
             type="file"
             accept="image/*"
             onChange={(e) =>
-              handleFilePreview(e.target.files?.[0], setField, "coverPreview", state.coverPreview)
+              handleFilePreview(
+                e.target.files?.[0],
+                setField,
+                'coverPreview',
+                state.coverPreview,
+              )
             }
             className="w-full text-xs text-muted font-mono file:mr-3 file:py-1 file:px-2.5 file:rounded file:border file:border-border file:text-xs file:font-mono file:font-semibold file:bg-transparent file:text-primary hover:file:border-accent hover:file:text-accent file:transition-colors file:cursor-pointer"
           />
@@ -92,8 +108,8 @@ export default function StepReview({ state, setField, cities, logoRef, coverRef 
               <button
                 type="button"
                 onClick={() => {
-                  setField("coverPreview", null);
-                  if (coverRef.current) coverRef.current.value = "";
+                  setField('coverPreview', null)
+                  if (coverRef.current) coverRef.current.value = ''
                 }}
                 className="absolute top-2 right-2 w-6 h-6 rounded-full border border-red-500/70 bg-transparent text-red-500 backdrop-blur-sm flex items-center justify-center hover:border-red-500 hover:bg-red-500/10 transition-colors cursor-pointer"
               >
@@ -145,9 +161,9 @@ export default function StepReview({ state, setField, cities, logoRef, coverRef 
         />
         {state.website && <SummaryRow label="Web" value={state.website} />}
         {state.tags.length > 0 && (
-          <SummaryRow label="Etiquetas" value={state.tags.join(", ")} />
+          <SummaryRow label="Etiquetas" value={state.tags.join(', ')} />
         )}
       </div>
     </div>
-  );
+  )
 }

@@ -1,29 +1,29 @@
-"use client"
+'use client'
 
-import { useMemo } from "react";
-import AutoScroll from "embla-carousel-auto-scroll";
+import { useMemo } from 'react'
+import AutoScroll from 'embla-carousel-auto-scroll'
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselPrevious,
   CarouselNext,
-} from "@/components/ui/Carousel";
-import { ENTRY_TYPE_ICON_MAP } from "@/lib/icons";
+} from '@/components/ui/Carousel'
+import { ENTRY_TYPE_ICON_MAP } from '@/lib/icons'
 
 export interface CategoryData {
-  type: string;
-  label: string;
-  description: string;
-  icon: string;
-  slug: string;
-  count: number;
+  type: string
+  label: string
+  description: string
+  icon: string
+  slug: string
+  count: number
 }
 
 export default function CategoryCarousel({
   categories,
 }: {
-  categories: CategoryData[];
+  categories: CategoryData[]
 }) {
   const plugins = useMemo(
     () => [
@@ -34,17 +34,17 @@ export default function CategoryCarousel({
       }),
     ],
     [],
-  );
+  )
 
   return (
     <Carousel
-      opts={{ align: "start", loop: true }}
+      opts={{ align: 'start', loop: true }}
       plugins={plugins}
       className="w-full"
     >
       <CarouselContent className="-ml-3">
         {categories.map((category) => {
-          const Icon = ENTRY_TYPE_ICON_MAP[category.icon];
+          const Icon = ENTRY_TYPE_ICON_MAP[category.icon]
           return (
             <CarouselItem
               key={category.type}
@@ -70,7 +70,7 @@ export default function CategoryCarousel({
                 </p>
               </a>
             </CarouselItem>
-          );
+          )
         })}
       </CarouselContent>
       <div className="flex items-center justify-center gap-2 mt-4">
@@ -84,5 +84,5 @@ export default function CategoryCarousel({
         />
       </div>
     </Carousel>
-  );
+  )
 }

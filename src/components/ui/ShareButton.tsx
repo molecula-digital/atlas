@@ -1,7 +1,10 @@
 'use client'
 
 import { Check, Share2, X } from 'lucide-react'
-import { buttonVariants, type ButtonSize } from '@/components/ui/button-variants'
+import {
+  buttonVariants,
+  type ButtonSize,
+} from '@/components/ui/button-variants'
 import { useShare } from '@/hooks/useShare'
 import { cn } from '@/lib/utils'
 import { captureContentShared, type ShareContentType } from '@/lib/analytics'

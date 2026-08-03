@@ -41,19 +41,43 @@ const profileSchema = z
       .max(60, 'El slug es demasiado largo')
       .optional()
       .default(''),
-    title: z.string().max(100, 'El cargo es demasiado largo').optional().default(''),
-    company: z.string().max(100, 'La empresa es demasiado larga').optional().default(''),
+    title: z
+      .string()
+      .max(100, 'El cargo es demasiado largo')
+      .optional()
+      .default(''),
+    company: z
+      .string()
+      .max(100, 'La empresa es demasiado larga')
+      .optional()
+      .default(''),
     // Generous raw cap; the normalized length is what actually gets enforced below.
     bio: z
       .string()
       .max(PROFILE_BIO_MAX_LENGTH * 4, 'La biografía es demasiado larga')
       .optional()
       .default(''),
-    phone: z.string().max(20, 'El teléfono es demasiado largo').optional().default(''),
-    website: z.string().max(200, 'El sitio web es demasiado largo').optional().default(''),
-    linkedin: z.string().max(200, 'LinkedIn es demasiado largo').optional().default(''),
+    phone: z
+      .string()
+      .max(20, 'El teléfono es demasiado largo')
+      .optional()
+      .default(''),
+    website: z
+      .string()
+      .max(200, 'El sitio web es demasiado largo')
+      .optional()
+      .default(''),
+    linkedin: z
+      .string()
+      .max(200, 'LinkedIn es demasiado largo')
+      .optional()
+      .default(''),
     x: z.string().max(200, 'X es demasiado largo').optional().default(''),
-    github: z.string().max(200, 'GitHub es demasiado largo').optional().default(''),
+    github: z
+      .string()
+      .max(200, 'GitHub es demasiado largo')
+      .optional()
+      .default(''),
     newsletterEnabled: z.boolean().optional().default(false),
     isPublic: z.boolean().optional().default(false),
   })
@@ -196,7 +220,11 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
   }
 
-  const limited = withRateLimit(request, { limit: 20, windowMs: 15 * 60 * 1000, keyPrefix: 'user-profile' }, session.user.id)
+  const limited = withRateLimit(
+    request,
+    { limit: 20, windowMs: 15 * 60 * 1000, keyPrefix: 'user-profile' },
+    session.user.id,
+  )
   if (limited) return limited
 
   let body: unknown
@@ -218,8 +246,12 @@ export async function PUT(request: NextRequest) {
   }
 
   const validated = parsed.data
-  const contactEmail = (validated.email || session.user.email).trim().toLowerCase()
-  const requestedSlug = validated.slug.trim() ? slugifyProfile(validated.slug) : null
+  const contactEmail = (validated.email || session.user.email)
+    .trim()
+    .toLowerCase()
+  const requestedSlug = validated.slug.trim()
+    ? slugifyProfile(validated.slug)
+    : null
   const website = normalizeWebsite(validated.website)
 
   if (validated.isPublic && !requestedSlug) {
@@ -239,7 +271,9 @@ export async function PUT(request: NextRequest) {
       const [taken] = await db
         .select({ userId: profiles.userId })
         .from(profiles)
-        .where(and(eq(profiles.slug, slug), ne(profiles.userId, session.user.id)))
+        .where(
+          and(eq(profiles.slug, slug), ne(profiles.userId, session.user.id)),
+        )
         .limit(1)
 
       if (taken) {

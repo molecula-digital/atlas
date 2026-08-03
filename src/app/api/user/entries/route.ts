@@ -9,7 +9,11 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const limited = withRateLimit(request, { limit: 30, windowMs: 60 * 1000, keyPrefix: 'user-entries' }, session.user.id)
+  const limited = withRateLimit(
+    request,
+    { limit: 30, windowMs: 60 * 1000, keyPrefix: 'user-entries' },
+    session.user.id,
+  )
   if (limited) return limited
 
   try {
@@ -34,6 +38,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(result)
   } catch (error) {
     console.error('User entries fetch failed:', error)
-    return NextResponse.json({ error: 'Failed to fetch entries' }, { status: 500 })
+    return NextResponse.json(
+      { error: 'Failed to fetch entries' },
+      { status: 500 },
+    )
   }
 }
