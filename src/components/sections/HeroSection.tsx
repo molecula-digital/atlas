@@ -70,7 +70,7 @@ export function HeroSection({
               </span>
             </h1>
 
-            <p className="text-xs md:text-sm font-mono text-muted leading-relaxed max-w-110">
+            <p className="text-xs md:text-sm font-mono font-light text-muted leading-relaxed max-w-110">
               Directorio y comunidad del ecosistema tech de Sinaloa. Hablamos de
               tecnología, IA, desarrollo de software y emprendimiento.
             </p>
