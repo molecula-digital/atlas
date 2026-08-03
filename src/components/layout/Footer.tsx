@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { MessageCircle } from 'lucide-react'
+import { Heart, MessageCircle } from 'lucide-react'
 import { ENTRY_TYPE_CONFIG, ENTRY_TYPES, SOCIAL_LINKS, SITE_TITLE, NEWSLETTER } from '@/config'
 import { WhatsAppJoinLink } from '@/components/community/WhatsAppJoinLink'
 import { WHATSAPP_SURFACE } from '@/lib/analytics-events'
@@ -74,7 +74,18 @@ export function Footer() {
           </div>
           <div className="mt-8 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-2">
             <p className="text-2xs text-muted font-mono">&copy; {new Date().getFullYear()} {SITE_TITLE}. Hecho en Sinaloa.</p>
-            <p className="text-2xs text-muted font-mono">Hecho con open source</p>
+            <p className="text-2xs text-muted font-mono inline-flex items-center gap-1">
+              Sitio desarrollado por{' '}
+              <a
+                href="https://molecula.digital"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-accent transition-colors"
+              >
+                molécula.digital
+              </a>
+              <Heart className="h-3 w-3 text-red-500" fill="currentColor" aria-hidden="true" />
+            </p>
           </div>
       </SiteFrame>
     </footer>
