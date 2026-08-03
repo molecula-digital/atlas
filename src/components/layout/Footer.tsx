@@ -74,18 +74,15 @@ export function Footer() {
           </div>
           <div className="mt-8 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-2">
             <p className="text-2xs text-muted font-mono">&copy; {new Date().getFullYear()} {SITE_TITLE}. Hecho en Sinaloa.</p>
-            <p className="text-2xs text-muted font-mono inline-flex items-center gap-1">
-              Sitio desarrollado por{' '}
-              <a
-                href="https://molecula.digital"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-accent transition-colors"
-              >
-                molécula.digital
-              </a>
+            <a
+              href="https://molecula.digital"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-secondary hover:text-accent transition-colors font-mono inline-flex items-center gap-1"
+            >
+              Sitio desarrollado por molecula.digital
               <Heart className="h-3 w-3 text-red-500" fill="currentColor" aria-hidden="true" />
-            </p>
+            </a>
           </div>
       </SiteFrame>
     </footer>
