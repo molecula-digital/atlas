@@ -6,6 +6,7 @@ docs/
 drizzle/
 node_modules/
 out/
+pnpm-lock.yaml
 public/
 src/migrations/
 src/payload-types.ts
