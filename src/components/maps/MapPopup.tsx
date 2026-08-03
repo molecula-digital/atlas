@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link'
 import { buttonVariants } from '@/components/ui/button-variants'
 
 function clamp(value: number, min: number, max: number) {
@@ -64,7 +65,7 @@ export default function MapPopup({
               {popup.count}
             </span>
           </div>
-          <a
+          <Link
             href={`/directorio/${popup.id}`}
             className={buttonVariants({
               variant: 'accent',
@@ -73,12 +74,12 @@ export default function MapPopup({
             })}
           >
             VER COMUNIDAD →
-          </a>
+          </Link>
         </div>
       ) : (
         <div className="px-3 py-2.5 space-y-2 text-center">
           <p className="text-xs text-muted font-mono">Aún no hay registros</p>
-          <a
+          <Link
             href="/dashboard"
             className={buttonVariants({
               variant: 'accent',
@@ -87,7 +88,7 @@ export default function MapPopup({
             })}
           >
             REGISTRAR →
-          </a>
+          </Link>
         </div>
       )}
     </div>

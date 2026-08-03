@@ -209,7 +209,7 @@ export default async function JobDetailPage({
         )}
 
         <div className="prose prose-sm dark:prose-invert max-w-none mb-8">
-          <RichText data={job.description as any} />
+          <RichText data={job.description} />
         </div>
 
         {!expired && (

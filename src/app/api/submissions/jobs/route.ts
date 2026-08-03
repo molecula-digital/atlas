@@ -3,6 +3,9 @@ import { getServerSession } from '@/lib/auth-helpers'
 import { getPayloadClient } from '@/lib/payload'
 import { pickAllowedFields } from '@/lib/pick-allowed-fields'
 import { withRateLimit } from '@/lib/rate-limit'
+import type { Job } from '@/payload-types'
+
+type JobSubmissionData = Partial<Job> & { postedBy: string; _status: 'draft' }
 
 /** Allowlisted fields that callers may set on job submissions */
 const JOB_ALLOWED_FIELDS = [
@@ -93,11 +96,12 @@ export async function POST(request: NextRequest) {
 
     const job = await payload.create({
       collection: 'jobs',
+      draft: true,
       data: {
         ...data,
         postedBy: session.user.id,
         _status: 'draft',
-      } as any,
+      } as JobSubmissionData,
     })
     return NextResponse.json({ success: true, id: job.id })
   } catch (error) {
@@ -153,7 +157,7 @@ export async function PATCH(request: NextRequest) {
       data: {
         ...data,
         _status: 'draft',
-      } as any,
+      } as Partial<Job>,
     })
     return NextResponse.json({ success: true })
   } catch (error) {

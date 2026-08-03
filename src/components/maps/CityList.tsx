@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback, useMemo, memo } from 'react'
+import Link from 'next/link'
 import { MapPin, Search, ChevronsDown, Plus } from 'lucide-react'
 import { buttonVariants } from '@/components/ui/button-variants'
 
@@ -180,7 +181,7 @@ export default function CityList({
           {/* CTA */}
           {!isSearching && (
             <div className="pt-3 mt-2 border-t border-border space-y-1.5">
-              <a
+              <Link
                 href="/dashboard"
                 className={buttonVariants({
                   variant: 'accent',
@@ -190,7 +191,7 @@ export default function CityList({
               >
                 <Plus className="w-3.5 h-3.5" />
                 REGISTRAR PERFIL/STARTUP
-              </a>
+              </Link>
               <p className="text-2xs text-muted text-center font-mono">
                 Startups, personas, consultorías, comunidades y empresas
               </p>

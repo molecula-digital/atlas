@@ -20,8 +20,8 @@ import {
   typeToPath,
   SORT_OPTIONS,
   type CityInfo,
-  type SortOption,
 } from './useDirectoryFilters'
+import Link from 'next/link'
 
 interface Props {
   cities: CityInfo[]
@@ -110,7 +110,7 @@ export default function DirectoryFilter({
           Categorías
         </h3>
         <div className="space-y-1">
-          <a
+          <Link
             href="/directorio"
             onClick={(e) => {
               e.preventDefault()
@@ -136,7 +136,7 @@ export default function DirectoryFilter({
             >
               Todos
             </span>
-          </a>
+          </Link>
 
           {Object.entries(ENTRY_TYPE_LABELS).map(([type, label]) => {
             const IconComponent =

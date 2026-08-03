@@ -41,7 +41,7 @@ export function useEventsData(): UseEventsDataResult {
   }, [])
 
   useEffect(() => {
-    fetchEvents()
+    void Promise.resolve().then(fetchEvents)
   }, [fetchEvents])
 
   return { events, eventsByDate, status, refetch: fetchEvents }

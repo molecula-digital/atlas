@@ -8,6 +8,7 @@ import {
   AlertCircle,
   Loader2,
 } from 'lucide-react'
+import Link from 'next/link'
 import { useWizardState } from './useWizardState'
 import { STEPS, TYPE_COPY, type CityOption } from './types'
 import StepTypeSelect from './StepTypeSelect'
@@ -47,7 +48,7 @@ export default function SubmitWizard({ cities }: Props) {
           {copy?.successMessage ??
             'Tu registro ha sido recibido. Lo revisaremos y lo agregaremos al directorio pronto.'}
         </p>
-        <a
+        <Link
           href="/directorio"
           className={buttonVariants({
             variant: 'accent',
@@ -56,7 +57,7 @@ export default function SubmitWizard({ cities }: Props) {
           })}
         >
           VER DIRECTORIO
-        </a>
+        </Link>
       </div>
     )
   }

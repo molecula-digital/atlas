@@ -36,6 +36,9 @@ jobs:
       - name: Generate Payload import map
         run: pnpm generate:importmap
 
+      - name: Check formatting
+        run: pnpm format:check
+
       - name: Lint
         run: pnpm lint
 

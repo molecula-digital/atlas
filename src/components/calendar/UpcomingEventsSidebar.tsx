@@ -47,7 +47,7 @@ export default function UpcomingEventsSidebar({
   const pageEvents = upcoming.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
 
   useEffect(() => {
-    setPage(0)
+    queueMicrotask(() => setPage(0))
   }, [events.length])
 
   return (
@@ -55,7 +55,7 @@ export default function UpcomingEventsSidebar({
       <div className="flex items-start justify-between gap-3 mb-4">
         <div>
           <p className="text-2xs font-mono uppercase tracking-wider text-accent mb-1">
-            // próximos
+            {'// próximos'}
           </p>
           <h3 className="text-lg font-sans font-bold text-primary">
             Eventos destacados

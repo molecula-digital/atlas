@@ -3,6 +3,9 @@ import { getServerSession } from '@/lib/auth-helpers'
 import { getPayloadClient } from '@/lib/payload'
 import { pickAllowedFields } from '@/lib/pick-allowed-fields'
 import { withRateLimit } from '@/lib/rate-limit'
+import type { Entry } from '@/payload-types'
+
+type EntrySubmissionData = Partial<Entry> & { owner: string; _status: 'draft' }
 
 /** Allowlisted fields that callers may set on entry submissions */
 const ENTRY_ALLOWED_FIELDS = [
@@ -106,11 +109,12 @@ export async function POST(request: NextRequest) {
 
     const entry = await payload.create({
       collection: 'entries',
+      draft: true,
       data: {
         ...data,
         owner: session.user.id,
         _status: 'draft',
-      } as any,
+      } as EntrySubmissionData,
     })
     return NextResponse.json({ success: true, id: entry.id })
   } catch (error) {
@@ -159,7 +163,7 @@ export async function PATCH(request: NextRequest) {
       data: {
         ...data,
         _status: 'draft',
-      } as any,
+      } as Partial<Entry>,
     })
     return NextResponse.json({ success: true })
   } catch (error) {

@@ -31,12 +31,16 @@ const MOBILE_LINK =
 
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
-  const dropdown = useDisclosure()
+  const {
+    open: dropdownOpen,
+    ref: dropdownRef,
+    toggle: toggleDropdown,
+  } = useDisclosure()
   const pathname = usePathname()
   const { data: session } = useSession()
 
   useEffect(() => {
-    setMobileOpen(false)
+    queueMicrotask(() => setMobileOpen(false))
   }, [pathname])
 
   const categories = ENTRY_TYPES.map((type) => ({
@@ -66,12 +70,12 @@ export function Header() {
               </Link>
 
               <nav className="hidden lg:flex items-center gap-0.5">
-                <div className="relative" ref={dropdown.ref}>
-                  <button onClick={dropdown.toggle} className={NAV_LINK}>
+                <div className="relative" ref={dropdownRef}>
+                  <button onClick={toggleDropdown} className={NAV_LINK}>
                     <FolderOpen className="w-3 h-3" />
                     Directorio
                     <svg
-                      className={`w-2.5 h-2.5 transition-transform ${dropdown.open ? 'rotate-180' : ''}`}
+                      className={`w-2.5 h-2.5 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`}
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -84,7 +88,7 @@ export function Header() {
                       />
                     </svg>
                   </button>
-                  {dropdown.open && (
+                  {dropdownOpen && (
                     <div className="absolute top-full left-0 mt-1 w-56 bg-card border border-border rounded-lg shadow-lg p-1 z-50">
                       <Link
                         href="/directorio"

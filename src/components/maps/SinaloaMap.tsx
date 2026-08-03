@@ -1,8 +1,18 @@
 'use client'
 
 import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react'
-import { geoIdentity, geoPath } from 'd3-geo'
-import { ComposableMap, Geographies, Geography } from 'react-simple-maps'
+import {
+  geoIdentity,
+  geoPath,
+  type GeoPermissibleObjects,
+  type GeoProjection,
+} from 'd3-geo'
+import {
+  ComposableMap,
+  Geographies,
+  Geography,
+  type ProjectionFunction,
+} from 'react-simple-maps'
 import { useMapInteraction } from '@/hooks/useMapInteraction'
 import MapTooltip, { type TooltipState } from './MapTooltip'
 import MapPopup, { type PopupState } from './MapPopup'
@@ -21,9 +31,7 @@ const BOUNDS = {
 }
 
 /** GeoJSON feature shape returned by react-simple-maps Geographies. */
-interface MapGeography {
-  type: string
-  geometry: Record<string, unknown>
+interface MapGeography extends GeoJSON.Feature {
   properties: Record<string, unknown>
   rsmKey?: string
 }
@@ -122,7 +130,22 @@ export default function SinaloaMap({
     () => createProjection(width, height, padding),
     [width, height, padding],
   )
-  const pathGenerator = useMemo(() => geoPath(projection as any), [projection])
+  const pathGenerator = useMemo(() => geoPath(projection), [projection])
+  const [containerSize, setContainerSize] = useState({
+    width: 800,
+    height: 800,
+  })
+
+  useEffect(() => {
+    const node = containerRef.current
+    if (!node) return
+    const updateSize = () =>
+      setContainerSize({ width: node.offsetWidth, height: node.offsetHeight })
+    updateSize()
+    const observer = new ResizeObserver(updateSize)
+    observer.observe(node)
+    return () => observer.disconnect()
+  }, [containerRef])
 
   // Close popup on outside click
   useEffect(() => {
@@ -141,10 +164,14 @@ export default function SinaloaMap({
 
   // Tooltip handlers
   const handleMouseEnter = useCallback(
-    (geo: any, e: React.MouseEvent) => {
+    (geo: MapGeography, e: React.MouseEvent) => {
       if (popup) return
-      const name: string | undefined = geo.properties?.name
-      const id: string | undefined = geo.properties?.id
+      const name =
+        typeof geo.properties?.name === 'string'
+          ? geo.properties.name
+          : undefined
+      const id =
+        typeof geo.properties?.id === 'string' ? geo.properties.id : undefined
       if (!name) return
       const rect = containerRef.current?.getBoundingClientRect()
       if (!rect) return
@@ -179,9 +206,13 @@ export default function SinaloaMap({
 
   // Open popup at a geography's centroid
   const openPopupForGeo = useCallback(
-    (geo: any) => {
-      const id: string | undefined = geo.properties?.id
-      const name: string | undefined = geo.properties?.name
+    (geo: MapGeography) => {
+      const id =
+        typeof geo.properties?.id === 'string' ? geo.properties.id : undefined
+      const name =
+        typeof geo.properties?.name === 'string'
+          ? geo.properties.name
+          : undefined
       if (!id || !name) return
 
       const centroid = pathGenerator.centroid(geo)
@@ -213,7 +244,7 @@ export default function SinaloaMap({
 
   // Click handler
   const handleGeoClick = useCallback(
-    (geo: any) => {
+    (geo: MapGeography) => {
       if (didDragRef.current) return
       if (linkOnClick) {
         const id = geo.properties?.id
@@ -228,11 +259,13 @@ export default function SinaloaMap({
 
   // Sync sidebar selection -> map popup
   const openPopupRef = useRef(openPopupForGeo)
-  openPopupRef.current = openPopupForGeo
+  useEffect(() => {
+    openPopupRef.current = openPopupForGeo
+  }, [openPopupForGeo])
 
   useEffect(() => {
     if (!selectedCity || compact) {
-      setPopup(null)
+      queueMicrotask(() => setPopup(null))
       return
     }
     const geo = geographiesRef.current.find(
@@ -241,7 +274,7 @@ export default function SinaloaMap({
     if (geo) {
       openPopupRef.current(geo)
     } else {
-      setPopup(null)
+      queueMicrotask(() => setPopup(null))
     }
   }, [selectedCity, compact])
 
@@ -275,7 +308,14 @@ export default function SinaloaMap({
         <ComposableMap
           width={width}
           height={height}
-          projection={projection as any}
+          projection={
+            ((mapWidth, mapHeight) =>
+              createProjection(
+                mapWidth,
+                mapHeight,
+                padding,
+              ) as unknown as GeoProjection) satisfies ProjectionFunction
+          }
           projectionConfig={{}}
           style={{ width: '100%', height: '100%' }}
         >
@@ -299,7 +339,8 @@ export default function SinaloaMap({
                   geographiesRef={geographiesRef}
                 />
                 {geographies.map((geo) => {
-                  const geoId = geo.properties?.id as string | undefined
+                  const mapGeo = geo as unknown as MapGeography
+                  const geoId = mapGeo.properties?.id as string | undefined
                   const isHighlighted =
                     (popup && popup.id === geoId) ||
                     (selectedCity && selectedCity === geoId)
@@ -307,8 +348,8 @@ export default function SinaloaMap({
                     <Geography
                       key={geo.rsmKey}
                       geography={geo}
-                      onClick={() => handleGeoClick(geo)}
-                      onMouseEnter={(e) => handleMouseEnter(geo, e)}
+                      onClick={() => handleGeoClick(mapGeo)}
+                      onMouseEnter={(e) => handleMouseEnter(mapGeo, e)}
                       onMouseMove={handleMouseMove}
                       onMouseLeave={handleMouseLeave}
                       style={{
@@ -348,7 +389,11 @@ export default function SinaloaMap({
                     {geographies.map((geo) => (
                       <path
                         key={`dither-${geo.rsmKey}`}
-                        d={pathGenerator(geo as any) ?? undefined}
+                        d={
+                          pathGenerator(
+                            geo as unknown as GeoPermissibleObjects,
+                          ) ?? undefined
+                        }
                         fill={`url(#${DITHER_PATTERN_ID})`}
                       />
                     ))}
@@ -359,9 +404,12 @@ export default function SinaloaMap({
                 {pulseActive && (
                   <g pointerEvents="none">
                     {geographies.map((geo, i) => {
-                      const geoId = geo.properties?.id as string | undefined
+                      const mapGeo = geo as unknown as MapGeography
+                      const geoId = mapGeo.properties?.id as string | undefined
                       if (!geoId || !cityCounts[geoId]) return null
-                      const [cx, cy] = pathGenerator.centroid(geo as any)
+                      const [cx, cy] = pathGenerator.centroid(
+                        geo as unknown as GeoPermissibleObjects,
+                      )
                       if (!Number.isFinite(cx) || !Number.isFinite(cy))
                         return null
                       // Stagger so the pings read as a scan, not a heartbeat
@@ -404,8 +452,8 @@ export default function SinaloaMap({
       {popup && (
         <MapPopup
           popup={popup}
-          containerWidth={containerRef.current?.offsetWidth ?? 800}
-          containerHeight={containerRef.current?.offsetHeight ?? 800}
+          containerWidth={containerSize.width}
+          containerHeight={containerSize.height}
           onClose={() => setPopup(null)}
         />
       )}

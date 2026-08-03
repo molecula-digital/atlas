@@ -65,11 +65,11 @@ export function usePaginatedData<T>({
 
   // Reset to page 1 when params change
   useEffect(() => {
-    setPageState(1)
+    queueMicrotask(() => setPageState(1))
   }, [paramsKey])
 
   useEffect(() => {
-    fetchData(page)
+    void Promise.resolve().then(() => fetchData(page))
   }, [fetchData, page])
 
   const setPage = useCallback(

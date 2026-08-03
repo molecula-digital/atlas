@@ -24,9 +24,11 @@ export function useDialogBackNavigation(
   const onBackRef = useRef(options?.onBack)
   const urlRef = useRef(options?.url)
   const enabled = options?.enabled !== false
-  onCloseRef.current = onClose
-  onBackRef.current = options?.onBack
-  urlRef.current = options?.url
+  useEffect(() => {
+    onCloseRef.current = onClose
+    onBackRef.current = options?.onBack
+    urlRef.current = options?.url
+  }, [onClose, options?.onBack, options?.url])
 
   const dismiss = useCallback(() => {
     if (!enabled) {
