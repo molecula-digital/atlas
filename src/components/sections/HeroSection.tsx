@@ -124,7 +124,7 @@ export function HeroSection({
         </div>
 
         <div className="hidden lg:block self-start pt-12">
-          <div className="bg-card border border-border rounded-lg p-3 flex flex-col gap-3 h-[31rem] shadow-[0_16px_50px_rgba(0,0,0,0.08)]">
+          <div className="bg-card/80 backdrop-blur-sm border border-border rounded-lg p-3 flex flex-col gap-3 h-[31rem] shadow-[0_16px_50px_rgba(0,0,0,0.08)]">
             {/* Map header */}
             <div className="flex items-center justify-between">
               <span className="text-xs font-mono font-medium text-muted tracking-wide">

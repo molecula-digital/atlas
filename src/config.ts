@@ -345,7 +345,7 @@ export const NEWSLETTER = {
 export const SOCIAL_LINKS = [
   {
     platform: 'github' as const,
-    url: 'https://github.com/molecula-digital/atlas-tech',
+    url: 'https://github.com/molecula-digital/atlas',
     label: 'Github',
   },
 ]

@@ -13,7 +13,7 @@
 <img src="https://img.shields.io/badge/tailwind-4-06b6d4?style=flat-square&logo=tailwindcss&logoColor=white" alt="Tailwind" />
 <img src="https://img.shields.io/badge/drizzle-orm-c5f74f?style=flat-square&logo=drizzle&logoColor=black" alt="Drizzle" />
 <img src="https://img.shields.io/badge/postgresql-4169e1?style=flat-square&logo=postgresql&logoColor=white" alt="PostgreSQL" />
-<img src="https://img.shields.io/github/license/molecula-digital/atlas-tech?style=flat-square" alt="License" />
+<img src="https://img.shields.io/github/license/molecula-digital/atlas?style=flat-square" alt="License" />
 
 </div>
 
