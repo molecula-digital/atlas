@@ -95,9 +95,13 @@ const PIXEL = MATRIX_BOX_SIZE / SPRITE_PIXEL_DIVISOR
 /** Sprite footprint in whole grid cells — origins and the march stay on the lattice. */
 const SPRITE_CELLS_W = Math.ceil(SPRITE_COLS / SPRITE_PIXEL_DIVISOR)
 const SPRITE_CELLS_H = Math.ceil(SPRITE_ROWS / SPRITE_PIXEL_DIVISOR)
-/** Cells of air between invaders in the formation. */
+/**
+ * Cells of air between invaders in the formation. Rows sit further apart than
+ * columns: a sprite is only 4 cells tall against 6 wide, so an equal gap left
+ * the rows reading as one vertical mass rather than distinct ranks.
+ */
 const COL_GAP = 1
-const ROW_GAP = 1
+const ROW_GAP = 2
 /** Classic march cadence — one sideways cell per step, frame toggle included. */
 const STEP_MS = 900
 const MAX_FORMATION_COLS = 7

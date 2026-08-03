@@ -222,6 +222,23 @@ html {
   --hero-icon-far: 0.06;
 }
 
+/* Below sm the washes are wider than the screen they sit on — 46rem and 36rem
+   of gradient against roughly 24rem of viewport — so light that spills from a
+   corner on desktop becomes a flat tint over the whole page, and the headline
+   loses its contrast. Weaken it there; the phone gets a hint of color instead
+   of a wash. Ordered after the dark block so it wins at equal specificity. */
+@media (max-width: 40rem) {
+  .hero-backdrop {
+    --hero-wash-strong: 18%;
+    --hero-wash-soft: 10%;
+  }
+
+  :root.dark .hero-backdrop {
+    --hero-wash-strong: 13%;
+    --hero-wash-soft: 8%;
+  }
+}
+
 .hero-backdrop::before,
 .hero-backdrop::after {
   content: "";
