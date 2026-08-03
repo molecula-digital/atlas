@@ -11,7 +11,7 @@ export function CtaSection() {
             Pon a Sinaloa en el mapa
           </h2>
           <p className="text-secondary max-w-lg mx-auto">
-            Ya seas una startup, consultoría, comunidad, empresa o profesional
+            Ya seas una startup, consultora, comunidad, empresa o profesional
             tech, si estás construyendo desde Sinaloa mereces ser visible. Únete
             al directorio y conecta con el ecosistema.
           </p>

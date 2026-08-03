@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { isAdminOrEditor, publishedOrAuthenticated } from '../access/roles'
 import { revalidateEntry } from './hooks/revalidateOnPublish'
+import { getPayloadPreviewUrl } from '../lib/payload-preview'
 
 export const Events: CollectionConfig = {
   slug: 'events',
@@ -10,6 +11,7 @@ export const Events: CollectionConfig = {
     defaultColumns: ['title', 'date', 'modality', 'organizer', '_status'],
     listSearchableFields: ['title', 'organizer', 'location'],
     description: 'Agenda y promueve eventos y meetups de la comunidad',
+    preview: (doc) => getPayloadPreviewUrl('events', doc),
   },
   access: {
     create: isAdminOrEditor,

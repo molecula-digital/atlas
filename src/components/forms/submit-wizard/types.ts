@@ -71,13 +71,13 @@ export const TYPE_COPY: Record<
       'Tu empresa ha sido recibida. La revisaremos y la agregaremos al directorio pronto.',
   },
   consultory: {
-    entityName: 'consultoría',
-    namePlaceholder: 'Nombre de la consultoría',
-    taglinePlaceholder: 'Una frase corta que describe tu consultoría',
-    descriptionPlaceholder: 'Describe tu consultoría en detalle',
-    successTitle: 'Consultoría enviada',
+    entityName: 'consultora',
+    namePlaceholder: 'Nombre de la consultora',
+    taglinePlaceholder: 'Una frase corta que describe tu consultora',
+    descriptionPlaceholder: 'Describe tu consultora en detalle',
+    successTitle: 'Consultora enviada',
     successMessage:
-      'Tu consultoría ha sido recibida. La revisaremos y la agregaremos al directorio pronto.',
+      'Tu consultora ha sido recibida. La revisaremos y la agregaremos al directorio pronto.',
   },
   'research-center': {
     entityName: 'centro de investigación',

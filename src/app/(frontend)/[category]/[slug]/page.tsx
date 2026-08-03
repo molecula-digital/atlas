@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
+import { draftMode } from 'next/headers'
 import {
   getEntryBySlug,
   getPublishedEntries,
@@ -55,6 +56,7 @@ import { isStartupLike } from '@/config'
 import { WhatsAppCta } from '@/components/sections/WhatsAppCta'
 import { WHATSAPP_SURFACE } from '@/lib/analytics-events'
 import { buttonVariants } from '@/components/ui/button-variants'
+import { LivePreviewRefresh } from '@/components/payload/LivePreviewRefresh'
 
 export async function generateStaticParams() {
   const result = await getPublishedEntries()
@@ -70,7 +72,8 @@ export async function generateMetadata({
   params: Promise<{ category: string; slug: string }>
 }): Promise<Metadata> {
   const { category, slug } = await params
-  const entry = await getEntryBySlug(slug)
+  const { isEnabled: isDraftMode } = await draftMode()
+  const entry = await getEntryBySlug(slug, isDraftMode)
   const entryType = URL_CATEGORY_MAP[category] as AtlasEntryType | undefined
   if (!entry) {
     // Mirrors the page's fallback: /personas also serves public user profiles.
@@ -114,6 +117,7 @@ export async function generateMetadata({
       ...(imageUrl ? { images: [{ url: imageUrl }] } : {}),
     },
     twitter: { card: 'summary_large_image' },
+    ...(isDraftMode ? { robots: { index: false, follow: false } } : {}),
   }
 }
 
@@ -127,10 +131,11 @@ export default async function EntryDetailPage({
   params: Promise<{ category: string; slug: string }>
 }) {
   const { category, slug } = await params
+  const { isEnabled: isDraftMode } = await draftMode()
   const entryType = URL_CATEGORY_MAP[category] as AtlasEntryType | undefined
   if (!entryType) notFound()
 
-  const entry = await getEntryBySlug(slug)
+  const entry = await getEntryBySlug(slug, isDraftMode)
   if (!entry || entry.entryType !== entryType) {
     // /personas is shared with public user profiles, which live outside Payload.
     const profile =
@@ -307,6 +312,7 @@ export default async function EntryDetailPage({
 
   return (
     <article>
+      {isDraftMode && <LivePreviewRefresh />}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -661,7 +667,7 @@ export default async function EntryDetailPage({
         {/*  Sidebar (only in full layout)                               */}
         {/* ============================================================ */}
         {!isCompactLayout && (
-          <div className="space-y-4 mt-8 lg:mt-0 max-w-3xl mx-auto lg:mx-0 lg:max-w-none">
+          <aside className="space-y-4 mt-8 lg:sticky lg:top-14 lg:mt-0 max-w-3xl mx-auto lg:mx-0 lg:max-w-none">
             {/* Details card */}
             <Card className="p-4">
               <h2 className="font-mono text-xs text-muted uppercase tracking-wider mb-4 flex items-center gap-2">
@@ -722,7 +728,7 @@ export default async function EntryDetailPage({
                 </div>
               </Card>
             )}
-          </div>
+          </aside>
         )}
       </div>
 

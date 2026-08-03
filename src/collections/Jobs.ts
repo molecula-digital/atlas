@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 import { isAdminOrEditor, publishedOrAuthenticated } from '../access/roles'
 import { revalidateEntry } from './hooks/revalidateOnPublish'
 import { CITY_SELECT_OPTIONS } from '../config'
+import { getPayloadPreviewUrl } from '../lib/payload-preview'
 
 export const Jobs: CollectionConfig = {
   slug: 'jobs',
@@ -11,6 +12,7 @@ export const Jobs: CollectionConfig = {
     defaultColumns: ['title', 'type', 'modality', '_status', 'expiresAt'],
     listSearchableFields: ['title', 'compensation'],
     description: 'Publica ofertas de empleo y oportunidades laborales',
+    preview: (doc) => getPayloadPreviewUrl('jobs', doc),
   },
   access: {
     create: isAdminOrEditor,

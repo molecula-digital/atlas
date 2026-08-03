@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { draftMode } from 'next/headers'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import Link from 'next/link'
 import { getJobBySlug, getActiveJobs } from '@/lib/payload'
@@ -17,6 +18,7 @@ import { Badge } from '@/components/ui/Badge'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import { JobApplyLink } from '@/components/entries/JobApplyLink'
 import { MapPin, Clock, Briefcase, AlertTriangle } from 'lucide-react'
+import { LivePreviewRefresh } from '@/components/payload/LivePreviewRefresh'
 
 export const revalidate = 3600
 
@@ -36,7 +38,8 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>
 }): Promise<Metadata> {
   const { slug } = await params
-  const job = await getJobBySlug(slug)
+  const { isEnabled: isDraftMode } = await draftMode()
+  const job = await getJobBySlug(slug, isDraftMode)
   if (!job) return { title: 'Not Found' }
   const entryName = (job.entry as { name: string } | null)?.name
   const description = entryName
@@ -54,7 +57,9 @@ export async function generateMetadata({
       url: canonical,
     },
     twitter: { card: 'summary_large_image' },
-    ...(expired ? { robots: { index: false } } : {}),
+    ...(expired || isDraftMode
+      ? { robots: { index: false, follow: false } }
+      : {}),
   }
 }
 
@@ -64,7 +69,8 @@ export default async function JobDetailPage({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  const job = await getJobBySlug(slug)
+  const { isEnabled: isDraftMode } = await draftMode()
+  const job = await getJobBySlug(slug, isDraftMode)
   if (!job) notFound()
 
   const tags = flattenArray(job.tags as Array<{ tag: string }>, 'tag')
@@ -103,6 +109,7 @@ export default async function JobDetailPage({
 
   return (
     <article>
+      {isDraftMode && <LivePreviewRefresh />}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

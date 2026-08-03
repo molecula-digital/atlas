@@ -28,7 +28,7 @@ export function CombinedCtaSection() {
               Agrega tu registro
             </h3>
             <p className="text-xs text-muted leading-relaxed flex-1">
-              Ya seas startup, consultoría, comunidad o profesional tech — si
+              Ya seas startup, consultora, comunidad o profesional tech — si
               estás construyendo desde Sinaloa, mereces ser visible.
             </p>
             <Link

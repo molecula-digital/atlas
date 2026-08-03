@@ -39,7 +39,7 @@ export default async function HomePage() {
   )
   const latest = latestResult.docs
   const totalEntries = Math.floor(counts.total / 5) * 5
-  const homeDescription = `Explora ${totalEntries}+ startups, consultorías, comunidades y talento tech en Sinaloa.`
+  const homeDescription = `Explora ${totalEntries}+ startups, consultoras, comunidades y talento tech en Sinaloa.`
 
   return (
     <>

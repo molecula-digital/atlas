@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { draftMode } from 'next/headers'
 import { getEventBySlug, getPublishedEvents } from '@/lib/payload'
 import { eventDocToTechEvent, selectOtherEvents } from '@/lib/events'
 import { EVENT_SURFACE } from '@/lib/analytics-events'
@@ -16,6 +17,7 @@ import { OtherEventsSection } from '@/components/calendar/OtherEventsSection'
 import { RegisterEventButton } from '@/components/calendar/RegisterEventButton'
 import { EventExternalLink } from '@/components/calendar/EventExternalLink'
 import EventDetailPageClient from './EventDetailPageClient'
+import { LivePreviewRefresh } from '@/components/payload/LivePreviewRefresh'
 
 export const revalidate = 3600
 
@@ -30,7 +32,8 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>
 }): Promise<Metadata> {
   const { slug } = await params
-  const doc = await getEventBySlug(slug)
+  const { isEnabled: isDraftMode } = await draftMode()
+  const doc = await getEventBySlug(slug, isDraftMode)
   if (!doc) return { title: 'Evento no encontrado — Eventos' }
 
   const event = eventDocToTechEvent(doc)
@@ -59,6 +62,7 @@ export async function generateMetadata({
         ? { images: [{ url: socialImage.url, alt: socialImage.alt }] }
         : {}),
     },
+    ...(isDraftMode ? { robots: { index: false, follow: false } } : {}),
   }
 }
 
@@ -68,7 +72,8 @@ export default async function EventDetailPage({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  const doc = await getEventBySlug(slug)
+  const { isEnabled: isDraftMode } = await draftMode()
+  const doc = await getEventBySlug(slug, isDraftMode)
   if (!doc) notFound()
 
   const event = eventDocToTechEvent(doc)
@@ -92,6 +97,7 @@ export default async function EventDetailPage({
 
   return (
     <article>
+      {isDraftMode && <LivePreviewRefresh />}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

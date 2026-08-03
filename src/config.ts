@@ -25,7 +25,7 @@ export const MATRIX_BOX_SIZE = 26
 export const HERO_BACKDROP: 'icons' | 'invaders' = 'invaders'
 
 export const SITE_DESCRIPTION =
-  'Directorio del ecosistema tecnológico de Sinaloa. Encuentra startups, consultorías, comunidades y talento tech construyendo desde nuestro estado.'
+  'Directorio del ecosistema tecnológico de Sinaloa. Encuentra startups, consultoras, comunidades y talento tech construyendo desde nuestro estado.'
 
 export const ENTRY_TYPES = [
   'startup',
@@ -69,8 +69,8 @@ export const ENTRY_TYPE_CONFIG: Record<AtlasEntryType, EntryTypeConfig> = {
     slug: 'empresas',
   },
   consultory: {
-    label: 'Consultoría',
-    labelPlural: 'Consultorías',
+    label: 'Consultora',
+    labelPlural: 'Consultoras',
     description: 'Empresas de consultoría y servicios tecnológicos',
     icon: 'briefcase',
     slug: 'consultoras',
@@ -272,13 +272,13 @@ export const FAQS = [
     icon: 'Compass',
     question: '¿Qué es Tech Atlas?',
     answer:
-      'Tech Atlas es un directorio abierto del ecosistema tecnológico de Sinaloa. Reúne startups, consultorías, comunidades, empresas y profesionales tech que están construyendo desde nuestro estado.',
+      'Tech Atlas es un directorio abierto del ecosistema tecnológico de Sinaloa. Reúne startups, consultoras, comunidades, empresas y profesionales tech que están construyendo desde nuestro estado.',
   },
   {
     icon: 'UserPlus',
     question: '¿Cómo puedo registrarme?',
     answer:
-      'Puedes registrarte de forma gratuita desde la sección "Agregar registro". Solo necesitas llenar un formulario con la información básica de tu startup, consultoría, comunidad o perfil profesional.',
+      'Puedes registrarte de forma gratuita desde la sección "Agregar registro". Solo necesitas llenar un formulario con la información básica de tu startup, consultora, comunidad o perfil profesional.',
   },
   {
     icon: 'Gift',
@@ -290,7 +290,7 @@ export const FAQS = [
     icon: 'Users',
     question: '¿Quién puede registrarse?',
     answer:
-      'Startups, consultorías de tecnología, comunidades tech, empresas establecidas y profesionales independientes del sector tecnológico en Sinaloa. Si estás construyendo algo relacionado con tecnología desde nuestro estado, tienes un lugar aquí.',
+      'Startups, consultoras de tecnología, comunidades tech, empresas establecidas y profesionales independientes del sector tecnológico en Sinaloa. Si estás construyendo algo relacionado con tecnología desde nuestro estado, tienes un lugar aquí.',
   },
 ]
 

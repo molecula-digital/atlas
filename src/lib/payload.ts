@@ -32,14 +32,16 @@ export const getEntriesByType = cache(
   },
 )
 
-export const getEntryBySlug = cache(async (slug: string) => {
+export const getEntryBySlug = cache(async (slug: string, draft = false) => {
   const payload = await getPayloadClient()
   const result = await payload.find({
     collection: 'entries',
     where: {
       slug: { equals: slug },
-      _status: { equals: 'published' },
+      ...(draft ? {} : { _status: { equals: 'published' } }),
     },
+    draft,
+    overrideAccess: draft,
     limit: 1,
   })
   return result.docs[0] ?? null
@@ -111,14 +113,16 @@ export const getPublishedNews = cache(async (limit = 20) => {
   })
 })
 
-export const getNewsBySlug = cache(async (slug: string) => {
+export const getNewsBySlug = cache(async (slug: string, draft = false) => {
   const payload = await getPayloadClient()
   const result = await payload.find({
     collection: 'news',
     where: {
       slug: { equals: slug },
-      _status: { equals: 'published' },
+      ...(draft ? {} : { _status: { equals: 'published' } }),
     },
+    draft,
+    overrideAccess: draft,
     limit: 1,
   })
   return result.docs[0] ?? null
@@ -137,14 +141,16 @@ export const getActiveJobs = cache(async (limit = 50) => {
   })
 })
 
-export const getJobBySlug = cache(async (slug: string) => {
+export const getJobBySlug = cache(async (slug: string, draft = false) => {
   const payload = await getPayloadClient()
   const result = await payload.find({
     collection: 'jobs',
     where: {
       slug: { equals: slug },
-      _status: { equals: 'published' },
+      ...(draft ? {} : { _status: { equals: 'published' } }),
     },
+    draft,
+    overrideAccess: draft,
     limit: 1,
   })
   return result.docs[0] ?? null
@@ -160,14 +166,16 @@ export const getPublishedEvents = cache(async (limit = 100) => {
   })
 })
 
-export const getEventBySlug = cache(async (slug: string) => {
+export const getEventBySlug = cache(async (slug: string, draft = false) => {
   const payload = await getPayloadClient()
   const result = await payload.find({
     collection: 'events',
     where: {
       slug: { equals: slug },
-      _status: { equals: 'published' },
+      ...(draft ? {} : { _status: { equals: 'published' } }),
     },
+    draft,
+    overrideAccess: draft,
     limit: 1,
   })
   return result.docs[0] ?? null

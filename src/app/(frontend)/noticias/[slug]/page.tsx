@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
+import { draftMode } from 'next/headers'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import { getNewsBySlug, getPublishedNews } from '@/lib/payload'
 import { SectionHeading } from '@/components/ui/SectionHeading'
@@ -10,6 +11,7 @@ import { formatDateEs, extractImageUrl } from '@/lib/format'
 import { WhatsAppCta } from '@/components/sections/WhatsAppCta'
 import { WHATSAPP_SURFACE } from '@/lib/analytics-events'
 import { safeJsonLd } from '@/lib/utils'
+import { LivePreviewRefresh } from '@/components/payload/LivePreviewRefresh'
 
 export async function generateStaticParams() {
   const result = await getPublishedNews()
@@ -22,7 +24,8 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>
 }): Promise<Metadata> {
   const { slug } = await params
-  const article = await getNewsBySlug(slug)
+  const { isEnabled: isDraftMode } = await draftMode()
+  const article = await getNewsBySlug(slug, isDraftMode)
   if (!article) return { title: 'Not Found' }
   const canonical = `${SITE_URL}/noticias/${article.slug}`
   const coverUrl = extractImageUrl(article.coverImage)
@@ -37,6 +40,7 @@ export async function generateMetadata({
       ...(coverUrl ? { images: [{ url: coverUrl }] } : {}),
     },
     twitter: { card: 'summary_large_image' },
+    ...(isDraftMode ? { robots: { index: false, follow: false } } : {}),
   }
 }
 
@@ -46,7 +50,8 @@ export default async function NewsDetailPage({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  const article = await getNewsBySlug(slug)
+  const { isEnabled: isDraftMode } = await draftMode()
+  const article = await getNewsBySlug(slug, isDraftMode)
   if (!article) notFound()
 
   const coverUrl = extractImageUrl(article.coverImage)
@@ -56,6 +61,7 @@ export default async function NewsDetailPage({
 
   return (
     <article>
+      {isDraftMode && <LivePreviewRefresh />}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

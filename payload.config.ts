@@ -18,6 +18,7 @@ import { Jobs } from './src/collections/Jobs'
 import { Events } from './src/collections/Events'
 import { NewsletterSubscribers } from './src/collections/NewsletterSubscribers'
 import { buildMediaFileUrl } from './src/lib/media-url'
+import { getPayloadPreviewUrl } from './src/lib/payload-preview'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -37,6 +38,18 @@ export default buildConfig({
           Component: '/src/components/payload/Dashboard',
         },
       },
+    },
+    livePreview: {
+      collections: ['entries', 'news', 'jobs', 'events'],
+      url: ({ data, collectionConfig }) =>
+        collectionConfig
+          ? getPayloadPreviewUrl(collectionConfig.slug, data)
+          : null,
+      breakpoints: [
+        { label: 'Móvil', name: 'mobile', width: 375, height: 667 },
+        { label: 'Tablet', name: 'tablet', width: 768, height: 1024 },
+        { label: 'Escritorio', name: 'desktop', width: 1440, height: 900 },
+      ],
     },
   },
   i18n: {

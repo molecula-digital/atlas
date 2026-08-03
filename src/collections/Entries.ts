@@ -11,6 +11,7 @@ import {
   BUSINESS_MODEL_OPTIONS,
   isStartupLike as isStartupLikeType,
 } from '../config'
+import { getPayloadPreviewUrl } from '../lib/payload-preview'
 
 const entryTypeOptions = ENTRY_TYPES.map((t) => ({
   label: t.charAt(0).toUpperCase() + t.slice(1),
@@ -35,6 +36,7 @@ export const Entries: CollectionConfig = {
     listSearchableFields: ['name', 'tagline', 'tags'],
     description:
       'Gestiona startups, empresas, comunidades y personas en el directorio',
+    preview: (doc) => getPayloadPreviewUrl('entries', doc),
   },
   access: {
     create: isAdminOrEditor,

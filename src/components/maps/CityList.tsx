@@ -193,7 +193,7 @@ export default function CityList({
                 REGISTRAR PERFIL/STARTUP
               </Link>
               <p className="text-2xs text-muted text-center font-mono">
-                Startups, personas, consultorías, comunidades y empresas
+                Startups, personas, consultoras, comunidades y empresas
               </p>
             </div>
           )}

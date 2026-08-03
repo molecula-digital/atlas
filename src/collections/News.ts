@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { isAdminOrEditor, publishedOrAuthenticated } from '../access/roles'
 import { revalidateEntry } from './hooks/revalidateOnPublish'
+import { getPayloadPreviewUrl } from '../lib/payload-preview'
 
 export const News: CollectionConfig = {
   slug: 'news',
@@ -11,6 +12,7 @@ export const News: CollectionConfig = {
     listSearchableFields: ['title', 'excerpt'],
     description:
       'Publica artículos, noticias y actualizaciones para la comunidad de Atlas Tech',
+    preview: (doc) => getPayloadPreviewUrl('news', doc),
   },
   access: {
     create: isAdminOrEditor,

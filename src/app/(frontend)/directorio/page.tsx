@@ -5,12 +5,12 @@ import { SINALOA_CITIES, SITE_URL } from '@/config'
 export const metadata: Metadata = {
   title: 'Directorio',
   description:
-    'Explora el directorio completo del ecosistema tecnológico de Sinaloa. Startups, consultorías, comunidades y talento tech.',
+    'Explora el directorio completo del ecosistema tecnológico de Sinaloa. Startups, consultoras, comunidades y talento tech.',
   alternates: { canonical: `${SITE_URL}/directorio` },
   openGraph: {
     title: 'Directorio',
     description:
-      'Explora el directorio completo del ecosistema tecnológico de Sinaloa. Startups, consultorías, comunidades y talento tech.',
+      'Explora el directorio completo del ecosistema tecnológico de Sinaloa. Startups, consultoras, comunidades y talento tech.',
     url: `${SITE_URL}/directorio`,
   },
   twitter: { card: 'summary_large_image' },
