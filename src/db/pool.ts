@@ -6,12 +6,9 @@ import { Pool } from 'pg'
  */
 const pool = new Pool({
   connectionString: process.env.DATABASE_URI,
-})
-
-// Set search_path so better-auth finds its tables in the `auth` schema,
-// and Drizzle finds `profiles` in the `public` schema.
-pool.on('connect', (client) => {
-  client.query('SET search_path TO auth, app, public')
+  max: 5,
+  idleTimeoutMillis: 30_000,
+  connectionTimeoutMillis: 5_000,
 })
 
 export { pool }
