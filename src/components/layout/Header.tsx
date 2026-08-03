@@ -135,7 +135,7 @@ export function Header() {
 
             <div className="hidden lg:flex items-center gap-0.5">
               <a
-                href="https://github.com/ojoanalogo/atlas-tech"
+                href="https://github.com/molecula-digital/atlas-tech"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-1 px-2 py-1 font-mono text-[10px] text-secondary transition-colors hover:text-accent"
@@ -248,7 +248,7 @@ export function Header() {
             Mapa
           </Link>
           <a
-            href="https://github.com/ojoanalogo/atlas-tech"
+            href="https://github.com/molecula-digital/atlas-tech"
             target="_blank"
             rel="noopener noreferrer"
             className={MOBILE_LINK}
