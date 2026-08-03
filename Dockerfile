@@ -1,4 +1,4 @@
-FROM node:20-alpine AS base
+FROM node:22-alpine AS base
 RUN corepack enable
 
 # --- Dependencies ---
@@ -13,10 +13,8 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-ARG DATABASE_URI
 ARG DATABASE_DIRECT_URL
 ARG SENTRY_AUTH_TOKEN
-ENV DATABASE_URI=${DATABASE_URI}
 ENV DATABASE_DIRECT_URL=${DATABASE_DIRECT_URL}
 ENV SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN}
 ENV NODE_OPTIONS="--max-old-space-size=4096"
