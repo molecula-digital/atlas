@@ -139,7 +139,7 @@ export function HeroSection({
             </div>
 
             {/* Map container */}
-            <div className="relative flex-1 bg-elevated border border-border rounded overflow-hidden">
+            <div className="relative flex-1 rounded border border-border bg-elevated/80 backdrop-blur-sm overflow-hidden">
               <SinaloaMap
                 compact
                 linkOnClick
