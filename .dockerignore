@@ -5,3 +5,4 @@ node_modules
 *.md
 scripts/
 !scripts/migrate.mjs
+!scripts/payload-migrate.mjs
