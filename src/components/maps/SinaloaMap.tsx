@@ -1,12 +1,7 @@
 'use client'
 
 import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react'
-import {
-  geoIdentity,
-  geoPath,
-  type GeoPermissibleObjects,
-  type GeoProjection,
-} from 'd3-geo'
+import { geoIdentity, geoPath, type GeoPermissibleObjects } from 'd3-geo'
 import {
   ComposableMap,
   Geographies,
@@ -308,14 +303,7 @@ export default function SinaloaMap({
         <ComposableMap
           width={width}
           height={height}
-          projection={
-            ((mapWidth, mapHeight) =>
-              createProjection(
-                mapWidth,
-                mapHeight,
-                padding,
-              ) as unknown as GeoProjection) satisfies ProjectionFunction
-          }
+          projection={projection as unknown as ProjectionFunction}
           projectionConfig={{}}
           style={{ width: '100%', height: '100%' }}
         >
