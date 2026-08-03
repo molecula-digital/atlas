@@ -101,7 +101,7 @@ Create `.env.example`:
 
 ```env
 # Database (Neon)
-DATABASE_URI=postgresql://user:pass@host.neon.tech/dbname?sslmode=require
+DATABASE_URL=postgresql://user:pass@host.neon.tech/dbname?sslmode=require
 
 # Payload
 PAYLOAD_SECRET=generate-a-random-32-char-string
@@ -179,7 +179,7 @@ export default buildConfig({
   },
   db: postgresAdapter({
     pool: {
-      connectionString: process.env.DATABASE_URI || '',
+      connectionString: process.env.DATABASE_URL || '',
     },
     schemaName: 'payload',
   }),
@@ -257,8 +257,8 @@ export const Media: CollectionConfig = {
 Connect to your Neon database and create the schema (Payload will create tables inside it automatically):
 
 ```bash
-psql "$DATABASE_URI" -c "CREATE SCHEMA IF NOT EXISTS payload;"
-psql "$DATABASE_URI" -c "CREATE SCHEMA IF NOT EXISTS auth;"
+psql "$DATABASE_URL" -c "CREATE SCHEMA IF NOT EXISTS payload;"
+psql "$DATABASE_URL" -c "CREATE SCHEMA IF NOT EXISTS auth;"
 ```
 
 - [ ] **Step 4: Verify Payload migrates the database**

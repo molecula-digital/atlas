@@ -113,7 +113,7 @@ import { Pool } from 'pg'
 
 export const auth = betterAuth({
   database: new Pool({
-    connectionString: process.env.DATABASE_URI,
+    connectionString: process.env.DATABASE_URL,
   }),
   baseURL: process.env.BETTER_AUTH_URL,
   socialProviders: {
@@ -146,7 +146,7 @@ export type User = typeof auth.$Infer.Session.user
 
 ```typescript
 database: new Pool({
-  connectionString: process.env.DATABASE_URI,
+    connectionString: process.env.DATABASE_URL,
   options: `-c search_path=auth,public`,
 }),
 ```

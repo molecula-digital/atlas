@@ -61,8 +61,8 @@ Copia `.env.example` y configura segun tu entorno:
 
 | Variable               | Descripcion                                  | Como obtenerla                                                                                                                                                                                                     |
 | ---------------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `DATABASE_URI`         | Conexion PostgreSQL pooled para runtime      | Local: `postgresql://user:pass@localhost:5432/db`. En Neon usa el hostname con `-pooler`.                                                                                                                          |
-| `DATABASE_DIRECT_URL`  | Conexion PostgreSQL directa para migraciones | Local puede ser la misma que `DATABASE_URI`. En Neon usa el hostname sin `-pooler`.                                                                                                                                |
+| `DATABASE_URL`         | Conexion PostgreSQL pooled para runtime      | Local: `postgresql://user:pass@localhost:5432/db`. En Neon usa el hostname con `-pooler`.                                                                                                                          |
+| `DATABASE_DIRECT_URL`  | Conexion PostgreSQL directa para migraciones | Local puede ser la misma que `DATABASE_URL`. En Neon usa el hostname sin `-pooler`.                                                                                                                                |
 | `PAYLOAD_SECRET`       | Secret para Payload CMS                      | Genera con `openssl rand -hex 16`                                                                                                                                                                                  |
 | `BETTER_AUTH_SECRET`   | Secret para autenticacion                    | Genera con `openssl rand -base64 32`                                                                                                                                                                               |
 | `NEXT_PUBLIC_SITE_URL` | URL publica del sitio                        | `http://localhost:3000` en desarrollo                                                                                                                                                                              |
@@ -105,7 +105,6 @@ El `Dockerfile` multi-stage construye la app en 3 fases:
 
 ```bash
 docker build \
-  --build-arg DATABASE_URI="postgresql://..." \
   --build-arg DATABASE_DIRECT_URL="postgresql://..." \
   --build-arg SENTRY_AUTH_TOKEN="sntrys_..." \
   --build-arg NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN="phc_..." \

@@ -15,7 +15,7 @@ Date: 2026-03-31
 - `payload.config.ts`
 
 **Implementation steps**:
-1. Create `src/db/pool.ts` that exports a single `pg.Pool` instance configured from `DATABASE_URI`. Set explicit `max` (e.g. 20), `idleTimeoutMillis` (30 000), and `connectionTimeoutMillis` (5 000). This is the only file that should ever call `new Pool()`.
+1. Create `src/db/pool.ts` that exports a single `pg.Pool` instance configured from `DATABASE_URL`. Set explicit `max` (e.g. 20), `idleTimeoutMillis` (30 000), and `connectionTimeoutMillis` (5 000). This is the only file that should ever call `new Pool()`.
 2. In the same file, export a helper `getPoolWithSchema(schema: string)` that wraps the pool's `connect()` to run `SET search_path TO <schema>, public` on each connection. This is needed because better-auth uses the `auth` schema while Payload uses the `payload` schema.
 3. Update `src/lib/auth.ts`: remove the local `new Pool()` and import the shared pool from `src/db/pool.ts`. Pass it through `getPoolWithSchema('auth')` or keep the existing `pool.on('connect')` pattern but sourced from the shared pool. **Note**: better-auth accepts a `pg.Pool` directly, so the shared pool can be passed as-is if the `connect` event handler is moved to the shared module.
 4. Update `src/db/index.ts`: remove the local `new Pool()` and import the shared pool. Pass it to `drizzle(pool, { schema })`.

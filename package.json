@@ -11,6 +11,7 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "commitlint": "commitlint",
     "check": "pnpm format:check && pnpm lint",
     "typecheck": "tsc --noEmit",
     "generate:types": "payload generate:types",
@@ -19,7 +20,8 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "payload:migrate": "node scripts/payload-migrate.mjs",
-    "payload:migrate:create": "payload migrate:create"
+    "payload:migrate:create": "payload migrate:create",
+    "prepare": "husky"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.1101.0",
@@ -66,6 +68,8 @@
     "zod": "4.4.3"
   },
   "devDependencies": {
+    "@commitlint/cli": "^21.2.1",
+    "@commitlint/config-conventional": "^21.2.0",
     "@tailwindcss/typography": "0.5.20",
     "@types/d3-geo": "3.1.1",
     "@types/node": "26.1.2",
@@ -77,6 +81,7 @@
     "eslint": "9.39.5",
     "eslint-config-next": "16.2.12",
     "eslint-config-prettier": "^10.1.8",
+    "husky": "^9.1.7",
     "prettier": "3.9.6",
     "tsx": "4.22.0",
     "typescript": "6.0.2"

@@ -93,7 +93,7 @@ export default defineConfig({
   out: './drizzle',
   dialect: 'postgresql',
   dbCredentials: {
-    url: process.env.DATABASE_URI!,
+    url: process.env.DATABASE_URL!,
   },
 })
 ```
@@ -133,7 +133,7 @@ import { Pool } from 'pg'
 import * as schema from './schema/profiles'
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URI,
+  connectionString: process.env.DATABASE_URL,
 })
 
 export const db = drizzle(pool, { schema })
@@ -156,7 +156,7 @@ Alternatively, verify via psql or the pg Pool:
 ```bash
 echo "SELECT column_name, data_type FROM information_schema.columns WHERE table_name = 'profiles';" | npx tsx -e "
 import { Pool } from 'pg';
-const pool = new Pool({ connectionString: process.env.DATABASE_URI });
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 pool.query(\"SELECT column_name, data_type FROM information_schema.columns WHERE table_name = 'profiles'\").then(r => { console.table(r.rows); pool.end(); });
 "
 ```

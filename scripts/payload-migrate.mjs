@@ -13,7 +13,7 @@ const child = spawn(
     stdio: 'inherit',
     env: {
       ...process.env,
-      DATABASE_URI: process.env.DATABASE_DIRECT_URL,
+      DATABASE_URL: process.env.DATABASE_DIRECT_URL,
     },
   },
 )

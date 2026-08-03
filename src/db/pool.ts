@@ -5,7 +5,7 @@ import { Pool } from 'pg'
  * Payload CMS maintains its own pool via postgresAdapter (separate schema).
  */
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URI,
+  connectionString: process.env.DATABASE_URL,
   max: 5,
   idleTimeoutMillis: 30_000,
   connectionTimeoutMillis: 5_000,
