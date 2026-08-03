@@ -4,6 +4,11 @@ import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   output: 'standalone',
+  // Sharp loads libvips dynamically, which static output tracing cannot
+  // discover. Include its platform package in the standalone runtime image.
+  outputFileTracingIncludes: {
+    '/*': ['./node_modules/@img/**/*'],
+  },
   images: {
     remotePatterns: [
       // Bucket objects are always served via the CDN custom domain.
