@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 import { isAdminOrEditor, publishedOrAuthenticated } from '../access/roles'
 import { revalidateEntry } from './hooks/revalidateOnPublish'
 import { getPayloadPreviewUrl } from '../lib/payload-preview'
+import { slugify } from '../lib/slug'
 
 export const Events: CollectionConfig = {
   slug: 'events',
@@ -43,24 +44,19 @@ export const Events: CollectionConfig = {
       admin: {
         position: 'sidebar',
         description:
-          'Se genera automáticamente a partir del título y la fecha si se deja vacío.',
+          'Se genera a partir del título y la fecha si se deja vacío. Solo usa letras sin acentos, números y guiones.',
       },
       hooks: {
         beforeValidate: [
           ({ value, siblingData }) => {
             if (!value && siblingData?.title) {
-              const base = (siblingData.title as string)
-                .toLowerCase()
-                .normalize('NFD')
-                .replace(/[\u0300-\u036f]/g, '')
-                .replace(/[^a-z0-9]+/g, '-')
-                .replace(/(^-|-$)/g, '')
+              const base = slugify(siblingData.title as string)
               const datePart = ((siblingData.date as string) || '').split(
                 'T',
               )[0]
               return datePart ? `${base}-${datePart}` : base
             }
-            return value
+            return typeof value === 'string' ? slugify(value) : value
           },
         ],
       },

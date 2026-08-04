@@ -57,6 +57,7 @@ import { WhatsAppCta } from '@/components/sections/WhatsAppCta'
 import { WHATSAPP_SURFACE } from '@/lib/analytics-events'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { LivePreviewRefresh } from '@/components/payload/LivePreviewRefresh'
+import { EntryLogoLightbox } from '@/components/entries/EntryLogoLightbox'
 
 export async function generateStaticParams() {
   const result = await getPublishedEntries()
@@ -441,7 +442,7 @@ export default async function EntryDetailPage({
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl border border-accent/25 bg-card/80 p-3 shadow-sm backdrop-blur-sm">
                         {logoUrl ? (
-                          <Image
+                          <EntryLogoLightbox
                             src={logoUrl}
                             alt={`${entry.name as string} logo`}
                             width={64}
@@ -483,7 +484,7 @@ export default async function EntryDetailPage({
             {/* Logo overlapping cover at bottom-left */}
             {coverUrl && logoUrl && (
               <div className="absolute -bottom-7 left-5">
-                <Image
+                <EntryLogoLightbox
                   src={logoUrl}
                   alt={`${entry.name as string} logo`}
                   width={56}

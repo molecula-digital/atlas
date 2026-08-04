@@ -3,6 +3,7 @@ import { isAdminOrEditor, publishedOrAuthenticated } from '../access/roles'
 import { revalidateEntry } from './hooks/revalidateOnPublish'
 import { CITY_SELECT_OPTIONS } from '../config'
 import { getPayloadPreviewUrl } from '../lib/payload-preview'
+import { slugify } from '../lib/slug'
 
 export const Jobs: CollectionConfig = {
   slug: 'jobs',
@@ -44,22 +45,17 @@ export const Jobs: CollectionConfig = {
       admin: {
         position: 'sidebar',
         description:
-          'Se genera automáticamente a partir del título si se deja vacío.',
+          'Se genera a partir del título si se deja vacío. Solo usa letras sin acentos, números y guiones.',
       },
       hooks: {
         beforeValidate: [
           ({ value, siblingData }) => {
             if (!value && siblingData?.title) {
-              const base = (siblingData.title as string)
-                .toLowerCase()
-                .normalize('NFD')
-                .replace(/[\u0300-\u036f]/g, '')
-                .replace(/[^a-z0-9]+/g, '-')
-                .replace(/(^-|-$)/g, '')
+              const base = slugify(siblingData.title as string)
               // Append timestamp to avoid slug collisions (jobs can share titles)
               return `${base}-${Date.now().toString(36)}`
             }
-            return value
+            return typeof value === 'string' ? slugify(value) : value
           },
         ],
       },
