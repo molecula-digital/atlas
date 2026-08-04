@@ -12,6 +12,7 @@ import {
   isStartupLike as isStartupLikeType,
 } from '../config'
 import { getPayloadPreviewUrl } from '../lib/payload-preview'
+import { slugify } from '../lib/slug'
 
 const entryTypeOptions = ENTRY_TYPES.map((t) => ({
   label: t.charAt(0).toUpperCase() + t.slice(1),
@@ -73,20 +74,13 @@ export const Entries: CollectionConfig = {
       admin: {
         position: 'sidebar',
         description:
-          'Se genera automáticamente a partir del nombre si se deja vacío.',
+          'Se genera a partir del nombre si se deja vacío. Solo usa letras sin acentos, números y guiones.',
       },
       hooks: {
         beforeValidate: [
           ({ value, siblingData }) => {
-            if (!value && siblingData?.name) {
-              return (siblingData.name as string)
-                .toLowerCase()
-                .normalize('NFD')
-                .replace(/[\u0300-\u036f]/g, '')
-                .replace(/[^a-z0-9]+/g, '-')
-                .replace(/(^-|-$)/g, '')
-            }
-            return value
+            const source = value || siblingData?.name
+            return typeof source === 'string' ? slugify(source) : value
           },
         ],
       },

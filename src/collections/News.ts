@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 import { isAdminOrEditor, publishedOrAuthenticated } from '../access/roles'
 import { revalidateEntry } from './hooks/revalidateOnPublish'
 import { getPayloadPreviewUrl } from '../lib/payload-preview'
+import { slugify } from '../lib/slug'
 
 export const News: CollectionConfig = {
   slug: 'news',
@@ -38,20 +39,13 @@ export const News: CollectionConfig = {
       admin: {
         position: 'sidebar',
         description:
-          'Se genera automáticamente a partir del título si se deja vacío.',
+          'Se genera a partir del título si se deja vacío. Solo usa letras sin acentos, números y guiones.',
       },
       hooks: {
         beforeValidate: [
           ({ value, siblingData }) => {
-            if (!value && siblingData?.title) {
-              return (siblingData.title as string)
-                .toLowerCase()
-                .normalize('NFD')
-                .replace(/[\u0300-\u036f]/g, '')
-                .replace(/[^a-z0-9]+/g, '-')
-                .replace(/(^-|-$)/g, '')
-            }
-            return value
+            const source = value || siblingData?.title
+            return typeof source === 'string' ? slugify(source) : value
           },
         ],
       },
