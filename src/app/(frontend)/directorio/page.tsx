@@ -22,11 +22,7 @@ export default async function DirectoryPage() {
 
   return (
     <section>
-      <DirectoryFilter
-        cities={cities}
-        typeCounts={typeCounts}
-        pageSize={12}
-      />
+      <DirectoryFilter cities={cities} typeCounts={typeCounts} pageSize={12} />
     </section>
   )
 }
