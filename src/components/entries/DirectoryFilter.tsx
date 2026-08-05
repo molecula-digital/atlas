@@ -281,8 +281,6 @@ export default function DirectoryFilter({
         Explora el directorio del ecosistema tech.
       </p>
 
-      <WhatsAppCta className="mb-8" surface={WHATSAPP_SURFACE.directory} />
-
       {/* Mobile filter panel */}
       <div className="lg:hidden mb-6">
         <button
@@ -339,6 +337,8 @@ export default function DirectoryFilter({
           scrollTargetId="directory-top"
         />
       </div>
+
+      <WhatsAppCta className="mt-8" surface={WHATSAPP_SURFACE.directory} />
     </div>
   )
 }
