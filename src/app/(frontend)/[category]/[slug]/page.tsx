@@ -678,11 +678,11 @@ export default async function EntryDetailPage({
               <div className="space-y-4">
                 {/* Location always shown */}
                 <div className="space-y-1.5">
-                  <span className="text-sm text-muted flex items-center gap-1.5">
+                  <span className="text-xs text-muted flex items-center gap-1.5">
                     <MapPin className="w-3.5 h-3.5 text-muted" />
                     Ubicacion
                   </span>
-                  <span className="block text-sm font-mono text-primary break-words">
+                  <span className="block text-xs font-mono text-primary break-words">
                     {entry.city === 'global'
                       ? 'Global'
                       : getCityName(entry.city as string)}
@@ -691,11 +691,11 @@ export default async function EntryDetailPage({
                 </div>
                 {details.map((detail) => (
                   <div key={detail.label} className="space-y-1.5">
-                    <span className="text-sm text-muted flex items-center gap-1.5 shrink-0">
+                    <span className="text-xs text-muted flex items-center gap-1.5 shrink-0">
                       <detail.Icon className="w-3.5 h-3.5 text-muted shrink-0" />
                       {detail.label}
                     </span>
-                    <span className="flex items-center gap-1.5 text-sm font-mono text-primary break-words">
+                    <span className="flex items-center gap-1.5 text-xs font-mono text-primary break-words">
                       {detail.ValueIcon && (
                         <detail.ValueIcon className="w-3.5 h-3.5 text-accent shrink-0" />
                       )}
@@ -720,7 +720,7 @@ export default async function EntryDetailPage({
                       href={link.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-sm text-secondary hover:text-accent transition-colors"
+                      className="flex items-center gap-2 text-xs text-secondary hover:text-accent transition-colors"
                     >
                       <SocialLinkIcon icon={link.icon} className="w-4 h-4" />
                       {link.label}
