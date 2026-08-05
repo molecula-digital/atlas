@@ -1,7 +1,7 @@
 import { cache } from 'react'
 import { db } from '@/db'
 import { sql } from 'drizzle-orm'
-import { emptyTypeCounts, type AtlasEntryType } from '@/config'
+import { emptyTypeCounts, SINALOA_CITIES, type AtlasEntryType } from '@/config'
 import { countPublicProfiles } from '@/lib/public-profile'
 
 interface EntryCountRow {
@@ -71,3 +71,13 @@ export const getEntryCounts = cache(async (): Promise<EntryCounts> => {
 
   return { byType, byCity, byCityAndType, total }
 })
+
+/** Cities with published entry counts for directory sidebars (SSR). */
+export async function getDirectoryCities() {
+  const counts = await getEntryCounts()
+  return SINALOA_CITIES.map((m) => ({
+    id: m.id,
+    name: m.name,
+    count: counts.byCity[m.id] ?? 0,
+  }))
+}
