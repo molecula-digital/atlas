@@ -6,7 +6,7 @@ import {
   type AtlasEntryType,
 } from '@/config'
 import DirectoryFilter from '@/components/entries/DirectoryFilter'
-import { getDirectoryCities } from '@/lib/entry-counts'
+import { getDirectorySidebarData } from '@/lib/entry-counts'
 import { notFound } from 'next/navigation'
 
 export async function generateStaticParams() {
@@ -45,11 +45,16 @@ export default async function CategoryPage({
   const entryType = URL_CATEGORY_MAP[category] as AtlasEntryType | undefined
   if (!entryType) notFound()
 
-  const cities = await getDirectoryCities()
+  const { cities, typeCounts } = await getDirectorySidebarData()
 
   return (
     <section>
-      <DirectoryFilter cities={cities} initialType={entryType} pageSize={12} />
+      <DirectoryFilter
+        cities={cities}
+        typeCounts={typeCounts}
+        initialType={entryType}
+        pageSize={12}
+      />
     </section>
   )
 }

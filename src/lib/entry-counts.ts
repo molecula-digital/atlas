@@ -72,12 +72,26 @@ export const getEntryCounts = cache(async (): Promise<EntryCounts> => {
   return { byType, byCity, byCityAndType, total }
 })
 
-/** Cities with published entry counts for directory sidebars (SSR). */
-export async function getDirectoryCities() {
+export interface DirectorySidebarData {
+  cities: { id: string; name: string; count: number }[]
+  typeCounts: Record<string, number>
+}
+
+/** Cities and category counts for directory sidebars (SSR). */
+export async function getDirectorySidebarData(): Promise<DirectorySidebarData> {
   const counts = await getEntryCounts()
-  return SINALOA_CITIES.map((m) => ({
-    id: m.id,
-    name: m.name,
-    count: counts.byCity[m.id] ?? 0,
-  }))
+  return {
+    cities: SINALOA_CITIES.map((m) => ({
+      id: m.id,
+      name: m.name,
+      count: counts.byCity[m.id] ?? 0,
+    })),
+    typeCounts: counts.byType,
+  }
+}
+
+/** @deprecated Use getDirectorySidebarData */
+export async function getDirectoryCities() {
+  const { cities } = await getDirectorySidebarData()
+  return cities
 }

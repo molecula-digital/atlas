@@ -33,9 +33,11 @@ import { SectorMultiSelect } from './SectorMultiSelect'
 import { WhatsAppCta } from '@/components/sections/WhatsAppCta'
 import { WHATSAPP_SURFACE } from '@/lib/analytics-events'
 import Link from 'next/link'
+import { formatCappedCount } from '@/lib/format'
 
 interface Props {
   cities: CityInfo[]
+  typeCounts?: Record<string, number>
   initialType?: string
   initialCity?: string
   pageSize?: number
@@ -95,6 +97,7 @@ function FilterSectionTitle({
 
 export default function DirectoryFilter({
   cities,
+  typeCounts = {},
   initialType = '',
   initialCity = '',
   pageSize = 18,
@@ -134,23 +137,25 @@ export default function DirectoryFilter({
               e.preventDefault()
               clearFilters()
             }}
-            className={`w-full flex items-center gap-2.5 py-2 px-3 rounded text-left transition-colors ${
+            className={`w-full flex items-center justify-between py-2 px-3 rounded text-left transition-colors ${
               !activeType && !activeCity ? 'bg-accent/10' : 'hover:bg-elevated'
             }`}
           >
-            <LayoutGrid
-              className={`w-4 h-4 shrink-0 ${
-                !activeType && !activeCity ? 'text-accent' : 'text-muted'
-              }`}
-            />
-            <span
-              className={`text-xs ${
-                !activeType && !activeCity
-                  ? 'text-accent font-medium'
-                  : 'text-primary'
-              }`}
-            >
-              Todos
+            <span className="flex items-center gap-2.5">
+              <LayoutGrid
+                className={`w-4 h-4 shrink-0 ${
+                  !activeType && !activeCity ? 'text-accent' : 'text-muted'
+                }`}
+              />
+              <span
+                className={`text-xs ${
+                  !activeType && !activeCity
+                    ? 'text-accent font-medium'
+                    : 'text-primary'
+                }`}
+              >
+                Todos
+              </span>
             </span>
           </Link>
 
@@ -159,6 +164,7 @@ export default function DirectoryFilter({
               ENTRY_TYPE_ICON_MAP[ENTRY_TYPE_ICONS[type]] || LayoutGrid
             const isActive = activeType === type
             const iconColor = ENTRY_TYPE_COLORS[type as AtlasEntryType]
+            const count = typeCounts[type] ?? 0
             return (
               <a
                 key={type}
@@ -167,17 +173,22 @@ export default function DirectoryFilter({
                   e.preventDefault()
                   selectType(type)
                 }}
-                className={`w-full flex items-center gap-2.5 py-2 px-3 rounded text-left transition-colors ${
+                className={`w-full flex items-center justify-between py-2 px-3 rounded text-left transition-colors ${
                   isActive ? 'bg-accent/10' : 'hover:bg-elevated'
                 }`}
               >
-                <IconComponent className={`w-4 h-4 shrink-0 ${iconColor}`} />
-                <span
-                  className={`text-xs ${
-                    isActive ? 'text-accent font-medium' : 'text-primary'
-                  }`}
-                >
-                  {label}
+                <span className="flex items-center gap-2.5">
+                  <IconComponent className={`w-4 h-4 shrink-0 ${iconColor}`} />
+                  <span
+                    className={`text-xs ${
+                      isActive ? 'text-accent font-medium' : 'text-primary'
+                    }`}
+                  >
+                    {label}
+                  </span>
+                </span>
+                <span className="text-2xs font-mono text-muted">
+                  {formatCappedCount(count)}
                 </span>
               </a>
             )

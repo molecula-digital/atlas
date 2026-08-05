@@ -106,3 +106,9 @@ export function truncateMetadataText(value: string, maxLength: number): string {
 
   return `${slice.slice(0, boundary).trimEnd()}…`
 }
+
+/** Sidebar counts cap at 99 and show "99+" when exceeded. */
+export function formatCappedCount(count: number, cap = 99): string {
+  if (count > cap) return `${cap}+`
+  return String(count)
+}
