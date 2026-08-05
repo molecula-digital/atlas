@@ -13,10 +13,6 @@ export function DirectoryGrid({ entries }: DirectoryGridProps) {
           typeof entry.logo === 'object' && entry.logo !== null
             ? (entry.logo as Media)
             : null
-        const coverImage =
-          typeof entry.coverImage === 'object' && entry.coverImage !== null
-            ? (entry.coverImage as Media)
-            : null
 
         return (
           <div key={entry.id} className="entry-item animate-in h-full">
@@ -26,11 +22,6 @@ export function DirectoryGrid({ entries }: DirectoryGridProps) {
               tagline={entry.tagline ?? undefined}
               entryType={entry.entryType}
               logo={logo && logo.url ? { url: logo.url, alt: logo.alt } : null}
-              coverImage={
-                coverImage && coverImage.url
-                  ? { url: coverImage.url, alt: coverImage.alt }
-                  : null
-              }
               city={entry.city}
               tags={entry.tags ?? undefined}
             />
