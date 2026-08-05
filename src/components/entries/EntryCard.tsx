@@ -13,7 +13,6 @@ interface EntryCardProps {
   logo?: { url: string; alt?: string } | null
   coverImage?: { url: string; alt?: string } | null
   city: string
-  tags?: Array<{ tag: string }> | string[]
   /** Override default directory URL (e.g. user public profiles). */
   href?: string
   /** Hide city row when not applicable. */
@@ -30,15 +29,11 @@ export function EntryCard({
   logo,
   coverImage,
   city,
-  tags,
   href: hrefOverride,
   hideCity = false,
   hideTypeBadge = false,
 }: EntryCardProps) {
   const href = hrefOverride ?? getEntryUrl(entryType, slug)
-  const displayTags = (tags || [])
-    .slice(0, 3)
-    .map((t) => (typeof t === 'string' ? t : t.tag))
   const coverUrl =
     typeof coverImage === 'object' && coverImage?.url
       ? toPublicMediaUrl(coverImage.url)
@@ -118,18 +113,6 @@ export function EntryCard({
             {!hideTypeBadge && (
               <EntryBadge entryType={entryType} className="shrink-0" />
             )}
-          </div>
-        )}
-        {displayTags.length > 0 && (
-          <div className="flex flex-wrap gap-1 mt-auto pt-2">
-            {displayTags.map((tag) => (
-              <span
-                key={tag}
-                className="text-2xs font-mono px-1.5 py-0.5 rounded bg-elevated text-muted"
-              >
-                {tag}
-              </span>
-            ))}
           </div>
         )}
       </div>

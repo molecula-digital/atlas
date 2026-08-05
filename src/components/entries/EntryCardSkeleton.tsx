@@ -6,10 +6,6 @@ export function EntryCardSkeleton() {
         <div className="h-4 w-3/4 bg-elevated rounded" />
         <div className="h-3 w-full bg-elevated rounded" />
         <div className="h-3 w-1/3 bg-elevated rounded mt-2" />
-        <div className="flex gap-1 mt-auto pt-2">
-          <div className="h-4 w-12 bg-elevated rounded" />
-          <div className="h-4 w-16 bg-elevated rounded" />
-        </div>
       </div>
     </div>
   )

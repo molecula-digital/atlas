@@ -49,7 +49,6 @@ export function RandomEntries() {
             entryType={entry.entryType}
             logo={logo && logo.url ? { url: logo.url, alt: logo.alt } : null}
             city={entry.city}
-            tags={entry.tags ?? undefined}
           />
         )
       })}
