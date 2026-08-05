@@ -85,7 +85,7 @@ export default function UpcomingEventsSidebar({
               key={i}
               className="flex items-center gap-3 rounded-lg border border-border p-2.5"
             >
-              <div className="size-12 shrink-0 animate-pulse rounded-md bg-elevated" />
+              <div className="size-16 shrink-0 animate-pulse rounded-md bg-elevated" />
               <div className="flex-1 space-y-2">
                 <div className="h-3.5 w-3/4 animate-pulse rounded bg-elevated" />
                 <div className="h-3 w-1/2 animate-pulse rounded bg-elevated" />
@@ -98,7 +98,7 @@ export default function UpcomingEventsSidebar({
             return (
               <div
                 key={ev.id}
-                className="group relative flex w-full items-start gap-3 rounded-lg border border-border bg-card p-2.5 text-left transition-colors duration-200 hover:border-accent/40 hover:bg-accent/5"
+                className="group relative flex w-full items-center gap-3 rounded-lg border border-border bg-card p-2.5 text-left transition-colors duration-200 hover:border-accent/40 hover:bg-accent/5"
               >
                 {/* Stretched link: covers the card so the whole thing opens the
                     dialog, without nesting the "Registrarse" anchor inside it. */}
