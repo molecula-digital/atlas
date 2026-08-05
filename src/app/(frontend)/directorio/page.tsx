@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import DirectoryFilter from '@/components/entries/DirectoryFilter'
 import { SITE_URL } from '@/config'
-import { getDirectoryCities } from '@/lib/entry-counts'
+import { getDirectorySidebarData } from '@/lib/entry-counts'
 
 export const metadata: Metadata = {
   title: 'Directorio',
@@ -18,11 +18,15 @@ export const metadata: Metadata = {
 }
 
 export default async function DirectoryPage() {
-  const cities = await getDirectoryCities()
+  const { cities, typeCounts } = await getDirectorySidebarData()
 
   return (
     <section>
-      <DirectoryFilter cities={cities} pageSize={12} />
+      <DirectoryFilter
+        cities={cities}
+        typeCounts={typeCounts}
+        pageSize={12}
+      />
     </section>
   )
 }
