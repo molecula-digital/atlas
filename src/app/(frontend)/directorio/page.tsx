@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import DirectoryFilter from '@/components/entries/DirectoryFilter'
-import { SINALOA_CITIES, SITE_URL } from '@/config'
+import { SITE_URL } from '@/config'
+import { getDirectoryCities } from '@/lib/entry-counts'
 
 export const metadata: Metadata = {
   title: 'Directorio',
@@ -16,16 +17,12 @@ export const metadata: Metadata = {
   twitter: { card: 'summary_large_image' },
 }
 
-const staticCities = SINALOA_CITIES.map((m) => ({
-  id: m.id,
-  name: m.name,
-  count: 0,
-}))
+export default async function DirectoryPage() {
+  const cities = await getDirectoryCities()
 
-export default function DirectoryPage() {
   return (
     <section>
-      <DirectoryFilter cities={staticCities} pageSize={12} />
+      <DirectoryFilter cities={cities} pageSize={12} />
     </section>
   )
 }

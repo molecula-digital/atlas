@@ -15,12 +15,6 @@ export interface CityInfo {
   count: number
 }
 
-interface CountsData {
-  byCity: Record<string, number>
-  byType: Record<string, number>
-  total: number
-}
-
 export type SortOption = 'name-asc' | 'name-desc' | 'date-desc' | 'date-asc'
 
 export const DEFAULT_SORT: SortOption = 'date-desc'
@@ -46,8 +40,7 @@ function getSortFromURL(): SortOption {
 }
 
 /**
- * Filter selection, sort, and the city counts behind the directory listing.
- * Deliberately specific to this screen — it is not a generic facet system.
+ * Filter selection and sort for the directory listing.
  */
 export function useDirectoryFilters({
   cities,
@@ -60,19 +53,11 @@ export function useDirectoryFilters({
 }) {
   const [currentSort, setCurrentSort] = useState<SortOption>(DEFAULT_SORT)
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [cityCounts, setCityCounts] = useState<Record<string, number>>({})
 
   // Read after mount: the server render has no window, and seeding from it
   // directly would make the first client render disagree with the HTML.
   useEffect(() => {
     queueMicrotask(() => setCurrentSort(getSortFromURL()))
-  }, [])
-
-  useEffect(() => {
-    fetch('/api/directory/entries/counts')
-      .then((res) => res.json())
-      .then((data: CountsData) => setCityCounts(data.byCity))
-      .catch(console.error)
   }, [])
 
   const navigate = useCallback((type: string, city: string) => {
@@ -143,7 +128,6 @@ export function useDirectoryFilters({
     mobileOpen,
     setMobileOpen,
     sortedCities: cities
-      .map((c) => ({ ...c, count: cityCounts[c.id] ?? c.count }))
       .filter((m) => m.count > 0)
       .sort((a, b) => b.count - a.count),
     apiParams,

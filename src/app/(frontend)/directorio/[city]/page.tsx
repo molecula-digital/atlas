@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
-import { ALL_CITY_IDS, getCityName, SINALOA_CITIES, SITE_URL } from '@/config'
+import { ALL_CITY_IDS, getCityName, SITE_URL } from '@/config'
 import DirectoryFilter from '@/components/entries/DirectoryFilter'
+import { getDirectoryCities } from '@/lib/entry-counts'
 
 export async function generateStaticParams() {
   return ALL_CITY_IDS.filter((id) => id !== 'global').map((city) => ({ city }))
@@ -28,22 +29,17 @@ export async function generateMetadata({
   }
 }
 
-const staticCities = SINALOA_CITIES.map((m) => ({
-  id: m.id,
-  name: m.name,
-  count: 0,
-}))
-
 export default async function CityDirectoryPage({
   params,
 }: {
   params: Promise<{ city: string }>
 }) {
   const { city } = await params
+  const cities = await getDirectoryCities()
 
   return (
     <section>
-      <DirectoryFilter cities={staticCities} initialCity={city} pageSize={12} />
+      <DirectoryFilter cities={cities} initialCity={city} pageSize={12} />
     </section>
   )
 }
