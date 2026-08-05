@@ -42,10 +42,6 @@ function renderEntryItem(
     typeof entry.logo === 'object' && entry.logo !== null
       ? (entry.logo as Media)
       : null
-  const coverImage =
-    typeof entry.coverImage === 'object' && entry.coverImage !== null
-      ? (entry.coverImage as Media)
-      : null
   const isUserProfile = entry.kind === 'user-profile'
 
   return (
@@ -58,11 +54,6 @@ function renderEntryItem(
         logo={
           logo && logo.url
             ? { url: logo.url, alt: logo.alt ?? undefined }
-            : null
-        }
-        coverImage={
-          coverImage && coverImage.url
-            ? { url: coverImage.url, alt: coverImage.alt ?? undefined }
             : null
         }
         city={entry.city}
