@@ -54,7 +54,9 @@ export default function UpcomingEventsSidebar({
     <div className="flex min-w-0 flex-col p-4 md:p-5 lg:col-span-2">
       <div className="mb-4 flex items-start justify-between gap-3">
         <div>
-          <h3 className="font-sans text-sm font-bold text-primary">Próximos</h3>
+          <h3 className="font-mono text-xs uppercase tracking-wider text-muted">
+            Próximos
+          </h3>
           <p className="mt-0.5 font-mono text-2xs text-muted">
             {upcoming.length > 0
               ? `${upcoming.length} evento${upcoming.length === 1 ? '' : 's'}`
@@ -115,7 +117,7 @@ export default function UpcomingEventsSidebar({
 
                 <div className="min-w-0 flex-1">
                   <div className="flex items-start justify-between gap-2">
-                    <span className="line-clamp-2 text-sm font-sans font-semibold text-primary transition-colors group-hover:text-accent">
+                    <span className="line-clamp-2 text-xs font-sans font-semibold text-primary transition-colors group-hover:text-accent">
                       {ev.title}
                     </span>
                     <ArrowRight className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted transition-colors group-hover:text-accent" />
@@ -168,14 +170,14 @@ export default function UpcomingEventsSidebar({
         ) : (
           <div className="flex flex-1 flex-col items-center justify-center space-y-3 rounded-lg border border-dashed border-border bg-elevated/40 p-8 text-center">
             <CalendarDays className="h-10 w-10 text-muted/50" />
-            <p className="font-mono text-sm text-muted">Sin eventos próximos</p>
-            <p className="max-w-xs text-xs text-secondary">
+            <p className="font-mono text-xs text-muted">Sin eventos próximos</p>
+            <p className="max-w-xs text-2xs text-secondary">
               ¿Conoces algún evento tech en Sinaloa? Ayúdanos a mantener el
               calendario actualizado.
             </p>
             <a
               href="mailto:alfonso@molecula.digital?subject=Sugerencia de evento para Tech Atlas"
-              className="inline-flex items-center gap-1.5 font-mono text-xs font-medium text-accent hover:underline"
+              className="inline-flex items-center gap-1.5 font-mono text-2xs font-medium text-accent hover:underline"
             >
               <Mail className="h-3.5 w-3.5" />
               Sugerir un evento
@@ -198,7 +200,7 @@ export default function UpcomingEventsSidebar({
             <ChevronLeft className="h-4 w-4" />
           </button>
 
-          <span className="px-2 font-mono text-xs text-muted">
+          <span className="px-2 font-mono text-2xs text-muted">
             {page + 1} / {totalPages}
           </span>
 

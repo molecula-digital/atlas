@@ -358,41 +358,14 @@ export const ENTRY_TYPE_ICONS: Record<string, string> = Object.fromEntries(
   Object.entries(ENTRY_TYPE_CONFIG).map(([k, v]) => [k, v.icon]),
 )
 
-/** Subtle per-type palette for directory category filters and badges. */
-export const ENTRY_TYPE_COLORS: Record<
-  AtlasEntryType,
-  { icon: string; activeBg: string; activeText: string }
-> = {
-  startup: {
-    icon: 'text-sky-500',
-    activeBg: 'bg-sky-500/10',
-    activeText: 'text-sky-600 dark:text-sky-400',
-  },
-  community: {
-    icon: 'text-teal-500',
-    activeBg: 'bg-teal-500/10',
-    activeText: 'text-teal-600 dark:text-teal-400',
-  },
-  business: {
-    icon: 'text-amber-500',
-    activeBg: 'bg-amber-500/10',
-    activeText: 'text-amber-600 dark:text-amber-400',
-  },
-  consultory: {
-    icon: 'text-cyan-500',
-    activeBg: 'bg-cyan-500/10',
-    activeText: 'text-cyan-600 dark:text-cyan-400',
-  },
-  'research-center': {
-    icon: 'text-emerald-500',
-    activeBg: 'bg-emerald-500/10',
-    activeText: 'text-emerald-600 dark:text-emerald-400',
-  },
-  person: {
-    icon: 'text-orange-500',
-    activeBg: 'bg-orange-500/10',
-    activeText: 'text-orange-600 dark:text-orange-400',
-  },
+/** Subtle per-type icon tint for directory category filters. */
+export const ENTRY_TYPE_COLORS: Record<AtlasEntryType, string> = {
+  startup: 'text-sky-600/65 dark:text-sky-400/55',
+  community: 'text-teal-600/65 dark:text-teal-400/55',
+  business: 'text-amber-600/65 dark:text-amber-400/55',
+  consultory: 'text-cyan-600/65 dark:text-cyan-400/55',
+  'research-center': 'text-emerald-600/65 dark:text-emerald-400/55',
+  person: 'text-orange-600/65 dark:text-orange-400/55',
 }
 
 /** Check whether an entry type is a startup-like organization (startup, business, consultory, research-center) */

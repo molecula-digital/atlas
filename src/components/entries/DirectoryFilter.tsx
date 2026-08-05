@@ -136,7 +136,7 @@ export default function DirectoryFilter({
               }`}
             />
             <span
-              className={`text-sm ${
+              className={`text-xs ${
                 !activeType && !activeCity
                   ? 'text-accent font-medium'
                   : 'text-primary'
@@ -150,7 +150,7 @@ export default function DirectoryFilter({
             const IconComponent =
               ENTRY_TYPE_ICON_MAP[ENTRY_TYPE_ICONS[type]] || LayoutGrid
             const isActive = activeType === type
-            const colors = ENTRY_TYPE_COLORS[type as AtlasEntryType]
+            const iconColor = ENTRY_TYPE_COLORS[type as AtlasEntryType]
             return (
               <a
                 key={type}
@@ -160,15 +160,13 @@ export default function DirectoryFilter({
                   selectType(type)
                 }}
                 className={`w-full flex items-center gap-2.5 py-2 px-3 rounded text-left transition-colors ${
-                  isActive ? colors.activeBg : 'hover:bg-elevated'
+                  isActive ? 'bg-accent/10' : 'hover:bg-elevated'
                 }`}
               >
-                <IconComponent className={`w-4 h-4 shrink-0 ${colors.icon}`} />
+                <IconComponent className={`w-4 h-4 shrink-0 ${iconColor}`} />
                 <span
-                  className={`text-sm ${
-                    isActive
-                      ? `${colors.activeText} font-medium`
-                      : 'text-primary'
+                  className={`text-xs ${
+                    isActive ? 'text-accent font-medium' : 'text-primary'
                   }`}
                 >
                   {label}
@@ -194,7 +192,7 @@ export default function DirectoryFilter({
               }`}
             >
               <span
-                className={`text-sm ${
+                className={`text-xs ${
                   activeCity === mun.id
                     ? 'text-accent font-medium'
                     : 'text-primary'
@@ -202,7 +200,7 @@ export default function DirectoryFilter({
               >
                 {mun.name}
               </span>
-              <span className="text-xs font-mono text-muted">{mun.count}</span>
+              <span className="text-2xs font-mono text-muted">{mun.count}</span>
             </button>
           ))}
         </div>
@@ -228,7 +226,7 @@ export default function DirectoryFilter({
                   className={`w-4 h-4 shrink-0 ${isActive ? 'text-accent' : 'text-muted'}`}
                 />
                 <span
-                  className={`text-sm ${isActive ? 'text-accent font-medium' : 'text-primary'}`}
+                  className={`text-xs ${isActive ? 'text-accent font-medium' : 'text-primary'}`}
                 >
                   {opt.label}
                 </span>
