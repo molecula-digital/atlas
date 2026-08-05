@@ -14,8 +14,8 @@ import { resolveMapEmbedUrl } from '@/lib/maps'
 import { EventDetailsCard } from '@/components/calendar/EventDetailView'
 import { EventDateDisplay } from '@/components/calendar/EventDateDisplay'
 import { OtherEventsSection } from '@/components/calendar/OtherEventsSection'
-import { RegisterEventButton } from '@/components/calendar/RegisterEventButton'
 import { EventExternalLink } from '@/components/calendar/EventExternalLink'
+import { EventSidebarActions } from '@/components/calendar/EventSidebarActions'
 import EventDetailPageClient from './EventDetailPageClient'
 import { LivePreviewRefresh } from '@/components/payload/LivePreviewRefresh'
 
@@ -82,7 +82,6 @@ export default async function EventDetailPage({
     ? await resolveMapEmbedUrl(event.mapsUrl)
     : null
   const showLocationPanel = Boolean(event.location && event.mapsUrl)
-  const showSidebar = showLocationPanel
 
   const allEvents = (await getPublishedEvents(200)).docs.map(
     eventDocToTechEvent,
@@ -148,36 +147,24 @@ export default async function EventDetailPage({
 
       <EventDateDisplay event={event} className="mb-6" />
 
-      <div
-        className={
-          showSidebar
-            ? 'grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_20rem] xl:grid-cols-[minmax(0,1fr)_22rem]'
-            : undefined
-        }
-      >
+      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_20rem] xl:grid-cols-[minmax(0,1fr)_22rem]">
         <div className="min-w-0">
-          <EventDetailPageClient
-            event={event}
-            showLocation={!showLocationPanel}
-            showDetailsInline={!showSidebar}
-            registrationClassName={showSidebar ? 'lg:hidden' : undefined}
-          />
+          <EventDetailPageClient event={event} />
         </div>
 
-        {showSidebar && (
-          <aside className="space-y-4 lg:sticky lg:top-14">
-            <RegisterEventButton
-              event={event}
-              surface={EVENT_SURFACE.detailPage}
-              className="hidden lg:flex"
-            />
+        <aside className="space-y-4 lg:sticky lg:top-14">
+          <EventSidebarActions
+            event={event}
+            showMapsLink={!showLocationPanel}
+          />
 
-            <EventDetailsCard
-              event={event}
-              showLocation={!showLocationPanel}
-              className="p-4"
-            />
+          <EventDetailsCard
+            event={event}
+            showLocation={!showLocationPanel}
+            className="p-4"
+          />
 
+          {showLocationPanel && (
             <div className="overflow-hidden rounded-xl border border-border bg-card/90 shadow-sm">
               <div className="flex items-start gap-3 p-4">
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-accent/20 bg-accent/10 text-accent">
@@ -223,8 +210,8 @@ export default async function EventDetailPage({
                 </EventExternalLink>
               </div>
             </div>
-          </aside>
-        )}
+          )}
+        </aside>
       </div>
 
       <OtherEventsSection events={otherEvents} />
