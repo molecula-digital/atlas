@@ -76,6 +76,7 @@ export function AddToCalendar({
   size = 'md',
   iconOnly = false,
   surface,
+  className,
 }: {
   event: TechEvent
   size?: ButtonSize
@@ -86,6 +87,7 @@ export function AddToCalendar({
    * missing one.
    */
   surface: EventSurface
+  className?: string
 }) {
   const [open, setOpen] = useState(false)
   const calEvent = toCalendarEvent(
@@ -137,7 +139,7 @@ export function AddToCalendar({
 
   const trigger = (
     <DialogTrigger
-      className={buttonVariants({ size })}
+      className={buttonVariants({ size, className })}
       aria-label={iconOnly ? 'Agregar a calendario' : undefined}
     >
       <CalendarPlus size={iconOnly ? 16 : size === 'lg' ? 15 : 13} />

@@ -22,7 +22,6 @@ import {
   Link2,
   Info,
   LayoutList,
-  Zap,
   Clock,
   CircleCheck,
 } from 'lucide-react'
@@ -30,10 +29,7 @@ import type { LucideIcon } from 'lucide-react'
 import type { TechEvent } from '@/lib/events'
 import { getEventPath, isPastEventDate } from '@/lib/events'
 import { SITE_URL } from '@/config'
-import {
-  buttonVariants,
-  type ButtonSize,
-} from '@/components/ui/button-variants'
+import { buttonVariants } from '@/components/ui/button-variants'
 import { Card } from '@/components/ui/Card'
 import ShareButton from '@/components/ui/ShareButton'
 import {
@@ -46,21 +42,16 @@ import EventTypeBadge from './EventTypeBadge'
 import { AddToCalendar } from './AddToCalendar'
 import { EventRichDescription } from './EventRichDescription'
 import { EventDateDisplay } from './EventDateDisplay'
-import { RegisterEventButton } from './RegisterEventButton'
 
 interface EventDetailViewProps {
   event: TechEvent
   variant?: 'modal' | 'page'
   onExpandImage?: () => void
   showLocation?: boolean
-  /** When false on the full page, the details card is rendered in the sidebar instead. */
-  showDetailsInline?: boolean
   /** Show the Luma-style date block (hidden on full page when rendered in the header). */
   showDateDisplay?: boolean
   /** Dismisses the containing dialog, when rendered inside one. */
   onClose?: () => void
-  /** Responsive placement override for the full-page registration ticket. */
-  registrationClassName?: string
 }
 
 /** Titled section card — the entry detail pages use the same chrome. */
@@ -302,10 +293,8 @@ export function EventDetailView({
   variant = 'modal',
   onExpandImage,
   showLocation = true,
-  showDetailsInline = true,
   showDateDisplay = true,
   onClose,
-  registrationClassName,
 }: EventDetailViewProps) {
   const isPage = variant === 'page'
   const hasImage = !!event.image
@@ -385,59 +374,6 @@ export function EventDetailView({
     </>
   )
 
-  const size: ButtonSize = isPage ? 'lg' : 'md'
-  const iconSize = isPage ? 15 : 13
-
-  const secondaryActions = (
-    <>
-      {event.url && (
-        <a
-          href={event.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={() => captureEventLinkClicked(event, 'website', surface)}
-          className={buttonVariants({ size })}
-        >
-          <ExternalLink size={iconSize} />
-          Sitio web
-        </a>
-      )}
-      {event.mapsUrl && (
-        <a
-          href={event.mapsUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={() => captureEventLinkClicked(event, 'maps', surface)}
-          className={buttonVariants({ size })}
-        >
-          <Map size={iconSize} />
-          Google Maps
-        </a>
-      )}
-      <AddToCalendar event={event} size={size} surface={surface} />
-      <ShareButton
-        title={`${event.title} | Tech Atlas`}
-        url={`${SITE_URL}${getEventPath(event.slug)}`}
-        size={size}
-        contentType="event"
-        contentId={event.slug}
-      />
-      {event.meetLink && (
-        <a
-          href={event.meetLink}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={() => captureEventLinkClicked(event, 'meet', surface)}
-          className={buttonVariants({ size })}
-        >
-          <Video size={iconSize} />
-          Meet/Zoom
-        </a>
-      )}
-      {!isPage && <EventFullPageLink slug={event.slug} onClose={onClose} />}
-    </>
-  )
-
   const modalActions = (
     <div
       className="flex flex-wrap items-center gap-1.5 max-sm:w-full max-sm:justify-center"
@@ -481,24 +417,11 @@ export function EventDetailView({
     </div>
   )
 
+  // Full page: content only — register + secondary actions live in the sidebar.
   if (isPage) {
     return (
       <div className="flex flex-col gap-5">
         {hero}
-
-        <RegisterEventButton
-          event={event}
-          surface={surface}
-          className={registrationClassName}
-        />
-
-        <EventDetailCard title="Acciones" Icon={Zap}>
-          <div className="flex flex-wrap gap-2">{secondaryActions}</div>
-        </EventDetailCard>
-
-        {showDetailsInline && (
-          <EventDetailsCard event={event} showLocation={showLocation} />
-        )}
 
         {(event.descriptionRich || event.description) && (
           <EventDetailCard title="Acerca de" Icon={Info}>
