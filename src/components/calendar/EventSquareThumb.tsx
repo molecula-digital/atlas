@@ -13,7 +13,7 @@ export function EventSquareThumb({
   return (
     <div
       className={cn(
-        'relative size-16 shrink-0 overflow-hidden rounded-md bg-elevated',
+        'relative size-[64px] shrink-0 overflow-hidden rounded-md bg-elevated',
         className,
       )}
     >

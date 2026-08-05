@@ -85,7 +85,7 @@ export default function UpcomingEventsSidebar({
               key={i}
               className="flex items-center gap-3 rounded-lg border border-border p-2.5"
             >
-              <div className="size-16 shrink-0 animate-pulse rounded-md bg-elevated" />
+              <div className="size-[64px] shrink-0 animate-pulse rounded-md bg-elevated" />
               <div className="flex-1 space-y-2">
                 <div className="h-3.5 w-3/4 animate-pulse rounded bg-elevated" />
                 <div className="h-3 w-1/2 animate-pulse rounded bg-elevated" />
