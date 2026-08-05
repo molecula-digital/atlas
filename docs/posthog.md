@@ -41,11 +41,12 @@ All carry `event_slug`, `event_title`, `event_organizer`, `event_is_in_person`, 
 ## Directory
 | Event | Fires when | Properties |
 |---|---|---|
-| `directory_filter_applied` | Type/city filter changed or cleared | `filter`, `value`, `cleared` |
+| `directory_filter_applied` | Type/city/sector filter changed or cleared | `filter`, `value`, `cleared` |
 | `directory_sort_changed` | Sort changed | `sort` |
 | `entry_card_clicked` | Entry picked from a home-page listing | `entry_slug`, `entry_name`, `entry_type`, `entry_city`, `surface` |
 | `directory_cta_clicked` | Went to browse the whole directory | `cta` |
 
+**Filter kinds:** `entry_type`, `city`, `sector`, `all` (clear everything). For `sector`, `value` is the toggled sector enum string (e.g. `Fintech`); `cleared` is true when that sector is deselected.
 **Entry surfaces:** `home_featured` (Destacados), `home_latest` (Últimos registros).
 **CTAs:** `hero` ("Explorar directorio"), `featured_header` ("Ver todos").
 
@@ -85,7 +86,7 @@ Abandonment fires on unmount *and* `pagehide`, since tab close and refresh never
 | `whatsapp_community_join_started` | WhatsApp join link followed | `surface` |
 | `media_upload_failed` | Image rejected, at validation or upload | `stage`, `file_type`, `file_size`, + failure props |
 
-**WhatsApp surfaces:** `hero`, `community_section`, `entry_detail`, `news_detail`, `footer`. The community lives on WhatsApp so these links are everywhere; the surface is what says which placement recruits rather than just exists. `footer` is on every page — read it against `$current_url`. All of them go through `WhatsAppJoinLink`, so a new placement has to name itself.
+**WhatsApp surfaces:** `hero`, `community_section`, `community_page`, `entry_detail`, `news_detail`, `directory`, `footer`. The community lives on WhatsApp so these links are everywhere; the surface is what says which placement recruits rather than just exists. `footer` is on every page — read it against `$current_url`. All of them go through `WhatsAppJoinLink`, so a new placement has to name itself.
 
 A failed upload aborts the submission holding it, so without `media_upload_failed` that drop-off looks like someone changing their mind.
 

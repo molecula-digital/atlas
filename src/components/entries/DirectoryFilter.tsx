@@ -6,6 +6,7 @@ import {
   ChevronDown,
   ArrowUpDown,
   MapPin,
+  Layers,
   type LucideIcon,
 } from 'lucide-react'
 import {
@@ -28,6 +29,9 @@ import {
   SORT_OPTIONS,
   type CityInfo,
 } from './useDirectoryFilters'
+import { SectorMultiSelect } from './SectorMultiSelect'
+import { WhatsAppCta } from '@/components/sections/WhatsAppCta'
+import { WHATSAPP_SURFACE } from '@/lib/analytics-events'
 import Link from 'next/link'
 
 interface Props {
@@ -103,6 +107,10 @@ export default function DirectoryFilter({
     setSort,
     mobileOpen,
     setMobileOpen,
+    selectedSectors,
+    setSectors,
+    showSectorFilter,
+    activeFilterCount,
     sortedCities,
     apiParams,
     activeCityName,
@@ -176,6 +184,19 @@ export default function DirectoryFilter({
           })}
         </div>
       </div>
+
+      {showSectorFilter && (
+        <>
+          <hr className="border-border" />
+          <div>
+            <FilterSectionTitle icon={Layers}>Sector</FilterSectionTitle>
+            <SectorMultiSelect
+              selected={selectedSectors}
+              onChange={setSectors}
+            />
+          </div>
+        </>
+      )}
 
       <hr className="border-border" />
 
@@ -260,6 +281,8 @@ export default function DirectoryFilter({
         Explora el directorio del ecosistema tech.
       </p>
 
+      <WhatsAppCta className="mb-8" surface={WHATSAPP_SURFACE.directory} />
+
       {/* Mobile filter panel */}
       <div className="lg:hidden mb-6">
         <button
@@ -272,9 +295,9 @@ export default function DirectoryFilter({
           <span className="flex items-center gap-2">
             <SlidersHorizontal className="w-4 h-4 text-muted" />
             Filtros
-            {(activeType || activeCity) && (
+            {activeFilterCount > 0 && (
               <span className="px-1.5 py-0.5 text-[10px] rounded bg-accent/20 text-accent">
-                1
+                {activeFilterCount}
               </span>
             )}
           </span>
@@ -287,17 +310,19 @@ export default function DirectoryFilter({
 
         <div className={`collapse-grid ${mobileOpen ? 'open' : ''}`}>
           <div className="collapse-content">
-            <Card className="mt-2 p-4 space-y-4">{sidebarContent}</Card>
+            <Card className="mt-2 space-y-4 overflow-visible p-4">
+              {sidebarContent}
+            </Card>
           </div>
         </div>
       </div>
 
       {/* Desktop: sidebar + content grid */}
       <div className="grid items-start gap-6 lg:grid-cols-[240px_1fr]">
-        {/* Desktop sidebar */}
+        {/* Desktop sidebar — overflow visible so the sector dropdown can escape */}
         <Card
           as="aside"
-          className="hidden space-y-4 p-4 lg:sticky lg:top-14 lg:block"
+          className="hidden space-y-4 overflow-visible p-4 lg:sticky lg:top-14 lg:block"
         >
           {sidebarContent}
         </Card>

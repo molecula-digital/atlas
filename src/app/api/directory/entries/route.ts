@@ -10,12 +10,23 @@ import {
   publicProfileToDirectoryItem,
   type PublicProfileSort,
 } from '@/lib/public-profile'
+import { SECTOR_OPTIONS } from '@/config'
 
 const SORT_MAP: Record<string, string> = {
   'name-asc': 'name',
   'name-desc': '-name',
   'date-desc': '-publishDate',
   'date-asc': 'publishDate',
+}
+
+const VALID_SECTORS = new Set(SECTOR_OPTIONS.map((o) => o.value))
+
+function parseSectors(raw: string | null): string[] {
+  if (!raw) return []
+  return raw
+    .split(',')
+    .map((s) => s.trim())
+    .filter((s) => VALID_SECTORS.has(s))
 }
 
 type DirectoryDoc = Record<string, unknown> & {
@@ -58,12 +69,15 @@ export async function GET(request: NextRequest) {
     const sort = SORT_MAP[sortKey] || '-publishDate'
     const entryType = searchParams.get('entryType')
     const city = searchParams.get('city')
+    const sectors = parseSectors(searchParams.get('sector'))
 
     const where: Where = {
       _status: { equals: 'published' },
     }
     if (entryType) where.entryType = { equals: entryType }
     if (city) where.city = { equals: city }
+    if (sectors.length === 1) where.sector = { equals: sectors[0] }
+    else if (sectors.length > 1) where.sector = { in: sectors }
 
     const payload = await getPayloadClient()
 
@@ -72,6 +86,16 @@ export async function GET(request: NextRequest) {
       const conditions = [sql`_status = 'published'`]
       if (entryType) conditions.push(sql`entry_type = ${entryType}`)
       if (city) conditions.push(sql`city = ${city}`)
+      if (sectors.length === 1) {
+        conditions.push(sql`sector = ${sectors[0]}`)
+      } else if (sectors.length > 1) {
+        conditions.push(
+          sql`sector IN (${sql.join(
+            sectors.map((s) => sql`${s}`),
+            sql`, `,
+          )})`,
+        )
+      }
 
       const whereClause = sql.join(conditions, sql` AND `)
 
@@ -109,10 +133,9 @@ export async function GET(request: NextRequest) {
       })
     }
 
-    // /personas: merge Payload person entries with public user profiles (no city filter).
-    // User profiles are independent of directory "person" CMS entries.
-    // If the app.profiles query fails (e.g. pending migration), still return Payload people.
-    if (entryType === 'person' && !city) {
+    // /personas: merge Payload person entries with public user profiles (no city
+    // or sector filter — profiles have neither).
+    if (entryType === 'person' && !city && sectors.length === 0) {
       const profileSort = (
         ['name-asc', 'name-desc', 'date-desc', 'date-asc'].includes(sortKey)
           ? sortKey

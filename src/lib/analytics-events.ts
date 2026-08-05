@@ -28,6 +28,8 @@ export const ANALYTICS_EVENTS = {
   eventExternalLinkClicked: 'event_external_link_clicked',
 
   // Directory browsing.
+  // `directory_filter_applied.filter` is `entry_type` | `city` | `sector` | `all`.
+  // For `sector`, `value` is the toggled sector label (Payload enum string).
   directoryFilterApplied: 'directory_filter_applied',
   directorySortChanged: 'directory_sort_changed',
   entryCardClicked: 'entry_card_clicked',
@@ -111,6 +113,7 @@ export const WHATSAPP_SURFACE = {
   communityPage: 'community_page',
   entryDetail: 'entry_detail',
   newsDetail: 'news_detail',
+  directory: 'directory',
   footer: 'footer',
 } as const
 
