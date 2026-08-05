@@ -51,18 +51,18 @@ function CalendarSkeleton() {
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <div className="h-8 w-8 rounded bg-elevated animate-pulse" />
-        <div className="h-6 w-36 rounded bg-elevated animate-pulse" />
-        <div className="h-8 w-8 rounded bg-elevated animate-pulse" />
+        <div className="h-8 w-8 animate-pulse rounded bg-elevated" />
+        <div className="h-6 w-36 animate-pulse rounded bg-elevated" />
+        <div className="h-8 w-8 animate-pulse rounded bg-elevated" />
       </div>
-      <div className="grid grid-cols-7 gap-1.5">
+      <div className="grid grid-cols-7 gap-1">
         {WEEKDAYS.map((day) => (
-          <div key={day} className="h-4 rounded bg-elevated/60 animate-pulse" />
+          <div key={day} className="h-4 animate-pulse rounded bg-elevated/60" />
         ))}
         {Array.from({ length: 35 }).map((_, i) => (
           <div
             key={i}
-            className="min-h-16 md:min-h-24 rounded-lg bg-elevated/40 animate-pulse"
+            className="min-h-14 animate-pulse rounded-md bg-elevated/40 md:min-h-20"
           />
         ))}
       </div>
@@ -71,8 +71,8 @@ function CalendarSkeleton() {
 }
 
 /**
- * The same calendar is mounted on the home page and on /eventos, so `placement`
- * is what lets analytics tell those two audiences apart.
+ * Month grid + upcoming sidebar. `placement` attributes analytics for which
+ * page the calendar is mounted on.
  */
 export default function EventCalendar({
   placement = 'events_page',
@@ -134,22 +134,22 @@ export default function EventCalendar({
 
   return (
     <div className="grid lg:grid-cols-5">
-      <div className="lg:col-span-3 p-4 md:p-6 border-b lg:border-b-0 lg:border-r border-border bg-elevated/30">
-        <div className="flex items-center justify-between gap-3 mb-5">
+      <div className="border-b border-border bg-background/40 p-4 md:p-5 lg:col-span-3 lg:border-r lg:border-b-0">
+        <div className="mb-4 flex items-center justify-between gap-3">
           <button
             onClick={prevMonth}
             className={buttonVariants({ size: 'icon-md' })}
             aria-label="Mes anterior"
           >
-            <ChevronLeft className="w-4 h-4" />
+            <ChevronLeft className="h-4 w-4" />
           </button>
 
-          <div className="flex items-center gap-2 min-w-0">
-            <p className="text-xs font-mono uppercase tracking-wider text-muted">
-              {year}
-            </p>
-            <h3 className="text-lg md:text-xl font-sans font-bold text-primary truncate">
-              {MONTH_NAMES[month]}
+          <div className="flex min-w-0 items-center gap-2">
+            <h3 className="truncate font-sans text-base font-bold text-primary md:text-lg">
+              {MONTH_NAMES[month]}{' '}
+              <span className="font-mono text-sm font-normal text-muted">
+                {year}
+              </span>
             </h3>
             {!isCurrentMonth && (
               <button
@@ -157,7 +157,7 @@ export default function EventCalendar({
                 className={buttonVariants({ variant: 'accent', size: 'sm' })}
                 aria-label="Saltar a mes actual"
               >
-                <CalendarDays className="w-3 h-3" />
+                <CalendarDays className="h-3 w-3" />
                 Hoy
               </button>
             )}
@@ -168,7 +168,7 @@ export default function EventCalendar({
             className={buttonVariants({ size: 'icon-md' })}
             aria-label="Mes siguiente"
           >
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight className="h-4 w-4" />
           </button>
         </div>
 
@@ -176,12 +176,12 @@ export default function EventCalendar({
           <CalendarSkeleton />
         ) : (
           <>
-            <div className="grid grid-cols-7 gap-1.5 mb-1.5">
+            <div className="mb-1 grid grid-cols-7 gap-1">
               {WEEKDAYS.map((day, i) => (
                 <div
                   key={day}
                   className={cn(
-                    'py-1 text-center text-2xs md:text-xs font-mono font-semibold uppercase tracking-wider',
+                    'py-1 text-center font-mono text-2xs font-semibold uppercase tracking-wider md:text-xs',
                     i >= 5 ? 'text-muted/70' : 'text-muted',
                   )}
                 >
@@ -191,11 +191,11 @@ export default function EventCalendar({
               ))}
             </div>
 
-            <div className="grid grid-cols-7 gap-1.5">
+            <div className="grid grid-cols-7 gap-1">
               {Array.from({ length: startWeekday }).map((_, i) => (
                 <div
                   key={`empty-${i}`}
-                  className="min-h-16 md:min-h-24 rounded-lg bg-background/40"
+                  className="min-h-14 rounded-md md:min-h-20"
                   aria-hidden
                 />
               ))}
@@ -211,46 +211,49 @@ export default function EventCalendar({
                     : 0
                 const dayOfWeek = (startWeekday + i) % 7
                 const isWeekend = dayOfWeek >= 5
+                const hasEvents = dayEvents.length > 0
 
                 return (
                   <div
                     key={day}
                     className={cn(
-                      'min-h-16 md:min-h-24 rounded-lg border p-1 md:p-1.5 flex flex-col transition-colors',
+                      'flex min-h-14 flex-col rounded-md p-1 transition-colors md:min-h-20 md:p-1.5',
                       isToday
-                        ? 'border-accent/50 bg-accent/8 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-accent)_20%,transparent)]'
-                        : dayEvents.length > 0
-                          ? 'border-border bg-card hover:border-accent/30'
+                        ? 'bg-accent/10 ring-1 ring-accent/40'
+                        : hasEvents
+                          ? 'bg-card hover:bg-accent/5'
                           : isWeekend
-                            ? 'border-transparent bg-background/50'
-                            : 'border-transparent bg-card/60',
+                            ? 'bg-transparent'
+                            : 'bg-elevated/30',
                     )}
                   >
                     <span
                       className={cn(
-                        'inline-flex items-center justify-center w-5 h-5 md:w-6 md:h-6 text-2xs md:text-xs font-mono rounded-full self-start',
+                        'inline-flex h-5 w-5 items-center justify-center self-start rounded-full font-mono text-2xs md:h-6 md:w-6 md:text-xs',
                         isToday
-                          ? 'bg-accent text-accent-foreground font-bold'
-                          : 'text-primary',
+                          ? 'bg-accent font-bold text-accent-foreground'
+                          : hasEvents
+                            ? 'font-semibold text-primary'
+                            : 'text-muted',
                       )}
                     >
                       {day}
                     </span>
 
-                    <div className="mt-0.5 md:mt-1 space-y-0.5 flex-1 min-h-0">
-                      {dayEvents.slice(0, MAX_PILLS).map((ev, j) => (
+                    <div className="mt-0.5 min-h-0 flex-1 space-y-0.5 md:mt-1">
+                      {dayEvents.slice(0, MAX_PILLS).map((ev) => (
                         <EventDialog
-                          key={`${j}-${ev.date}-${ev.title}`}
+                          key={ev.id}
                           event={ev}
                           surface={gridSurface}
-                          className="block w-full text-left truncate rounded-sm px-1 py-0.5 text-[9px] md:text-2xs font-mono text-accent bg-accent/10 border-l-2 border-accent hover:bg-accent/15 transition-colors"
+                          className="block w-full truncate rounded-sm border-l-2 border-accent bg-accent/10 px-1 py-0.5 text-left font-mono text-[9px] text-accent transition-colors hover:bg-accent/15 md:text-2xs"
                           title={ev.title}
                         >
                           {ev.title}
                         </EventDialog>
                       ))}
                       {overflow > 0 && (
-                        <span className="block text-[9px] md:text-2xs font-mono text-muted px-1">
+                        <span className="block px-1 font-mono text-[9px] text-muted md:text-2xs">
                           +{overflow} más
                         </span>
                       )}

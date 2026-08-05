@@ -1,4 +1,3 @@
-import { History } from 'lucide-react'
 import { SectionBlock } from '@/components/layout/SectionBlock'
 import { SectionTitle } from '@/components/ui/SectionTitle'
 import { PastEventsTimeline } from '@/components/calendar/PastEventsTimeline'
@@ -17,12 +16,8 @@ export async function PastEventsSection() {
 
   return (
     <SectionBlock id={PAST_EVENTS_ANCHOR}>
-      <div className="space-y-8">
-        <SectionTitle
-          icon={History}
-          align="center"
-          description="Meetups, talleres y conferencias que ya dejaron huella"
-        >
+      <div className="space-y-6">
+        <SectionTitle description="Meetups, talleres y conferencias que ya dejaron huella">
           Lo que ya pasó
         </SectionTitle>
 
