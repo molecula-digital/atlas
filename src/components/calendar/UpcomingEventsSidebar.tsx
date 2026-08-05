@@ -54,9 +54,7 @@ export default function UpcomingEventsSidebar({
     <div className="flex min-w-0 flex-col p-4 md:p-5 lg:col-span-2">
       <div className="mb-4 flex items-start justify-between gap-3">
         <div>
-          <h3 className="font-sans text-sm font-bold text-primary">
-            Próximos
-          </h3>
+          <h3 className="font-sans text-sm font-bold text-primary">Próximos</h3>
           <p className="mt-0.5 font-mono text-2xs text-muted">
             {upcoming.length > 0
               ? `${upcoming.length} evento${upcoming.length === 1 ? '' : 's'}`
