@@ -285,11 +285,11 @@ export default function DirectoryFilter({
       </div>
 
       {/* Desktop: sidebar + content grid */}
-      <div className="grid lg:grid-cols-[240px_1fr] gap-6">
+      <div className="grid items-start gap-6 lg:grid-cols-[240px_1fr]">
         {/* Desktop sidebar */}
         <Card
           as="aside"
-          className="hidden lg:block p-4 h-fit lg:max-h-[calc(100vh-12rem)] lg:overflow-y-auto space-y-4"
+          className="hidden space-y-4 p-4 lg:sticky lg:top-14 lg:block"
         >
           {sidebarContent}
         </Card>
