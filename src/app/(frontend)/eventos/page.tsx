@@ -44,7 +44,7 @@ export default function EventosPage() {
             en Sinaloa
           </>
         }
-        description="Meetups, talleres, hackatones y conferencias. Conecta con la comunidad tecnológica de Sinaloa y no te pierdas ni un solo evento."
+        description="Meetups, talleres, hackatones y conferencias. Explora el mes o salta a un evento desde la lista."
         breadcrumb={[{ label: 'Inicio', href: '/' }, { label: 'Eventos' }]}
       />
       <CalendarSection placement="events_page" />

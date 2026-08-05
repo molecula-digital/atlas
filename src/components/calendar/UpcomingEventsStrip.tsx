@@ -46,9 +46,6 @@ function EventThumbnailCard({ ev }: { ev: TechEvent }) {
             </span>
           </div>
         )}
-        <div className="absolute top-2 left-2">
-          <EventTypeBadge isInPerson={ev.isInPerson} />
-        </div>
       </div>
 
       <div className="flex flex-1 flex-col gap-1.5 p-3">
@@ -69,6 +66,9 @@ function EventThumbnailCard({ ev }: { ev: TechEvent }) {
             <span className="truncate">{ev.location}</span>
           </p>
         )}
+        <div className="mt-auto pt-1">
+          <EventTypeBadge isInPerson={ev.isInPerson} />
+        </div>
       </div>
     </Link>
   )

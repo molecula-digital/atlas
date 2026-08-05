@@ -11,17 +11,17 @@ import {
   Mail,
 } from 'lucide-react'
 import EventTypeBadge from './EventTypeBadge'
+import { EventSquareThumb } from './EventSquareThumb'
 import type { TechEvent } from '@/hooks/useEventsData'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { EventDialog } from './EventDialog'
-import { EventDateBadge } from './EventDateBadge'
-import { selectUpcomingEvents } from '@/lib/events'
+import { formatEventDateBadge, selectUpcomingEvents } from '@/lib/events'
 import {
   captureEventRegistrationStarted,
   type EventSurface,
 } from '@/lib/analytics'
 
-const PAGE_SIZE = 3
+const PAGE_SIZE = 4
 
 export default function UpcomingEventsSidebar({
   events,
@@ -51,15 +51,17 @@ export default function UpcomingEventsSidebar({
   }, [events.length])
 
   return (
-    <div className="lg:col-span-2 p-4 md:p-6 flex flex-col min-w-0">
-      <div className="flex items-start justify-between gap-3 mb-4">
+    <div className="flex min-w-0 flex-col p-4 md:p-5 lg:col-span-2">
+      <div className="mb-4 flex items-start justify-between gap-3">
         <div>
-          <p className="text-2xs font-mono uppercase tracking-wider text-accent mb-1">
-            {'// próximos'}
-          </p>
-          <h3 className="text-lg font-sans font-bold text-primary">
-            Eventos destacados
+          <h3 className="font-sans text-sm font-bold text-primary">
+            Próximos
           </h3>
+          <p className="mt-0.5 font-mono text-2xs text-muted">
+            {upcoming.length > 0
+              ? `${upcoming.length} evento${upcoming.length === 1 ? '' : 's'}`
+              : 'Sin fechas próximas'}
+          </p>
         </div>
         <button
           onClick={refetch}
@@ -67,37 +69,38 @@ export default function UpcomingEventsSidebar({
           className={buttonVariants({
             variant: 'ghost',
             size: 'icon-md',
-            className: 'text-muted shrink-0',
+            className: 'shrink-0 text-muted',
           })}
           aria-label="Actualizar eventos"
           title="Actualizar eventos"
         >
           <RefreshCw
-            className={`w-3.5 h-3.5 ${status === 'loading' ? 'animate-spin' : ''}`}
+            className={`h-3.5 w-3.5 ${status === 'loading' ? 'animate-spin' : ''}`}
           />
         </button>
       </div>
 
-      <div className="space-y-2 flex-1">
+      <div className="flex flex-1 flex-col gap-2">
         {events.length === 0 && (status === 'loading' || status === 'idle') ? (
           Array.from({ length: PAGE_SIZE }).map((_, i) => (
             <div
               key={i}
-              className="rounded-lg border border-border p-3 flex items-center gap-3"
+              className="flex items-center gap-3 rounded-lg border border-border p-2.5"
             >
-              <div className="w-12 h-12 rounded-lg bg-elevated animate-pulse shrink-0" />
+              <div className="size-12 shrink-0 animate-pulse rounded-md bg-elevated" />
               <div className="flex-1 space-y-2">
-                <div className="h-4 w-3/4 rounded bg-elevated animate-pulse" />
-                <div className="h-3 w-1/2 rounded bg-elevated animate-pulse" />
+                <div className="h-3.5 w-3/4 animate-pulse rounded bg-elevated" />
+                <div className="h-3 w-1/2 animate-pulse rounded bg-elevated" />
               </div>
             </div>
           ))
         ) : pageEvents.length > 0 ? (
-          pageEvents.map((ev, i) => {
+          pageEvents.map((ev) => {
+            const { day, month } = formatEventDateBadge(ev.date)
             return (
               <div
-                key={`${i}-${ev.date}-${ev.title}`}
-                className="relative w-full text-left rounded-lg border border-border bg-card p-3 flex items-start gap-3 transition-all duration-200 hover:border-accent/40 hover:bg-accent/5 group"
+                key={ev.id}
+                className="group relative flex w-full items-start gap-3 rounded-lg border border-border bg-card p-2.5 text-left transition-colors duration-200 hover:border-accent/40 hover:bg-accent/5"
               >
                 {/* Stretched link: covers the card so the whole thing opens the
                     dialog, without nesting the "Registrarse" anchor inside it. */}
@@ -105,80 +108,78 @@ export default function UpcomingEventsSidebar({
                   event={ev}
                   surface={surface}
                   onOpen={onEventSelect}
-                  className="absolute inset-0 rounded-lg cursor-pointer"
+                  className="absolute inset-0 cursor-pointer rounded-lg"
                 >
                   <span className="sr-only">Ver detalles: {ev.title}</span>
                 </EventDialog>
 
-                <EventDateBadge date={ev.date} />
+                <EventSquareThumb event={ev} />
 
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start gap-2">
-                    <span className="text-sm font-sans font-semibold text-primary group-hover:text-accent transition-colors line-clamp-2">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="line-clamp-2 text-sm font-sans font-semibold text-primary transition-colors group-hover:text-accent">
                       {ev.title}
                     </span>
-                    <EventTypeBadge isInPerson={ev.isInPerson} />
+                    <ArrowRight className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted transition-colors group-hover:text-accent" />
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5">
+                  <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                    <span className="font-mono text-2xs font-semibold uppercase tracking-wide text-accent">
+                      {day} {month}
+                    </span>
                     {ev.startTime && (
-                      <span className="inline-flex items-center gap-1 text-2xs text-muted font-mono">
-                        <Clock className="w-3 h-3 shrink-0" />
+                      <span className="inline-flex items-center gap-1 font-mono text-2xs text-muted">
+                        <Clock className="h-3 w-3 shrink-0" />
                         {ev.startTime}
-                        {ev.endTime ? `–${ev.endTime}` : ''}
-                      </span>
-                    )}
-                    {ev.location && (
-                      <span className="inline-flex items-center gap-1 text-2xs text-muted font-mono truncate">
-                        <MapPin className="w-3 h-3 shrink-0" />
-                        {ev.location}
                       </span>
                     )}
                   </div>
 
-                  {ev.organizer && (
-                    <p className="text-2xs text-secondary mt-1 truncate">
-                      {ev.organizer}
-                    </p>
+                  {ev.location && (
+                    <span className="mt-1 inline-flex max-w-full items-center gap-1 truncate font-mono text-2xs text-muted">
+                      <MapPin className="h-3 w-3 shrink-0" />
+                      {ev.location}
+                    </span>
                   )}
 
-                  {ev.registerUrl && (
-                    <a
-                      href={ev.registerUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() =>
-                        captureEventRegistrationStarted(ev, surface)
-                      }
-                      className={buttonVariants({
-                        variant: 'accent',
-                        size: 'xs',
-                        className: 'relative z-10 mt-2',
-                      })}
-                    >
-                      <Ticket className="w-3 h-3" />
-                      Registrarse
-                    </a>
-                  )}
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                    <EventTypeBadge isInPerson={ev.isInPerson} />
+                    {ev.registerUrl && (
+                      <a
+                        href={ev.registerUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() =>
+                          captureEventRegistrationStarted(ev, surface)
+                        }
+                        className={buttonVariants({
+                          variant: 'accent',
+                          size: 'xs',
+                          className: 'relative z-10',
+                        })}
+                      >
+                        <Ticket className="h-3 w-3" />
+                        Registrarse
+                      </a>
+                    )}
+                  </div>
                 </div>
-
-                <ArrowRight className="w-4 h-4 shrink-0 mt-1 text-muted group-hover:text-accent transition-colors" />
               </div>
             )
           })
         ) : (
-          <div className="rounded-lg border border-dashed border-border bg-elevated/40 p-8 text-center space-y-3 flex-1 flex flex-col items-center justify-center">
-            <CalendarDays className="w-10 h-10 text-muted/50" />
-            <p className="text-sm text-muted font-mono">Sin eventos próximos</p>
-            <p className="text-xs text-secondary max-w-xs">
+          <div className="flex flex-1 flex-col items-center justify-center space-y-3 rounded-lg border border-dashed border-border bg-elevated/40 p-8 text-center">
+            <CalendarDays className="h-10 w-10 text-muted/50" />
+            <p className="font-mono text-sm text-muted">Sin eventos próximos</p>
+            <p className="max-w-xs text-xs text-secondary">
               ¿Conoces algún evento tech en Sinaloa? Ayúdanos a mantener el
               calendario actualizado.
             </p>
             <a
               href="mailto:alfonso@molecula.digital?subject=Sugerencia de evento para Tech Atlas"
-              className="inline-flex items-center gap-1.5 text-xs font-mono font-medium text-accent hover:underline"
+              className="inline-flex items-center gap-1.5 font-mono text-xs font-medium text-accent hover:underline"
             >
-              <Mail className="w-3.5 h-3.5" />
+              <Mail className="h-3.5 w-3.5" />
               Sugerir un evento
             </a>
           </div>
@@ -187,7 +188,7 @@ export default function UpcomingEventsSidebar({
 
       {totalPages > 1 && (
         <nav
-          className="flex items-center justify-center gap-2 mt-4 pt-4 border-t border-border"
+          className="mt-4 flex items-center justify-center gap-2 border-t border-border pt-4"
           aria-label="Paginación de eventos"
         >
           <button
@@ -196,10 +197,10 @@ export default function UpcomingEventsSidebar({
             className={buttonVariants({ size: 'icon-md' })}
             aria-label="Página anterior"
           >
-            <ChevronLeft className="w-4 h-4" />
+            <ChevronLeft className="h-4 w-4" />
           </button>
 
-          <span className="text-xs font-mono text-muted px-2">
+          <span className="px-2 font-mono text-xs text-muted">
             {page + 1} / {totalPages}
           </span>
 
@@ -209,7 +210,7 @@ export default function UpcomingEventsSidebar({
             className={buttonVariants({ size: 'icon-md' })}
             aria-label="Página siguiente"
           >
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight className="h-4 w-4" />
           </button>
         </nav>
       )}
