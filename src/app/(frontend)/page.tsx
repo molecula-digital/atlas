@@ -7,7 +7,6 @@ import { FAQS, SITE_URL, SITE_DESCRIPTION } from '@/config'
 import { HeroSection } from '@/components/sections/HeroSection'
 import { FeaturedSection } from '@/components/sections/FeaturedSection'
 import MapSection from '@/components/sections/MapSection'
-import { CalendarSection } from '@/components/sections/CalendarSection'
 import { FaqSection } from '@/components/sections/FaqSection'
 import { CommunitySection } from '@/components/sections/CommunitySection'
 import { CombinedCtaSection } from '@/components/sections/CombinedCtaSection'
@@ -100,7 +99,7 @@ export default async function HomePage() {
 
       <HeroSection cityCounts={counts.byCity} typeCounts={counts.byType} />
 
-      <SectionBlock>
+      <SectionBlock id="eventos">
         <UpcomingEventsStrip />
       </SectionBlock>
 
@@ -133,7 +132,6 @@ export default async function HomePage() {
         cityCounts={counts.byCity}
         cityTypeCounts={counts.byCityAndType}
       />
-      <CalendarSection placement="home" />
       <FaqSection />
       <CombinedCtaSection />
     </>

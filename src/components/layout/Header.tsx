@@ -16,7 +16,6 @@ import {
   LayoutDashboard,
 } from 'lucide-react'
 import ThemeToggle from '@/components/ui/ThemeToggle'
-import { GitHubIcon } from '@/components/icons/SocialIcons'
 import { useSession } from '@/lib/auth-client'
 import { ENTRY_TYPE_CONFIG, ENTRY_TYPES } from '@/config'
 import { ENTRY_TYPE_ICON_MAP } from '@/lib/icons'
@@ -139,16 +138,6 @@ export function Header() {
             </div>
 
             <div className="hidden lg:flex items-center gap-0.5">
-              <a
-                href="https://github.com/molecula-digital/atlas"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1 px-2 py-1 font-mono text-[10px] text-secondary transition-colors hover:text-accent"
-                aria-label="Ver Tech Atlas en GitHub"
-              >
-                <GitHubIcon className="w-3 h-3" />
-                GitHub
-              </a>
               <ThemeToggle />
               <Link
                 href="/dashboard"
@@ -256,15 +245,6 @@ export function Header() {
             <Map className="w-5 h-5" />
             Mapa
           </Link>
-          <a
-            href="https://github.com/molecula-digital/atlas"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={MOBILE_LINK}
-          >
-            <GitHubIcon className="w-5 h-5" />
-            GitHub
-          </a>
 
           <div className="pt-4">
             <Link
