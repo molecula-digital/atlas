@@ -5,8 +5,15 @@ import {
   SlidersHorizontal,
   ChevronDown,
   ArrowUpDown,
+  MapPin,
+  type LucideIcon,
 } from 'lucide-react'
-import { ENTRY_TYPE_ICONS, ENTRY_TYPE_LABELS } from '@/config'
+import {
+  ENTRY_TYPE_COLORS,
+  ENTRY_TYPE_ICONS,
+  ENTRY_TYPE_LABELS,
+  type AtlasEntryType,
+} from '@/config'
 import { ENTRY_TYPE_ICON_MAP } from '@/lib/icons'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import { Card } from '@/components/ui/Card'
@@ -57,7 +64,6 @@ function renderEntryItem(
             : null
         }
         city={entry.city}
-        tags={entry.tags ?? undefined}
         href={isUserProfile ? entry.href : undefined}
         hideCity={isUserProfile}
         hideTypeBadge={hideTypeBadge}
@@ -67,6 +73,21 @@ function renderEntryItem(
 }
 
 /* ── DirectoryFilter ── */
+
+function FilterSectionTitle({
+  icon: Icon,
+  children,
+}: {
+  icon: LucideIcon
+  children: React.ReactNode
+}) {
+  return (
+    <h3 className="mb-3 flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-muted">
+      <Icon className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+      {children}
+    </h3>
+  )
+}
 
 export default function DirectoryFilter({
   cities,
@@ -97,9 +118,7 @@ export default function DirectoryFilter({
     <>
       {/* Category filters */}
       <div>
-        <h3 className="font-mono text-xs text-muted uppercase tracking-wider mb-3">
-          Categorías
-        </h3>
+        <FilterSectionTitle icon={LayoutGrid}>Categorías</FilterSectionTitle>
         <div className="space-y-1">
           <Link
             href="/directorio"
@@ -108,9 +127,7 @@ export default function DirectoryFilter({
               clearFilters()
             }}
             className={`w-full flex items-center gap-2.5 py-2 px-3 rounded text-left transition-colors ${
-              !activeType && !activeCity
-                ? 'bg-accent/10 border-l-2 border-accent'
-                : 'hover:bg-elevated'
+              !activeType && !activeCity ? 'bg-accent/10' : 'hover:bg-elevated'
             }`}
           >
             <LayoutGrid
@@ -133,6 +150,7 @@ export default function DirectoryFilter({
             const IconComponent =
               ENTRY_TYPE_ICON_MAP[ENTRY_TYPE_ICONS[type]] || LayoutGrid
             const isActive = activeType === type
+            const colors = ENTRY_TYPE_COLORS[type as AtlasEntryType]
             return (
               <a
                 key={type}
@@ -142,16 +160,16 @@ export default function DirectoryFilter({
                   selectType(type)
                 }}
                 className={`w-full flex items-center gap-2.5 py-2 px-3 rounded text-left transition-colors ${
-                  isActive
-                    ? 'bg-accent/10 border-l-2 border-accent'
-                    : 'hover:bg-elevated'
+                  isActive ? colors.activeBg : 'hover:bg-elevated'
                 }`}
               >
-                <IconComponent
-                  className={`w-4 h-4 shrink-0 ${isActive ? 'text-accent' : 'text-muted'}`}
-                />
+                <IconComponent className={`w-4 h-4 shrink-0 ${colors.icon}`} />
                 <span
-                  className={`text-sm ${isActive ? 'text-accent font-medium' : 'text-primary'}`}
+                  className={`text-sm ${
+                    isActive
+                      ? `${colors.activeText} font-medium`
+                      : 'text-primary'
+                  }`}
                 >
                   {label}
                 </span>
@@ -165,18 +183,14 @@ export default function DirectoryFilter({
 
       {/* City filters */}
       <div>
-        <h3 className="font-mono text-xs text-muted uppercase tracking-wider mb-3">
-          Municipios
-        </h3>
+        <FilterSectionTitle icon={MapPin}>Municipios</FilterSectionTitle>
         <div className="space-y-1">
           {sortedCities.map((mun) => (
             <button
               key={mun.id}
               onClick={() => selectCity(mun.id)}
               className={`w-full flex items-center justify-between py-2 px-3 rounded text-left transition-colors cursor-pointer ${
-                activeCity === mun.id
-                  ? 'bg-accent/10 border-l-2 border-accent'
-                  : 'hover:bg-elevated'
+                activeCity === mun.id ? 'bg-accent/10' : 'hover:bg-elevated'
               }`}
             >
               <span
@@ -198,9 +212,7 @@ export default function DirectoryFilter({
 
       {/* Sort options */}
       <div>
-        <h3 className="font-mono text-xs text-muted uppercase tracking-wider mb-3">
-          Ordenar
-        </h3>
+        <FilterSectionTitle icon={ArrowUpDown}>Ordenar</FilterSectionTitle>
         <div className="space-y-1">
           {SORT_OPTIONS.map((opt) => {
             const isActive = currentSort === opt.value
@@ -209,9 +221,7 @@ export default function DirectoryFilter({
                 key={opt.value}
                 onClick={() => setSort(opt.value)}
                 className={`w-full flex items-center gap-2.5 py-2 px-3 rounded text-left transition-colors cursor-pointer ${
-                  isActive
-                    ? 'bg-accent/10 border-l-2 border-accent'
-                    : 'hover:bg-elevated'
+                  isActive ? 'bg-accent/10' : 'hover:bg-elevated'
                 }`}
               >
                 <ArrowUpDown

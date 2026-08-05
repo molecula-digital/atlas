@@ -246,7 +246,7 @@ export default function EventCalendar({
                           key={ev.id}
                           event={ev}
                           surface={gridSurface}
-                          className="block w-full truncate rounded-sm border-l-2 border-accent bg-accent/10 px-1 py-0.5 text-left font-mono text-[9px] text-accent transition-colors hover:bg-accent/15 md:text-2xs"
+                          className="block w-full truncate rounded-sm bg-accent/10 px-1 py-0.5 text-left font-mono text-[9px] text-accent transition-colors hover:bg-accent/15 md:text-2xs"
                           title={ev.title}
                         >
                           {ev.title}
