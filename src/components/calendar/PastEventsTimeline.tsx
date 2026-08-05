@@ -25,7 +25,7 @@ function TimelineRow({ event }: { event: TechEvent }) {
             'page',
           )
         }
-        className="group flex items-start gap-3 rounded-lg border border-border bg-card/80 p-2.5 text-left transition-colors duration-200 hover:border-accent/30 hover:bg-elevated/50"
+        className="group flex items-center gap-3 rounded-lg border border-border bg-card/80 p-2.5 text-left transition-colors duration-200 hover:border-accent/30 hover:bg-elevated/50"
       >
         <EventSquareThumb event={event} className="opacity-90" />
 

@@ -2,7 +2,7 @@ import Image from 'next/image'
 import type { TechEvent } from '@/lib/events'
 import { cn } from '@/lib/utils'
 
-/** Compact square cover used in calendar sidebars and compact event lists. */
+/** 64×64 square cover used in calendar sidebars and compact event lists. */
 export function EventSquareThumb({
   event,
   className,
@@ -13,7 +13,7 @@ export function EventSquareThumb({
   return (
     <div
       className={cn(
-        'relative size-12 shrink-0 overflow-hidden rounded-md bg-elevated',
+        'relative size-16 shrink-0 overflow-hidden rounded-md bg-elevated',
         className,
       )}
     >
@@ -24,11 +24,11 @@ export function EventSquareThumb({
           aria-hidden
           fill
           className="object-cover"
-          sizes="48px"
+          sizes="64px"
         />
       ) : (
         <div className="flex h-full items-center justify-center bg-gradient-to-br from-accent/20 via-elevated to-card">
-          <span className="text-sm font-mono font-bold text-accent/70">
+          <span className="text-base font-mono font-bold text-accent/70">
             {event.title.charAt(0).toUpperCase()}
           </span>
         </div>
