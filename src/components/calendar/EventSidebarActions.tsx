@@ -1,18 +1,25 @@
 'use client'
 
-import { ExternalLink, Map, Video, Zap, type LucideIcon } from 'lucide-react'
+import { ExternalLink, Link2, Map, Video, type LucideIcon } from 'lucide-react'
 import type { TechEvent } from '@/lib/events'
 import { getEventPath } from '@/lib/events'
 import { SITE_URL } from '@/config'
 import { EVENT_SURFACE } from '@/lib/analytics-events'
-import { buttonVariants } from '@/components/ui/button-variants'
 import { Card } from '@/components/ui/Card'
 import ShareButton from '@/components/ui/ShareButton'
+import { cn } from '@/lib/utils'
 import { AddToCalendar } from './AddToCalendar'
 import { EventExternalLink } from './EventExternalLink'
 import { RegisterEventButton } from './RegisterEventButton'
 
-function ActionsCardTitle({
+/** Quiet icon+label row — matches the entry detail Enlaces / Detalles sidebar. */
+const sidebarActionClass = cn(
+  'inline-flex h-auto w-full items-center justify-start gap-2 rounded-md border-transparent bg-transparent px-0 py-1.5',
+  'font-sans text-xs font-normal text-secondary shadow-none',
+  'hover:border-transparent hover:bg-transparent hover:text-accent',
+)
+
+function SidebarCardTitle({
   Icon,
   children,
 }: {
@@ -29,7 +36,7 @@ function ActionsCardTitle({
 
 /**
  * Register CTA + secondary actions for the event detail sidebar.
- * Keeps every instrumented action in one place so the main column stays content-only.
+ * Acciones uses the same card chrome and quiet rows as Detalles.
  */
 export function EventSidebarActions({
   event,
@@ -40,25 +47,21 @@ export function EventSidebarActions({
   showMapsLink?: boolean
 }) {
   const surface = EVENT_SURFACE.detailPage
-  const actionClass = buttonVariants({
-    size: 'md',
-    className: 'w-full justify-center',
-  })
 
   return (
     <div className="space-y-4">
       <RegisterEventButton event={event} surface={surface} />
 
       <Card className="p-4">
-        <ActionsCardTitle Icon={Zap}>Acciones</ActionsCardTitle>
-        <div className="flex flex-col gap-2">
+        <SidebarCardTitle Icon={Link2}>Acciones</SidebarCardTitle>
+        <div className="space-y-2">
           <EventExternalLink
             event={event}
             linkType="website"
             surface={surface}
-            className={actionClass}
+            className={sidebarActionClass}
           >
-            <ExternalLink size={14} />
+            <ExternalLink className="h-4 w-4 shrink-0" />
             Sitio web
           </EventExternalLink>
 
@@ -67,9 +70,9 @@ export function EventSidebarActions({
               event={event}
               linkType="maps"
               surface={surface}
-              className={actionClass}
+              className={sidebarActionClass}
             >
-              <Map size={14} />
+              <Map className="h-4 w-4 shrink-0" />
               Google Maps
             </EventExternalLink>
           )}
@@ -78,14 +81,14 @@ export function EventSidebarActions({
             event={event}
             size="md"
             surface={surface}
-            className="w-full justify-center"
+            className={sidebarActionClass}
           />
 
           <ShareButton
             title={`${event.title} | Tech Atlas`}
             url={`${SITE_URL}${getEventPath(event.slug)}`}
             size="md"
-            className="w-full justify-center"
+            className={sidebarActionClass}
             contentType="event"
             contentId={event.slug}
           />
@@ -94,9 +97,9 @@ export function EventSidebarActions({
             event={event}
             linkType="meet"
             surface={surface}
-            className={actionClass}
+            className={sidebarActionClass}
           >
-            <Video size={14} />
+            <Video className="h-4 w-4 shrink-0" />
             Meet/Zoom
           </EventExternalLink>
         </div>
