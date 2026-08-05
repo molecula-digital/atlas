@@ -1,0 +1,53 @@
+import {
+  Globe,
+  Smartphone,
+  Cloud,
+  Landmark,
+  GraduationCap,
+  HeartPulse,
+  Sprout,
+  ShoppingCart,
+  Brain,
+  Shield,
+  Cpu,
+  Megaphone,
+  Scale,
+  Truck,
+  Gamepad2,
+  Hexagon,
+  Server,
+  ChartColumn,
+  Headphones,
+  Workflow,
+  CircleDot,
+  type LucideIcon,
+} from 'lucide-react'
+import { SECTOR_OPTIONS } from '@/config'
+
+/** Lucide icon per Payload `sector` value — used in the directory sector filter. */
+export const SECTOR_ICON_MAP: Record<
+  (typeof SECTOR_OPTIONS)[number]['value'],
+  LucideIcon
+> = {
+  'Desarrollo Web': Globe,
+  'Desarrollo Mobile': Smartphone,
+  SaaS: Cloud,
+  Fintech: Landmark,
+  Edtech: GraduationCap,
+  HealthTech: HeartPulse,
+  AgriTech: Sprout,
+  'E-commerce': ShoppingCart,
+  'IA / Machine Learning': Brain,
+  Ciberseguridad: Shield,
+  IoT: Cpu,
+  MarTech: Megaphone,
+  LegalTech: Scale,
+  Logística: Truck,
+  Gaming: Gamepad2,
+  'Blockchain / Web3': Hexagon,
+  'Cloud / Infraestructura': Server,
+  'Data & Analytics': ChartColumn,
+  'Consultoría IT': Headphones,
+  Automatización: Workflow,
+  Otro: CircleDot,
+}
