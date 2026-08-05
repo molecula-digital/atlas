@@ -1,7 +1,10 @@
 import type { Metadata } from 'next'
 import { ALL_CITY_IDS, getCityName, SITE_URL } from '@/config'
 import DirectoryFilter from '@/components/entries/DirectoryFilter'
-import { getDirectoryCities } from '@/lib/entry-counts'
+import {
+  getDirectoryCities,
+  getDirectoryTypeCounts,
+} from '@/lib/entry-counts'
 
 export async function generateStaticParams() {
   return ALL_CITY_IDS.filter((id) => id !== 'global').map((city) => ({ city }))
@@ -35,11 +38,19 @@ export default async function CityDirectoryPage({
   params: Promise<{ city: string }>
 }) {
   const { city } = await params
-  const cities = await getDirectoryCities()
+  const [cities, typeCounts] = await Promise.all([
+    getDirectoryCities(),
+    getDirectoryTypeCounts(),
+  ])
 
   return (
     <section>
-      <DirectoryFilter cities={cities} initialCity={city} pageSize={12} />
+      <DirectoryFilter
+        cities={cities}
+        typeCounts={typeCounts}
+        initialCity={city}
+        pageSize={12}
+      />
     </section>
   )
 }

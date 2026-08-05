@@ -81,3 +81,9 @@ export async function getDirectoryCities() {
     count: counts.byCity[m.id] ?? 0,
   }))
 }
+
+/** Per-type published entry counts for directory category filters (SSR). */
+export async function getDirectoryTypeCounts() {
+  const counts = await getEntryCounts()
+  return counts.byType
+}

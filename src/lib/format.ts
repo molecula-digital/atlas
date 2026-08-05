@@ -11,6 +11,11 @@ export function formatDateEs(isoDate: string): string {
   })
 }
 
+/** Directory sidebar count badge: show raw count up to 99, then "+99". */
+export function formatSidebarCount(count: number): string {
+  return count > 99 ? '+99' : String(count)
+}
+
 /**
  * Extract URL from a Payload media/upload field (which can be `number | { url: string } | null`).
  * Rewrites legacy R2 / media hosts to the CDN.
