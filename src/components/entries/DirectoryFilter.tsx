@@ -127,9 +127,7 @@ export default function DirectoryFilter({
               clearFilters()
             }}
             className={`w-full flex items-center gap-2.5 py-2 px-3 rounded text-left transition-colors ${
-              !activeType && !activeCity
-                ? 'bg-accent/10'
-                : 'hover:bg-elevated'
+              !activeType && !activeCity ? 'bg-accent/10' : 'hover:bg-elevated'
             }`}
           >
             <LayoutGrid
@@ -165,9 +163,7 @@ export default function DirectoryFilter({
                   isActive ? colors.activeBg : 'hover:bg-elevated'
                 }`}
               >
-                <IconComponent
-                  className={`w-4 h-4 shrink-0 ${colors.icon}`}
-                />
+                <IconComponent className={`w-4 h-4 shrink-0 ${colors.icon}`} />
                 <span
                   className={`text-sm ${
                     isActive
