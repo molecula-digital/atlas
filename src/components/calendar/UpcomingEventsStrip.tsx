@@ -2,7 +2,8 @@
 
 import { useMemo } from 'react'
 import Link from 'next/link'
-import { CalendarDays, MapPin, ArrowRight, ArrowUpRight } from 'lucide-react'
+import Image from 'next/image'
+import { CalendarDays, MapPin, ArrowRight } from 'lucide-react'
 import AutoScroll from 'embla-carousel-auto-scroll'
 import {
   Carousel,
@@ -11,67 +12,73 @@ import {
   CarouselPrevious,
   CarouselNext,
 } from '@/components/ui/Carousel'
+import { SectionTitle } from '@/components/ui/SectionTitle'
 import { useEventsData } from '@/hooks/useEventsData'
 import type { TechEvent } from '@/hooks/useEventsData'
 import { getEventPath, selectUpcomingEvents } from '@/lib/events'
 import { EVENT_SURFACE, captureEventCardClicked } from '@/lib/analytics'
-import { EventDateBadge } from './EventDateBadge'
 import EventTypeBadge from './EventTypeBadge'
 
-function EventCard({ ev }: { ev: TechEvent }) {
+const UPCOMING_LIMIT = 6
+
+function EventThumbnailCard({ ev }: { ev: TechEvent }) {
   return (
-    <a
+    <Link
       href={getEventPath(ev.slug)}
-      target="_blank"
-      rel="noopener noreferrer"
       onClick={() =>
         captureEventCardClicked(ev, EVENT_SURFACE.homeStrip, 'page')
       }
-      className="w-full h-full bg-card border border-border rounded-lg p-3 flex items-center gap-3 text-left transition-all duration-200 hover:border-accent/40 hover:shadow-sm cursor-pointer group"
+      className="group flex h-full min-w-0 flex-col overflow-hidden rounded-lg border border-border bg-card transition-colors hover:border-accent/40"
     >
-      <EventDateBadge date={ev.date} />
-
-      {/* Info */}
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-sans font-semibold text-primary group-hover:text-accent transition-colors truncate">
-            {ev.title}
-          </span>
-          <span className="shrink-0">
-            <EventTypeBadge isInPerson={ev.isInPerson} />
-          </span>
-        </div>
-        <div className="flex items-center gap-2 mt-0.5 overflow-hidden">
-          {ev.organizer && (
-            <span className="text-xs font-mono text-muted truncate min-w-0">
-              {ev.organizer}
+      <div className="relative h-28 shrink-0 overflow-hidden bg-elevated">
+        {ev.image ? (
+          <Image
+            src={ev.image}
+            alt={ev.title}
+            fill
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            sizes="(max-width: 640px) 85vw, (max-width: 1024px) 50vw, 33vw"
+          />
+        ) : (
+          <div className="flex h-full items-center justify-center bg-gradient-to-br from-accent/20 via-elevated to-card">
+            <span className="text-3xl font-mono font-bold text-accent/70">
+              {ev.title.charAt(0).toUpperCase()}
             </span>
+          </div>
+        )}
+        <div className="absolute top-2 left-2">
+          <EventTypeBadge isInPerson={ev.isInPerson} />
+        </div>
+      </div>
+
+      <div className="flex flex-1 flex-col gap-1.5 p-3">
+        <h3 className="line-clamp-2 text-sm font-semibold text-primary transition-colors group-hover:text-accent">
+          {ev.title}
+        </h3>
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs font-mono text-muted">
+          {ev.organizer && (
+            <span className="truncate max-w-full">{ev.organizer}</span>
           )}
           {ev.startTime && (
-            <span className="text-xs font-mono text-muted shrink-0 whitespace-nowrap">
-              · {ev.startTime}
-            </span>
+            <span className="shrink-0 whitespace-nowrap">· {ev.startTime}</span>
           )}
         </div>
         {ev.location && (
-          <span className="inline-flex items-center gap-1 text-2xs font-mono text-muted mt-0.5 truncate max-w-full">
-            <MapPin className="w-2.5 h-2.5 shrink-0" />
-            {ev.location}
-          </span>
+          <p className="flex min-w-0 items-center gap-1 text-2xs font-mono text-muted">
+            <MapPin className="h-3 w-3 shrink-0" />
+            <span className="truncate">{ev.location}</span>
+          </p>
         )}
       </div>
-
-      {/* Opens in a new tab */}
-      <ArrowUpRight className="w-4 h-4 text-muted group-hover:text-accent transition-colors shrink-0" />
-    </a>
+    </Link>
   )
 }
 
 function SkeletonCard() {
   return (
-    <div className="bg-card border border-border rounded-lg p-3 flex items-center gap-3">
-      <div className="w-12 h-12 rounded-lg bg-elevated animate-pulse shrink-0" />
-      <div className="flex-1 space-y-2">
+    <div className="overflow-hidden rounded-lg border border-border bg-card">
+      <div className="h-28 bg-elevated animate-pulse" />
+      <div className="space-y-2 p-3">
         <div className="h-4 w-3/4 rounded bg-elevated animate-pulse" />
         <div className="h-3 w-1/2 rounded bg-elevated animate-pulse" />
       </div>
@@ -94,7 +101,10 @@ export default function UpcomingEventsStrip() {
   )
 
   const todayStr = new Date().toISOString().slice(0, 10)
-  const upcoming = selectUpcomingEvents(events, todayStr).slice(0, 3)
+  const upcoming = selectUpcomingEvents(events, todayStr).slice(
+    0,
+    UPCOMING_LIMIT,
+  )
 
   const isLoading =
     (status === 'loading' || status === 'idle') && events.length === 0
@@ -106,36 +116,35 @@ export default function UpcomingEventsStrip() {
         key: `skeleton-${i}`,
         skeleton: true as const,
       }))
-    : upcoming.map((ev, i) => ({
-        key: `${i}-${ev.date}-${ev.title}`,
+    : upcoming.map((ev) => ({
+        key: ev.id,
         skeleton: false as const,
         ev,
       }))
 
   return (
-    <div>
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <CalendarDays className="w-4 h-4 text-accent" />
-          <h2 className="text-sm font-mono font-semibold text-muted tracking-wide uppercase">
-            Próximos eventos
-          </h2>
-        </div>
+    <div className="space-y-6">
+      <div className="flex items-start justify-between gap-4">
+        <SectionTitle
+          icon={CalendarDays}
+          description="Meetups, talleres y conferencias en el ecosistema tech de Sinaloa."
+        >
+          Próximos eventos
+        </SectionTitle>
         <Link
           href="/eventos"
-          className="inline-flex items-center gap-1 text-xs font-mono font-medium text-accent hover:underline"
+          className="hidden shrink-0 items-center gap-1 pt-1 text-sm font-mono text-accent hover:underline sm:inline-flex"
         >
           Ver calendario
-          <ArrowRight className="w-3 h-3" />
+          <ArrowRight className="h-4 w-4" />
         </Link>
       </div>
 
       {/* Mobile carousel */}
       <div className="sm:hidden">
         <Carousel
-          opts={{ align: 'start', loop: true }}
-          plugins={plugins}
+          opts={{ align: 'start', loop: items.length > 1 }}
+          plugins={items.length > 1 ? plugins : undefined}
           className="w-full"
         >
           <CarouselContent className="-ml-3">
@@ -144,30 +153,45 @@ export default function UpcomingEventsStrip() {
                 key={item.key}
                 className={`pl-3 ${items.length === 1 ? 'basis-full' : 'basis-[85%]'}`}
               >
-                {item.skeleton ? <SkeletonCard /> : <EventCard ev={item.ev} />}
+                {item.skeleton ? (
+                  <SkeletonCard />
+                ) : (
+                  <EventThumbnailCard ev={item.ev} />
+                )}
               </CarouselItem>
             ))}
           </CarouselContent>
-          <div className="flex items-center justify-center gap-2 mt-4">
-            <CarouselPrevious
-              className="static translate-y-0 min-h-11 min-w-11"
-              size="icon-sm"
-            />
-            <CarouselNext
-              className="static translate-y-0 min-h-11 min-w-11"
-              size="icon-sm"
-            />
-          </div>
+          {items.length > 1 && (
+            <div className="mt-4 flex items-center justify-center gap-2">
+              <CarouselPrevious
+                className="static min-h-11 min-w-11 translate-y-0"
+                size="icon-sm"
+              />
+              <CarouselNext
+                className="static min-h-11 min-w-11 translate-y-0"
+                size="icon-sm"
+              />
+            </div>
+          )}
         </Carousel>
+        <p className="mt-4 text-center sm:hidden">
+          <Link
+            href="/eventos"
+            className="inline-flex items-center gap-1 text-xs font-mono text-accent hover:underline"
+          >
+            Ver calendario
+            <ArrowRight className="h-3 w-3" />
+          </Link>
+        </p>
       </div>
 
       {/* Desktop grid */}
-      <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-3">
+      <div className="hidden gap-4 sm:grid sm:grid-cols-2 lg:grid-cols-3">
         {items.map((item) =>
           item.skeleton ? (
             <SkeletonCard key={item.key} />
           ) : (
-            <EventCard key={item.key} ev={item.ev} />
+            <EventThumbnailCard key={item.key} ev={item.ev} />
           ),
         )}
       </div>
