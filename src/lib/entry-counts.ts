@@ -75,6 +75,7 @@ export const getEntryCounts = cache(async (): Promise<EntryCounts> => {
 export interface DirectorySidebarData {
   cities: { id: string; name: string; count: number }[]
   typeCounts: Record<string, number>
+  total: number
 }
 
 /** Cities and category counts for directory sidebars (SSR). */
@@ -87,6 +88,7 @@ export async function getDirectorySidebarData(): Promise<DirectorySidebarData> {
       count: counts.byCity[m.id] ?? 0,
     })),
     typeCounts: counts.byType,
+    total: counts.total,
   }
 }
 

@@ -45,13 +45,14 @@ export default async function CategoryPage({
   const entryType = URL_CATEGORY_MAP[category] as AtlasEntryType | undefined
   if (!entryType) notFound()
 
-  const { cities, typeCounts } = await getDirectorySidebarData()
+  const { cities, typeCounts, total } = await getDirectorySidebarData()
 
   return (
     <section>
       <DirectoryFilter
         cities={cities}
         typeCounts={typeCounts}
+        totalCount={total}
         initialType={entryType}
         pageSize={12}
       />

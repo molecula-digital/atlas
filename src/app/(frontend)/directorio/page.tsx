@@ -18,11 +18,16 @@ export const metadata: Metadata = {
 }
 
 export default async function DirectoryPage() {
-  const { cities, typeCounts } = await getDirectorySidebarData()
+  const { cities, typeCounts, total } = await getDirectorySidebarData()
 
   return (
     <section>
-      <DirectoryFilter cities={cities} typeCounts={typeCounts} pageSize={12} />
+      <DirectoryFilter
+        cities={cities}
+        typeCounts={typeCounts}
+        totalCount={total}
+        pageSize={12}
+      />
     </section>
   )
 }
