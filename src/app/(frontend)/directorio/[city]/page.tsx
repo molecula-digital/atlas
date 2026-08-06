@@ -35,13 +35,14 @@ export default async function CityDirectoryPage({
   params: Promise<{ city: string }>
 }) {
   const { city } = await params
-  const { cities, typeCounts } = await getDirectorySidebarData()
+  const { cities, typeCounts, total } = await getDirectorySidebarData()
 
   return (
     <section>
       <DirectoryFilter
         cities={cities}
         typeCounts={typeCounts}
+        totalCount={total}
         initialCity={city}
         pageSize={12}
       />

@@ -38,6 +38,7 @@ import { formatCappedCount } from '@/lib/format'
 interface Props {
   cities: CityInfo[]
   typeCounts?: Record<string, number>
+  totalCount?: number
   initialType?: string
   initialCity?: string
   pageSize?: number
@@ -98,6 +99,7 @@ function FilterSectionTitle({
 export default function DirectoryFilter({
   cities,
   typeCounts = {},
+  totalCount = 0,
   initialType = '',
   initialCity = '',
   pageSize = 18,
@@ -157,6 +159,7 @@ export default function DirectoryFilter({
                 Todos
               </span>
             </span>
+            <span className="text-2xs font-mono text-muted">{totalCount}</span>
           </Link>
 
           {Object.entries(ENTRY_TYPE_LABELS).map(([type, label]) => {
