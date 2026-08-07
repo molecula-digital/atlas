@@ -100,7 +100,7 @@ Ver [`docs/posthog.md`](docs/posthog.md) para el detalle de que se registra y po
 Los eventos publicos de uno o mas calendarios de [Luma](https://luma.com) se pueden importar automaticamente a la coleccion **Eventos** de Payload.
 
 1. En el admin (`/admin`), abre **Integraciones → Calendarios Luma**
-2. El calendario **Gina** (`cal-Pf2My2TlVNz1N89`) se crea con la migracion; agrega mas filas para conectar otros calendarios
+2. La migracion siembra **Gina** (`cal-Pf2My2TlVNz1N89`), **La Cripto Plebada** (`cal-JMmiSzKO7KGGF5R`) y **Cursor Culiacan, Mexico** (`cal-FxFii0ovO9ZQUJg`); agrega mas filas para conectar otros calendarios
 3. Configura `CRON_SECRET` (o `LUMA_SYNC_SECRET`) y llama `GET/POST /api/cron/luma-sync` con `Authorization: Bearer …`
 4. En Vercel, el cron de `vercel.json` corre cada 6 horas; tambien puedes forzar sync de un calendario con `POST /api/luma-calendars/:id/sync` (sesion admin)
 

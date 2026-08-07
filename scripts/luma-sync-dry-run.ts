@@ -1,16 +1,23 @@
 import { listAllCalendarItems, getEventDetail } from '../src/lib/luma/client'
 import { mapLumaEventToPayload } from '../src/lib/luma/map'
 
-async function main() {
-  const calendarId = 'cal-Pf2My2TlVNz1N89'
+const SEEDED_CALENDARS = [
+  { name: 'Gina', calendarId: 'cal-Pf2My2TlVNz1N89' },
+  { name: 'La Cripto Plebada', calendarId: 'cal-JMmiSzKO7KGGF5R' },
+  { name: 'Cursor Culiacan, Mexico', calendarId: 'cal-FxFii0ovO9ZQUJg' },
+]
+
+async function dryRunCalendar(calendarId: string, name: string) {
   const entries = await listAllCalendarItems({
     calendarId,
     period: 'past',
     maxPages: 1,
   })
-  console.log('entries', entries.length)
+  console.log(
+    `\n=== ${name} (${calendarId}) — ${entries.length} past entries ===`,
+  )
 
-  for (const entry of entries) {
+  for (const entry of entries.slice(0, 3)) {
     const detail = await getEventDetail(entry.event.api_id)
     if ((!detail.hosts || !detail.hosts.length) && entry.hosts) {
       detail.hosts = entry.hosts
@@ -40,6 +47,12 @@ async function main() {
         2,
       ),
     )
+  }
+}
+
+async function main() {
+  for (const calendar of SEEDED_CALENDARS) {
+    await dryRunCalendar(calendar.calendarId, calendar.name)
   }
 }
 

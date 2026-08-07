@@ -4,7 +4,7 @@ import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-postgres'
  * Luma multi-calendar sync:
  * - luma-calendars collection (multiple public calendars)
  * - events external sync fields + external cover URL
- * - seed Gina calendar (cal-Pf2My2TlVNz1N89)
+ * - seed Gina, Criptoplebada, and Cursor Culiacán calendars
  */
 export async function up({ db }: MigrateUpArgs): Promise<void> {
   await db.execute(sql`
@@ -70,7 +70,7 @@ export async function up({ db }: MigrateUpArgs): Promise<void> {
       ON "payload"."payload_locked_documents_rels"
       USING btree ("luma_calendars_id");
 
-    -- Seed the Gina community calendar linked in the product request.
+    -- Seed community calendars linked in the product request.
     INSERT INTO "payload"."luma_calendars" (
       "name",
       "calendar_id",
@@ -79,14 +79,31 @@ export async function up({ db }: MigrateUpArgs): Promise<void> {
       "auto_publish",
       "notes"
     )
-    VALUES (
-      'Gina',
-      'cal-Pf2My2TlVNz1N89',
-      true,
-      true,
-      true,
-      'https://luma.com/calendar/cal-Pf2My2TlVNz1N89'
-    )
+    VALUES
+      (
+        'Gina',
+        'cal-Pf2My2TlVNz1N89',
+        true,
+        true,
+        true,
+        'https://luma.com/calendar/cal-Pf2My2TlVNz1N89'
+      ),
+      (
+        'La Cripto Plebada',
+        'cal-JMmiSzKO7KGGF5R',
+        true,
+        true,
+        true,
+        'https://luma.com/user/Criptoplebada (personal calendar)'
+      ),
+      (
+        'Cursor Culiacan, Mexico',
+        'cal-FxFii0ovO9ZQUJg',
+        true,
+        true,
+        true,
+        'https://luma.com/cursor-culiacan-mexico'
+      )
     ON CONFLICT ("calendar_id") DO NOTHING;
   `)
 }
