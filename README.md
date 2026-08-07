@@ -101,10 +101,18 @@ Los eventos publicos de uno o mas calendarios de [Luma](https://luma.com) se pue
 
 1. En el admin (`/admin`), abre **Integraciones → Calendarios Luma**
 2. La migracion siembra **Gina** (`cal-Pf2My2TlVNz1N89`), **La Cripto Plebada** (`cal-JMmiSzKO7KGGF5R`) y **Cursor Culiacan, Mexico** (`cal-FxFii0ovO9ZQUJg`); agrega mas filas para conectar otros calendarios
-3. Configura `CRON_SECRET` (o `LUMA_SYNC_SECRET`) y llama `GET/POST /api/cron/luma-sync` con `Authorization: Bearer …`
-4. En Vercel, el cron de `vercel.json` corre cada 6 horas; tambien puedes forzar sync de un calendario con `POST /api/luma-calendars/:id/sync` (sesion admin)
+3. Configura `CRON_SECRET` (o `LUMA_SYNC_SECRET`) en Coolify
+4. Programa un Scheduled Task / cron en el VPS que pegue al endpoint (cada 6h esta bien):
 
-La sync usa el feed publico de Luma (no requiere Luma Plus / API key). Los eventos sincronizados guardan `externalId` / `externalCalendarId`; marca **Bloquear sync** en un evento para que no se sobrescriba.
+```bash
+curl -fsS -X POST \
+  -H "Authorization: Bearer $CRON_SECRET" \
+  "https://atlas-sinaloa.tech/api/cron/luma-sync"
+```
+
+Tambien puedes forzar un calendario con `POST /api/luma-calendars/:id/sync` (sesion admin).
+
+La sync corre en **runtime** contra la app desplegada (no en el build ni en paginas estaticas). Usa el feed publico de Luma (no requiere Luma Plus / API key). Los eventos sincronizados guardan `externalId` / `externalCalendarId`; marca **Bloquear sync** en un evento para que no se sobrescriba.
 
 ## Docker
 

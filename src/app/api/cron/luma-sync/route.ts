@@ -16,7 +16,7 @@ function isAuthorized(request: Request): boolean {
   const auth = request.headers.get('authorization')
   if (auth === `Bearer ${expected}`) return true
 
-  // Allow either secret via dedicated header for non-Vercel schedulers.
+  // Dedicated header for Coolify scheduled tasks / host crontabs.
   const headerSecret = request.headers.get('x-luma-sync-secret')
   if (headerSecret && headerSecret === expected) return true
   if (lumaSecret && headerSecret === lumaSecret) return true
@@ -27,8 +27,13 @@ function isAuthorized(request: Request): boolean {
 /**
  * Sync all enabled Luma calendars into Payload events.
  *
- * Auth: `Authorization: Bearer $CRON_SECRET` (Vercel Cron) or
- * `x-luma-sync-secret: $LUMA_SYNC_SECRET`.
+ * Auth (Coolify / host cron / manual):
+ * - `Authorization: Bearer $CRON_SECRET` (or `$LUMA_SYNC_SECRET`)
+ * - `x-luma-sync-secret: $LUMA_SYNC_SECRET` (or `$CRON_SECRET`)
+ *
+ * Example (every 6h on the VPS / Coolify Scheduled Task):
+ *   curl -fsS -X POST -H "Authorization: Bearer $CRON_SECRET" \
+ *     "$NEXT_PUBLIC_SITE_URL/api/cron/luma-sync"
  */
 export async function GET(request: Request) {
   if (!isAuthorized(request)) {
