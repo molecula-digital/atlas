@@ -22,6 +22,16 @@ export interface TechEvent {
   meetLink: string
   image?: string | null
   registerUrl: string
+  /** Set when the event was imported from a Luma calendar. */
+  externalSource?: 'luma' | null
+  externalCalendarId?: string | null
+  externalCalendarName?: string | null
+}
+
+export function isLumaImportedEvent(
+  event: Pick<TechEvent, 'externalSource'>,
+): boolean {
+  return event.externalSource === 'luma'
 }
 
 /** Current calendar date in the timezone where events take place. */
@@ -54,9 +64,13 @@ export function getEventPath(slug: string): string {
   return `/eventos/${slug}`
 }
 
-function getImageUrl(image: Event['image']): string | null {
+function getImageUrl(doc: Event): string | null {
+  const image = doc.image
   if (typeof image === 'object' && image !== null && (image as Media).url) {
     return toPublicMediaUrl((image as Media).url)
+  }
+  if (typeof doc.externalImageUrl === 'string' && doc.externalImageUrl.trim()) {
+    return doc.externalImageUrl.trim()
   }
   return null
 }
@@ -129,8 +143,11 @@ export function eventDocToTechEvent(doc: Event): TechEvent {
     modality: doc.modality || 'in-person',
     isInPerson: doc.modality === 'in-person',
     meetLink: doc.meetLink || '',
-    image: getImageUrl(doc.image),
+    image: getImageUrl(doc),
     registerUrl: doc.registerUrl || '',
+    externalSource: doc.externalSource ?? null,
+    externalCalendarId: doc.externalCalendarId ?? null,
+    externalCalendarName: doc.externalCalendarName ?? null,
   }
 }
 

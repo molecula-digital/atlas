@@ -3,6 +3,7 @@ import * as migration_20260402_051032 from './20260402_051032';
 import * as migration_20260402_052120 from './20260402_052120';
 import * as migration_20260413_201258 from './20260413_201258';
 import * as migration_20260724_214053_newsletter_subscribers from './20260724_214053_newsletter_subscribers';
+import * as migration_20260807_163000_luma_calendars from './20260807_163000_luma_calendars';
 
 export const migrations = [
   {
@@ -28,6 +29,11 @@ export const migrations = [
   {
     up: migration_20260724_214053_newsletter_subscribers.up,
     down: migration_20260724_214053_newsletter_subscribers.down,
-    name: '20260724_214053_newsletter_subscribers'
+    name: '20260724_214053_newsletter_subscribers',
   },
-];
+  {
+    up: migration_20260807_163000_luma_calendars.up,
+    down: migration_20260807_163000_luma_calendars.down,
+    name: '20260807_163000_luma_calendars',
+  },
+]

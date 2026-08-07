@@ -153,5 +153,80 @@ export const Events: CollectionConfig = {
       type: 'upload',
       relationTo: 'media',
     },
+    {
+      name: 'externalImageUrl',
+      label: 'URL de imagen externa',
+      type: 'text',
+      admin: {
+        description:
+          'Portada remota (p. ej. Luma). Se usa si no hay imagen en Media.',
+      },
+    },
+    {
+      type: 'collapsible',
+      label: 'Sincronización externa',
+      admin: {
+        initCollapsed: true,
+        description:
+          'Metadatos cuando el evento proviene de un calendario Luma u otra fuente.',
+      },
+      fields: [
+        {
+          name: 'externalSource',
+          label: 'Fuente',
+          type: 'select',
+          options: [{ label: 'Luma', value: 'luma' }],
+          admin: {
+            description: 'Vacío = creado manualmente en Atlas.',
+          },
+        },
+        {
+          name: 'externalId',
+          label: 'ID externo',
+          type: 'text',
+          index: true,
+          admin: {
+            description: 'ID del evento en la fuente (ej. evt-… en Luma).',
+          },
+        },
+        {
+          name: 'externalCalendarId',
+          label: 'Calendar ID externo',
+          type: 'text',
+          index: true,
+          admin: {
+            description: 'Calendario Luma de origen (cal-…).',
+          },
+        },
+        {
+          name: 'externalCalendarName',
+          label: 'Nombre del calendario',
+          type: 'text',
+          admin: {
+            description:
+              'Nombre legible del calendario Luma (se rellena al sincronizar).',
+          },
+        },
+        {
+          name: 'lastSyncedAt',
+          label: 'Última sync',
+          type: 'date',
+          admin: {
+            readOnly: true,
+            date: { pickerAppearance: 'dayAndTime' },
+          },
+        },
+        {
+          name: 'syncLocked',
+          label: 'Bloquear sync',
+          type: 'checkbox',
+          defaultValue: false,
+          admin: {
+            description:
+              'Si está activo, la sincronización no sobrescribe este evento.',
+          },
+        },
+      ],
+    },
   ],
 }
