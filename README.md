@@ -95,6 +95,17 @@ Analytics solo se inicializa en produccion, asi que en desarrollo (`pnpm dev`) n
 
 Ver [`docs/posthog.md`](docs/posthog.md) para el detalle de que se registra y por que.
 
+## Sincronizacion de calendarios Luma
+
+Los eventos publicos de uno o mas calendarios de [Luma](https://luma.com) se pueden importar automaticamente a la coleccion **Eventos** de Payload.
+
+1. En el admin (`/admin`), abre **Integraciones → Calendarios Luma**
+2. El calendario **Gina** (`cal-Pf2My2TlVNz1N89`) se crea con la migracion; agrega mas filas para conectar otros calendarios
+3. Configura `CRON_SECRET` (o `LUMA_SYNC_SECRET`) y llama `GET/POST /api/cron/luma-sync` con `Authorization: Bearer …`
+4. En Vercel, el cron de `vercel.json` corre cada 6 horas; tambien puedes forzar sync de un calendario con `POST /api/luma-calendars/:id/sync` (sesion admin)
+
+La sync usa el feed publico de Luma (no requiere Luma Plus / API key). Los eventos sincronizados guardan `externalId` / `externalCalendarId`; marca **Bloquear sync** en un evento para que no se sobrescriba.
+
 ## Docker
 
 El `Dockerfile` multi-stage construye la app en 3 fases:

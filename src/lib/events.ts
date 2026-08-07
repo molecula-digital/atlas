@@ -54,9 +54,13 @@ export function getEventPath(slug: string): string {
   return `/eventos/${slug}`
 }
 
-function getImageUrl(image: Event['image']): string | null {
+function getImageUrl(doc: Event): string | null {
+  const image = doc.image
   if (typeof image === 'object' && image !== null && (image as Media).url) {
     return toPublicMediaUrl((image as Media).url)
+  }
+  if (typeof doc.externalImageUrl === 'string' && doc.externalImageUrl.trim()) {
+    return doc.externalImageUrl.trim()
   }
   return null
 }
@@ -129,7 +133,7 @@ export function eventDocToTechEvent(doc: Event): TechEvent {
     modality: doc.modality || 'in-person',
     isInPerson: doc.modality === 'in-person',
     meetLink: doc.meetLink || '',
-    image: getImageUrl(doc.image),
+    image: getImageUrl(doc),
     registerUrl: doc.registerUrl || '',
   }
 }

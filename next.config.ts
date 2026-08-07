@@ -24,6 +24,15 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: '*.googleusercontent.com',
       },
+      // Luma event covers synced into the calendar.
+      {
+        protocol: 'https',
+        hostname: 'images.lumacdn.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn.lu.ma',
+      },
       {
         protocol: 'http',
         hostname: 'localhost',
