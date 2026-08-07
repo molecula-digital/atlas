@@ -18,6 +18,7 @@ import type { TechEvent } from '@/hooks/useEventsData'
 import { getEventPath, selectUpcomingEvents } from '@/lib/events'
 import { EVENT_SURFACE, captureEventCardClicked } from '@/lib/analytics'
 import EventTypeBadge from './EventTypeBadge'
+import { LumaSourceBadge } from './LumaSourceBadge'
 
 const UPCOMING_LIMIT = 6
 
@@ -66,8 +67,9 @@ function EventThumbnailCard({ ev }: { ev: TechEvent }) {
             <span className="truncate">{ev.location}</span>
           </p>
         )}
-        <div className="mt-auto pt-1">
+        <div className="mt-auto flex flex-wrap items-center gap-2 pt-1">
           <EventTypeBadge isInPerson={ev.isInPerson} />
+          <LumaSourceBadge event={ev} />
         </div>
       </div>
     </Link>

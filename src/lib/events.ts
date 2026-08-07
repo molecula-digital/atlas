@@ -22,6 +22,16 @@ export interface TechEvent {
   meetLink: string
   image?: string | null
   registerUrl: string
+  /** Set when the event was imported from a Luma calendar. */
+  externalSource?: 'luma' | null
+  externalCalendarId?: string | null
+  externalCalendarName?: string | null
+}
+
+export function isLumaImportedEvent(
+  event: Pick<TechEvent, 'externalSource'>,
+): boolean {
+  return event.externalSource === 'luma'
 }
 
 /** Current calendar date in the timezone where events take place. */
@@ -135,6 +145,9 @@ export function eventDocToTechEvent(doc: Event): TechEvent {
     meetLink: doc.meetLink || '',
     image: getImageUrl(doc),
     registerUrl: doc.registerUrl || '',
+    externalSource: doc.externalSource ?? null,
+    externalCalendarId: doc.externalCalendarId ?? null,
+    externalCalendarName: doc.externalCalendarName ?? null,
   }
 }
 

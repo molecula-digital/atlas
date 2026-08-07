@@ -51,6 +51,7 @@ type EventWriteData = {
   externalSource?: Event['externalSource']
   externalId?: string | null
   externalCalendarId?: string | null
+  externalCalendarName?: string | null
   lastSyncedAt?: string | null
   syncLocked?: boolean | null
   _status?: Event['_status']
@@ -87,6 +88,7 @@ async function findExistingByExternalId(payload: Payload, externalId: string) {
 function toEventData(
   mapped: MappedLumaEvent,
   autoPublish: boolean,
+  calendarName?: string,
 ): EventWriteData {
   return {
     title: mapped.title,
@@ -106,6 +108,8 @@ function toEventData(
     externalSource: mapped.externalSource,
     externalId: mapped.externalId,
     externalCalendarId: mapped.externalCalendarId,
+    externalCalendarName:
+      calendarName?.trim() || mapped.externalCalendarName || null,
     lastSyncedAt: new Date().toISOString(),
     _status: autoPublish ? 'published' : 'draft',
   }
@@ -116,6 +120,7 @@ async function upsertMappedEvent(
   mapped: MappedLumaEvent,
   autoPublish: boolean,
   result: CalendarSyncResult,
+  calendarName?: string,
 ): Promise<void> {
   const existing = await findExistingByExternalId(payload, mapped.externalId)
 
@@ -126,7 +131,7 @@ async function upsertMappedEvent(
 
   if (existing) {
     // Preserve the existing slug so public URLs stay stable across renames.
-    const data = toEventData(mapped, autoPublish)
+    const data = toEventData(mapped, autoPublish, calendarName)
     data.slug = existing.slug
     await payload.update({
       collection: 'events',
@@ -143,7 +148,7 @@ async function upsertMappedEvent(
   await payload.create({
     collection: 'events',
     data: {
-      ...toEventData(mapped, autoPublish),
+      ...toEventData(mapped, autoPublish, calendarName),
       syncLocked: false,
     },
     draft: !autoPublish,
@@ -214,7 +219,13 @@ export async function syncLumaCalendar(
       const mapped = mapLumaEventToPayload(detail, {
         fallbackCalendarId: calendar.calendarId,
       })
-      await upsertMappedEvent(payload, mapped, autoPublish, result)
+      await upsertMappedEvent(
+        payload,
+        mapped,
+        autoPublish,
+        result,
+        calendar.name,
+      )
     } catch (err) {
       result.failed += 1
       const message = err instanceof Error ? err.message : String(err)

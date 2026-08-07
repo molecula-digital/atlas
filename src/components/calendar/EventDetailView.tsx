@@ -24,10 +24,15 @@ import {
   LayoutList,
   Clock,
   CircleCheck,
+  CalendarDays,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import type { TechEvent } from '@/lib/events'
-import { getEventPath, isPastEventDate } from '@/lib/events'
+import {
+  getEventPath,
+  isPastEventDate,
+  isLumaImportedEvent,
+} from '@/lib/events'
 import { SITE_URL } from '@/config'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { Card } from '@/components/ui/Card'
@@ -39,6 +44,7 @@ import {
 } from '@/components/ui/Tooltip'
 import { cn } from '@/lib/utils'
 import EventTypeBadge from './EventTypeBadge'
+import { LumaSourceDetail } from './LumaSourceBadge'
 import { AddToCalendar } from './AddToCalendar'
 import { EventRichDescription } from './EventRichDescription'
 import { EventDateDisplay } from './EventDateDisplay'
@@ -119,8 +125,12 @@ export function EventDetailsCard({
   className,
 }: EventDetailsCardProps) {
   const schedule = buildEventSchedule(event)
+  const fromLuma = isLumaImportedEvent(event)
   const hasDetails =
-    !!event.organizer || !!schedule || (showLocation && !!event.location)
+    !!event.organizer ||
+    !!schedule ||
+    (showLocation && !!event.location) ||
+    fromLuma
 
   if (!hasDetails) return null
 
@@ -141,6 +151,11 @@ export function EventDetailsCard({
           <DetailRow label="Ubicación" Icon={MapPin}>
             {event.location}
             {event.isInPerson && <EventTypeBadge isInPerson className="ml-2" />}
+          </DetailRow>
+        )}
+        {fromLuma && (
+          <DetailRow label="Fuente" Icon={CalendarDays}>
+            <LumaSourceDetail event={event} />
           </DetailRow>
         )}
       </div>
@@ -346,6 +361,20 @@ export function EventDetailView({
               <p className="text-sm font-medium text-primary">
                 {event.organizer}
               </p>
+            </div>
+          </div>
+        )}
+
+        {isLumaImportedEvent(event) && (
+          <div className="flex items-center gap-2">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-elevated text-muted">
+              <CalendarDays size={14} />
+            </span>
+            <div className="min-w-0">
+              <p className="text-2xs font-mono uppercase tracking-wider text-muted">
+                Fuente
+              </p>
+              <LumaSourceDetail event={event} className="mt-0.5" />
             </div>
           </div>
         )}

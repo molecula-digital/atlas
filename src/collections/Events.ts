@@ -199,6 +199,15 @@ export const Events: CollectionConfig = {
           },
         },
         {
+          name: 'externalCalendarName',
+          label: 'Nombre del calendario',
+          type: 'text',
+          admin: {
+            description:
+              'Nombre legible del calendario Luma (se rellena al sincronizar).',
+          },
+        },
+        {
           name: 'lastSyncedAt',
           label: 'Última sync',
           type: 'date',

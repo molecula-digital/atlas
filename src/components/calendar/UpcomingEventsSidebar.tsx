@@ -11,6 +11,7 @@ import {
   Mail,
 } from 'lucide-react'
 import EventTypeBadge from './EventTypeBadge'
+import { LumaSourceBadge } from './LumaSourceBadge'
 import { EventSquareThumb } from './EventSquareThumb'
 import type { TechEvent } from '@/hooks/useEventsData'
 import { buttonVariants } from '@/components/ui/button-variants'
@@ -144,6 +145,7 @@ export default function UpcomingEventsSidebar({
 
                   <div className="mt-2 flex flex-wrap items-center gap-2">
                     <EventTypeBadge isInPerson={ev.isInPerson} />
+                    <LumaSourceBadge event={ev} />
                     {ev.registerUrl && (
                       <a
                         href={ev.registerUrl}

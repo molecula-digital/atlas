@@ -544,6 +544,10 @@ export interface Event {
    * Calendario Luma de origen (cal-…).
    */
   externalCalendarId?: string | null;
+  /**
+   * Nombre legible del calendario Luma (se rellena al sincronizar).
+   */
+  externalCalendarName?: string | null;
   lastSyncedAt?: string | null;
   /**
    * Si está activo, la sincronización no sobrescribe este evento.
@@ -919,6 +923,7 @@ export interface EventsSelect<T extends boolean = true> {
   externalSource?: T;
   externalId?: T;
   externalCalendarId?: T;
+  externalCalendarName?: T;
   lastSyncedAt?: T;
   syncLocked?: T;
   updatedAt?: T;

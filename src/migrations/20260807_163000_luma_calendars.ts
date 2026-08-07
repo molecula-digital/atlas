@@ -30,6 +30,7 @@ export async function up({ db }: MigrateUpArgs): Promise<void> {
       ADD COLUMN IF NOT EXISTS "external_source" "payload"."enum_events_external_source",
       ADD COLUMN IF NOT EXISTS "external_id" varchar,
       ADD COLUMN IF NOT EXISTS "external_calendar_id" varchar,
+      ADD COLUMN IF NOT EXISTS "external_calendar_name" varchar,
       ADD COLUMN IF NOT EXISTS "last_synced_at" timestamp(3) with time zone,
       ADD COLUMN IF NOT EXISTS "sync_locked" boolean DEFAULT false;
 
@@ -38,6 +39,7 @@ export async function up({ db }: MigrateUpArgs): Promise<void> {
       ADD COLUMN IF NOT EXISTS "version_external_source" "payload"."enum__events_v_version_external_source",
       ADD COLUMN IF NOT EXISTS "version_external_id" varchar,
       ADD COLUMN IF NOT EXISTS "version_external_calendar_id" varchar,
+      ADD COLUMN IF NOT EXISTS "version_external_calendar_name" varchar,
       ADD COLUMN IF NOT EXISTS "version_last_synced_at" timestamp(3) with time zone,
       ADD COLUMN IF NOT EXISTS "version_sync_locked" boolean DEFAULT false;
 
@@ -126,6 +128,7 @@ export async function down({ db }: MigrateDownArgs): Promise<void> {
       DROP COLUMN IF EXISTS "external_source",
       DROP COLUMN IF EXISTS "external_id",
       DROP COLUMN IF EXISTS "external_calendar_id",
+      DROP COLUMN IF EXISTS "external_calendar_name",
       DROP COLUMN IF EXISTS "last_synced_at",
       DROP COLUMN IF EXISTS "sync_locked";
 
@@ -134,6 +137,7 @@ export async function down({ db }: MigrateDownArgs): Promise<void> {
       DROP COLUMN IF EXISTS "version_external_source",
       DROP COLUMN IF EXISTS "version_external_id",
       DROP COLUMN IF EXISTS "version_external_calendar_id",
+      DROP COLUMN IF EXISTS "version_external_calendar_name",
       DROP COLUMN IF EXISTS "version_last_synced_at",
       DROP COLUMN IF EXISTS "version_sync_locked";
 

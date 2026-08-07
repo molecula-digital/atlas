@@ -47,6 +47,7 @@ export interface MappedLumaEvent {
   externalSource: 'luma'
   externalId: string
   externalCalendarId: string
+  externalCalendarName: string
 }
 
 function formatParts(
@@ -215,6 +216,13 @@ export function lumaEventUrl(slugOrUrl: string): string {
   return `https://luma.com/${slugOrUrl.replace(/^\//, '')}`
 }
 
+/** Public Luma calendar page; Luma redirects slug/personal calendars as needed. */
+export function lumaCalendarUrl(calendarId: string): string {
+  if (!calendarId) return ''
+  if (/^https?:\/\//i.test(calendarId)) return calendarId
+  return `https://luma.com/calendar/${calendarId.replace(/^\//, '')}`
+}
+
 function organizerFromHosts(
   hosts: LumaHost[] | undefined,
   calendarName?: string | null,
@@ -265,5 +273,6 @@ export function mapLumaEventToPayload(
     externalSource: 'luma',
     externalId: event.api_id,
     externalCalendarId: calendarId,
+    externalCalendarName: detail.calendar?.name?.trim() || '',
   }
 }
