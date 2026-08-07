@@ -1,6 +1,16 @@
 /** Public Luma calendar/event shapes used by the sync client. */
 
-export type LumaLocationType = 'offline' | 'online' | 'virtual' | string
+export type LumaLocationType =
+  | 'offline'
+  | 'discord'
+  | 'meet'
+  | 'twitch'
+  | 'twitter'
+  | 'youtube'
+  | 'zoom'
+  | 'missing'
+  | 'unknown'
+  | string
 
 export interface LumaGeoAddress {
   address?: string | null
@@ -34,7 +44,10 @@ export interface LumaEventSummary {
   location_type?: LumaLocationType | null
   geo_address_info?: LumaGeoAddress | null
   visibility?: string | null
-  virtual_info?: { has_access?: boolean; meeting_url?: string | null } | null
+  virtual_info?: {
+    has_access?: boolean
+    meeting_url?: string | null
+  } | null
 }
 
 export interface LumaHost {

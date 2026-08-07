@@ -13,6 +13,7 @@ export {
 export {
   mapLumaEventToPayload,
   mapLocationType,
+  platformLocationLabel,
   plainTextToLexical,
   tipTapToPlainText,
   lumaEventUrl,

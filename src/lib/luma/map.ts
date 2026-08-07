@@ -133,30 +133,67 @@ export function plainTextToLexical(text: string): LexicalDescription | null {
   }
 }
 
+/** Luma online platforms from the public API `location_type` enum. */
+const ONLINE_LOCATION_TYPES = new Set([
+  'discord',
+  'meet',
+  'twitch',
+  'twitter',
+  'youtube',
+  'zoom',
+  // Aliases seen in older payloads / docs
+  'online',
+  'virtual',
+])
+
 export function mapLocationType(
   locationType: string | null | undefined,
 ): AtlasModality {
+  const type = (locationType || '').toLowerCase()
+  if (type === 'offline') return 'in-person'
+  if (type === 'hybrid') return 'hybrid'
+  if (ONLINE_LOCATION_TYPES.has(type)) return 'online'
+  // `missing` / `unknown` / empty — fall back to in-person; callers still
+  // attach geo when Luma provides an address.
+  return 'in-person'
+}
+
+export function platformLocationLabel(
+  locationType: string | null | undefined,
+): string {
   switch ((locationType || '').toLowerCase()) {
+    case 'youtube':
+      return 'YouTube'
+    case 'zoom':
+      return 'Zoom'
+    case 'meet':
+      return 'Google Meet'
+    case 'discord':
+      return 'Discord'
+    case 'twitch':
+      return 'Twitch'
+    case 'twitter':
+      return 'X / Twitter'
     case 'online':
     case 'virtual':
-      return 'online'
-    case 'hybrid':
-      return 'hybrid'
-    case 'offline':
+      return 'En línea'
     default:
-      return 'in-person'
+      return ''
   }
 }
 
 function pickLocalizedAddress(geo: LumaGeoAddress | null | undefined): string {
   if (!geo) return ''
-  const es = geo.localized?.['es-419']
+  const es = geo.localized?.['es-419'] || geo.localized?.['es']
+  // Prefer venue name, then full address, then city.
   return (
-    es?.full_address ||
     es?.address ||
-    geo.full_address ||
     geo.address ||
+    es?.full_address ||
+    geo.full_address ||
+    es?.short_address ||
     geo.short_address ||
+    es?.city ||
     geo.city ||
     ''
   )
@@ -197,7 +234,11 @@ export function mapLumaEventToPayload(
   const tz = event.timezone || EVENT_TIMEZONE
   const start = formatParts(event.start_at, tz)
   const plain = tipTapToPlainText(detail.description_mirror)
-  const location = pickLocalizedAddress(event.geo_address_info)
+  const modality = mapLocationType(event.location_type)
+  const geoLocation = pickLocalizedAddress(event.geo_address_info)
+  const location =
+    geoLocation ||
+    (modality === 'online' ? platformLocationLabel(event.location_type) : '')
   const eventUrl = lumaEventUrl(event.url)
   const calendarId =
     event.calendar_api_id ||
@@ -216,7 +257,7 @@ export function mapLumaEventToPayload(
     endTime: event.end_at,
     location,
     mapsUrl: mapsUrlFromGeo(event.geo_address_info),
-    modality: mapLocationType(event.location_type),
+    modality,
     meetLink: event.virtual_info?.meeting_url?.trim() || '',
     url: eventUrl,
     registerUrl: eventUrl,
