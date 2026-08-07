@@ -1,7 +1,5 @@
 #!/usr/bin/env sh
-# Trigger Luma → Atlas event sync against a Coolify / VPS deployment.
-# Usage:
-#   CRON_SECRET=… SITE_URL=https://atlas-sinaloa.tech ./scripts/luma-sync-curl.sh
+# Usage: CRON_SECRET=… SITE_URL=https://atlas-sinaloa.tech ./scripts/luma-sync-curl.sh
 set -eu
 
 SITE_URL="${SITE_URL:-${NEXT_PUBLIC_SITE_URL:-}}"
@@ -16,9 +14,8 @@ if [ -z "$SECRET" ]; then
   exit 1
 fi
 
-url="${SITE_URL%/}/api/cron/luma-sync"
 curl -fsS -X POST \
   -H "Authorization: Bearer ${SECRET}" \
   -H "Accept: application/json" \
-  "$url"
+  "${SITE_URL%/}/api/cron/luma-sync"
 echo

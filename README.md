@@ -100,9 +100,9 @@ Ver [`docs/posthog.md`](docs/posthog.md) para el detalle de que se registra y po
 Los eventos publicos de uno o mas calendarios de [Luma](https://luma.com) se pueden importar automaticamente a la coleccion **Eventos** de Payload.
 
 1. En el admin (`/admin`), abre **Integraciones → Calendarios Luma**
-2. La migracion siembra **Gina** (`cal-Pf2My2TlVNz1N89`), **La Cripto Plebada** (`cal-JMmiSzKO7KGGF5R`) y **Cursor Culiacan, Mexico** (`cal-FxFii0ovO9ZQUJg`); agrega mas filas para conectar otros calendarios
-3. Configura `CRON_SECRET` en Coolify
-4. Programa un Scheduled Task / cron en el VPS que pegue al endpoint (cada 6h esta bien):
+2. La migracion siembra **Gina**, **La Cripto Plebada** y **Cursor Culiacan, Mexico**; agrega mas filas para otros calendarios
+3. Configura `CRON_SECRET` en Coolify (`openssl rand -hex 32`)
+4. Scheduled Task cada 12h (`0 */12 * * *`):
 
 ```bash
 curl -fsS -X POST \
@@ -112,7 +112,7 @@ curl -fsS -X POST \
 
 Tambien puedes forzar un calendario con `POST /api/luma-calendars/:id/sync` (sesion admin).
 
-La sync corre en **runtime** contra la app desplegada (no en el build ni en paginas estaticas). Usa el feed publico de Luma (no requiere Luma Plus / API key). Los eventos sincronizados guardan `externalId` / `externalCalendarId`; marca **Bloquear sync** en un evento para que no se sobrescriba.
+La sync corre en runtime contra la app desplegada (no en el build). Usa el feed publico de Luma; marca **Bloquear sync** en un evento para proteger ediciones manuales.
 
 ## Docker
 
