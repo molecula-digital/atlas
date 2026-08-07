@@ -101,7 +101,7 @@ Los eventos publicos de uno o mas calendarios de [Luma](https://luma.com) se pue
 
 1. En el admin (`/admin`), abre **Integraciones → Calendarios Luma**
 2. La migracion siembra **Gina** (`cal-Pf2My2TlVNz1N89`), **La Cripto Plebada** (`cal-JMmiSzKO7KGGF5R`) y **Cursor Culiacan, Mexico** (`cal-FxFii0ovO9ZQUJg`); agrega mas filas para conectar otros calendarios
-3. Configura `CRON_SECRET` (o `LUMA_SYNC_SECRET`) en Coolify
+3. Configura `CRON_SECRET` en Coolify
 4. Programa un Scheduled Task / cron en el VPS que pegue al endpoint (cada 6h esta bien):
 
 ```bash

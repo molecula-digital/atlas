@@ -8,28 +8,18 @@ export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
 function isAuthorized(request: Request): boolean {
-  const cronSecret = process.env.CRON_SECRET?.trim()
-  const lumaSecret = process.env.LUMA_SYNC_SECRET?.trim()
-  const expected = cronSecret || lumaSecret
+  const expected = process.env.CRON_SECRET?.trim()
   if (!expected) return false
 
   const auth = request.headers.get('authorization')
-  if (auth === `Bearer ${expected}`) return true
-
-  // Dedicated header for Coolify scheduled tasks / host crontabs.
-  const headerSecret = request.headers.get('x-luma-sync-secret')
-  if (headerSecret && headerSecret === expected) return true
-  if (lumaSecret && headerSecret === lumaSecret) return true
-
-  return false
+  return auth === `Bearer ${expected}`
 }
 
 /**
  * Sync all enabled Luma calendars into Payload events.
  *
  * Auth (Coolify / host cron / manual):
- * - `Authorization: Bearer $CRON_SECRET` (or `$LUMA_SYNC_SECRET`)
- * - `x-luma-sync-secret: $LUMA_SYNC_SECRET` (or `$CRON_SECRET`)
+ *   Authorization: Bearer $CRON_SECRET
  *
  * Example (every 6h on the VPS / Coolify Scheduled Task):
  *   curl -fsS -X POST -H "Authorization: Bearer $CRON_SECRET" \

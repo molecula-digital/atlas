@@ -5,14 +5,14 @@
 set -eu
 
 SITE_URL="${SITE_URL:-${NEXT_PUBLIC_SITE_URL:-}}"
-SECRET="${CRON_SECRET:-${LUMA_SYNC_SECRET:-}}"
+SECRET="${CRON_SECRET:-}"
 
 if [ -z "$SITE_URL" ]; then
   echo "SITE_URL (or NEXT_PUBLIC_SITE_URL) is required" >&2
   exit 1
 fi
 if [ -z "$SECRET" ]; then
-  echo "CRON_SECRET (or LUMA_SYNC_SECRET) is required" >&2
+  echo "CRON_SECRET is required" >&2
   exit 1
 fi
 
