@@ -59,7 +59,7 @@ function EventThumbnailCard({ ev }: { ev: TechEvent }) {
         )}
       </div>
 
-      <div className="grid flex-1 grid-cols-[auto_minmax(0,1fr)] items-start gap-3 p-3">
+      <div className="grid flex-1 grid-cols-[auto_minmax(0,1fr)] items-center gap-3 p-3">
         <div
           className="flex w-[3.75rem] shrink-0 flex-col items-center justify-center rounded-xl border border-border bg-elevated/60 px-1.5 py-2"
           aria-hidden
@@ -76,17 +76,8 @@ function EventThumbnailCard({ ev }: { ev: TechEvent }) {
           <h3 className="line-clamp-2 text-sm font-semibold text-primary transition-colors group-hover:text-accent">
             {ev.title}
           </h3>
-          {(timeRange || ev.organizer) && (
-            <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs font-mono text-muted">
-              {timeRange && (
-                <span className="shrink-0 whitespace-nowrap">{timeRange}</span>
-              )}
-              {ev.organizer && (
-                <span className="truncate max-w-full">
-                  {timeRange ? `· ${ev.organizer}` : ev.organizer}
-                </span>
-              )}
-            </div>
+          {timeRange && (
+            <p className="text-xs font-mono text-muted">{timeRange}</p>
           )}
           {ev.location && (
             <p className="flex min-w-0 items-center gap-1 text-2xs font-mono text-muted">
