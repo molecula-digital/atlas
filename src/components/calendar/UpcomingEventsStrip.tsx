@@ -65,13 +65,13 @@ function EventThumbnailCard({ ev }: { ev: TechEvent }) {
 
       <div className="grid flex-1 grid-cols-[auto_minmax(0,1fr)] items-center gap-3 p-3">
         <div
-          className="flex size-8 shrink-0 flex-col items-center justify-center rounded-md border border-border bg-elevated/60"
+          className="flex size-12 shrink-0 flex-col items-center justify-center rounded-md border border-border bg-elevated/60"
           aria-hidden
         >
-          <span className="text-[8px] font-mono font-semibold uppercase leading-none text-muted">
+          <span className="text-2xs font-mono font-semibold uppercase leading-none text-muted">
             {month}
           </span>
-          <span className="text-xs font-bold leading-none text-accent">
+          <span className="text-base font-bold leading-none text-accent">
             {day}
           </span>
         </div>
@@ -103,7 +103,7 @@ function SkeletonCard() {
     <div className="overflow-hidden rounded-lg border border-border bg-card">
       <div className="h-28 bg-elevated animate-pulse" />
       <div className="grid grid-cols-[auto_minmax(0,1fr)] items-start gap-3 p-3">
-        <div className="size-8 rounded-md bg-elevated animate-pulse" />
+        <div className="size-12 rounded-md bg-elevated animate-pulse" />
         <div className="space-y-2">
           <div className="h-4 w-3/4 rounded bg-elevated animate-pulse" />
           <div className="h-3 w-1/2 rounded bg-elevated animate-pulse" />
