@@ -223,6 +223,18 @@ export function lumaCalendarUrl(calendarId: string): string {
   return `https://luma.com/calendar/${calendarId.replace(/^\//, '')}`
 }
 
+/**
+ * Payload dayOnly dates are timestamptz. Midnight UTC (`T00:00:00.000Z`) renders
+ * as the *previous* calendar day in America/Mazatlan (and any UTC− offset) in
+ * the admin date picker. Noon UTC keeps the intended civil date in all zones
+ * from UTC−12 through UTC+12 — the approach Payload documents for dayOnly.
+ */
+export function dayOnlyUtcNoon(date: string): string {
+  const day = date.split('T')[0]
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(day)) return date
+  return `${day}T12:00:00.000Z`
+}
+
 function organizerFromHosts(
   hosts: LumaHost[] | undefined,
   calendarName?: string | null,
