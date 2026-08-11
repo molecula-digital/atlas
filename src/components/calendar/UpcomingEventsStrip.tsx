@@ -17,6 +17,7 @@ import { useEventsData } from '@/hooks/useEventsData'
 import type { TechEvent } from '@/hooks/useEventsData'
 import {
   getEventPath,
+  getEventDateToday,
   selectUpcomingEvents,
   formatEventDateBadge,
   formatEventMonthShort,
@@ -24,7 +25,7 @@ import {
 } from '@/lib/events'
 import { EVENT_SURFACE, captureEventCardClicked } from '@/lib/analytics'
 import EventTypeBadge from './EventTypeBadge'
-import { LumaSourceBadge } from './LumaSourceBadge'
+import { EventTimingBadge } from './EventTimingBadge'
 
 const UPCOMING_LIMIT = 6
 
@@ -57,17 +58,20 @@ function EventThumbnailCard({ ev }: { ev: TechEvent }) {
             </span>
           </div>
         )}
+        <div className="absolute top-2 left-2 z-10">
+          <EventTimingBadge event={ev} />
+        </div>
       </div>
 
       <div className="grid flex-1 grid-cols-[auto_minmax(0,1fr)] items-center gap-3 p-3">
         <div
-          className="flex w-[3.75rem] shrink-0 flex-col items-center justify-center rounded-xl border border-border bg-elevated/60 px-1.5 py-2"
+          className="flex size-8 shrink-0 flex-col items-center justify-center rounded-md border border-border bg-elevated/60"
           aria-hidden
         >
-          <span className="text-2xs font-mono font-semibold uppercase leading-none text-muted">
+          <span className="text-[8px] font-mono font-semibold uppercase leading-none text-muted">
             {month}
           </span>
-          <span className="mt-1 text-xl font-bold leading-none text-accent">
+          <span className="text-xs font-bold leading-none text-accent">
             {day}
           </span>
         </div>
@@ -87,7 +91,6 @@ function EventThumbnailCard({ ev }: { ev: TechEvent }) {
           )}
           <div className="mt-auto flex flex-wrap items-center gap-2 pt-1">
             <EventTypeBadge isInPerson={ev.isInPerson} />
-            <LumaSourceBadge event={ev} />
           </div>
         </div>
       </div>
@@ -100,7 +103,7 @@ function SkeletonCard() {
     <div className="overflow-hidden rounded-lg border border-border bg-card">
       <div className="h-28 bg-elevated animate-pulse" />
       <div className="grid grid-cols-[auto_minmax(0,1fr)] items-start gap-3 p-3">
-        <div className="h-[3.75rem] w-[3.75rem] rounded-xl bg-elevated animate-pulse" />
+        <div className="size-8 rounded-md bg-elevated animate-pulse" />
         <div className="space-y-2">
           <div className="h-4 w-3/4 rounded bg-elevated animate-pulse" />
           <div className="h-3 w-1/2 rounded bg-elevated animate-pulse" />
@@ -124,7 +127,7 @@ export default function UpcomingEventsStrip() {
     [],
   )
 
-  const todayStr = new Date().toISOString().slice(0, 10)
+  const todayStr = getEventDateToday()
   const upcoming = selectUpcomingEvents(events, todayStr).slice(
     0,
     UPCOMING_LIMIT,

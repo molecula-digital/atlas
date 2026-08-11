@@ -10,7 +10,6 @@ import ShareButton from '@/components/ui/ShareButton'
 import { cn } from '@/lib/utils'
 import { AddToCalendar } from './AddToCalendar'
 import { EventExternalLink } from './EventExternalLink'
-import { RegisterEventButton } from './RegisterEventButton'
 
 /** Quiet icon+label row — matches the entry detail Enlaces / Detalles sidebar. */
 const sidebarActionClass = cn(
@@ -35,7 +34,8 @@ function SidebarCardTitle({
 }
 
 /**
- * Register CTA + secondary actions for the event detail sidebar.
+ * Secondary actions for the event detail sidebar.
+ * Register lives in the Luma-style split header next to the cover.
  * Acciones uses the same card chrome and quiet rows as Detalles.
  */
 export function EventSidebarActions({
@@ -49,61 +49,57 @@ export function EventSidebarActions({
   const surface = EVENT_SURFACE.detailPage
 
   return (
-    <div className="space-y-4">
-      <RegisterEventButton event={event} surface={surface} />
+    <Card className="p-4">
+      <SidebarCardTitle Icon={Link2}>Acciones</SidebarCardTitle>
+      <div className="space-y-2">
+        <EventExternalLink
+          event={event}
+          linkType="website"
+          surface={surface}
+          className={sidebarActionClass}
+        >
+          <ExternalLink className="h-4 w-4 shrink-0" />
+          Sitio web
+        </EventExternalLink>
 
-      <Card className="p-4">
-        <SidebarCardTitle Icon={Link2}>Acciones</SidebarCardTitle>
-        <div className="space-y-2">
+        {showMapsLink && (
           <EventExternalLink
             event={event}
-            linkType="website"
+            linkType="maps"
             surface={surface}
             className={sidebarActionClass}
           >
-            <ExternalLink className="h-4 w-4 shrink-0" />
-            Sitio web
+            <Map className="h-4 w-4 shrink-0" />
+            Google Maps
           </EventExternalLink>
+        )}
 
-          {showMapsLink && (
-            <EventExternalLink
-              event={event}
-              linkType="maps"
-              surface={surface}
-              className={sidebarActionClass}
-            >
-              <Map className="h-4 w-4 shrink-0" />
-              Google Maps
-            </EventExternalLink>
-          )}
+        <AddToCalendar
+          event={event}
+          size="md"
+          surface={surface}
+          className={sidebarActionClass}
+        />
 
-          <AddToCalendar
-            event={event}
-            size="md"
-            surface={surface}
-            className={sidebarActionClass}
-          />
+        <ShareButton
+          title={`${event.title} | Tech Atlas`}
+          url={`${SITE_URL}${getEventPath(event.slug)}`}
+          size="md"
+          className={sidebarActionClass}
+          contentType="event"
+          contentId={event.slug}
+        />
 
-          <ShareButton
-            title={`${event.title} | Tech Atlas`}
-            url={`${SITE_URL}${getEventPath(event.slug)}`}
-            size="md"
-            className={sidebarActionClass}
-            contentType="event"
-            contentId={event.slug}
-          />
-
-          <EventExternalLink
-            event={event}
-            linkType="meet"
-            surface={surface}
-            className={sidebarActionClass}
-          >
-            <Video className="h-4 w-4 shrink-0" />
-            Meet/Zoom
-          </EventExternalLink>
-        </div>
-      </Card>
-    </div>
+        <EventExternalLink
+          event={event}
+          linkType="meet"
+          surface={surface}
+          className={sidebarActionClass}
+        >
+          <Video className="h-4 w-4 shrink-0" />
+          Meet/Zoom
+        </EventExternalLink>
+      </div>
+    </Card>
   )
 }

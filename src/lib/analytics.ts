@@ -109,8 +109,7 @@ export function captureEventCardClicked(
 }
 
 /**
- * Event details were actually shown. Needed because the modal never changes the
- * URL, so `$pageview` cannot see the most common way people read an event.
+ * Event details were actually shown on the detail page.
  */
 export function captureEventViewed(event: TechEvent, surface: EventSurface) {
   posthog.capture(ANALYTICS_EVENTS.eventViewed, {

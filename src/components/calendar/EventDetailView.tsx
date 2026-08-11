@@ -1,64 +1,27 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import Link from 'next/link'
-import Image from 'next/image'
-import { useRouter } from 'next/navigation'
 import {
   EVENT_SURFACE,
-  captureEventLinkClicked,
-  captureEventRegistrationStarted,
   captureEventViewed,
-  type EventSurface,
 } from '@/lib/analytics'
 import {
   MapPin,
   Users,
-  ExternalLink,
-  Map,
-  Video,
-  Ticket,
-  Maximize2,
-  Link2,
   Info,
   LayoutList,
   Clock,
-  CircleCheck,
   CalendarDays,
+  FileText,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import type { TechEvent } from '@/lib/events'
-import {
-  getEventPath,
-  isPastEventDate,
-  isLumaImportedEvent,
-} from '@/lib/events'
-import { SITE_URL } from '@/config'
-import { buttonVariants } from '@/components/ui/button-variants'
+import { isLumaImportedEvent } from '@/lib/events'
 import { Card } from '@/components/ui/Card'
-import ShareButton from '@/components/ui/ShareButton'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/Tooltip'
-import { cn } from '@/lib/utils'
+import { EmptyState } from '@/components/ui/EmptyState'
 import EventTypeBadge from './EventTypeBadge'
 import { LumaSourceDetail } from './LumaSourceBadge'
-import { AddToCalendar } from './AddToCalendar'
 import { EventRichDescription } from './EventRichDescription'
-import { EventDateDisplay } from './EventDateDisplay'
-
-interface EventDetailViewProps {
-  event: TechEvent
-  variant?: 'modal' | 'page'
-  onExpandImage?: () => void
-  showLocation?: boolean
-  /** Show the Luma-style date block (hidden on full page when rendered in the header). */
-  showDateDisplay?: boolean
-  /** Dismisses the containing dialog, when rendered inside one. */
-  onClose?: () => void
-}
 
 /** Titled section card — the entry detail pages use the same chrome. */
 function EventDetailCard({
@@ -115,19 +78,21 @@ export function buildEventSchedule(event: TechEvent): string {
 interface EventDetailsCardProps {
   event: TechEvent
   showLocation?: boolean
+  showOrganizer?: boolean
   className?: string
 }
 
-/** Shared details card for modal, inline page, and sidebar layouts. */
+/** Shared details card for the event detail sidebar. */
 export function EventDetailsCard({
   event,
   showLocation = true,
+  showOrganizer = true,
   className,
 }: EventDetailsCardProps) {
   const schedule = buildEventSchedule(event)
   const fromLuma = isLumaImportedEvent(event)
   const hasDetails =
-    !!event.organizer ||
+    (showOrganizer && !!event.organizer) ||
     !!schedule ||
     (showLocation && !!event.location) ||
     fromLuma
@@ -137,7 +102,7 @@ export function EventDetailsCard({
   return (
     <EventDetailCard title="Detalles" Icon={LayoutList} className={className}>
       <div className="space-y-4">
-        {event.organizer && (
+        {showOrganizer && event.organizer && (
           <DetailRow label="Organiza" Icon={Users}>
             {event.organizer}
           </DetailRow>
@@ -163,348 +128,35 @@ export function EventDetailsCard({
   )
 }
 
-function IconActionTooltip({
-  label,
-  children,
-}: {
-  label: string
-  children: React.ReactElement
-}) {
-  return (
-    <Tooltip>
-      <TooltipTrigger asChild>{children}</TooltipTrigger>
-      <TooltipContent side="top">{label}</TooltipContent>
-    </Tooltip>
-  )
-}
-
-function ModalActionLink({
-  href,
-  label,
-  Icon,
-  onClick,
-}: {
-  href: string
-  label: string
-  Icon: LucideIcon
-  onClick?: () => void
-}) {
-  return (
-    <IconActionTooltip label={label}>
-      <a
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        onClick={onClick}
-        className={buttonVariants({ size: 'icon-lg' })}
-        aria-label={label}
-      >
-        <Icon size={16} />
-      </a>
-    </IconActionTooltip>
-  )
-}
-
-function EventFullPageLink({
-  slug,
-  onClose,
-  iconOnly = false,
-}: {
-  slug: string
-  onClose?: () => void
-  iconOnly?: boolean
-}) {
-  const router = useRouter()
-
-  const link = (
-    <Link
-      href={getEventPath(slug)}
-      onClick={(e) => {
-        e.preventDefault()
-        onClose?.()
-        router.push(getEventPath(slug))
-      }}
-      className={buttonVariants({
-        variant: 'ghost',
-        size: iconOnly ? 'icon-lg' : 'md',
-      })}
-      aria-label={iconOnly ? 'Ver página completa' : undefined}
-    >
-      <Link2 size={iconOnly ? 16 : 13} />
-      {!iconOnly && 'Ver página completa'}
-    </Link>
-  )
-
-  return iconOnly ? (
-    <IconActionTooltip label="Ver página completa">{link}</IconActionTooltip>
-  ) : (
-    link
-  )
-}
-
-function EventHeroImage({
-  event,
-  isPage,
-  onExpandImage,
-}: {
-  event: TechEvent
-  isPage: boolean
-  onExpandImage?: () => void
-}) {
-  if (!event.image) return null
-
-  // Blurred wash matches EntryCard / FeaturedEntryTile: scale past the
-  // container so blur edges never leave empty bands at the sides.
-  const image = (
-    <>
-      <Image
-        src={event.image}
-        alt=""
-        aria-hidden
-        fill
-        sizes="(max-width: 768px) 100vw, 800px"
-        className="absolute inset-0 h-full w-full scale-150 object-cover opacity-70 blur-2xl saturate-150"
-      />
-      <div className="absolute inset-0 bg-gradient-to-br from-card/20 via-transparent to-card/60" />
-      <Image
-        src={event.image}
-        alt={event.title}
-        fill
-        sizes="(max-width: 768px) 100vw, 800px"
-        className="relative z-10 h-full w-full object-contain drop-shadow-md"
-      />
-      {onExpandImage && (
-        <span className="absolute bottom-2 right-2 z-20 inline-flex items-center gap-1.5 rounded-md bg-black/60 px-2 py-1 font-mono text-2xs text-white opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100">
-          <Maximize2 size={11} />
-          Ver imagen
-        </span>
-      )}
-    </>
-  )
-
-  const containerClass = cn(
-    'relative overflow-hidden bg-elevated',
-    isPage
-      ? 'h-56 rounded-xl border border-border md:h-80'
-      : 'h-52 shrink-0 sm:h-60',
-    onExpandImage && 'group cursor-pointer',
-  )
-
-  if (onExpandImage) {
-    return (
-      <button
-        type="button"
-        onClick={onExpandImage}
-        className={cn(containerClass, 'w-full text-left')}
-        aria-label={`Ver imagen de ${event.title}`}
-      >
-        {image}
-      </button>
-    )
-  }
-
-  return <div className={containerClass}>{image}</div>
-}
-
-export function EventDetailView({
-  event,
-  variant = 'modal',
-  onExpandImage,
-  showLocation = true,
-  showDateDisplay = true,
-  onClose,
-}: EventDetailViewProps) {
-  const isPage = variant === 'page'
-  const hasImage = !!event.image
-  const isRegistrationDisabled = isPastEventDate(event.date)
-
-  // The modal is the most common way an event gets read, and it never changes
-  // the URL — so $pageview cannot see it. This is the only signal for it.
-  const surface: EventSurface = isPage
-    ? EVENT_SURFACE.detailPage
-    : EVENT_SURFACE.modal
-
+/** About card + view analytics for the event detail page. */
+export function EventDetailView({ event }: { event: TechEvent }) {
   const viewedSlug = useRef<string | null>(null)
   useEffect(() => {
     if (viewedSlug.current === event.slug) return
     viewedSlug.current = event.slug
-    captureEventViewed(event, surface)
-  }, [event, surface])
+    captureEventViewed(event, EVENT_SURFACE.detailPage)
+  }, [event])
 
-  const hero = hasImage ? (
-    <EventHeroImage
-      event={event}
-      isPage={isPage}
-      onExpandImage={onExpandImage}
-    />
-  ) : null
-
-  const body = (
-    <>
-      {hero}
-
-      <div
-        className={cn(
-          'space-y-5',
-          isPage ? 'pt-1' : 'px-5 pb-5',
-          hasImage && 'pt-5',
-        )}
-      >
-        {showDateDisplay && <EventDateDisplay event={event} />}
-
-        {event.organizer && (
-          <div className="flex items-center gap-2">
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-elevated text-muted">
-              <Users size={14} />
-            </span>
-            <div className="min-w-0">
-              <p className="text-2xs font-mono uppercase tracking-wider text-muted">
-                Organiza
-              </p>
-              <p className="text-sm font-medium text-primary">
-                {event.organizer}
-              </p>
-            </div>
-          </div>
-        )}
-
-        {isLumaImportedEvent(event) && (
-          <div className="flex items-center gap-2">
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-elevated text-muted">
-              <CalendarDays size={14} />
-            </span>
-            <div className="min-w-0">
-              <p className="text-2xs font-mono uppercase tracking-wider text-muted">
-                Fuente
-              </p>
-              <LumaSourceDetail event={event} className="mt-0.5" />
-            </div>
-          </div>
-        )}
-
-        {showLocation && event.location && (
-          <div className="flex items-start gap-2.5 text-sm text-secondary">
-            <MapPin size={15} className="mt-0.5 shrink-0 text-muted" />
-            <span>
-              {event.location}
-              {event.isInPerson && (
-                <EventTypeBadge isInPerson className="ml-2" />
-              )}
-            </span>
-          </div>
-        )}
-
-        {(event.descriptionRich || event.description) &&
-          (event.descriptionRich ? (
-            <EventRichDescription data={event.descriptionRich} />
-          ) : (
-            <p className="text-secondary whitespace-pre-line text-sm leading-relaxed">
-              {event.description}
-            </p>
-          ))}
-      </div>
-    </>
-  )
-
-  const modalActions = (
-    <div
-      className="flex flex-wrap items-center gap-1.5 max-sm:w-full max-sm:justify-center"
-      role="group"
-      aria-label="Acciones del evento"
-    >
-      {event.url && (
-        <ModalActionLink
-          href={event.url}
-          label="Abrir sitio web"
-          Icon={ExternalLink}
-          onClick={() => captureEventLinkClicked(event, 'website', surface)}
-        />
-      )}
-      {event.mapsUrl && (
-        <ModalActionLink
-          href={event.mapsUrl}
-          label="Abrir en Google Maps"
-          Icon={Map}
-          onClick={() => captureEventLinkClicked(event, 'maps', surface)}
-        />
-      )}
-      <AddToCalendar event={event} size="icon-lg" iconOnly surface={surface} />
-      <ShareButton
-        title={`${event.title} | Tech Atlas`}
-        url={`${SITE_URL}${getEventPath(event.slug)}`}
-        size="icon-lg"
-        iconOnly
-        contentType="event"
-        contentId={event.slug}
-      />
-      {event.meetLink && (
-        <ModalActionLink
-          href={event.meetLink}
-          label="Abrir Meet o Zoom"
-          Icon={Video}
-          onClick={() => captureEventLinkClicked(event, 'meet', surface)}
-        />
-      )}
-      <EventFullPageLink slug={event.slug} onClose={onClose} iconOnly />
-    </div>
-  )
-
-  // Full page: content only — register + secondary actions live in the sidebar.
-  if (isPage) {
-    return (
-      <div className="flex flex-col gap-5">
-        {hero}
-
-        {(event.descriptionRich || event.description) && (
-          <EventDetailCard title="Acerca de" Icon={Info}>
-            {event.descriptionRich ? (
-              <EventRichDescription data={event.descriptionRich} />
-            ) : (
-              <p className="text-secondary whitespace-pre-line text-sm leading-relaxed">
-                {event.description}
-              </p>
-            )}
-          </EventDetailCard>
-        )}
-      </div>
-    )
-  }
+  const hasDescription = !!(event.descriptionRich || event.description)
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
-      <div className="min-h-0 flex-1 overflow-y-auto">{body}</div>
-      <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-t border-border px-5 py-3">
-        {event.registerUrl &&
-          (isRegistrationDisabled ? (
-            <span
-              aria-disabled="true"
-              className={buttonVariants({
-                variant: 'neutral',
-                size: 'md',
-                className: 'max-sm:w-full cursor-default text-muted',
-              })}
-            >
-              <CircleCheck size={14} />
-              Evento finalizado
-            </span>
-          ) : (
-            <a
-              href={event.registerUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => captureEventRegistrationStarted(event, surface)}
-              className={buttonVariants({
-                variant: 'accent-filled',
-                size: 'md',
-                className: 'max-sm:w-full',
-              })}
-            >
-              <Ticket size={14} />
-              Registrarse
-            </a>
-          ))}
-        {modalActions}
-      </div>
-    </div>
+    <EventDetailCard title="Acerca de" Icon={Info}>
+      {hasDescription ? (
+        event.descriptionRich ? (
+          <EventRichDescription data={event.descriptionRich} />
+        ) : (
+          <p className="text-secondary whitespace-pre-line text-sm leading-relaxed">
+            {event.description}
+          </p>
+        )
+      ) : (
+        <EmptyState
+          icon={FileText}
+          title="Sin descripción"
+          subtitle="Este evento todavía no tiene más detalles publicados."
+          className="py-10"
+        />
+      )}
+    </EventDetailCard>
   )
 }

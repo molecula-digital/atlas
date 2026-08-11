@@ -1,9 +1,8 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState } from 'react'
 import { CalendarDays, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useEventsData } from '@/hooks/useEventsData'
-import type { TechEvent } from '@/hooks/useEventsData'
 import { cn } from '@/lib/utils'
 import {
   calendarSidebarSurface,
@@ -11,7 +10,7 @@ import {
   type CalendarPlacement,
 } from '@/lib/analytics'
 import UpcomingEventsSidebar from './UpcomingEventsSidebar'
-import { EventDialog } from './EventDialog'
+import { EventCardLink } from './EventCardLink'
 import { buttonVariants } from '@/components/ui/button-variants'
 
 const WEEKDAYS = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']
@@ -119,15 +118,6 @@ export default function EventCalendar({
     setYear(n.getFullYear())
     setMonth(n.getMonth())
   }
-
-  /** Jump the grid to the month of an event opened from the sidebar. */
-  const showEventMonth = useCallback((ev: TechEvent) => {
-    const [y, m] = ev.date.split('-').map(Number)
-    if (y && m) {
-      setYear(y)
-      setMonth(m - 1)
-    }
-  }, [])
 
   const isLoading =
     (status === 'loading' || status === 'idle') && events.length === 0
@@ -242,7 +232,7 @@ export default function EventCalendar({
 
                     <div className="mt-0.5 min-h-0 flex-1 space-y-0.5 md:mt-1">
                       {dayEvents.slice(0, MAX_PILLS).map((ev) => (
-                        <EventDialog
+                        <EventCardLink
                           key={ev.id}
                           event={ev}
                           surface={gridSurface}
@@ -250,7 +240,7 @@ export default function EventCalendar({
                           title={ev.title}
                         >
                           {ev.title}
-                        </EventDialog>
+                        </EventCardLink>
                       ))}
                       {overflow > 0 && (
                         <span className="block px-1 font-mono text-[9px] text-muted md:text-2xs">
@@ -270,7 +260,6 @@ export default function EventCalendar({
         events={events}
         status={status}
         refetch={refetch}
-        onEventSelect={showEventMonth}
         surface={sidebarSurface}
       />
     </div>

@@ -3,20 +3,20 @@ import { notFound } from 'next/navigation'
 import { draftMode } from 'next/headers'
 import { getEventBySlug, getPublishedEvents } from '@/lib/payload'
 import { eventDocToTechEvent, selectOtherEvents } from '@/lib/events'
-import { EVENT_SURFACE } from '@/lib/analytics-events'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import { SITE_URL } from '@/config'
 import { extractSocialImage, truncateMetadataText } from '@/lib/format'
 import { safeJsonLd } from '@/lib/utils'
-import { MapPin, ArrowUpRight } from 'lucide-react'
-import { buttonVariants } from '@/components/ui/button-variants'
 import { resolveMapEmbedUrl } from '@/lib/maps'
 import { EventDetailsCard } from '@/components/calendar/EventDetailView'
-import { EventDateDisplay } from '@/components/calendar/EventDateDisplay'
 import { OtherEventsSection } from '@/components/calendar/OtherEventsSection'
-import { EventExternalLink } from '@/components/calendar/EventExternalLink'
 import { EventSidebarActions } from '@/components/calendar/EventSidebarActions'
 import EventDetailPageClient from './EventDetailPageClient'
+import {
+  EventDetailCover,
+  EventDetailIntro,
+  EventDetailOrganizer,
+} from './EventDetailHero'
 import { LivePreviewRefresh } from '@/components/payload/LivePreviewRefresh'
 
 export const revalidate = 3600
@@ -78,10 +78,9 @@ export default async function EventDetailPage({
 
   const event = eventDocToTechEvent(doc)
   const canonical = `${SITE_URL}/eventos/${event.slug}`
-  const mapEmbedUrl = event.location
+  const mapEmbedUrl = event.mapsUrl
     ? await resolveMapEmbedUrl(event.mapsUrl)
     : null
-  const showLocationPanel = Boolean(event.location && event.mapsUrl)
 
   const allEvents = (await getPublishedEvents(200)).docs.map(
     eventDocToTechEvent,
@@ -141,77 +140,43 @@ export default async function EventDetailPage({
         ]}
       />
 
-      <h1 className="mb-4 text-3xl font-bold text-primary md:text-4xl">
-        {event.title}
-      </h1>
+      {/*
+        Mobile order: cover → organizer/register → intro → about → actions/details.
+        Desktop: left = cover + organizer + register + actions + details;
+                 right = intro (title/date/ubicación) + about.
+        `contents` flattens wrappers so flex `order-*` can reshuffle on small screens.
+      */}
+      <div className="flex flex-col gap-6 lg:grid lg:grid-cols-[minmax(0,18rem)_minmax(0,1fr)] lg:items-start xl:grid-cols-[minmax(0,20rem)_minmax(0,1fr)]">
+        <aside className="contents lg:sticky lg:top-14 lg:block lg:space-y-4">
+          <div className="order-1 space-y-4">
+            <EventDetailCover event={event} />
+            <EventDetailOrganizer event={event} />
+          </div>
 
-      <EventDateDisplay event={event} className="mb-6" />
+          <div className="order-5 space-y-4">
+            <EventDetailsCard
+              event={event}
+              showLocation={false}
+              showOrganizer={false}
+              className="p-4"
+            />
 
-      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_20rem] xl:grid-cols-[minmax(0,1fr)_22rem]">
-        <div className="min-w-0">
-          <EventDetailPageClient event={event} />
-        </div>
-
-        <aside className="space-y-4 lg:sticky lg:top-14">
-          <EventSidebarActions
-            event={event}
-            showMapsLink={!showLocationPanel}
-          />
-
-          <EventDetailsCard
-            event={event}
-            showLocation={!showLocationPanel}
-            className="p-4"
-          />
-
-          {showLocationPanel && (
-            <div className="overflow-hidden rounded-xl border border-border bg-card/90 shadow-sm">
-              <div className="flex items-start gap-3 p-4">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-accent/20 bg-accent/10 text-accent">
-                  <MapPin size={16} />
-                </span>
-                <div className="min-w-0">
-                  <p className="text-2xs font-mono uppercase tracking-wider text-muted">
-                    Ubicación
-                  </p>
-                  <p className="mt-1 text-sm leading-snug text-primary">
-                    {event.location}
-                  </p>
-                </div>
-              </div>
-
-              {mapEmbedUrl && (
-                <div className="h-52 border-y border-border bg-elevated">
-                  <iframe
-                    src={mapEmbedUrl}
-                    title={`Mapa de ${event.location}`}
-                    className="h-full w-full border-0"
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                    allowFullScreen
-                  />
-                </div>
-              )}
-
-              <div
-                className={mapEmbedUrl ? 'p-3' : 'border-t border-border p-3'}
-              >
-                <EventExternalLink
-                  event={event}
-                  linkType="maps"
-                  surface={EVENT_SURFACE.detailPage}
-                  className={buttonVariants({
-                    size: 'md',
-                    className: 'w-full justify-center',
-                  })}
-                >
-                  Abrir en Google Maps
-                  <ArrowUpRight size={13} />
-                </EventExternalLink>
-              </div>
-            </div>
-          )}
+            <EventSidebarActions
+              event={event}
+              showMapsLink={!mapEmbedUrl}
+            />
+          </div>
         </aside>
+
+        <div className="contents lg:block lg:space-y-6">
+          <div className="order-2">
+            <EventDetailIntro event={event} mapEmbedUrl={mapEmbedUrl} />
+          </div>
+
+          <div className="order-3">
+            <EventDetailPageClient event={event} />
+          </div>
+        </div>
       </div>
 
       <OtherEventsSection events={otherEvents} />

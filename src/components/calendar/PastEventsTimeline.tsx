@@ -7,7 +7,6 @@ import { formatEventDateBadge, getEventPath } from '@/lib/events'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { EVENT_SURFACE, captureEventCardClicked } from '@/lib/analytics'
 import EventTypeBadge from './EventTypeBadge'
-import { LumaSourceBadge } from './LumaSourceBadge'
 import { EventSquareThumb } from './EventSquareThumb'
 
 const INITIAL_VISIBLE = 6
@@ -55,7 +54,6 @@ function TimelineRow({ event }: { event: TechEvent }) {
           </div>
           <div className="mt-2 flex flex-wrap items-center gap-2">
             <EventTypeBadge isInPerson={event.isInPerson} />
-            <LumaSourceBadge event={event} />
           </div>
         </div>
       </a>

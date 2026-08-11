@@ -206,6 +206,91 @@ export function formatEventTimeRange(
   return startTime || endTime
 }
 
+/**
+ * Parses wall-clock times carried on events ("6:30 PM", "18:30", ISO).
+ * Returns null when absent or unrecognised.
+ */
+function parseEventClockTime(
+  time: string | undefined,
+): { hour: number; minute: number } | null {
+  if (!time) return null
+  const value = time.trim()
+
+  const isoTime = value.match(/T(\d{2}):(\d{2})/)
+  if (isoTime) {
+    const hour = Number(isoTime[1])
+    const minute = Number(isoTime[2])
+    if (hour <= 23 && minute <= 59) return { hour, minute }
+    return null
+  }
+
+  const twelveHour = value.match(
+    /^(\d{1,2})(?::(\d{2}))?\s*([AaPp])\.?[Mm]\.?$/,
+  )
+  if (twelveHour) {
+    const hour =
+      (Number(twelveHour[1]) % 12) +
+      (twelveHour[3].toLowerCase() === 'p' ? 12 : 0)
+    const minute = Number(twelveHour[2] ?? 0)
+    if (hour <= 23 && minute <= 59) return { hour, minute }
+    return null
+  }
+
+  const twentyFourHour = value.match(/^(\d{1,2}):(\d{2})/)
+  if (twentyFourHour) {
+    const hour = Number(twentyFourHour[1])
+    const minute = Number(twentyFourHour[2])
+    if (hour <= 23 && minute <= 59) return { hour, minute }
+  }
+
+  return null
+}
+
+function localDateKey(now: Date): string {
+  const y = now.getFullYear()
+  const m = String(now.getMonth() + 1).padStart(2, '0')
+  const d = String(now.getDate()).padStart(2, '0')
+  return `${y}-${m}-${d}`
+}
+
+export type EventTimingLabel = 'hoy' | 'en_curso'
+
+/**
+ * "En curso" while the event window is active on the event's calendar day,
+ * otherwise "Hoy" when that day is today. Day comparison uses the site
+ * timezone (Sinaloa); the live window uses the viewer's local clock.
+ */
+export function getEventTimingLabel(
+  event: Pick<TechEvent, 'date' | 'startTime' | 'endTime'>,
+  now = new Date(),
+): EventTimingLabel | null {
+  const eventDate = event.date.split('T')[0]
+  // Event dates are Mazatlan calendar days — match against that, not UTC/local
+  // midnight drift from toISOString().
+  if (eventDate !== getEventDateToday(now)) return null
+
+  const start = parseEventClockTime(event.startTime)
+  if (start) {
+    // Build the window on the viewer's local calendar day that corresponds to
+    // "today" in the event timezone when possible; fall back to local today.
+    const todayLocal = localDateKey(now)
+    const [y, m, d] = (
+      todayLocal === eventDate ? todayLocal : eventDate
+    )
+      .split('-')
+      .map(Number)
+    const startAt = new Date(y, m - 1, d, start.hour, start.minute, 0, 0)
+    const end = parseEventClockTime(event.endTime)
+    const endAt = end
+      ? new Date(y, m - 1, d, end.hour, end.minute, 0, 0)
+      : new Date(startAt.getTime() + 60 * 60 * 1000)
+
+    if (now >= startAt && now <= endAt) return 'en_curso'
+  }
+
+  return 'hoy'
+}
+
 /** Events from `today` onward, soonest first. Pass the day explicitly so it stays pure. */
 export function selectUpcomingEvents(
   events: TechEvent[],

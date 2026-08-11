@@ -11,12 +11,12 @@ import {
   Mail,
 } from 'lucide-react'
 import EventTypeBadge from './EventTypeBadge'
-import { LumaSourceBadge } from './LumaSourceBadge'
 import { EventSquareThumb } from './EventSquareThumb'
 import type { TechEvent } from '@/hooks/useEventsData'
 import { buttonVariants } from '@/components/ui/button-variants'
-import { EventDialog } from './EventDialog'
-import { formatEventDateBadge, selectUpcomingEvents } from '@/lib/events'
+import { EventCardLink } from './EventCardLink'
+import { EventTimingBadge } from './EventTimingBadge'
+import { formatEventDateBadge, getEventDateToday, selectUpcomingEvents } from '@/lib/events'
 import {
   captureEventRegistrationStarted,
   type EventSurface,
@@ -28,20 +28,17 @@ export default function UpcomingEventsSidebar({
   events,
   status,
   refetch,
-  onEventSelect,
   surface,
 }: {
   events: TechEvent[]
   status: string
   refetch: () => void
-  /** Lets the parent calendar jump to the month of the opened event. */
-  onEventSelect?: (event: TechEvent) => void
   /** Which calendar this sidebar belongs to, for discovery-path attribution. */
   surface: EventSurface
 }) {
   const [page, setPage] = useState(0)
 
-  const todayStr = new Date().toISOString().slice(0, 10)
+  const todayStr = getEventDateToday()
   const upcoming = selectUpcomingEvents(events, todayStr)
 
   const totalPages = Math.ceil(upcoming.length / PAGE_SIZE)
@@ -103,16 +100,14 @@ export default function UpcomingEventsSidebar({
                 key={ev.id}
                 className="group relative flex w-full items-center gap-3 rounded-lg border border-border bg-card p-2.5 text-left transition-colors duration-200 hover:border-accent/40 hover:bg-accent/5"
               >
-                {/* Stretched link: covers the card so the whole thing opens the
-                    dialog, without nesting the "Registrarse" anchor inside it. */}
-                <EventDialog
+                <EventCardLink
                   event={ev}
                   surface={surface}
-                  onOpen={onEventSelect}
                   className="absolute inset-0 cursor-pointer rounded-lg"
+                  aria-label={`Ver detalles: ${ev.title}`}
                 >
                   <span className="sr-only">Ver detalles: {ev.title}</span>
-                </EventDialog>
+                </EventCardLink>
 
                 <EventSquareThumb event={ev} />
 
@@ -144,8 +139,8 @@ export default function UpcomingEventsSidebar({
                   )}
 
                   <div className="mt-2 flex flex-wrap items-center gap-2">
+                    <EventTimingBadge event={ev} />
                     <EventTypeBadge isInPerson={ev.isInPerson} />
-                    <LumaSourceBadge event={ev} />
                     {ev.registerUrl && (
                       <a
                         href={ev.registerUrl}
