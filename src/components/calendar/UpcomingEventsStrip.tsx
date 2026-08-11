@@ -19,6 +19,8 @@ import {
   getEventPath,
   selectUpcomingEvents,
   formatEventDateBadge,
+  formatEventMonthShort,
+  formatEventTimeRange,
 } from '@/lib/events'
 import { EVENT_SURFACE, captureEventCardClicked } from '@/lib/analytics'
 import EventTypeBadge from './EventTypeBadge'
@@ -27,7 +29,9 @@ import { LumaSourceBadge } from './LumaSourceBadge'
 const UPCOMING_LIMIT = 6
 
 function EventThumbnailCard({ ev }: { ev: TechEvent }) {
-  const { day, month } = formatEventDateBadge(ev.date)
+  const { day } = formatEventDateBadge(ev.date)
+  const month = formatEventMonthShort(ev.date)
+  const timeRange = formatEventTimeRange(ev.startTime, ev.endTime)
 
   return (
     <Link
@@ -55,30 +59,45 @@ function EventThumbnailCard({ ev }: { ev: TechEvent }) {
         )}
       </div>
 
-      <div className="flex flex-1 flex-col gap-1.5 p-3">
-        <h3 className="line-clamp-2 text-sm font-semibold text-primary transition-colors group-hover:text-accent">
-          {ev.title}
-        </h3>
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs font-mono text-muted">
-          <span className="shrink-0 font-semibold uppercase tracking-wide text-accent">
-            {day} {month}
+      <div className="grid flex-1 grid-cols-[auto_minmax(0,1fr)] items-start gap-3 p-3">
+        <div
+          className="flex w-[3.75rem] shrink-0 flex-col items-center justify-center rounded-xl border border-border bg-elevated/60 px-1.5 py-2"
+          aria-hidden
+        >
+          <span className="text-2xs font-mono font-semibold uppercase leading-none text-muted">
+            {month}
           </span>
-          {ev.startTime && (
-            <span className="shrink-0 whitespace-nowrap">· {ev.startTime}</span>
-          )}
-          {ev.organizer && (
-            <span className="truncate max-w-full">· {ev.organizer}</span>
-          )}
+          <span className="mt-1 text-xl font-bold leading-none text-accent">
+            {day}
+          </span>
         </div>
-        {ev.location && (
-          <p className="flex min-w-0 items-center gap-1 text-2xs font-mono text-muted">
-            <MapPin className="h-3 w-3 shrink-0" />
-            <span className="truncate">{ev.location}</span>
-          </p>
-        )}
-        <div className="mt-auto flex flex-wrap items-center gap-2 pt-1">
-          <EventTypeBadge isInPerson={ev.isInPerson} />
-          <LumaSourceBadge event={ev} />
+
+        <div className="flex min-w-0 flex-col gap-1.5">
+          <h3 className="line-clamp-2 text-sm font-semibold text-primary transition-colors group-hover:text-accent">
+            {ev.title}
+          </h3>
+          {(timeRange || ev.organizer) && (
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs font-mono text-muted">
+              {timeRange && (
+                <span className="shrink-0 whitespace-nowrap">{timeRange}</span>
+              )}
+              {ev.organizer && (
+                <span className="truncate max-w-full">
+                  {timeRange ? `· ${ev.organizer}` : ev.organizer}
+                </span>
+              )}
+            </div>
+          )}
+          {ev.location && (
+            <p className="flex min-w-0 items-center gap-1 text-2xs font-mono text-muted">
+              <MapPin className="h-3 w-3 shrink-0" />
+              <span className="truncate">{ev.location}</span>
+            </p>
+          )}
+          <div className="mt-auto flex flex-wrap items-center gap-2 pt-1">
+            <EventTypeBadge isInPerson={ev.isInPerson} />
+            <LumaSourceBadge event={ev} />
+          </div>
         </div>
       </div>
     </Link>
@@ -89,9 +108,12 @@ function SkeletonCard() {
   return (
     <div className="overflow-hidden rounded-lg border border-border bg-card">
       <div className="h-28 bg-elevated animate-pulse" />
-      <div className="space-y-2 p-3">
-        <div className="h-4 w-3/4 rounded bg-elevated animate-pulse" />
-        <div className="h-3 w-1/2 rounded bg-elevated animate-pulse" />
+      <div className="grid grid-cols-[auto_minmax(0,1fr)] items-start gap-3 p-3">
+        <div className="h-[3.75rem] w-[3.75rem] rounded-xl bg-elevated animate-pulse" />
+        <div className="space-y-2">
+          <div className="h-4 w-3/4 rounded bg-elevated animate-pulse" />
+          <div className="h-3 w-1/2 rounded bg-elevated animate-pulse" />
+        </div>
       </div>
     </div>
   )
