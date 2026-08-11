@@ -15,7 +15,11 @@ import {
 import { SectionTitle } from '@/components/ui/SectionTitle'
 import { useEventsData } from '@/hooks/useEventsData'
 import type { TechEvent } from '@/hooks/useEventsData'
-import { getEventPath, selectUpcomingEvents } from '@/lib/events'
+import {
+  getEventPath,
+  selectUpcomingEvents,
+  formatEventDateBadge,
+} from '@/lib/events'
 import { EVENT_SURFACE, captureEventCardClicked } from '@/lib/analytics'
 import EventTypeBadge from './EventTypeBadge'
 import { LumaSourceBadge } from './LumaSourceBadge'
@@ -23,6 +27,8 @@ import { LumaSourceBadge } from './LumaSourceBadge'
 const UPCOMING_LIMIT = 6
 
 function EventThumbnailCard({ ev }: { ev: TechEvent }) {
+  const { day, month } = formatEventDateBadge(ev.date)
+
   return (
     <Link
       href={getEventPath(ev.slug)}
@@ -54,11 +60,14 @@ function EventThumbnailCard({ ev }: { ev: TechEvent }) {
           {ev.title}
         </h3>
         <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs font-mono text-muted">
-          {ev.organizer && (
-            <span className="truncate max-w-full">{ev.organizer}</span>
-          )}
+          <span className="shrink-0 font-semibold uppercase tracking-wide text-accent">
+            {day} {month}
+          </span>
           {ev.startTime && (
             <span className="shrink-0 whitespace-nowrap">· {ev.startTime}</span>
+          )}
+          {ev.organizer && (
+            <span className="truncate max-w-full">· {ev.organizer}</span>
           )}
         </div>
         {ev.location && (
