@@ -6,6 +6,7 @@ import { getEventPath } from '@/lib/events'
 import { EVENT_SURFACE, captureEventCardClicked } from '@/lib/analytics'
 import { EventDateBadge } from './EventDateBadge'
 import EventTypeBadge from './EventTypeBadge'
+import { LumaSourceBadge } from './LumaSourceBadge'
 
 /** Compact link card for related / other event grids. */
 export function EventLinkCard({ event }: { event: TechEvent }) {
@@ -24,8 +25,9 @@ export function EventLinkCard({ event }: { event: TechEvent }) {
           <span className="text-sm font-sans font-semibold text-primary group-hover:text-accent transition-colors truncate">
             {event.title}
           </span>
-          <span className="shrink-0">
+          <span className="flex shrink-0 items-center gap-1">
             <EventTypeBadge isInPerson={event.isInPerson} />
+            <LumaSourceBadge event={event} />
           </span>
         </div>
         <div className="flex items-center gap-2 mt-0.5 overflow-hidden">

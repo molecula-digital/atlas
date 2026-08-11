@@ -24,6 +24,15 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: '*.googleusercontent.com',
       },
+      // Luma event covers synced into the calendar.
+      {
+        protocol: 'https',
+        hostname: 'images.lumacdn.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn.lu.ma',
+      },
       {
         protocol: 'http',
         hostname: 'localhost',
@@ -59,10 +68,8 @@ export default withSentryConfig(withPayload(nextConfig), {
     process.env.NODE_ENV === 'production' ? '/monitoring' : undefined,
 
   webpack: {
-    // Enables automatic instrumentation of Vercel Cron Monitors. (Does not yet work with App Router route handlers.)
-    // See the following for more information:
+    // Sentry Cron Monitors — unused on Coolify; left for optional Sentry setup.
     // https://docs.sentry.io/product/crons/
-    // https://vercel.com/docs/cron-jobs
     automaticVercelMonitors: true,
 
     // Tree-shaking options for reducing bundle size

@@ -16,6 +16,7 @@ import { Entries } from './src/collections/Entries'
 import { News } from './src/collections/News'
 import { Jobs } from './src/collections/Jobs'
 import { Events } from './src/collections/Events'
+import { LumaCalendars } from './src/collections/LumaCalendars'
 import { NewsletterSubscribers } from './src/collections/NewsletterSubscribers'
 import { buildMediaFileUrl } from './src/lib/media-url'
 import { getPayloadPreviewUrl } from './src/lib/payload-preview'
@@ -63,6 +64,7 @@ export default buildConfig({
     News,
     Jobs,
     Events,
+    LumaCalendars,
     NewsletterSubscribers,
   ],
   secret: process.env.PAYLOAD_SECRET || '',

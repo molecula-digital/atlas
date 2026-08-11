@@ -73,6 +73,7 @@ export interface Config {
     news: News;
     jobs: Job;
     events: Event;
+    'luma-calendars': LumaCalendar;
     'newsletter-subscribers': NewsletterSubscriber;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
@@ -87,6 +88,7 @@ export interface Config {
     news: NewsSelect<false> | NewsSelect<true>;
     jobs: JobsSelect<false> | JobsSelect<true>;
     events: EventsSelect<false> | EventsSelect<true>;
+    'luma-calendars': LumaCalendarsSelect<false> | LumaCalendarsSelect<true>;
     'newsletter-subscribers': NewsletterSubscribersSelect<false> | NewsletterSubscribersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -214,7 +216,7 @@ export interface Entry {
   id: number;
   entryType: 'startup' | 'community' | 'business' | 'consultory' | 'research-center' | 'person';
   /**
-   * Se genera automáticamente a partir del nombre si se deja vacío.
+   * Se genera a partir del nombre si se deja vacío. Solo usa letras sin acentos, números y guiones.
    */
   slug: string;
   city:
@@ -348,7 +350,7 @@ export interface Entry {
 export interface News {
   id: number;
   /**
-   * Se genera automáticamente a partir del título si se deja vacío.
+   * Se genera a partir del título si se deja vacío. Solo usa letras sin acentos, números y guiones.
    */
   slug: string;
   author?: (number | null) | User;
@@ -395,7 +397,7 @@ export interface Job {
   id: number;
   title: string;
   /**
-   * Se genera automáticamente a partir del título si se deja vacío.
+   * Se genera a partir del título si se deja vacío. Solo usa letras sin acentos, números y guiones.
    */
   slug: string;
   description: {
@@ -482,7 +484,7 @@ export interface Event {
   id: number;
   title: string;
   /**
-   * Se genera automáticamente a partir del título y la fecha si se deja vacío.
+   * Se genera a partir del título y la fecha si se deja vacío. Solo usa letras sin acentos, números y guiones.
    */
   slug: string;
   organizer?: string | null;
@@ -526,9 +528,74 @@ export interface Event {
    */
   registerUrl?: string | null;
   image?: (number | null) | Media;
+  /**
+   * Portada remota (p. ej. Luma). Se usa si no hay imagen en Media.
+   */
+  externalImageUrl?: string | null;
+  /**
+   * Vacío = creado manualmente en Atlas.
+   */
+  externalSource?: 'luma' | null;
+  /**
+   * ID del evento en la fuente (ej. evt-… en Luma).
+   */
+  externalId?: string | null;
+  /**
+   * Calendario Luma de origen (cal-…).
+   */
+  externalCalendarId?: string | null;
+  /**
+   * Nombre legible del calendario Luma (se rellena al sincronizar).
+   */
+  externalCalendarName?: string | null;
+  lastSyncedAt?: string | null;
+  /**
+   * Si está activo, la sincronización no sobrescribe este evento.
+   */
+  syncLocked?: boolean | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * Calendarios públicos de Luma a sincronizar con Eventos. Puedes conectar varios; cada uno se importa por su calendar id (cal-…).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "luma-calendars".
+ */
+export interface LumaCalendar {
+  id: number;
+  /**
+   * Nombre interno (ej. Gina, Atlas Culiacán).
+   */
+  name: string;
+  /**
+   * ID público del calendario Luma, p. ej. cal-Pf2My2TlVNz1N89 (sale en la URL /calendar/cal-…).
+   */
+  calendarId: string;
+  /**
+   * Si está apagado, el cron y la sync global lo omiten.
+   */
+  enabled?: boolean | null;
+  /**
+   * Incluye eventos pasados del calendario además de los próximos.
+   */
+  syncPast?: boolean | null;
+  /**
+   * Los eventos importados quedan publicados. Desactiva para crear borradores.
+   */
+  autoPublish?: boolean | null;
+  lastSyncedAt?: string | null;
+  /**
+   * Resumen de la última corrida. Para forzar sync: POST /api/luma-calendars/:id/sync (sesión admin).
+   */
+  lastSyncStatus?: string | null;
+  /**
+   * Notas internas (opcional).
+   */
+  notes?: string | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * Emails anónimos (sin cuenta Atlas). Exportar CSV (incluye también perfiles con newsletter activo): /api/newsletter-subscribers/export
@@ -597,6 +664,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'events';
         value: number | Event;
+      } | null)
+    | ({
+        relationTo: 'luma-calendars';
+        value: number | LumaCalendar;
       } | null)
     | ({
         relationTo: 'newsletter-subscribers';
@@ -848,9 +919,32 @@ export interface EventsSelect<T extends boolean = true> {
   url?: T;
   registerUrl?: T;
   image?: T;
+  externalImageUrl?: T;
+  externalSource?: T;
+  externalId?: T;
+  externalCalendarId?: T;
+  externalCalendarName?: T;
+  lastSyncedAt?: T;
+  syncLocked?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "luma-calendars_select".
+ */
+export interface LumaCalendarsSelect<T extends boolean = true> {
+  name?: T;
+  calendarId?: T;
+  enabled?: T;
+  syncPast?: T;
+  autoPublish?: T;
+  lastSyncedAt?: T;
+  lastSyncStatus?: T;
+  notes?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

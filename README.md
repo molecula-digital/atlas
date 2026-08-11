@@ -95,6 +95,25 @@ Analytics solo se inicializa en produccion, asi que en desarrollo (`pnpm dev`) n
 
 Ver [`docs/posthog.md`](docs/posthog.md) para el detalle de que se registra y por que.
 
+## Sincronizacion de calendarios Luma
+
+Los eventos publicos de uno o mas calendarios de [Luma](https://luma.com) se pueden importar automaticamente a la coleccion **Eventos** de Payload.
+
+1. En el admin (`/admin`), abre **Integraciones → Calendarios Luma**
+2. La migracion siembra **Gina**, **La Cripto Plebada** y **Cursor Culiacan, Mexico**; agrega mas filas para otros calendarios
+3. Configura `CRON_SECRET` en Coolify (`openssl rand -hex 32`)
+4. Scheduled Task cada 12h (`0 */12 * * *`):
+
+```bash
+curl -fsS -X POST \
+  -H "Authorization: Bearer $CRON_SECRET" \
+  "https://atlas-sinaloa.tech/api/cron/luma-sync"
+```
+
+Tambien puedes forzar un calendario con `POST /api/luma-calendars/:id/sync` (sesion admin).
+
+La sync corre en runtime contra la app desplegada (no en el build). Usa el feed publico de Luma; marca **Bloquear sync** en un evento para proteger ediciones manuales.
+
 ## Docker
 
 El `Dockerfile` multi-stage construye la app en 3 fases:
