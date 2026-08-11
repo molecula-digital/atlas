@@ -79,15 +79,15 @@ Copia `.env.example` y configura segun tu entorno:
 | `S3_REGION`                                 | Region (`us-east-1` para MinIO, `auto` para R2)                                                                                                                                   |
 | `MEDIA_URL`                                 | URL publica (CDN) donde se sirven las imagenes. Local: `http://localhost:9000/atlas-media`. Produccion: `https://cdn.atlas-sinaloa.tech` — no usar el endpoint R2                 |
 
-**Analytics (opcionales):**
+**Analytics:**
 
-Ninguna es obligatoria: sin ellas la app funciona igual y simplemente no registra nada. Todas empiezan con `NEXT_PUBLIC_`, asi que **se incrustan en el bundle durante el build, no se leen en tiempo de ejecucion** — hay que pasarlas como `--build-arg` (ver Docker). Si falta alguna el build no falla: queda como `undefined` y la captura se apaga en silencio.
+Todas empiezan con `NEXT_PUBLIC_`, asi que **se incrustan en el bundle durante el build, no se leen en tiempo de ejecucion** — hay que pasarlas como `--build-arg` / variable de *build* en Coolify (ver Docker). Ponerlas solo en Environment Variables de runtime no sirve: el cliente ya salio del build sin el token.
 
 Analytics solo se inicializa en produccion, asi que en desarrollo (`pnpm dev`) no se envia nada y no hace falta configurarlas.
 
 | Variable                            | Descripcion                                                                                                                                                              |
 | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` | Token del proyecto de PostHog. En PostHog: Settings → Project → Project API Key                                                                                          |
+| `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` | **Obligatorio en el build de produccion.** Token del proyecto (PostHog → Settings → Project → Project API Key). Sin el, el `Dockerfile` falla a proposito                 |
 | `NEXT_PUBLIC_POSTHOG_HOST`          | Endpoint de ingesta del navegador. Apunta al proxy inverso (`https://t.molecula.digital`) para esquivar los bloqueadores. Usa `https://us.i.posthog.com` para ir directo |
 | `NEXT_PUBLIC_POSTHOG_UI_HOST`       | Donde vive PostHog, para los enlaces del toolbar. Solo importa si el anterior es un proxy. Por defecto `https://us.posthog.com`                                          |
 | `NEXT_PUBLIC_UMAMI_WEBSITE_ID`      | ID del sitio en Umami (conteo de visitas sin cookies). No es secreto: aparece en el HTML                                                                                 |
@@ -136,7 +136,7 @@ docker run -p 3000:3000 --env-file .env atlas-tech
 
 > `SENTRY_AUTH_TOKEN` tambien es obligatorio durante el build. `withSentryConfig` lo usa para crear la release y subir source maps; si falta o la subida falla, el build falla y no produce una imagen desplegable.
 
-> Las variables `NEXT_PUBLIC_*` de analytics **tienen que ir en el build**, no en `docker run`: Next.js las incrusta en el bundle durante `pnpm build`, asi que pasarlas solo con `--env-file` llega tarde y analytics se despliega muerto sin ningun error visible. Solo el token de PostHog es obligatorio; las demas tienen valores por defecto en el `Dockerfile` y unicamente hace falta pasarlas para apuntar a otro proyecto o a otro sitio de Umami.
+> Las variables `NEXT_PUBLIC_*` de analytics **tienen que ir en el build**, no en `docker run`: Next.js las incrusta en el bundle durante `pnpm build`, asi que pasarlas solo con `--env-file` / Coolify Environment Variables llega tarde. El `Dockerfile` exige `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` (igual que `SENTRY_AUTH_TOKEN`); las demas tienen valores por defecto y solo hace falta pasarlas para apuntar a otro proyecto o a otro sitio de Umami. En Coolify: **Build Variable / Build Argument**, no solo runtime env.
 
 > `NEXT_PUBLIC_SITE_URL` es la excepcion: **no** se pasa como `--build-arg`. Se queda fuera del build a proposito para que siga leyendose en tiempo de ejecucion desde `--env-file`, que es como llega hoy. Convertirla en build-arg la congelaria y romperia cualquier despliegue que no sea produccion.
 

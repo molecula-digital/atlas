@@ -5,6 +5,13 @@
 - **Client-only.** No server SDK. Every event is captured in the browser.
 - **Proxied.** `NEXT_PUBLIC_POSTHOG_HOST=https://t.molecula.digital` so blockers don't drop it. `NEXT_PUBLIC_POSTHOG_UI_HOST` keeps toolbar links pointing at real PostHog.
 - **Production only.** `pnpm dev` captures nothing.
+- **Build-time token.** `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` must be a Docker/Coolify *build* arg. Runtime env is ignored for `NEXT_PUBLIC_*`; the production `Dockerfile` fails the build if the token is empty.
+
+### If PostHog shows nothing
+
+1. Confirm the latest production image was built with `--build-arg NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN=…` (Coolify: Build Variable). Runtime-only env does not count.
+2. Open the live site → DevTools → Network → filter `t.molecula.digital`. You should see `/decide/` and `/i/v0/e/` (or `/e/`) returning 200. A console warning about a missing token means the build shipped without one.
+3. Look at **Activity** / live events, not only **Persons** — the project uses identified-only person profiles, so anonymous `$pageview` traffic still lands as events without creating a Person row.
 
 | File | Holds |
 |---|---|

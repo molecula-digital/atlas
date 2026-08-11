@@ -24,17 +24,14 @@ ENV NODE_OPTIONS="--max-old-space-size=4096"
 RUN test -n "${SENTRY_AUTH_TOKEN}"
 
 # Analytics only. NEXT_PUBLIC_* is inlined into the bundle by `next build`
-# below, not read at runtime — passing these at `docker run` is too late. A
-# missing one does not fail the build; it ships as undefined and the feature
-# silently does nothing, which is how analytics can look wired up and capture
-# zero.
+# below, not read at runtime — passing these at `docker run` / Coolify "Environment
+# Variables" is too late. A missing PostHog token used to ship as empty and the
+# client silently dropped every event, which is how analytics looked wired up
+# and captured zero.
 #
-# Every ARG here has a default, and that is load-bearing rather than tidiness.
-# `ARG FOO` with no default followed by `ENV FOO=${FOO}` does not leave FOO
-# unset — it sets it to the empty string, and an empty-but-present key still
-# counts as "defined at build time" to Next, so it gets inlined as empty and
-# `docker run --env-file` can never supply it afterwards. Defaults mean an
-# omitted --build-arg reproduces the previous behaviour instead of blanking it.
+# Host/UI/Umami ARGs keep defaults so omitting them reproduces previous
+# behaviour. The project token does not: an empty ARG still counts as "defined
+# at build time" to Next and freezes as "", so we refuse to build without one.
 #
 # NEXT_PUBLIC_SITE_URL is deliberately NOT listed. It has no ARG, so it stays
 # absent at build time and therefore stays a real runtime lookup in the server
@@ -50,6 +47,10 @@ ENV NEXT_PUBLIC_POSTHOG_HOST=${NEXT_PUBLIC_POSTHOG_HOST}
 ENV NEXT_PUBLIC_POSTHOG_UI_HOST=${NEXT_PUBLIC_POSTHOG_UI_HOST}
 ENV NEXT_PUBLIC_UMAMI_WEBSITE_ID=${NEXT_PUBLIC_UMAMI_WEBSITE_ID}
 ENV NEXT_PUBLIC_UMAMI_SRC=${NEXT_PUBLIC_UMAMI_SRC}
+
+# Same rule as SENTRY_AUTH_TOKEN: no token → no production image. Coolify must
+# pass this as a *build* argument/variable, not only a runtime env var.
+RUN test -n "${NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN}"
 
 RUN pnpm generate:importmap
 RUN pnpm payload:migrate -- --force-accept-warning
