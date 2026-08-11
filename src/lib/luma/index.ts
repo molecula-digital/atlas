@@ -18,6 +18,7 @@ export {
   tipTapToPlainText,
   lumaEventUrl,
   lumaCalendarUrl,
+  dayOnlyUtcNoon,
   mapsUrlFromGeo,
 } from './map'
 export {

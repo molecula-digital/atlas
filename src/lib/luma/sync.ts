@@ -1,7 +1,11 @@
 import type { Payload, Where } from 'payload'
 import type { Event } from '@/payload-types'
 import { getEventDetail, listAllCalendarItems } from './client'
-import { mapLumaEventToPayload, type MappedLumaEvent } from './map'
+import {
+  mapLumaEventToPayload,
+  dayOnlyUtcNoon,
+  type MappedLumaEvent,
+} from './map'
 import type { LumaListPeriod } from './types'
 
 export interface LumaCalendarConfig {
@@ -95,7 +99,7 @@ function toEventData(
     slug: mapped.slug,
     organizer: mapped.organizer || null,
     description: mapped.description,
-    date: mapped.date,
+    date: dayOnlyUtcNoon(mapped.date),
     startTime: mapped.startTime,
     endTime: mapped.endTime,
     location: mapped.location || null,
