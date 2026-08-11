@@ -253,6 +253,8 @@ function EventHeroImage({
 }) {
   if (!event.image) return null
 
+  // Blurred wash matches EntryCard / FeaturedEntryTile: scale past the
+  // container so blur edges never leave empty bands at the sides.
   const image = (
     <>
       <Image
@@ -261,14 +263,15 @@ function EventHeroImage({
         aria-hidden
         fill
         sizes="(max-width: 768px) 100vw, 800px"
-        className="absolute inset-0 h-full w-full scale-110 object-cover opacity-40 blur-2xl"
+        className="absolute inset-0 h-full w-full scale-150 object-cover opacity-70 blur-2xl saturate-150"
       />
+      <div className="absolute inset-0 bg-gradient-to-br from-card/20 via-transparent to-card/60" />
       <Image
         src={event.image}
         alt={event.title}
         fill
         sizes="(max-width: 768px) 100vw, 800px"
-        className="relative z-10 h-full w-full object-contain"
+        className="relative z-10 h-full w-full object-contain drop-shadow-md"
       />
       {onExpandImage && (
         <span className="absolute bottom-2 right-2 z-20 inline-flex items-center gap-1.5 rounded-md bg-black/60 px-2 py-1 font-mono text-2xs text-white opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100">
@@ -280,7 +283,7 @@ function EventHeroImage({
   )
 
   const containerClass = cn(
-    'relative overflow-hidden bg-black/10',
+    'relative overflow-hidden bg-elevated',
     isPage
       ? 'h-56 rounded-xl border border-border md:h-80'
       : 'h-52 shrink-0 sm:h-60',
