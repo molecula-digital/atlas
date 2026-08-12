@@ -1,6 +1,9 @@
 import type { CollectionConfig } from 'payload'
 import { isAdminOrEditor, publishedOrAuthenticated } from '../access/roles'
-import { revalidateEntry } from './hooks/revalidateOnPublish'
+import {
+  revalidateEntry,
+  revalidateEntryDelete,
+} from './hooks/revalidateOnPublish'
 import { getPayloadPreviewUrl } from '../lib/payload-preview'
 import { slugify } from '../lib/slug'
 
@@ -27,6 +30,7 @@ export const Events: CollectionConfig = {
   },
   hooks: {
     afterChange: [revalidateEntry],
+    afterDelete: [revalidateEntryDelete],
   },
   fields: [
     {

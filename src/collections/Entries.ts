@@ -1,6 +1,9 @@
 import type { CollectionConfig } from 'payload'
 import { isAdminOrEditor, publishedOrAuthenticated } from '../access/roles'
-import { revalidateEntry } from './hooks/revalidateOnPublish'
+import {
+  revalidateEntry,
+  revalidateEntryDelete,
+} from './hooks/revalidateOnPublish'
 import {
   CITY_SELECT_OPTIONS,
   ENTRY_TYPES,
@@ -52,6 +55,7 @@ export const Entries: CollectionConfig = {
   },
   hooks: {
     afterChange: [revalidateEntry],
+    afterDelete: [revalidateEntryDelete],
   },
   fields: [
     // --- Sidebar fields ---
