@@ -26,7 +26,7 @@ export default async function DirectoryPage() {
         cities={cities}
         typeCounts={typeCounts}
         totalCount={total}
-        pageSize={12}
+        pageSize={18}
       />
     </section>
   )

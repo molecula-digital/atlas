@@ -10,6 +10,7 @@ import {
   publicProfileToDirectoryItem,
   type PublicProfileSort,
 } from '@/lib/public-profile'
+import { compareByRelevance, utcDayKey } from '@/lib/directory-sort'
 import { SECTOR_OPTIONS } from '@/config'
 
 const SORT_MAP: Record<string, string> = {
@@ -17,6 +18,8 @@ const SORT_MAP: Record<string, string> = {
   'name-desc': '-name',
   'date-desc': '-publishDate',
   'date-asc': 'publishDate',
+  // Payload has no relevance sort; handled in-memory / SQL below.
+  relevance: '-publishDate',
 }
 
 const VALID_SECTORS = new Set(SECTOR_OPTIONS.map((o) => o.value))
@@ -32,12 +35,19 @@ function parseSectors(raw: string | null): string[] {
 type DirectoryDoc = Record<string, unknown> & {
   id: string | number
   name?: string
+  featured?: boolean | null
+  entryType?: string | null
   publishDate?: string | null
   kind?: string
 }
 
 function sortMerged(docs: DirectoryDoc[], sortKey: string): DirectoryDoc[] {
   const copy = [...docs]
+  if (sortKey === 'relevance') {
+    const dayKey = utcDayKey()
+    copy.sort((a, b) => compareByRelevance(a, b, dayKey))
+    return copy
+  }
   copy.sort((a, b) => {
     if (sortKey === 'name-asc' || sortKey === 'name-desc') {
       const cmp = String(a.name ?? '').localeCompare(
@@ -54,6 +64,50 @@ function sortMerged(docs: DirectoryDoc[], sortKey: string): DirectoryDoc[] {
   return copy
 }
 
+function toDirectoryEntryDoc(doc: {
+  id: string | number
+  slug?: string | null
+  name?: string | null
+  tagline?: string | null
+  entryType?: string | null
+  logo?: unknown
+  coverImage?: unknown
+  city?: string | null
+  tags?: unknown
+  featured?: boolean | null
+  publishDate?: string | null
+}): DirectoryDoc {
+  return {
+    id: doc.id,
+    kind: 'entry',
+    slug: doc.slug,
+    name: doc.name ?? undefined,
+    tagline: doc.tagline ?? null,
+    entryType: doc.entryType,
+    logo: doc.logo,
+    coverImage: doc.coverImage,
+    city: doc.city,
+    tags: doc.tags ?? [],
+    featured: doc.featured ?? false,
+    publishDate: doc.publishDate ?? null,
+  }
+}
+
+function paginateDocs(docs: DirectoryDoc[], page: number, limit: number) {
+  const totalDocs = docs.length
+  const totalPages = Math.max(1, Math.ceil(totalDocs / limit) || 1)
+  const safePage = Math.min(page, totalPages)
+  const start = (safePage - 1) * limit
+  return {
+    docs: docs.slice(start, start + limit),
+    totalDocs,
+    totalPages,
+    page: safePage,
+    hasNextPage: safePage < totalPages,
+    hasPrevPage: safePage > 1,
+  }
+}
+
 export async function GET(request: NextRequest) {
   const limited = await withRateLimit(request, {
     limit: 60,
@@ -65,7 +119,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = request.nextUrl
     const { page, limit } = parsePagination(searchParams, { defaultLimit: 18 })
-    const sortKey = searchParams.get('sort') || 'date-desc'
+    const sortKey = searchParams.get('sort') || 'relevance'
     const sort = SORT_MAP[sortKey] || '-publishDate'
     const entryType = searchParams.get('entryType')
     const city = searchParams.get('city')
@@ -133,9 +187,13 @@ export async function GET(request: NextRequest) {
       })
     }
 
-    // /personas: merge Payload person entries with public user profiles (no city
-    // or sector filter — profiles have neither).
-    if (entryType === 'person' && !city && sectors.length === 0) {
+    // Merge public user profiles into the listing when browsing "Todos" or
+    // /personas. Profiles have no city/sector, so city and sector filters
+    // stay Payload-only.
+    const shouldMergeProfiles =
+      !city && sectors.length === 0 && (!entryType || entryType === 'person')
+
+    if (shouldMergeProfiles || sortKey === 'relevance') {
       const profileSort = (
         ['name-asc', 'name-desc', 'date-desc', 'date-asc'].includes(sortKey)
           ? sortKey
@@ -143,7 +201,7 @@ export async function GET(request: NextRequest) {
       ) as PublicProfileSort
 
       // limit: 0 is what actually disables the cap — `pagination: false` alone
-      // still applies a non-zero limit, which would silently drop person entries
+      // still applies a non-zero limit, which would silently drop entries
       // past the cap from the merged result and its pagination.
       const entriesResult = await payload.find({
         collection: 'entries',
@@ -153,55 +211,35 @@ export async function GET(request: NextRequest) {
         sort,
       })
 
-      let publicProfiles: Awaited<ReturnType<typeof listPublicProfiles>> = []
-      try {
-        publicProfiles = await listPublicProfiles(profileSort)
-      } catch (err) {
-        console.error(
-          'Public user profiles unavailable; serving Payload persons only:',
-          err,
-        )
+      const entryDocs: DirectoryDoc[] = entriesResult.docs.map((doc) =>
+        toDirectoryEntryDoc(doc),
+      )
+
+      let profileDocs: DirectoryDoc[] = []
+      if (shouldMergeProfiles) {
+        try {
+          const publicProfiles = await listPublicProfiles(profileSort)
+          profileDocs = publicProfiles.map((p) => {
+            const item = publicProfileToDirectoryItem(p)
+            return {
+              ...item,
+              id: item.id,
+              name: item.name,
+              featured: false,
+              entryType: item.entryType,
+              publishDate: item.publishDate,
+            }
+          })
+        } catch (err) {
+          console.error(
+            'Public user profiles unavailable; serving Payload entries only:',
+            err,
+          )
+        }
       }
 
-      const entryDocs: DirectoryDoc[] = entriesResult.docs.map((doc) => ({
-        id: doc.id,
-        kind: 'entry',
-        slug: doc.slug,
-        name: doc.name,
-        tagline: doc.tagline ?? null,
-        entryType: doc.entryType,
-        logo: doc.logo,
-        coverImage: doc.coverImage,
-        city: doc.city,
-        tags: doc.tags ?? [],
-        publishDate: (doc.publishDate as string | null | undefined) ?? null,
-      }))
-
-      const profileDocs: DirectoryDoc[] = publicProfiles.map((p) => {
-        const item = publicProfileToDirectoryItem(p)
-        return {
-          ...item,
-          id: item.id,
-          name: item.name,
-          publishDate: item.publishDate,
-        }
-      })
-
       const merged = sortMerged([...entryDocs, ...profileDocs], sortKey)
-      const totalDocs = merged.length
-      const totalPages = Math.max(1, Math.ceil(totalDocs / limit) || 1)
-      const safePage = Math.min(page, totalPages)
-      const start = (safePage - 1) * limit
-      const docs = merged.slice(start, start + limit)
-
-      return NextResponse.json({
-        docs,
-        totalDocs,
-        totalPages,
-        page: safePage,
-        hasNextPage: safePage < totalPages,
-        hasPrevPage: safePage > 1,
-      })
+      return NextResponse.json(paginateDocs(merged, page, limit))
     }
 
     const result = await payload.find({

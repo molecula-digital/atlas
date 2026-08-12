@@ -17,11 +17,13 @@ export interface CityInfo {
   count: number
 }
 
-export type SortOption = 'name-asc' | 'name-desc' | 'date-desc' | 'date-asc'
+export type SortOption =
+  'relevance' | 'name-asc' | 'name-desc' | 'date-desc' | 'date-asc'
 
-export const DEFAULT_SORT: SortOption = 'date-desc'
+export const DEFAULT_SORT: SortOption = 'relevance'
 
 export const SORT_OPTIONS: { value: SortOption; label: string }[] = [
+  { value: 'relevance', label: 'Relevancia' },
   { value: 'date-desc', label: 'Más recientes' },
   { value: 'date-asc', label: 'Más antiguos' },
   { value: 'name-asc', label: 'Nombre A–Z' },

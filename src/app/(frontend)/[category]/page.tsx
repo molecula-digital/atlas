@@ -54,7 +54,7 @@ export default async function CategoryPage({
         typeCounts={typeCounts}
         totalCount={total}
         initialType={entryType}
-        pageSize={12}
+        pageSize={18}
       />
     </section>
   )
