@@ -423,7 +423,7 @@ export default async function EntryDetailPage({
         <div
           className={`space-y-8${!isCompactLayout ? ' max-w-3xl mx-auto lg:mx-0 lg:max-w-none' : ''}`}
         >
-          {/* Cover image, with a consistent fallback hero for entries without one. */}
+          {/* Cover image — logo+blur fallback matches EntryCard when no cover. */}
           <div className="relative">
             <div className="group relative aspect-video rounded-lg overflow-hidden bg-elevated">
               {coverUrl ? (
@@ -435,49 +435,32 @@ export default async function EntryDetailPage({
                   sizes="(max-width: 768px) 100vw, 1200px"
                   priority
                 />
-              ) : (
-                <div className="relative flex h-full overflow-hidden bg-gradient-to-br from-accent/25 via-elevated to-card p-6 sm:p-8">
-                  <div className="absolute inset-0 opacity-25 [background-image:linear-gradient(to_right,color-mix(in_srgb,var(--color-accent)_35%,transparent)_1px,transparent_1px),linear-gradient(to_bottom,color-mix(in_srgb,var(--color-accent)_35%,transparent)_1px,transparent_1px)] [background-size:28px_28px]" />
-                  <div className="relative flex w-full flex-col justify-between">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl border border-accent/25 bg-card/80 p-3 shadow-sm backdrop-blur-sm">
-                        {logoUrl ? (
-                          <EntryLogoLightbox
-                            src={logoUrl}
-                            alt={`${entry.name as string} logo`}
-                            width={64}
-                            height={64}
-                            className="h-full w-full object-contain"
-                          />
-                        ) : (
-                          <EntryIcon
-                            className="h-7 w-7 text-accent"
-                            strokeWidth={1.5}
-                          />
-                        )}
-                      </div>
-                      <EntryBadge
-                        entryType={entry.entryType as AtlasEntryType}
-                      />
-                    </div>
-                    <div className="max-w-2xl">
-                      <h1 className="terminal-title text-2xl font-bold text-primary sm:text-3xl">
-                        {entry.name as string}
-                      </h1>
-                      {entry.tagline && (
-                        <p className="mt-3 text-base text-secondary sm:text-lg">
-                          {entry.tagline as string}
-                        </p>
-                      )}
-                      <p className="mt-4 flex items-center gap-1.5 text-xs font-mono text-muted">
-                        <MapPin className="h-3.5 w-3.5 text-accent" />
-                        {entry.city === 'global'
-                          ? 'Global'
-                          : getCityName(entry.city as string)}
-                        {entry.state ? `, ${entry.state as string}` : ''}
-                      </p>
-                    </div>
+              ) : logoUrl ? (
+                <div className="relative flex h-full items-center justify-center overflow-hidden p-8 sm:p-12">
+                  {/* Same optimized variant as the crisp logo — blur hides the low res */}
+                  <Image
+                    src={logoUrl}
+                    alt=""
+                    aria-hidden="true"
+                    width={160}
+                    height={160}
+                    className="absolute inset-0 h-full w-full scale-150 object-cover opacity-70 blur-2xl saturate-150"
+                    priority
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-br from-card/20 via-transparent to-card/60" />
+                  <div className="relative z-10">
+                    <EntryLogoLightbox
+                      src={logoUrl}
+                      alt={`${entry.name as string} logo`}
+                      width={160}
+                      height={160}
+                      className="max-h-32 w-auto object-contain drop-shadow-md sm:max-h-40"
+                    />
                   </div>
+                </div>
+              ) : (
+                <div className="flex h-full items-center justify-center bg-gradient-to-br from-accent/25 via-elevated to-card text-6xl font-mono font-bold text-accent sm:text-7xl">
+                  {(entry.name as string).charAt(0)}
                 </div>
               )}
             </div>
@@ -497,28 +480,24 @@ export default async function EntryDetailPage({
 
           {/* Header */}
           <div className={coverUrl && logoUrl ? 'space-y-4 pt-4' : 'space-y-4'}>
-            {coverUrl ? (
-              <div className="flex items-center gap-3">
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <EntryBadge entryType={entry.entryType as AtlasEntryType} />
-                    {entry.verified && (
-                      <span className="inline-flex items-center gap-1 text-xs font-mono text-accent">
-                        <BadgeCheck className="w-3 h-3" />
-                        Verificado
-                      </span>
-                    )}
-                  </div>
-                  <h1 className="terminal-title text-2xl md:text-3xl font-sans font-bold text-primary">
-                    {entry.name as string}
-                  </h1>
+            <div className="flex items-center gap-3">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <EntryBadge entryType={entry.entryType as AtlasEntryType} />
+                  {entry.verified && (
+                    <span className="inline-flex items-center gap-1 text-xs font-mono text-accent">
+                      <BadgeCheck className="w-3 h-3" />
+                      Verificado
+                    </span>
+                  )}
                 </div>
+                <h1 className="terminal-title text-2xl md:text-3xl font-sans font-bold text-primary">
+                  {entry.name as string}
+                </h1>
               </div>
-            ) : (
-              <h1 className="sr-only">{entry.name as string}</h1>
-            )}
+            </div>
 
-            {coverUrl && entry.tagline && (
+            {entry.tagline && (
               <p className="text-lg text-secondary">
                 {entry.tagline as string}
               </p>
