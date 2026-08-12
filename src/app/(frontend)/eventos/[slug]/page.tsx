@@ -161,10 +161,7 @@ export default async function EventDetailPage({
               className="p-4"
             />
 
-            <EventSidebarActions
-              event={event}
-              showMapsLink={!mapEmbedUrl}
-            />
+            <EventSidebarActions event={event} showMapsLink={!mapEmbedUrl} />
           </div>
         </aside>
 

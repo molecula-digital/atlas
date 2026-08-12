@@ -4,10 +4,7 @@ import type { ReactNode } from 'react'
 import Link from 'next/link'
 import type { TechEvent } from '@/lib/events'
 import { getEventPath } from '@/lib/events'
-import {
-  captureEventCardClicked,
-  type EventSurface,
-} from '@/lib/analytics'
+import { captureEventCardClicked, type EventSurface } from '@/lib/analytics'
 
 /**
  * Crawlable event link that always navigates to the detail page.

@@ -16,7 +16,11 @@ import type { TechEvent } from '@/hooks/useEventsData'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { EventCardLink } from './EventCardLink'
 import { EventTimingBadge } from './EventTimingBadge'
-import { formatEventDateBadge, getEventDateToday, selectUpcomingEvents } from '@/lib/events'
+import {
+  formatEventDateBadge,
+  getEventDateToday,
+  selectUpcomingEvents,
+} from '@/lib/events'
 import {
   captureEventRegistrationStarted,
   type EventSurface,

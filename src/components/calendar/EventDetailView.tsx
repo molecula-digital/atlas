@@ -1,10 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import {
-  EVENT_SURFACE,
-  captureEventViewed,
-} from '@/lib/analytics'
+import { EVENT_SURFACE, captureEventViewed } from '@/lib/analytics'
 import {
   MapPin,
   Users,
