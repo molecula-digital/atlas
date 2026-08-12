@@ -274,9 +274,7 @@ export function getEventTimingLabel(
     // Build the window on the viewer's local calendar day that corresponds to
     // "today" in the event timezone when possible; fall back to local today.
     const todayLocal = localDateKey(now)
-    const [y, m, d] = (
-      todayLocal === eventDate ? todayLocal : eventDate
-    )
+    const [y, m, d] = (todayLocal === eventDate ? todayLocal : eventDate)
       .split('-')
       .map(Number)
     const startAt = new Date(y, m - 1, d, start.hour, start.minute, 0, 0)
