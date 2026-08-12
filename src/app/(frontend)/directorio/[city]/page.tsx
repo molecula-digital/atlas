@@ -44,7 +44,7 @@ export default async function CityDirectoryPage({
         typeCounts={typeCounts}
         totalCount={total}
         initialCity={city}
-        pageSize={12}
+        pageSize={18}
       />
     </section>
   )
