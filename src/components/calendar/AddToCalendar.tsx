@@ -36,7 +36,7 @@ import {
 } from '@/components/ui/Tooltip'
 
 const optionClass =
-  'flex w-full items-center gap-3 rounded-lg border border-border bg-card px-3 py-2.5 text-left text-sm text-secondary transition-colors hover:border-accent/40 hover:bg-accent/5 hover:text-primary'
+  'flex w-full cursor-pointer items-center gap-3 rounded-lg border border-border bg-card px-3 py-2.5 text-left text-sm text-secondary transition-colors hover:border-accent/40 hover:bg-accent/5 hover:text-primary'
 
 function GoogleIcon() {
   return (

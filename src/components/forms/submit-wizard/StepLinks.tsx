@@ -173,7 +173,7 @@ export default function StepLinks({ state, setField }: StepProps) {
                 <button
                   type="button"
                   onClick={() => removeTag(tag)}
-                  className="hover:text-red-400 transition-colors"
+                  className="cursor-pointer transition-colors hover:text-red-400"
                 >
                   <X className="w-3 h-3" />
                 </button>

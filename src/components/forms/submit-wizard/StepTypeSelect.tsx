@@ -15,7 +15,7 @@ export default function StepTypeSelect({ state, setField }: StepProps) {
             key={type}
             type="button"
             onClick={() => setField('entryType', type)}
-            className={`flex items-start gap-3 p-4 rounded-lg border text-left transition-colors ${
+            className={`flex cursor-pointer items-start gap-3 rounded-lg border p-4 text-left transition-colors ${
               state.entryType === type
                 ? 'border-accent bg-accent/10'
                 : 'border-border bg-card hover:border-accent/30'

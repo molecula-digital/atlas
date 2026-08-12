@@ -61,7 +61,7 @@ export default function EditJobPage() {
               <p className="text-xs text-muted font-mono mb-4">{loadError}</p>
               <button
                 onClick={() => router.push('/dashboard')}
-                className="text-xs font-mono text-accent hover:underline"
+                className="cursor-pointer text-xs font-mono text-accent hover:underline"
               >
                 Volver al dashboard
               </button>
@@ -253,7 +253,7 @@ export default function EditJobPage() {
                     <button
                       type="button"
                       onClick={() => router.push('/dashboard')}
-                      className="text-xs font-mono text-muted hover:text-primary transition-colors"
+                      className="cursor-pointer text-xs font-mono text-muted transition-colors hover:text-primary"
                     >
                       Cancelar
                     </button>

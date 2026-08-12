@@ -107,7 +107,7 @@ export default function CityList({
       <button
         type="button"
         onClick={() => setMobileListOpen((v) => !v)}
-        className="w-full flex items-center justify-between min-h-11 lg:hidden"
+        className="flex min-h-11 w-full cursor-pointer items-center justify-between lg:hidden"
       >
         <span className="font-mono text-xs text-muted uppercase tracking-wider">
           Municipios
