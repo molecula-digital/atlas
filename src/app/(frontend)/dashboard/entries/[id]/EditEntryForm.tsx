@@ -146,7 +146,7 @@ export function EditEntryForm() {
               <p className="text-xs text-muted font-mono mb-4">{error}</p>
               <button
                 onClick={() => router.push('/dashboard')}
-                className="text-xs font-mono text-accent hover:underline"
+                className="cursor-pointer text-xs font-mono text-accent hover:underline"
               >
                 Volver al dashboard
               </button>
@@ -757,7 +757,7 @@ export function EditEntryForm() {
                             <button
                               type="button"
                               onClick={() => removeTag(tag)}
-                              className="hover:text-red-400 transition-colors"
+                              className="cursor-pointer transition-colors hover:text-red-400"
                             >
                               <X className="w-3 h-3" />
                             </button>
@@ -775,7 +775,7 @@ export function EditEntryForm() {
                     <button
                       type="button"
                       onClick={() => router.push('/dashboard')}
-                      className="text-xs font-mono text-muted hover:text-primary transition-colors"
+                      className="cursor-pointer text-xs font-mono text-muted transition-colors hover:text-primary"
                     >
                       Cancelar
                     </button>

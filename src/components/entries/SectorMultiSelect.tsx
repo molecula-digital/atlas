@@ -63,7 +63,7 @@ export function SectorMultiSelect({
         aria-controls={listId}
         onClick={() => setOpen((v) => !v)}
         className={cn(
-          'flex w-full items-center justify-between gap-2 rounded border border-border bg-elevated/40 px-3 py-2 text-left transition-colors hover:bg-elevated',
+          'flex w-full cursor-pointer items-center justify-between gap-2 rounded border border-border bg-elevated/40 px-3 py-2 text-left transition-colors hover:bg-elevated',
           selected.length > 0 && 'border-accent/40 bg-accent/5',
         )}
       >
@@ -109,7 +109,7 @@ export function SectorMultiSelect({
                   type="button"
                   onClick={() => toggle(opt.value)}
                   className={cn(
-                    'flex w-full items-center gap-2.5 px-3 py-2 text-left transition-colors hover:bg-elevated',
+                    'flex w-full cursor-pointer items-center gap-2.5 px-3 py-2 text-left transition-colors hover:bg-elevated',
                     isSelected && 'bg-accent/10',
                   )}
                 >

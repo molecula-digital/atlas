@@ -67,7 +67,7 @@ function DashboardContent() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-1.5 px-4 py-1.5 text-xs font-mono font-medium rounded-md transition-colors ${
+                className={`flex cursor-pointer items-center gap-1.5 rounded-md px-4 py-1.5 text-xs font-mono font-medium transition-colors ${
                   activeTab === tab.id
                     ? 'bg-card text-primary shadow-sm border border-border'
                     : 'text-muted hover:text-secondary border border-transparent'

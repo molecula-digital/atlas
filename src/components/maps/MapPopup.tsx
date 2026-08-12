@@ -49,7 +49,7 @@ export default function MapPopup({
             e.stopPropagation()
             onClose()
           }}
-          className="text-muted hover:text-primary transition-colors text-xs leading-none"
+          className="cursor-pointer text-xs leading-none text-muted transition-colors hover:text-primary"
           aria-label="Cerrar"
         >
           ✕

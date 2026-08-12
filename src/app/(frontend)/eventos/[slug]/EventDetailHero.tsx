@@ -88,7 +88,7 @@ function EventLocationMeta({
           <button
             type="button"
             onClick={() => setMapOpen(true)}
-            className="text-left hover:text-accent transition-colors"
+            className="cursor-pointer text-left transition-colors hover:text-accent"
           >
             {event.location}
             <EventTypeBadge

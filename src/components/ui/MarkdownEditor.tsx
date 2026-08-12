@@ -163,7 +163,7 @@ export function MarkdownEditor({
                 type="button"
                 onClick={() => setMode(tab.id)}
                 className={cn(
-                  'inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-2xs font-mono transition-colors',
+                  'inline-flex cursor-pointer items-center gap-1.5 rounded-md px-2.5 py-1 text-2xs font-mono transition-colors',
                   mode === tab.id
                     ? 'bg-card text-primary border border-border shadow-sm'
                     : 'text-muted hover:text-secondary border border-transparent',
@@ -187,7 +187,7 @@ export function MarkdownEditor({
                   title={tool.label}
                   aria-label={tool.label}
                   onClick={() => wrapSelection(tool.options)}
-                  className="inline-flex items-center justify-center rounded-md p-1.5 text-muted hover:text-primary hover:bg-card transition-colors"
+                  className="inline-flex cursor-pointer items-center justify-center rounded-md p-1.5 text-muted transition-colors hover:bg-card hover:text-primary"
                 >
                   <Icon className="w-3.5 h-3.5" />
                 </button>

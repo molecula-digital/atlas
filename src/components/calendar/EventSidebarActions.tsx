@@ -13,7 +13,7 @@ import { EventExternalLink } from './EventExternalLink'
 
 /** Quiet icon+label row — matches the entry detail Enlaces / Detalles sidebar. */
 const sidebarActionClass = cn(
-  'inline-flex h-auto w-full items-center justify-start gap-2 rounded-md border-transparent bg-transparent px-0 py-1.5',
+  'inline-flex h-auto w-full cursor-pointer items-center justify-start gap-2 rounded-md border-transparent bg-transparent px-0 py-1.5',
   'font-sans text-xs font-normal text-secondary shadow-none',
   'hover:border-transparent hover:bg-transparent hover:text-accent',
 )
