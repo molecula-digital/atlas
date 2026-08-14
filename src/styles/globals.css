@@ -216,6 +216,10 @@ html {
    marching-invaders canvas or floating tech icons (see HERO_BACKDROP). Mounts
    on the layout wrapper so it can reach the true viewport edges. */
 .hero-backdrop {
+  /* Invader sprites — neutral gray, not accent green. Per-theme alpha
+     because muted reads lighter on the warm canvas than on near-black. */
+  --hero-invader-color: var(--color-muted);
+  --hero-invader-alpha: 0.28;
   /* Icon-field depth tiers — per-theme because the light accent (#4B7F52)
      carries far more contrast on white than the dark accent (#7DD181) does
      on near-black. Target: roughly the visual weight of the grid lines. */
@@ -231,6 +235,7 @@ html {
 }
 
 :root.dark .hero-backdrop {
+  --hero-invader-alpha: 0.22;
   --hero-icon-near: 0.13;
   --hero-icon-mid: 0.09;
   --hero-icon-far: 0.06;

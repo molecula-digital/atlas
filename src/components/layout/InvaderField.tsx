@@ -171,16 +171,15 @@ export function InvaderField() {
     }
 
     function getFill() {
-      // Track the live accent token so the sprites follow the theme. The two
-      // accents differ a lot in brightness (#4B7F52 vs #7DD181), so the alpha
-      // is per-theme, same as the wash. Target: roughly the visual weight of
-      // the grid lines — shapes you notice on a second look, never louder
+      // Read hero-backdrop tokens so the sprites track theme without tying
+      // them to the accent green. Target: roughly the visual weight of the
+      // matrix grid lines — shapes you notice on a second look, never louder
       // than the headline.
-      const color = getComputedStyle(document.documentElement)
-        .getPropertyValue('--color-accent')
-        .trim()
-      const isDark = document.documentElement.classList.contains('dark')
-      return { color, alpha: isDark ? 0.07 : 0.09 }
+      const root = canvas?.parentElement ?? document.documentElement
+      const styles = getComputedStyle(root)
+      const color = styles.getPropertyValue('--hero-invader-color').trim()
+      const alpha = parseFloat(styles.getPropertyValue('--hero-invader-alpha'))
+      return { color, alpha: Number.isFinite(alpha) ? alpha : 0.25 }
     }
 
     function drawSprite(
@@ -253,7 +252,7 @@ export function InvaderField() {
     })
     if (canvas.parentElement) parentObserver.observe(canvas.parentElement)
 
-    // The fill is read from the live accent token, so a theme flip needs an
+    // The fill is read from hero-backdrop tokens, so a theme flip needs an
     // explicit repaint — same approach as the static matrix grid.
     const themeObserver = new MutationObserver(() => draw())
     themeObserver.observe(document.documentElement, {
