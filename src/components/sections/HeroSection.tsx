@@ -59,9 +59,7 @@ export function HeroSection({
 
             <h1 className="text-3xl font-sans font-bold text-primary leading-[1] tracking-[-0.04em] uppercase sm:text-4xl lg:text-[2.65rem]">
               <span className="block">Descubre el</span>
-              <span className="block text-accent">
-                ecosistema tech
-              </span>
+              <span className="block text-accent">ecosistema tech</span>
               <span className="block">
                 de Sinaloa
                 <span className="text-accent" aria-hidden="true">
