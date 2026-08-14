@@ -175,7 +175,7 @@ export function InvaderField() {
       // them to the accent green. Target: roughly the visual weight of the
       // matrix grid lines — shapes you notice on a second look, never louder
       // than the headline.
-      const root = canvas.parentElement ?? document.documentElement
+      const root = canvas?.parentElement ?? document.documentElement
       const styles = getComputedStyle(root)
       const color = styles.getPropertyValue('--hero-invader-color').trim()
       const alpha = parseFloat(styles.getPropertyValue('--hero-invader-alpha'))
