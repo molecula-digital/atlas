@@ -6,12 +6,10 @@ import { IconField } from '@/components/layout/IconField'
 import { InvaderField } from '@/components/layout/InvaderField'
 
 /**
- * Full-bleed ambient backdrop for the landing hero: the accent washes plus
- * one animated layer — floating tech icons or the marching invader fleet,
- * chosen by HERO_BACKDROP in config. It mounts in the site layout (not
- * inside the hero section) so it can reach the true viewport edges — its
- * predecessor lived inside the max-width content column and clipped to it
- * with hard rectangle edges.
+ * Full-bleed ambient backdrop for the landing hero: floating tech icons or
+ * the marching invader fleet, chosen by HERO_BACKDROP in config. It mounts
+ * in the site layout (not inside the hero section) so it can reach the true
+ * viewport edges.
  */
 export function HeroBackdrop() {
   const pathname = usePathname()
@@ -21,10 +19,9 @@ export function HeroBackdrop() {
   if (pathname !== '/') return null
 
   // -z-[5] slots the layer between the matrix canvas (-z-10) and the content
-  // stack (z-10): on top of the grid, under everything readable — including
-  // the translucent header, which lets the wash reach the true top of the
-  // page. The height is tuned to cover the hero plus its stats row before
-  // the bottom fade (see .hero-backdrop) takes over.
+  // stack (z-10): on top of the grid, under everything readable. The height
+  // is tuned to cover the hero plus its stats row before the bottom fade
+  // (see .hero-backdrop) takes over.
   return (
     <div
       className="hero-backdrop absolute inset-x-0 top-0 -z-[5] h-[52rem] pointer-events-none"
