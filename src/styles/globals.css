@@ -212,28 +212,18 @@ html {
   }
 }
 
-/* Hero backdrop (index only) — full-bleed ambient layer behind the hero: two
-   accent washes plus the marching-invaders canvas. Its predecessor lived
-   inside the hero section, so the glow clipped to the content column with
-   hard rectangle edges; mounting on the layout wrapper lets the light
-   originate at the true page corners and bleed through the translucent
-   header. Pure radial-gradient washes (no blur filter) keep it cheap to
-   paint; strength is per-theme because the dark accent is much brighter than
-   the light one. */
+/* Hero backdrop (index only) — full-bleed ambient layer behind the hero:
+   marching-invaders canvas or floating tech icons (see HERO_BACKDROP). Mounts
+   on the layout wrapper so it can reach the true viewport edges. */
 .hero-backdrop {
-  --hero-wash-strong: 32%;
-  --hero-wash-soft: 18%;
-  /* Icon-field depth tiers. Per-theme like the wash — the light accent
-     (#4B7F52) carries far more contrast on white than the dark accent
-     (#7DD181) does on near-black, so equal alphas would read unequal.
-     Target: roughly the visual weight of the grid lines. */
+  /* Icon-field depth tiers — per-theme because the light accent (#4B7F52)
+     carries far more contrast on white than the dark accent (#7DD181) does
+     on near-black. Target: roughly the visual weight of the grid lines. */
   --hero-icon-near: 0.18;
   --hero-icon-mid: 0.13;
   --hero-icon-far: 0.09;
-  /* The layer must fade out, never clip: any hard edge reads as a rectangle
-     over the matrix grid. no-repeat also hides everything outside the border
-     box, and the remaining clip edges (top/left/right) coincide with the
-     viewport, where there is nothing left to cut off. */
+  /* Fade out at the bottom so the layer never clips with a hard edge over the
+     matrix grid. */
   -webkit-mask-image: linear-gradient(to bottom, black 55%, transparent);
   mask-image: linear-gradient(to bottom, black 55%, transparent);
   -webkit-mask-repeat: no-repeat;
@@ -241,78 +231,9 @@ html {
 }
 
 :root.dark .hero-backdrop {
-  --hero-wash-strong: 24%;
-  --hero-wash-soft: 14%;
   --hero-icon-near: 0.13;
   --hero-icon-mid: 0.09;
   --hero-icon-far: 0.06;
-}
-
-/* Below sm the washes are wider than the screen they sit on — 46rem and 36rem
-   of gradient against roughly 24rem of viewport — so light that spills from a
-   corner on desktop becomes a flat tint over the whole page, and the headline
-   loses its contrast. Weaken it there; the phone gets a hint of color instead
-   of a wash. Ordered after the dark block so it wins at equal specificity. */
-@media (max-width: 40rem) {
-  .hero-backdrop {
-    --hero-wash-strong: 18%;
-    --hero-wash-soft: 10%;
-  }
-
-  :root.dark .hero-backdrop {
-    --hero-wash-strong: 13%;
-    --hero-wash-soft: 8%;
-  }
-}
-
-.hero-backdrop::before,
-.hero-backdrop::after {
-  content: '';
-  position: absolute;
-  border-radius: 9999px;
-}
-
-/* Large wash spilling in from the top-left page corner, behind the headline. */
-.hero-backdrop::before {
-  width: 46rem;
-  height: 34rem;
-  top: -12rem;
-  left: -10rem;
-  background: radial-gradient(
-    closest-side,
-    color-mix(
-      in srgb,
-      var(--color-accent) var(--hero-wash-strong),
-      transparent
-    ),
-    transparent
-  );
-  animation: hero-wash-drift 14s ease-in-out infinite alternate;
-}
-
-/* Softer pool from the top-right corner, beneath the map card. */
-.hero-backdrop::after {
-  width: 36rem;
-  height: 28rem;
-  top: -8rem;
-  right: -10rem;
-  background: radial-gradient(
-    closest-side,
-    color-mix(in srgb, var(--color-accent) var(--hero-wash-soft), transparent),
-    transparent
-  );
-  animation: hero-wash-drift 18s ease-in-out infinite alternate-reverse;
-}
-
-@keyframes hero-wash-drift {
-  from {
-    transform: translate3d(0, 0, 0) scale(1);
-    opacity: 0.8;
-  }
-  to {
-    transform: translate3d(2.5rem, 1.5rem, 0) scale(1.08);
-    opacity: 1;
-  }
 }
 
 /* Floating icons of the 'icons' hero variant (see IconField). Same alternate
@@ -376,8 +297,6 @@ html {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-backdrop::before,
-  .hero-backdrop::after,
   .hero-icon {
     animation: none;
   }
