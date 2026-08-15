@@ -18,11 +18,10 @@ export const MATRIX_BOX_SIZE = 26
 
 /**
  * Which animated layer the landing hero renders behind the headline. Both
- * variants share the accent wash and the full-bleed wrapper (see
- * HeroBackdrop); flipping this string is the whole switch — no env var, no
- * UI. 'invaders' is kept alive so the marching fleet is one edit away.
+ * variants share the full-bleed wrapper (see HeroBackdrop); flipping this
+ * string is the whole switch — no env var, no UI.
  */
-export const HERO_BACKDROP: 'icons' | 'invaders' = 'invaders'
+export const HERO_BACKDROP: 'icons' | 'invaders' | 'matrix' = 'matrix'
 
 export const SITE_DESCRIPTION =
   'Directorio del ecosistema tecnológico de Sinaloa. Encuentra startups, consultoras, comunidades y talento tech construyendo desde nuestro estado.'
