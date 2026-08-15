@@ -8,7 +8,6 @@ import { Footer } from '@/components/layout/Footer'
 import { MatrixBackground } from '@/components/layout/MatrixBackground'
 import { HeroBackdrop } from '@/components/layout/HeroBackdrop'
 import { SiteFrame } from '@/components/layout/SiteFrame'
-import { KonamiEasterEgg } from '@/components/easter-egg/KonamiEasterEgg'
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
@@ -67,7 +66,6 @@ export default function FrontendLayout({
           <div className="font-sans w-full min-h-screen flex flex-col text-secondary selection:bg-accent selection:text-accent-foreground relative overflow-x-clip">
             <MatrixBackground highlight={false} />
             <HeroBackdrop />
-            <KonamiEasterEgg />
             <div className="relative z-10 flex flex-col flex-1">
               <Header />
               {/*
