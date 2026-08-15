@@ -177,8 +177,8 @@ export function InvaderField() {
       // than the headline.
       const root = canvas?.parentElement ?? document.documentElement
       const styles = getComputedStyle(root)
-      const color = styles.getPropertyValue('--hero-invader-color').trim()
-      const alpha = parseFloat(styles.getPropertyValue('--hero-invader-alpha'))
+      const color = styles.getPropertyValue('--hero-matrix-color').trim()
+      const alpha = parseFloat(styles.getPropertyValue('--hero-matrix-alpha'))
       return { color, alpha: Number.isFinite(alpha) ? alpha : 0.25 }
     }
 
@@ -252,8 +252,8 @@ export function InvaderField() {
     })
     if (canvas.parentElement) parentObserver.observe(canvas.parentElement)
 
-    // The fill is read from hero-backdrop tokens, so a theme flip needs an
-    // explicit repaint — same approach as the static matrix grid.
+    // The fill is read from hero-backdrop matrix tokens, so a theme flip needs
+    // an explicit repaint — same approach as the static matrix grid.
     const themeObserver = new MutationObserver(() => draw())
     themeObserver.observe(document.documentElement, {
       attributes: true,

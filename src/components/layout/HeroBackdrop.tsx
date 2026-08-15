@@ -4,12 +4,13 @@ import { usePathname } from 'next/navigation'
 import { HERO_BACKDROP } from '@/config'
 import { IconField } from '@/components/layout/IconField'
 import { InvaderField } from '@/components/layout/InvaderField'
+import { HeroMatrixField } from '@/components/layout/HeroMatrixField'
 
 /**
- * Full-bleed ambient backdrop for the landing hero: floating tech icons or
- * the marching invader fleet, chosen by HERO_BACKDROP in config. It mounts
- * in the site layout (not inside the hero section) so it can reach the true
- * viewport edges.
+ * Full-bleed ambient backdrop for the landing hero: random matrix dots,
+ * floating tech icons, or the marching invader fleet, chosen by
+ * HERO_BACKDROP in config. It mounts in the site layout (not inside the hero
+ * section) so it can reach the true viewport edges.
  */
 export function HeroBackdrop() {
   const pathname = usePathname()
@@ -27,7 +28,13 @@ export function HeroBackdrop() {
       className="hero-backdrop absolute inset-x-0 top-0 -z-[5] h-[52rem] pointer-events-none"
       aria-hidden="true"
     >
-      {HERO_BACKDROP === 'invaders' ? <InvaderField /> : <IconField />}
+      {HERO_BACKDROP === 'matrix' ? (
+        <HeroMatrixField />
+      ) : HERO_BACKDROP === 'invaders' ? (
+        <InvaderField />
+      ) : (
+        <IconField />
+      )}
     </div>
   )
 }
