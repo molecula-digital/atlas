@@ -32,9 +32,9 @@ html {
 
 /* Theme CSS Custom Properties */
 :root {
-  /* Light theme (default) — warm neutrals with a subtle brand-green canvas. */
+  /* Light theme (default) — warm stone neutrals without a green canvas tint. */
   --color-accent: #4b7f52;
-  --color-background: color-mix(in srgb, var(--color-accent) 2%, #e9e6e0);
+  --color-background: #e9e6e0;
   --color-primary: #1c1917;
   --color-secondary: #44403c;
   --color-muted: #78716c;
