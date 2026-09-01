@@ -8,6 +8,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: luma-sync
+  cancel-in-progress: false
+
 jobs:
   sync:
     name: Sync Luma calendars
@@ -24,5 +28,5 @@ jobs:
             exit 0
           fi
           curl -fsS -X POST \
-            -H "Authorization: Bearer $CRON_SECRET" \
-            "$LUMA_SYNC_URL"
+            -H "Authorization: Bearer ${CRON_SECRET}" \
+            "${LUMA_SYNC_URL}"
