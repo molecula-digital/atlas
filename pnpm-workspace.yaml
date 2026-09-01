@@ -3,6 +3,10 @@ allowBuilds:
   core-js: false
   esbuild: true
   unrs-resolver: true
+  workerd: true
+minimumReleaseAgeExclude:
+  - miniflare@5.20260831.0-alpha
+  - wrangler@4.128.0
 overrides:
   dompurify@<3.4.9: 3.4.12
   dompurify@<=3.4.10: 3.4.12

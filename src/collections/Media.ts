@@ -14,6 +14,9 @@ export const Media: CollectionConfig = {
     delete: isAdminOrEditor,
   },
   upload: {
+    // Workers cannot use undici’s SSRF-safe fetch (`fs.write is not implemented`
+    // / diagnostic channel errors). Cloudflare already blocks private IPs.
+    skipSafeFetch: true,
     mimeTypes: [
       'image/png',
       'image/jpeg',

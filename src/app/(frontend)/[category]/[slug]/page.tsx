@@ -58,13 +58,16 @@ import { WHATSAPP_SURFACE } from '@/lib/analytics-events'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { LivePreviewRefresh } from '@/components/payload/LivePreviewRefresh'
 import { EntryLogoLightbox } from '@/components/entries/EntryLogoLightbox'
+import { safeStaticParams } from '@/lib/static-params'
 
 export async function generateStaticParams() {
-  const result = await getPublishedEntries()
-  return result.docs.map((entry) => ({
-    category: CATEGORY_URL_MAP[entry.entryType as AtlasEntryType],
-    slug: entry.slug,
-  }))
+  return safeStaticParams(async () => {
+    const result = await getPublishedEntries()
+    return result.docs.map((entry) => ({
+      category: CATEGORY_URL_MAP[entry.entryType as AtlasEntryType],
+      slug: entry.slug,
+    }))
+  })
 }
 
 export async function generateMetadata({

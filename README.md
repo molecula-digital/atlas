@@ -101,8 +101,8 @@ Los eventos publicos de uno o mas calendarios de [Luma](https://luma.com) se pue
 
 1. En el admin (`/admin`), abre **Integraciones → Calendarios Luma**
 2. La migracion siembra **Gina**, **La Cripto Plebada** y **Cursor Culiacan, Mexico**; agrega mas filas para otros calendarios
-3. Configura `CRON_SECRET` en Coolify (`openssl rand -hex 32`)
-4. Scheduled Task cada 12h (`0 */12 * * *`):
+3. Configura `CRON_SECRET` (`openssl rand -hex 32`) como secret del Worker y en GitHub Actions
+4. El workflow [`.github/workflows/luma-sync.yml`](.github/workflows/luma-sync.yml) llama al endpoint cada 12h (`0 */12 * * *`). Tambien puedes lanzarlo a mano:
 
 ```bash
 curl -fsS -X POST \
@@ -114,7 +114,37 @@ Tambien puedes forzar un calendario con `POST /api/luma-calendars/:id/sync` (ses
 
 La sync corre en runtime contra la app desplegada (no en el build). Usa el feed publico de Luma; marca **Bloquear sync** en un evento para proteger ediciones manuales.
 
-## Docker
+## Cloudflare Workers (produccion)
+
+El sitio esta pensado para correr en [Cloudflare Workers](https://developers.cloudflare.com/workers/) con [`@opennextjs/cloudflare`](https://opennext.js.org/cloudflare). No hace falta un VPS: Neon sigue siendo Postgres, R2 sigue siendo el bucket de imagenes, y el Worker sirve Next.js + Payload.
+
+**Hace falta el plan Workers Paid.** Payload + Next.js superan el limite de 3 MiB gzip del plan gratuito (el limite de pago es 10 MiB).
+
+### Primera vez
+
+1. Instala dependencias y autentica Wrangler: `pnpm wrangler login`
+2. Copia las variables de `.env` al dashboard de Cloudflare (Workers → Settings → Variables and Secrets). `DATABASE_URL` debe ser el hostname **pooler** de Neon.
+3. Las variables `NEXT_PUBLIC_*` de analytics se incrustan en el **build**, igual que en Docker. Configuralas como variables de build en Cloudflare o en GitHub Actions.
+4. `CLOUDFLARE_BUILD=1` lo ponen los scripts `preview` / `deploy` / `cf:build`. Sin ese flag, `next build` sigue generando el output `standalone` del Dockerfile.
+5. El build de Next sigue necesitando Postgres (para `generateStaticParams` y las paginas estaticas), mas `PAYLOAD_SECRET` y `BETTER_AUTH_SECRET`. Es el mismo requisito que el Dockerfile.
+6. Despliega:
+
+```bash
+pnpm generate:importmap
+pnpm deploy
+```
+
+O conecta el repo en el dashboard de Cloudflare (Workers → Create → Connect git) y usa `pnpm cf:build` como comando de build / `npx wrangler deploy` como deploy. El workflow [`.github/workflows/deploy-cloudflare.yml`](.github/workflows/deploy-cloudflare.yml) hace lo mismo a mano (`workflow_dispatch`).
+
+7. Apunta `atlas-sinaloa.tech` al Worker (Workers → Settings → Domains & Routes). Actualiza las URLs de callback de Google OAuth si cambiaste de dominio.
+
+Hyperdrive es opcional: descomenta el bloque en `wrangler.jsonc` despues de `wrangler hyperdrive create atlas-tech --connection-string="$DATABASE_URL"` para pool de conexiones y cache de queries. Sin el, Neon pooler + `maxUses: 1` es suficiente.
+
+`pnpm dev` no cambia: sigue siendo Node.js contra Postgres y MinIO locales. `pnpm preview` construye el Worker y lo sirve con Wrangler para validar el runtime de Cloudflare.
+
+Sharp (thumbnails de Payload) no corre en Workers; las imagenes originales siguen en R2 y el CDN. Los tamanos ya generados no se tocan.
+
+## Docker (alternativa / self-host)
 
 El `Dockerfile` multi-stage construye la app en 3 fases:
 
@@ -154,4 +184,4 @@ Coloca el archivo descargado en `public/topo/`.
 2. Configura tu base de datos PostgreSQL y variables de entorno
 3. Crea credenciales OAuth en Google Cloud Console
 4. Descarga los mapas AGEM de tu estado desde INEGI
-5. Despliega con Docker o en cualquier plataforma compatible con Next.js
+5. Despliega en Cloudflare Workers (`pnpm deploy`) o con Docker

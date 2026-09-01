@@ -1,7 +1,7 @@
 /**
  * In-memory sliding window rate limiter.
- * Works per-process — suitable for single-instance deployments.
- * For multi-instance, replace with @upstash/ratelimit + Redis.
+ * Works per-isolate — suitable for a single Node process or a Workers isolate.
+ * For a globally consistent limit, replace with a KV / Durable Object store.
  */
 
 import { NextResponse, type NextRequest } from 'next/server'
@@ -12,19 +12,19 @@ interface RateLimitEntry {
 }
 
 const store = new Map<string, RateLimitEntry>()
+const CLEANUP_EVERY_MS = 5 * 60 * 1000
+const ENTRY_TTL_MS = 15 * 60 * 1000
+let lastCleanup = 0
 
-// Clean up stale entries every 5 minutes to prevent memory leaks
-setInterval(
-  () => {
-    const now = Date.now()
-    for (const [key, entry] of store) {
-      if (now - entry.lastRefill > 15 * 60 * 1000) {
-        store.delete(key)
-      }
+function maybeCleanup(now: number) {
+  if (now - lastCleanup < CLEANUP_EVERY_MS) return
+  lastCleanup = now
+  for (const [key, entry] of store) {
+    if (now - entry.lastRefill > ENTRY_TTL_MS) {
+      store.delete(key)
     }
-  },
-  5 * 60 * 1000,
-).unref()
+  }
+}
 
 export interface RateLimitConfig {
   limit: number
@@ -38,6 +38,7 @@ export function checkRateLimit(
 ): { success: boolean; remaining: number } {
   const key = `${config.keyPrefix}:${identifier}`
   const now = Date.now()
+  maybeCleanup(now)
   const entry = store.get(key)
 
   if (!entry || now - entry.lastRefill >= config.windowMs) {
@@ -55,6 +56,7 @@ export function checkRateLimit(
 
 export function getClientIp(request: NextRequest): string {
   return (
+    request.headers.get('cf-connecting-ip') ||
     request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
     request.headers.get('x-real-ip') ||
     'unknown'

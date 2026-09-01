@@ -1,0 +1,3 @@
+# Copied to `.dev.vars` for `pnpm preview` (Workers runtime locally).
+# `pnpm dev` keeps using `.env` — this file is only for OpenNext preview/deploy.
+NEXTJS_ENV=development

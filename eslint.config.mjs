@@ -25,9 +25,12 @@ export default defineConfig([
   eslintConfigPrettier,
   globalIgnores([
     '.next/**',
+    '.open-next/**',
+    '.wrangler/**',
     'out/**',
     'build/**',
     'next-env.d.ts',
+    'cloudflare-env.d.ts',
     'src/payload-types.ts',
     'src/migrations/**',
   ]),

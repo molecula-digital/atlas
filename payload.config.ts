@@ -20,9 +20,11 @@ import { LumaCalendars } from './src/collections/LumaCalendars'
 import { NewsletterSubscribers } from './src/collections/NewsletterSubscribers'
 import { buildMediaFileUrl } from './src/lib/media-url'
 import { getPayloadPreviewUrl } from './src/lib/payload-preview'
+import { getDatabaseUrl, postgresPoolOptions } from './src/lib/runtime'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+const isProduction = process.env.NODE_ENV === 'production'
 
 export default buildConfig({
   admin: {
@@ -72,22 +74,24 @@ export default buildConfig({
     outputFile: path.resolve(dirname, 'src/payload-types.ts'),
   },
   db: postgresAdapter({
-    pool: {
-      connectionString: process.env.DATABASE_URL || '',
-      max: 5,
-      idleTimeoutMillis: 30_000,
-      connectionTimeoutMillis: 5_000,
-    },
+    pool: postgresPoolOptions(getDatabaseUrl()),
     schemaName: 'payload',
     push: false,
   }),
+  logger: isProduction
+    ? {
+        options: { level: process.env.PAYLOAD_LOG_LEVEL || 'info' },
+        // pino-pretty uses Node fs APIs that Workers do not implement.
+        destination: { write: (msg: string) => console.log(msg) },
+      }
+    : undefined,
   editor: lexicalEditor({
     features: ({ defaultFeatures }) => [
       ...defaultFeatures,
       FixedToolbarFeature(),
     ],
   }),
-  sharp,
+  sharp: process.env.CLOUDFLARE_BUILD === '1' ? undefined : sharp,
   plugins: [
     s3Storage({
       collections: {

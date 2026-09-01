@@ -1,0 +1,28 @@
+name: Luma calendar sync
+
+on:
+  schedule:
+    - cron: '0 */12 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    name: Sync Luma calendars
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Trigger luma-sync
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          LUMA_SYNC_URL: ${{ vars.LUMA_SYNC_URL || 'https://atlas-sinaloa.tech/api/cron/luma-sync' }}
+        run: |
+          if [ -z "$CRON_SECRET" ]; then
+            echo "CRON_SECRET is not set; skipping."
+            exit 0
+          fi
+          curl -fsS -X POST \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            "$LUMA_SYNC_URL"

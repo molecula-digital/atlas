@@ -21,10 +21,15 @@
     "db:migrate": "drizzle-kit migrate",
     "payload:migrate": "node scripts/payload-migrate.mjs",
     "payload:migrate:create": "payload migrate:create",
+    "preview": "CLOUDFLARE_BUILD=1 opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "CLOUDFLARE_BUILD=1 opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "cf:build": "CLOUDFLARE_BUILD=1 opennextjs-cloudflare build",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "prepare": "husky"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.1101.0",
+    "@opennextjs/cloudflare": "1.20.5",
     "@payloadcms/db-postgres": "3.87.0",
     "@payloadcms/live-preview-react": "3.87.0",
     "@payloadcms/next": "3.87.0",
@@ -85,7 +90,8 @@
     "husky": "^9.1.7",
     "prettier": "3.9.6",
     "tsx": "4.22.0",
-    "typescript": "6.0.2"
+    "typescript": "6.0.2",
+    "wrangler": "4.128.0"
   },
   "engines": {
     "node": ">=22.13.0"

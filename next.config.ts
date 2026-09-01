@@ -2,13 +2,21 @@ import { withSentryConfig } from '@sentry/nextjs'
 import { withPayload } from '@payloadcms/next/withPayload'
 import type { NextConfig } from 'next'
 
+const isCloudflareBuild = process.env.CLOUDFLARE_BUILD === '1'
+
 const nextConfig: NextConfig = {
-  output: 'standalone',
+  // OpenNext on Workers cannot use `output: 'standalone'`. Docker still needs it.
+  ...(isCloudflareBuild ? {} : { output: 'standalone' as const }),
   // Sharp loads libvips dynamically, which static output tracing cannot
   // discover. Include its platform package in the standalone runtime image.
-  outputFileTracingIncludes: {
-    '/*': ['./node_modules/@img/**/*'],
-  },
+  ...(isCloudflareBuild
+    ? {}
+    : {
+        outputFileTracingIncludes: {
+          '/*': ['./node_modules/@img/**/*'],
+        },
+      }),
+  serverExternalPackages: ['pg', 'jose'],
   images: {
     remotePatterns: [
       // Bucket objects are always served via the CDN custom domain.
@@ -79,3 +87,9 @@ export default withSentryConfig(withPayload(nextConfig), {
     },
   },
 })
+
+if (process.env.NODE_ENV === 'development') {
+  void import('@opennextjs/cloudflare').then(
+    ({ initOpenNextCloudflareForDev }) => initOpenNextCloudflareForDev(),
+  )
+}

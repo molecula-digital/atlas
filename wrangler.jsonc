@@ -1,0 +1,51 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "atlas-tech",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-08-04",
+  "compatibility_flags": [
+    "nodejs_compat",
+    "nodejs_compat_populate_process_env",
+    "global_fetch_strictly_public",
+  ],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS",
+  },
+  "images": {
+    // Next.js <Image> on Workers uses Cloudflare Image Resizing.
+    "binding": "IMAGES",
+  },
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "atlas-tech",
+    },
+  ],
+  // Optional: uncomment after creating the bucket (`wrangler r2 bucket create atlas-tech-next-cache`)
+  // and an incremental cache will back ISR / fetch cache. Without it, pages SSR on each request.
+  // "r2_buckets": [
+  //   {
+  //     "binding": "NEXT_INC_CACHE_R2_BUCKET",
+  //     "bucket_name": "atlas-tech-next-cache",
+  //   },
+  // ],
+  // Optional: lower-latency Postgres from Workers. Create with:
+  //   wrangler hyperdrive create atlas-tech --connection-string="$DATABASE_URL"
+  // then paste the id here. Runtime still works with the DATABASE_URL secret alone
+  // (use Neon’s `-pooler` hostname).
+  // "hyperdrive": [
+  //   {
+  //     "binding": "HYPERDRIVE",
+  //     "id": "YOUR_HYPERDRIVE_ID",
+  //     "localConnectionString": "postgresql://atlas:atlas_local@localhost:5432/atlas",
+  //   },
+  // ],
+  "observability": {
+    "enabled": true,
+  },
+  // Headroom for /api/cron/luma-sync (network-bound; default paid CPU is 30s).
+  "limits": {
+    "cpu_ms": 60000,
+  },
+}

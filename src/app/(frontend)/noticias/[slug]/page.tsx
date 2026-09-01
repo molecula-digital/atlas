@@ -12,10 +12,13 @@ import { WhatsAppCta } from '@/components/sections/WhatsAppCta'
 import { WHATSAPP_SURFACE } from '@/lib/analytics-events'
 import { safeJsonLd } from '@/lib/utils'
 import { LivePreviewRefresh } from '@/components/payload/LivePreviewRefresh'
+import { safeStaticParams } from '@/lib/static-params'
 
 export async function generateStaticParams() {
-  const result = await getPublishedNews()
-  return result.docs.map((article) => ({ slug: article.slug as string }))
+  return safeStaticParams(async () => {
+    const result = await getPublishedNews()
+    return result.docs.map((article) => ({ slug: article.slug as string }))
+  })
 }
 
 export async function generateMetadata({

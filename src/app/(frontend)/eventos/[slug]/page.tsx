@@ -18,12 +18,15 @@ import {
   EventDetailOrganizer,
 } from './EventDetailHero'
 import { LivePreviewRefresh } from '@/components/payload/LivePreviewRefresh'
+import { safeStaticParams } from '@/lib/static-params'
 
 export const revalidate = 3600
 
 export async function generateStaticParams() {
-  const result = await getPublishedEvents(200)
-  return result.docs.map((event) => ({ slug: event.slug as string }))
+  return safeStaticParams(async () => {
+    const result = await getPublishedEvents(200)
+    return result.docs.map((event) => ({ slug: event.slug as string }))
+  })
 }
 
 export async function generateMetadata({
