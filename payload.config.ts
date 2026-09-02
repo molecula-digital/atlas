@@ -8,7 +8,6 @@ import {
 import { s3Storage } from '@payloadcms/storage-s3'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import sharp from 'sharp'
 
 import { Media } from './src/collections/Media'
 import { Users } from './src/collections/Users'
@@ -25,6 +24,10 @@ import { lazyPostgresPoolOptions } from './src/lib/runtime'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 const isProduction = process.env.NODE_ENV === 'production'
+const isCloudflareBuild = process.env.CLOUDFLARE_BUILD === '1'
+const sharp = isCloudflareBuild
+  ? undefined
+  : (await import('sharp')).default
 
 export default buildConfig({
   admin: {
@@ -70,6 +73,8 @@ export default buildConfig({
     NewsletterSubscribers,
   ],
   secret: process.env.PAYLOAD_SECRET || '',
+  // Admin uses REST + server functions. GraphQL would pull `graphql` into the Worker.
+  graphQL: { disable: true },
   typescript: {
     outputFile: path.resolve(dirname, 'src/payload-types.ts'),
   },
@@ -91,7 +96,7 @@ export default buildConfig({
       FixedToolbarFeature(),
     ],
   }),
-  sharp: process.env.CLOUDFLARE_BUILD === '1' ? undefined : sharp,
+  sharp,
   plugins: [
     s3Storage({
       collections: {

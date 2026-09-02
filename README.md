@@ -118,7 +118,9 @@ La sync corre en runtime contra la app desplegada (no en el build). Usa el feed 
 
 El sitio esta pensado para correr en [Cloudflare Workers](https://developers.cloudflare.com/workers/) con [`@opennextjs/cloudflare`](https://opennext.js.org/cloudflare). No hace falta un VPS: Neon sigue siendo Postgres, R2 sigue siendo el bucket de imagenes, y el Worker sirve Next.js + Payload.
 
-**Hace falta el plan Workers Paid.** Payload + Next.js superan el limite de 3 MiB gzip del plan gratuito (el limite de pago es 10 MiB).
+**Hace falta el plan Workers Paid.** El script del Worker (gzip) tiene que quedar **por debajo de 10 MiB**; el plan gratuito (3 MiB) no alcanza con Payload + Next. Los assets estaticos del cliente no cuentan en ese tope. `pnpm deploy` falla si Wrangler reporta gzip por encima de 10 MiB.
+
+El build de Cloudflare usa **webpack** (`next build --webpack`) porque Turbopack duplica paquetes de Payload y infla el Worker. `@vercel/og` / wasm no se empaquetan: el OG del sitio es el JPG estatico `/og.jpg`. GraphQL de Payload esta desactivado; el admin usa REST.
 
 ### Primera vez
 

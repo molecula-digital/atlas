@@ -41,6 +41,10 @@
   //     "localConnectionString": "postgresql://atlas:atlas_local@localhost:5432/atlas",
   //   },
   // ],
+  // Keep the Worker script under the 10 MiB gzip paid cap.
+  "minify": true,
+  "keep_names": false,
+  "upload_source_maps": false,
   "observability": {
     "enabled": true,
   },

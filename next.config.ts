@@ -1,8 +1,20 @@
 import { withSentryConfig } from '@sentry/nextjs'
 import { withPayload } from '@payloadcms/next/withPayload'
 import type { NextConfig } from 'next'
+import path from 'path'
+import { fileURLToPath } from 'url'
 
 const isCloudflareBuild = process.env.CLOUDFLARE_BUILD === '1'
+const dirname = path.dirname(fileURLToPath(import.meta.url))
+const emptyOg = path.join(dirname, 'stubs/empty-og.js')
+const emptyModule = path.join(dirname, 'stubs/empty-module.js')
+
+const cloudflareOgAliases = {
+  'next/og': emptyOg,
+  'next/dist/compiled/@vercel/og': emptyOg,
+  'next/dist/compiled/@vercel/og/index.node.js': emptyOg,
+  'next/dist/compiled/@vercel/og/index.edge.js': emptyOg,
+}
 
 const nextConfig: NextConfig = {
   // OpenNext on Workers cannot use `output: 'standalone'`. Docker still needs it.
@@ -17,6 +29,31 @@ const nextConfig: NextConfig = {
         },
       }),
   serverExternalPackages: ['pg', 'jose'],
+  ...(isCloudflareBuild
+    ? {
+        turbopack: {
+          resolveAlias: {
+            'next/og': './stubs/empty-og.js',
+            'next/dist/compiled/@vercel/og': './stubs/empty-og.js',
+            'next/dist/compiled/@vercel/og/index.node.js': './stubs/empty-og.js',
+            'next/dist/compiled/@vercel/og/index.edge.js': './stubs/empty-og.js',
+            sharp: './stubs/empty-module.js',
+            'drizzle-kit': './stubs/empty-module.js',
+          },
+        },
+      }
+    : {}),
+  webpack: (config, { isServer }) => {
+    if (isCloudflareBuild && isServer) {
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        ...cloudflareOgAliases,
+        sharp: emptyModule,
+        'drizzle-kit': emptyModule,
+      }
+    }
+    return config
+  },
   images: {
     remotePatterns: [
       // Bucket objects are always served via the CDN custom domain.
@@ -66,6 +103,13 @@ export default withSentryConfig(withPayload(nextConfig), {
 
   // Upload a larger set of source maps for prettier stack traces (increases build time)
   widenClientFileUpload: true,
+
+  bundleSizeOptimizations: {
+    excludeDebugStatements: true,
+    excludeReplayShadowDom: true,
+    excludeReplayIframe: true,
+    excludeReplayWorker: true,
+  },
 
   // Route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
   // This can increase your server load as well as your hosting bill.
