@@ -138,6 +138,9 @@ importers:
       react-simple-maps:
         specifier: 3.0.0
         version: 3.0.0(prop-types@15.8.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      require-in-the-middle:
+        specifier: 8.0.1
+        version: 8.0.1(supports-color@10.2.2)
       sharp:
         specifier: 0.35.3
         version: 0.35.3(@types/node@26.1.2)

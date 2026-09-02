@@ -9,7 +9,14 @@ const PAID_GZIP_KIB = 10 * 1024
 
 const result = spawnSync(
   'pnpm',
-  ['exec', 'wrangler', 'deploy', '--dry-run', '--outdir', '/tmp/cf-bundle-size'],
+  [
+    'exec',
+    'wrangler',
+    'deploy',
+    '--dry-run',
+    '--outdir',
+    '/tmp/cf-bundle-size',
+  ],
   { encoding: 'utf8', maxBuffer: 20 * 1024 * 1024 },
 )
 
@@ -21,9 +28,13 @@ if (result.status !== 0) {
   process.exit(result.status ?? 1)
 }
 
-const match = output.match(/Total Upload:\s*([\d.]+)\s*KiB\s*\/\s*gzip:\s*([\d.]+)\s*KiB/i)
+const match = output.match(
+  /Total Upload:\s*([\d.]+)\s*KiB\s*\/\s*gzip:\s*([\d.]+)\s*KiB/i,
+)
 if (!match) {
-  console.error('check-worker-size: could not parse wrangler Total Upload / gzip line')
+  console.error(
+    'check-worker-size: could not parse wrangler Total Upload / gzip line',
+  )
   process.exit(1)
 }
 

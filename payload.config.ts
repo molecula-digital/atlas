@@ -25,9 +25,7 @@ const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 const isProduction = process.env.NODE_ENV === 'production'
 const isCloudflareBuild = process.env.CLOUDFLARE_BUILD === '1'
-const sharp = isCloudflareBuild
-  ? undefined
-  : (await import('sharp')).default
+const sharp = isCloudflareBuild ? undefined : (await import('sharp')).default
 
 export default buildConfig({
   admin: {

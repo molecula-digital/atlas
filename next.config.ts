@@ -17,6 +17,10 @@ const cloudflareOgAliases = {
 }
 
 const nextConfig: NextConfig = {
+  // Inlined at build time so the Worker does not look up CLOUDFLARE_BUILD at runtime.
+  env: {
+    CLOUDFLARE_BUILD: isCloudflareBuild ? '1' : '',
+  },
   // OpenNext on Workers cannot use `output: 'standalone'`. Docker still needs it.
   ...(isCloudflareBuild ? {} : { output: 'standalone' as const }),
   // Sharp loads libvips dynamically, which static output tracing cannot
@@ -35,10 +39,13 @@ const nextConfig: NextConfig = {
           resolveAlias: {
             'next/og': './stubs/empty-og.js',
             'next/dist/compiled/@vercel/og': './stubs/empty-og.js',
-            'next/dist/compiled/@vercel/og/index.node.js': './stubs/empty-og.js',
-            'next/dist/compiled/@vercel/og/index.edge.js': './stubs/empty-og.js',
+            'next/dist/compiled/@vercel/og/index.node.js':
+              './stubs/empty-og.js',
+            'next/dist/compiled/@vercel/og/index.edge.js':
+              './stubs/empty-og.js',
             sharp: './stubs/empty-module.js',
             'drizzle-kit': './stubs/empty-module.js',
+            'require-in-the-middle': './stubs/empty-module.js',
           },
         },
       }
@@ -50,6 +57,7 @@ const nextConfig: NextConfig = {
         ...cloudflareOgAliases,
         sharp: emptyModule,
         'drizzle-kit': emptyModule,
+        'require-in-the-middle': emptyModule,
       }
     }
     return config
@@ -87,7 +95,9 @@ const nextConfig: NextConfig = {
   },
 }
 
-export default withSentryConfig(withPayload(nextConfig), {
+const payloadConfig = withPayload(nextConfig)
+
+const sentryOptions = {
   // For all available options, see:
   // https://www.npmjs.com/package/@sentry/webpack-plugin#options
 
@@ -123,6 +133,8 @@ export default withSentryConfig(withPayload(nextConfig), {
     // Sentry Cron Monitors — unused on Coolify; left for optional Sentry setup.
     // https://docs.sentry.io/product/crons/
     automaticVercelMonitors: true,
+    // Node-only `require-in-the-middle` cannot resolve in the Workers middleware bundle.
+    autoInstrumentMiddleware: false,
 
     // Tree-shaking options for reducing bundle size
     treeshake: {
@@ -130,7 +142,15 @@ export default withSentryConfig(withPayload(nextConfig), {
       removeDebugLogging: true,
     },
   },
-})
+}
+
+// The Sentry Next.js webpack plugin injects Node `require-in-the-middle`
+// into every server page. That module does not resolve under OpenNext/esbuild
+// and inflates the Worker past the 10 MiB gzip cap. Browser Sentry still
+// loads from `instrumentation-client.ts`.
+export default isCloudflareBuild
+  ? payloadConfig
+  : withSentryConfig(payloadConfig, sentryOptions)
 
 if (process.env.NODE_ENV === 'development') {
   void import('@opennextjs/cloudflare').then(
