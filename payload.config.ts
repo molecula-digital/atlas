@@ -20,7 +20,7 @@ import { LumaCalendars } from './src/collections/LumaCalendars'
 import { NewsletterSubscribers } from './src/collections/NewsletterSubscribers'
 import { buildMediaFileUrl } from './src/lib/media-url'
 import { getPayloadPreviewUrl } from './src/lib/payload-preview'
-import { getDatabaseUrl, postgresPoolOptions } from './src/lib/runtime'
+import { lazyPostgresPoolOptions } from './src/lib/runtime'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -74,7 +74,7 @@ export default buildConfig({
     outputFile: path.resolve(dirname, 'src/payload-types.ts'),
   },
   db: postgresAdapter({
-    pool: postgresPoolOptions(getDatabaseUrl()),
+    pool: lazyPostgresPoolOptions(),
     schemaName: 'payload',
     push: false,
   }),

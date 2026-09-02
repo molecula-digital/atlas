@@ -24,8 +24,8 @@ jobs:
           LUMA_SYNC_URL: ${{ vars.LUMA_SYNC_URL || 'https://atlas-sinaloa.tech/api/cron/luma-sync' }}
         run: |
           if [ -z "$CRON_SECRET" ]; then
-            echo "CRON_SECRET is not set; skipping."
-            exit 0
+            echo "CRON_SECRET is not set."
+            exit 1
           fi
           curl -fsS -X POST \
             -H "Authorization: Bearer ${CRON_SECRET}" \

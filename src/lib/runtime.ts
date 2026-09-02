@@ -47,3 +47,24 @@ export function postgresPoolOptions(connectionString = getDatabaseUrl()) {
     connectionTimeoutMillis: 5_000,
   }
 }
+
+/**
+ * Payload calls `new Pool(poolOptions)` on connect, not at config load.
+ * A proxy keeps Hyperdrive / Worker secrets from being frozen as `''`.
+ */
+export function lazyPostgresPoolOptions() {
+  return new Proxy({} as ReturnType<typeof postgresPoolOptions>, {
+    get(_target, prop, receiver) {
+      return Reflect.get(postgresPoolOptions(getDatabaseUrl()), prop, receiver)
+    },
+    ownKeys() {
+      return Reflect.ownKeys(postgresPoolOptions(getDatabaseUrl()))
+    },
+    getOwnPropertyDescriptor(_target, prop) {
+      return Object.getOwnPropertyDescriptor(
+        postgresPoolOptions(getDatabaseUrl()),
+        prop,
+      )
+    },
+  })
+}

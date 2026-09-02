@@ -124,7 +124,7 @@ El sitio esta pensado para correr en [Cloudflare Workers](https://developers.clo
 
 1. Instala dependencias y autentica Wrangler: `pnpm wrangler login`
 2. Copia las variables de `.env` al dashboard de Cloudflare (Workers → Settings → Variables and Secrets). `DATABASE_URL` debe ser el hostname **pooler** de Neon.
-3. Las variables `NEXT_PUBLIC_*` de analytics se incrustan en el **build**, igual que en Docker. Configuralas como variables de build en Cloudflare o en GitHub Actions.
+3. Las variables `NEXT_PUBLIC_*` de analytics **y** `NEXT_PUBLIC_SITE_URL` se incrustan en el **build**. Sin `NEXT_PUBLIC_SITE_URL` el cliente de auth cae a localhost. El workflow de deploy ya las pasa como secrets/vars.
 4. `CLOUDFLARE_BUILD=1` lo ponen los scripts `preview` / `deploy` / `cf:build`. Sin ese flag, `next build` sigue generando el output `standalone` del Dockerfile.
 5. El build de Next sigue necesitando Postgres (para `generateStaticParams` y las paginas estaticas), mas `PAYLOAD_SECRET` y `BETTER_AUTH_SECRET`. Es el mismo requisito que el Dockerfile.
 6. Despliega:

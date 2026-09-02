@@ -55,8 +55,11 @@ export function checkRateLimit(
 }
 
 export function getClientIp(request: NextRequest): string {
+  // Only trust CF-Connecting-IP when the request actually came through Cloudflare.
+  const cloudflareIp =
+    request.headers.get('cf-ray') && request.headers.get('cf-connecting-ip')
   return (
-    request.headers.get('cf-connecting-ip') ||
+    cloudflareIp ||
     request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
     request.headers.get('x-real-ip') ||
     'unknown'

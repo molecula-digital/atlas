@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { isAuthenticated, isAdminOrEditor } from '../access/roles'
+import { isCloudflareWorkers } from '@/lib/runtime'
 
 export const Media: CollectionConfig = {
   slug: 'media',
@@ -14,9 +15,8 @@ export const Media: CollectionConfig = {
     delete: isAdminOrEditor,
   },
   upload: {
-    // Workers cannot use undici’s SSRF-safe fetch (`fs.write is not implemented`
-    // / diagnostic channel errors). Cloudflare already blocks private IPs.
-    skipSafeFetch: true,
+    // Workers cannot use undici’s SSRF-safe fetch. Keep it on Node/Docker.
+    skipSafeFetch: isCloudflareWorkers(),
     mimeTypes: [
       'image/png',
       'image/jpeg',
