@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "next dev",
-    "build": "pnpm generate:importmap && next build",
+    "build": "node scripts/run-build.mjs",
     "start": "next start",
     "lint": "eslint .",
     "format": "prettier --write .",
@@ -23,7 +23,7 @@
     "payload:migrate:create": "payload migrate:create",
     "preview": "CLOUDFLARE_BUILD=1 opennextjs-cloudflare build && node scripts/pin-cf-worker-name.mjs && opennextjs-cloudflare preview",
     "deploy": "CLOUDFLARE_BUILD=1 opennextjs-cloudflare build && pnpm cf:check-size && node scripts/pin-cf-worker-name.mjs && opennextjs-cloudflare deploy",
-    "cf:build": "CLOUDFLARE_BUILD=1 pnpm generate:importmap && CLOUDFLARE_BUILD=1 opennextjs-cloudflare build && node scripts/pin-cf-worker-name.mjs",
+    "cf:build": "CLOUDFLARE_BUILD=1 node scripts/run-build.mjs",
     "cf:deploy": "node scripts/pin-cf-worker-name.mjs && OPEN_NEXT_DEPLOY=true pnpm exec wrangler deploy",
     "cf:check-size": "node scripts/check-worker-size.mjs",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",

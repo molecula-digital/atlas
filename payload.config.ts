@@ -19,12 +19,13 @@ import { LumaCalendars } from './src/collections/LumaCalendars'
 import { NewsletterSubscribers } from './src/collections/NewsletterSubscribers'
 import { buildMediaFileUrl } from './src/lib/media-url'
 import { getPayloadPreviewUrl } from './src/lib/payload-preview'
+import { isCloudflareBuildEnv } from './src/lib/cloudflare-build-env'
 import { lazyPostgresPoolOptions } from './src/lib/runtime'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 const isProduction = process.env.NODE_ENV === 'production'
-const isCloudflareBuild = process.env.CLOUDFLARE_BUILD === '1'
+const isCloudflareBuild = isCloudflareBuildEnv()
 const sharp = isCloudflareBuild ? undefined : (await import('sharp')).default
 
 export default buildConfig({
