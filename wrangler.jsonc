@@ -50,6 +50,10 @@
   "minify": true,
   "keep_names": false,
   "upload_source_maps": false,
+  "alias": {
+    // Next.js image-optimizer requires sharp; native libvips cannot run in workerd.
+    "sharp": "./stubs/empty-sharp.js",
+  },
   "observability": {
     "enabled": true,
   },

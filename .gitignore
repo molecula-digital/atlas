@@ -41,6 +41,8 @@ next-env.d.ts
 # Cloudflare Workers / OpenNext
 .open-next
 .wrangler
+# Sidecar copies of sharp while the Workers build stubs native binaries
+**/*.workers-stub-orig
 .dev.vars
 .dev.vars.*
 !.dev.vars.example
