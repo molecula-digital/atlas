@@ -1,0 +1,16 @@
+{
+  "name": "Atlas Tech",
+  "install": "bash .cursor/install.sh",
+  "start": "bash .cursor/start.sh",
+  "terminals": [
+    {
+      "name": "dev",
+      "command": "pnpm dev",
+      "description": "Next.js + Payload dev server on http://localhost:3000 (admin at /admin)."
+    }
+  ],
+  "ports": [
+    { "name": "app", "port": 3000 },
+    { "name": "minio-console", "port": 9001 }
+  ]
+}
