@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "atlas-tech",
+  "name": "atlas",
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-08-04",
   "compatibility_flags": [
@@ -19,7 +19,7 @@
   "services": [
     {
       "binding": "WORKER_SELF_REFERENCE",
-      "service": "atlas-tech",
+      "service": "atlas",
     },
   ],
   // Optional: uncomment after creating the bucket (`wrangler r2 bucket create atlas-tech-next-cache`)
