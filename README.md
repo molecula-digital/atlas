@@ -128,7 +128,7 @@ El build de Cloudflare usa **webpack** (`next build --webpack`) porque Turbopack
 2. Copia las variables de `.env` al dashboard de Cloudflare (Workers → Settings → Variables and Secrets). `DATABASE_URL` debe ser el hostname **pooler** de Neon.
 3. Las variables `NEXT_PUBLIC_*` de analytics **y** `NEXT_PUBLIC_SITE_URL` se incrustan en el **build**. Sin `NEXT_PUBLIC_SITE_URL` el cliente de auth cae a localhost. En Cloudflare Builds van como variables de entorno del build.
 4. `CLOUDFLARE_BUILD=1` lo ponen los scripts `preview` / `deploy` / `cf:build`. Sin ese flag, `next build` sigue generando el output `standalone` del Dockerfile.
-5. El build de Next sigue necesitando Postgres (para `generateStaticParams` y las paginas estaticas), mas `PAYLOAD_SECRET` y `BETTER_AUTH_SECRET`. Es el mismo requisito que el Dockerfile. `importMap.js` esta en `.gitignore`; `pnpm cf:build` corre `payload generate:importmap` antes de webpack.
+5. El build de Next sigue necesitando Postgres (para `generateStaticParams` y las paginas estaticas), mas `PAYLOAD_SECRET` y `BETTER_AUTH_SECRET`. Es el mismo requisito que el Dockerfile. `src/app/(payload)/admin/importMap.js` va en git (webpack en Cloudflare no lo encuentra si solo se genera en el clone); `pnpm cf:build` lo regenera antes de webpack.
 6. Despliega conectando el repo en Cloudflare (Workers → Create → Connect git). El Worker del dashboard se llama **`atlas`** (el paquete npm sigue siendo `atlas-tech`). Comando de build: `pnpm cf:build`. Deploy: `pnpm cf:deploy` (no `npx wrangler deploy` a secas: hay que alinear `WORKER_SELF_REFERENCE` con el nombre del dashboard; si apunta a `atlas-tech` el upload falla con API 10143).
 
 ```bash

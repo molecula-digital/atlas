@@ -27,8 +27,8 @@ pnpm-debug.log*
 *.swp
 *.swo
 
-# Payload generated
-src/app/(payload)/admin/importMap.js
+# Payload generated types (importMap.js is committed so Cloudflare webpack
+# can resolve it on a clean clone even if generate:importmap is skipped).
 
 # TypeScript
 *.tsbuildinfo

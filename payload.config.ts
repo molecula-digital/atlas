@@ -32,6 +32,10 @@ export default buildConfig({
     user: 'users',
     importMap: {
       baseDir: path.resolve(dirname),
+      importMapFile: path.resolve(
+        dirname,
+        'src/app/(payload)/admin/importMap.js',
+      ),
     },
     timezones: {
       defaultTimezone: 'America/Mazatlan',
