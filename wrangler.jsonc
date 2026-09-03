@@ -1,5 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
+  // Must match the Connect-git Worker in the Cloudflare dashboard.
+  // The npm package is still "atlas-tech"; do not reuse that as the script name.
   "name": "atlas",
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-08-04",
@@ -16,6 +18,9 @@
     // Next.js <Image> on Workers uses Cloudflare Image Resizing.
     "binding": "IMAGES",
   },
+  // Self-bind the dashboard Worker (`atlas`), not package.json (`atlas-tech`).
+  // Cloudflare Builds overrides `name` via WRANGLER_CI_OVERRIDE_NAME but does
+  // not rewrite this field; scripts/pin-cf-worker-name.mjs keeps them aligned.
   "services": [
     {
       "binding": "WORKER_SELF_REFERENCE",

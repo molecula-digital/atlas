@@ -127,14 +127,16 @@ El build de Cloudflare usa **webpack** (`next build --webpack`) porque Turbopack
 1. Instala dependencias y autentica Wrangler: `pnpm wrangler login`
 2. Copia las variables de `.env` al dashboard de Cloudflare (Workers → Settings → Variables and Secrets). `DATABASE_URL` debe ser el hostname **pooler** de Neon.
 3. Las variables `NEXT_PUBLIC_*` de analytics **y** `NEXT_PUBLIC_SITE_URL` se incrustan en el **build**. Sin `NEXT_PUBLIC_SITE_URL` el cliente de auth cae a localhost. En Cloudflare Builds van como variables de entorno del build.
-4. `CLOUDFLARE_BUILD=1` lo ponen los scripts `preview` / `deploy` / `cf:build`. Sin ese flag, `next build` sigue generando el output `standalone` del Dockerfile.
-5. El build de Next sigue necesitando Postgres (para `generateStaticParams` y las paginas estaticas), mas `PAYLOAD_SECRET` y `BETTER_AUTH_SECRET`. Es el mismo requisito que el Dockerfile. `importMap.js` esta en `.gitignore`; `pnpm cf:build` corre `payload generate:importmap` antes de webpack.
-6. Despliega conectando el repo en Cloudflare (Workers → Create → Connect git). Comando de build: `pnpm cf:build`. Deploy: `npx wrangler deploy`.
+4. Cloudflare Builds suele auto-detectar Next.js y correr `pnpm run build`. En ese entorno (`WORKERS_CI=1`) el script redirige a OpenNext + webpack; no uses Turbopack ahi (revienta con Sharp/libvips). `CLOUDFLARE_BUILD=1` lo ponen `preview` / `deploy` / `cf:build`, y tambien `pnpm build` cuando detecta Workers CI. Sin ese flag, Docker sigue generando el output `standalone`.
+5. El build de Next sigue necesitando Postgres (para `generateStaticParams` y las paginas estaticas), mas `PAYLOAD_SECRET` y `BETTER_AUTH_SECRET`. Es el mismo requisito que el Dockerfile. `src/app/(payload)/admin/importMap.js` va en git (webpack en Cloudflare no lo encuentra si solo se genera en el clone); el build de Workers lo regenera antes de webpack.
+6. Despliega conectando el repo en Cloudflare (Workers → Create → Connect git). El Worker del dashboard se llama **`atlas`** (el paquete npm sigue siendo `atlas-tech`). Comando de build: `pnpm cf:build` o `pnpm run build` (en Workers CI es lo mismo). Deploy: `pnpm cf:deploy` (no `npx wrangler deploy` a secas: hay que alinear `WORKER_SELF_REFERENCE` con el nombre del dashboard; si apunta a `atlas-tech` el upload falla con API 10143).
 
 ```bash
 pnpm cf:build
-pnpm exec wrangler deploy
+pnpm cf:deploy
 ```
+
+Si un deploy anterior dejo un service binding `WORKER_SELF_REFERENCE` → `atlas-tech` en el dashboard (Workers → Settings → Bindings), eliminalo. Ese Worker no existe.
 
 7. Apunta `atlas-sinaloa.tech` al Worker (Workers → Settings → Domains & Routes). Actualiza las URLs de callback de Google OAuth si cambiaste de dominio.
 

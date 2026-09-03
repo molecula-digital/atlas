@@ -4,7 +4,9 @@ import type { NextConfig } from 'next'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
-const isCloudflareBuild = process.env.CLOUDFLARE_BUILD === '1'
+import { isCloudflareBuildEnv } from './src/lib/cloudflare-build-env'
+
+const isCloudflareBuild = isCloudflareBuildEnv()
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 const emptyOg = path.join(dirname, 'stubs/empty-og.js')
 const emptyModule = path.join(dirname, 'stubs/empty-module.js')

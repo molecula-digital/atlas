@@ -1,3 +1,5 @@
+import { isCloudflareBuildEnv } from './cloudflare-build-env'
+
 /**
  * `generateStaticParams` talks to Payload/Postgres. Swallow connection
  * errors in local `next dev` so a down database does not crash the app.
@@ -9,8 +11,7 @@ export async function safeStaticParams<T>(
   try {
     return await load()
   } catch (error) {
-    const failBuild =
-      process.env.CI === 'true' || process.env.CLOUDFLARE_BUILD === '1'
+    const failBuild = process.env.CI === 'true' || isCloudflareBuildEnv()
     if (failBuild) throw error
     console.warn('generateStaticParams: skipping prerender', error)
     return []
