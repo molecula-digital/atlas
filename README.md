@@ -144,7 +144,7 @@ Hyperdrive es opcional: descomenta el bloque en `wrangler.jsonc` despues de `wra
 
 `pnpm dev` no cambia: sigue siendo Node.js contra Postgres y MinIO locales. `pnpm preview` construye el Worker y lo sirve con Wrangler para validar el runtime de Cloudflare.
 
-Sharp (thumbnails de Payload) no corre en Workers; las imagenes originales siguen en R2 y el CDN. Los tamanos ya generados no se tocan.
+Sharp (thumbnails de Payload) no corre en Workers; las imagenes originales siguen en R2 y el CDN. El build de Workers sustituye el paquete `sharp` por un stub JS para que Next no arrastre libvips al script.
 
 ## Docker (alternativa / self-host)
 

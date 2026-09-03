@@ -11,11 +11,20 @@ const dirname = path.dirname(fileURLToPath(import.meta.url))
 const emptyOg = path.join(dirname, 'stubs/empty-og.js')
 const emptyModule = path.join(dirname, 'stubs/empty-module.js')
 
+const emptySharp = path.join(dirname, 'stubs/empty-sharp.js')
+
 const cloudflareOgAliases = {
   'next/og': emptyOg,
   'next/dist/compiled/@vercel/og': emptyOg,
   'next/dist/compiled/@vercel/og/index.node.js': emptyOg,
   'next/dist/compiled/@vercel/og/index.edge.js': emptyOg,
+}
+
+const cloudflareNativeAliases = {
+  ...cloudflareOgAliases,
+  sharp: emptySharp,
+  'drizzle-kit': emptyModule,
+  'require-in-the-middle': emptyModule,
 }
 
 const nextConfig: NextConfig = {
@@ -45,21 +54,18 @@ const nextConfig: NextConfig = {
               './stubs/empty-og.js',
             'next/dist/compiled/@vercel/og/index.edge.js':
               './stubs/empty-og.js',
-            sharp: './stubs/empty-module.js',
+            sharp: './stubs/empty-sharp.js',
             'drizzle-kit': './stubs/empty-module.js',
             'require-in-the-middle': './stubs/empty-module.js',
           },
         },
       }
     : {}),
-  webpack: (config, { isServer }) => {
-    if (isCloudflareBuild && isServer) {
+  webpack: (config) => {
+    if (isCloudflareBuild) {
       config.resolve.alias = {
         ...config.resolve.alias,
-        ...cloudflareOgAliases,
-        sharp: emptyModule,
-        'drizzle-kit': emptyModule,
-        'require-in-the-middle': emptyModule,
+        ...cloudflareNativeAliases,
       }
     }
     return config
