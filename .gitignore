@@ -38,6 +38,13 @@ next-env.d.ts
 .vercel
 .superpowers/
 
+# Cloudflare Workers / OpenNext
+.open-next
+.wrangler
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+
 # Wallet certificates
 certs/
 

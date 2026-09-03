@@ -8,7 +8,6 @@ import {
 import { s3Storage } from '@payloadcms/storage-s3'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import sharp from 'sharp'
 
 import { Media } from './src/collections/Media'
 import { Users } from './src/collections/Users'
@@ -20,9 +19,13 @@ import { LumaCalendars } from './src/collections/LumaCalendars'
 import { NewsletterSubscribers } from './src/collections/NewsletterSubscribers'
 import { buildMediaFileUrl } from './src/lib/media-url'
 import { getPayloadPreviewUrl } from './src/lib/payload-preview'
+import { lazyPostgresPoolOptions } from './src/lib/runtime'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+const isProduction = process.env.NODE_ENV === 'production'
+const isCloudflareBuild = process.env.CLOUDFLARE_BUILD === '1'
+const sharp = isCloudflareBuild ? undefined : (await import('sharp')).default
 
 export default buildConfig({
   admin: {
@@ -68,19 +71,23 @@ export default buildConfig({
     NewsletterSubscribers,
   ],
   secret: process.env.PAYLOAD_SECRET || '',
+  // Admin uses REST + server functions. GraphQL would pull `graphql` into the Worker.
+  graphQL: { disable: true },
   typescript: {
     outputFile: path.resolve(dirname, 'src/payload-types.ts'),
   },
   db: postgresAdapter({
-    pool: {
-      connectionString: process.env.DATABASE_URL || '',
-      max: 5,
-      idleTimeoutMillis: 30_000,
-      connectionTimeoutMillis: 5_000,
-    },
+    pool: lazyPostgresPoolOptions(),
     schemaName: 'payload',
     push: false,
   }),
+  logger: isProduction
+    ? {
+        options: { level: process.env.PAYLOAD_LOG_LEVEL || 'info' },
+        // pino-pretty uses Node fs APIs that Workers do not implement.
+        destination: { write: (msg: string) => console.log(msg) },
+      }
+    : undefined,
   editor: lexicalEditor({
     features: ({ defaultFeatures }) => [
       ...defaultFeatures,

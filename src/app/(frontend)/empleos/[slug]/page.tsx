@@ -19,12 +19,15 @@ import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import { JobApplyLink } from '@/components/entries/JobApplyLink'
 import { MapPin, Clock, Briefcase, AlertTriangle } from 'lucide-react'
 import { LivePreviewRefresh } from '@/components/payload/LivePreviewRefresh'
+import { safeStaticParams } from '@/lib/static-params'
 
 export const revalidate = 3600
 
 export async function generateStaticParams() {
-  const result = await getActiveJobs()
-  return result.docs.map((job) => ({ slug: job.slug as string }))
+  return safeStaticParams(async () => {
+    const result = await getActiveJobs()
+    return result.docs.map((job) => ({ slug: job.slug as string }))
+  })
 }
 
 function isExpired(expiresAt: string | undefined | null): boolean {

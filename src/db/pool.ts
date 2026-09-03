@@ -1,14 +1,29 @@
 import { Pool } from 'pg'
+import { getDatabaseUrl, postgresPoolOptions } from '@/lib/runtime'
 
 /**
  * Shared PostgreSQL connection pool for auth and Drizzle.
  * Payload CMS maintains its own pool via postgresAdapter (separate schema).
+ *
+ * Created lazily so Cloudflare Workers can populate `process.env` (and the
+ * Hyperdrive binding) before the first query. Drizzle holds this proxy and
+ * calls `.query()` later.
  */
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  max: 5,
-  idleTimeoutMillis: 30_000,
-  connectionTimeoutMillis: 5_000,
-})
+let instance: Pool | undefined
 
-export { pool }
+export function getPool(): Pool {
+  if (!instance) {
+    instance = new Pool(postgresPoolOptions(getDatabaseUrl()))
+  }
+  return instance
+}
+
+export const pool: Pool = new Proxy({} as Pool, {
+  get(_target, prop, receiver) {
+    const target = getPool()
+    const value = Reflect.get(target, prop, receiver)
+    return typeof value === 'function'
+      ? (value as (...args: unknown[]) => unknown).bind(target)
+      : value
+  },
+})

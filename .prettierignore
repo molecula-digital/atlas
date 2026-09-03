@@ -1,5 +1,7 @@
 .agents/
 .next/
+.open-next/
+.wrangler/
 build/
 coverage/
 docs/
@@ -10,3 +12,5 @@ pnpm-lock.yaml
 public/
 src/migrations/
 src/payload-types.ts
+wrangler.jsonc
+cloudflare-env.d.ts
