@@ -1,5 +1,4 @@
 import '@/styles/globals.css'
-import Script from 'next/script'
 import { JetBrains_Mono, Space_Grotesk } from 'next/font/google'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
 import { PostHogIdentify } from '@/components/providers/PostHogIdentify'
@@ -21,21 +20,6 @@ const spaceGrotesk = Space_Grotesk({
   display: 'swap',
 })
 
-/**
- * Umami — cookieless pageview counts, alongside PostHog's product analytics.
- *
- * Configured the same way PostHog is: production only, and only when the
- * environment supplies an id. The id used to be hardcoded, which meant every
- * environment reported into the same Umami site and turning it off took a code
- * change. It is not a secret — Umami ids are public in the page source — this
- * is about being able to point it somewhere per environment.
- */
-const UMAMI_SRC =
-  process.env.NEXT_PUBLIC_UMAMI_SRC ||
-  'https://analytics.molecula.digital/script.js'
-const umamiWebsiteId = process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID
-const analyticsEnabled = process.env.NODE_ENV === 'production'
-
 export default function FrontendLayout({
   children,
 }: {
@@ -48,18 +32,6 @@ export default function FrontendLayout({
       data-scroll-behavior="smooth"
       suppressHydrationWarning
     >
-      <head>
-        {analyticsEnabled && umamiWebsiteId && (
-          // No `defer`: next/script injects this itself once the page is
-          // interactive, and defer only means anything for a tag the HTML
-          // parser inserted. Leaving it on read as though it controlled timing.
-          <Script
-            src={UMAMI_SRC}
-            data-website-id={umamiWebsiteId}
-            strategy="afterInteractive"
-          />
-        )}
-      </head>
       <body className="bg-background">
         <ThemeProvider>
           <PostHogIdentify />

@@ -90,8 +90,6 @@ Analytics solo se inicializa en produccion, asi que en desarrollo (`pnpm dev`) n
 | `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` | Token del proyecto de PostHog. En PostHog: Settings → Project → Project API Key                                                                                          |
 | `NEXT_PUBLIC_POSTHOG_HOST`          | Endpoint de ingesta del navegador. Apunta al proxy inverso (`https://t.molecula.digital`) para esquivar los bloqueadores. Usa `https://us.i.posthog.com` para ir directo |
 | `NEXT_PUBLIC_POSTHOG_UI_HOST`       | Donde vive PostHog, para los enlaces del toolbar. Solo importa si el anterior es un proxy. Por defecto `https://us.posthog.com`                                          |
-| `NEXT_PUBLIC_UMAMI_WEBSITE_ID`      | ID del sitio en Umami (conteo de visitas sin cookies). No es secreto: aparece en el HTML                                                                                 |
-| `NEXT_PUBLIC_UMAMI_SRC`             | URL del script de Umami. Por defecto `https://analytics.molecula.digital/script.js`                                                                                      |
 
 Ver [`docs/posthog.md`](docs/posthog.md) para el detalle de que se registra y por que.
 
@@ -168,7 +166,7 @@ docker run -p 3000:3000 --env-file .env atlas-tech
 
 > `SENTRY_AUTH_TOKEN` tambien es obligatorio durante el build. `withSentryConfig` lo usa para crear la release y subir source maps; si falta o la subida falla, el build falla y no produce una imagen desplegable.
 
-> Las variables `NEXT_PUBLIC_*` de analytics **tienen que ir en el build**, no en `docker run`: Next.js las incrusta en el bundle durante `pnpm build`, asi que pasarlas solo con `--env-file` llega tarde y analytics se despliega muerto sin ningun error visible. Solo el token de PostHog es obligatorio; las demas tienen valores por defecto en el `Dockerfile` y unicamente hace falta pasarlas para apuntar a otro proyecto o a otro sitio de Umami.
+> Las variables `NEXT_PUBLIC_*` de analytics **tienen que ir en el build**, no en `docker run`: Next.js las incrusta en el bundle durante `pnpm build`, asi que pasarlas solo con `--env-file` llega tarde y analytics se despliega muerto sin ningun error visible. Solo el token de PostHog es obligatorio; las demas tienen valores por defecto en el `Dockerfile` y unicamente hace falta pasarlas para apuntar a otro proyecto.
 
 > `NEXT_PUBLIC_SITE_URL` es la excepcion: **no** se pasa como `--build-arg`. Se queda fuera del build a proposito para que siga leyendose en tiempo de ejecucion desde `--env-file`, que es como llega hoy. Convertirla en build-arg la congelaria y romperia cualquier despliegue que no sea produccion.
 
