@@ -6,4 +6,6 @@ interface CloudflareEnv {
   HYPERDRIVE?: {
     connectionString: string
   }
+  /** Worker secret. Not a wrangler binding; set in the dashboard. */
+  CRON_SECRET?: string
 }

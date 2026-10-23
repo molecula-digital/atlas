@@ -34,5 +34,6 @@ export default defineConfig([
     'src/payload-types.ts',
     'src/app/(payload)/admin/importMap.js',
     'src/migrations/**',
+    'stubs/**',
   ]),
 ])

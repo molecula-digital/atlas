@@ -3,7 +3,12 @@
   // Must match the Connect-git Worker in the Cloudflare dashboard.
   // The npm package is still "atlas-tech"; do not reuse that as the script name.
   "name": "atlas",
-  "main": ".open-next/worker.js",
+  // custom-worker.mjs re-exports the OpenNext fetch handler and adds cron.
+  "main": "custom-worker.mjs",
+  "triggers": {
+    // UTC. Same cadence as .github/workflows/luma-sync.yml.
+    "crons": ["0 */12 * * *"],
+  },
   "compatibility_date": "2026-08-04",
   "compatibility_flags": [
     "nodejs_compat",
@@ -50,8 +55,15 @@
   "minify": true,
   "keep_names": false,
   "upload_source_maps": false,
+  "alias": {
+    // Next.js image-optimizer requires sharp; native libvips cannot run in workerd.
+    "sharp": "./stubs/empty-sharp.js",
+  },
   "observability": {
     "enabled": true,
+    "traces": {
+      "enabled": true,
+    },
   },
   // Headroom for /api/cron/luma-sync (network-bound; default paid CPU is 30s).
   "limits": {
