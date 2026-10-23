@@ -40,21 +40,13 @@ if (onWorkers) {
   console.log(
     'Workers CI / CLOUDFLARE_BUILD: OpenNext webpack build (skipping `next build` Turbopack)',
   )
-  // Next's image loader calls real Sharp while compiling static images
-  // (Payload admin favicons). Stub only the later esbuild pass, which is
-  // what inlines libvips into worker.js.
-  let status = run('pnpm', ['exec', 'opennextjs-cloudflare', 'build'])
-  if (status !== 0) {
-    process.exit(status)
-  }
+  // Stub before Next compiles. The image loader calls Sharp for static
+  // images; the stub returns the original bytes. OpenNext's esbuild pass
+  // then inlines that stub instead of libvips.
   runOrExit('node', ['scripts/stub-sharp-for-workers.mjs'])
+  let status = 0
   try {
-    status = run('pnpm', [
-      'exec',
-      'opennextjs-cloudflare',
-      'build',
-      '--skipNextBuild',
-    ])
+    status = run('pnpm', ['exec', 'opennextjs-cloudflare', 'build'])
     if (status === 0) {
       status = run('node', ['scripts/pin-cf-worker-name.mjs'])
     }

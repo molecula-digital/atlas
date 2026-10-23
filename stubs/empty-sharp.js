@@ -1,28 +1,30 @@
 // No-op Sharp for Cloudflare Workers. OpenNext esbuild inlines
 // `require('sharp')` from Next's image-optimizer even though that
 // path is lazy in Node — native libvips then throws on the first GET.
-function chain() {
-  return api
-}
+//
+// `next build` also calls this while compiling static images, so the
+// chain has to accept the real methods (`timeout`, `toBuffer`, …) and
+// hand the original bytes back.
 
-const api = {
-  rotate: chain,
-  resize: chain,
-  jpeg: chain,
-  png: chain,
-  webp: chain,
-  avif: chain,
-  gif: chain,
-  tiff: chain,
-  clone: chain,
-  withMetadata: chain,
-  toFormat: chain,
-  toBuffer: async () => Buffer.alloc(0),
-  toFile: async () => ({ size: 0 }),
-  metadata: async () => ({}),
-}
-
-function sharp() {
+function sharp(input) {
+  const buffer = Buffer.isBuffer(input) ? input : Buffer.alloc(0)
+  const api = {
+    timeout: () => api,
+    rotate: () => api,
+    resize: () => api,
+    jpeg: () => api,
+    png: () => api,
+    webp: () => api,
+    avif: () => api,
+    gif: () => api,
+    tiff: () => api,
+    clone: () => api,
+    withMetadata: () => api,
+    toFormat: () => api,
+    toBuffer: async () => buffer,
+    toFile: async () => ({ size: buffer.length }),
+    metadata: async () => ({}),
+  }
   return api
 }
 
