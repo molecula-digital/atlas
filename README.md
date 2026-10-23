@@ -101,8 +101,8 @@ Los eventos publicos de uno o mas calendarios de [Luma](https://luma.com) se pue
 
 1. En el admin (`/admin`), abre **Integraciones → Calendarios Luma**
 2. La migracion siembra **Gina**, **La Cripto Plebada** y **Cursor Culiacan, Mexico**; agrega mas filas para otros calendarios
-3. Configura `CRON_SECRET` (`openssl rand -hex 32`) como secret del Worker y en GitHub Actions
-4. El workflow [`.github/workflows/luma-sync.yml`](.github/workflows/luma-sync.yml) llama al endpoint cada 12h (`0 */12 * * *`). Tambien puedes lanzarlo a mano:
+3. Configura `CRON_SECRET` (`openssl rand -hex 32`) como secret del Worker. El mismo valor va en GitHub Actions si quieres el workflow manual.
+4. El Cron Trigger del Worker (`0 */12 * * *`, UTC) llama a `POST /api/cron/luma-sync` dentro del propio Worker (`custom-worker.mjs`). Escribe en el mismo Neon aunque el dominio aun no apunte al Worker. El workflow [`.github/workflows/luma-sync.yml`](.github/workflows/luma-sync.yml) queda como respaldo contra la URL publica; hoy no corre porque `CRON_SECRET` no esta en los secrets de GitHub. Tambien puedes lanzarlo a mano:
 
 ```bash
 curl -fsS -X POST \
@@ -144,7 +144,7 @@ Hyperdrive es opcional: descomenta el bloque en `wrangler.jsonc` despues de `wra
 
 `pnpm dev` no cambia: sigue siendo Node.js contra Postgres y MinIO locales. `pnpm preview` construye el Worker y lo sirve con Wrangler para validar el runtime de Cloudflare.
 
-Sharp (thumbnails de Payload) no corre en Workers; las imagenes originales siguen en R2 y el CDN. Los tamanos ya generados no se tocan.
+El binding `IMAGES` no es el bucket. Es la API de [Image Resizing](https://developers.cloudflare.com/images/optimization/binding/) (`env.IMAGES`). OpenNext la usa para optimizar `next/image` (PNG, JPEG, WEBP, AVIF, GIF, SVG). Los originales siguen en R2 y salen por `cdn.atlas-sinaloa.tech`. Sharp no corre en el Worker: Payload no genera los tamanos `thumbnail` / `card` / `cover` ahi, y el build sustituye el paquete `sharp` por un stub JS para que Next no arrastre libvips. Image Resizing tiene que estar activo en la cuenta; tiene coste aparte del plan Workers.
 
 ## Docker (alternativa / self-host)
 

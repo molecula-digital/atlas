@@ -13,10 +13,15 @@
 import { readFileSync, writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 
-const wranglerPath = fileURLToPath(new URL('../wrangler.jsonc', import.meta.url))
+const wranglerPath = fileURLToPath(
+  new URL('../wrangler.jsonc', import.meta.url),
+)
 const DASHBOARD_WORKER = 'atlas'
+const WORKER_ENTRY = 'custom-worker.mjs'
 
-const workerName = (process.env.WRANGLER_CI_OVERRIDE_NAME || DASHBOARD_WORKER).trim()
+const workerName = (
+  process.env.WRANGLER_CI_OVERRIDE_NAME || DASHBOARD_WORKER
+).trim()
 
 if (!/^[a-z0-9-]+$/.test(workerName)) {
   console.error(`pin-cf-worker-name: invalid Worker name "${workerName}"`)
@@ -37,6 +42,10 @@ if (!selfRef.test(source)) {
 }
 source = source.replace(selfRef, `$1${workerName}$2`)
 
+// OpenNext's default entry is `.open-next/worker.js`, which has no
+// scheduled handler. Keep the cron wrapper as the uploaded script.
+source = source.replace(/^(\s*"main"\s*:\s*")[^"]+(")/m, `$1${WORKER_ENTRY}$2`)
+
 const nameMatch = source.match(/^(\s*"name"\s*:\s*")([^"]+)(")/m)
 const serviceMatch = source.match(
   /"binding"\s*:\s*"WORKER_SELF_REFERENCE"[\s\S]*?"service"\s*:\s*"([^"]+)"/,
@@ -50,5 +59,5 @@ if (nameMatch?.[2] !== workerName || serviceMatch?.[1] !== workerName) {
 
 writeFileSync(wranglerPath, source)
 console.log(
-  `Pinned wrangler.jsonc name and WORKER_SELF_REFERENCE to "${workerName}"`,
+  `Pinned wrangler.jsonc name and WORKER_SELF_REFERENCE to "${workerName}", main to "${WORKER_ENTRY}"`,
 )

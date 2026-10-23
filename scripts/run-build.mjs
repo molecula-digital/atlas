@@ -21,8 +21,17 @@ const onWorkers =
  */
 function run(command, args) {
   const result = spawnSync(command, args, { stdio: 'inherit', env })
-  if (result.status !== 0) {
-    process.exit(result.status ?? 1)
+  return result.status ?? 1
+}
+
+/**
+ * @param {string} command
+ * @param {string[]} args
+ */
+function runOrExit(command, args) {
+  const status = run(command, args)
+  if (status !== 0) {
+    process.exit(status)
   }
 }
 
@@ -31,10 +40,21 @@ if (onWorkers) {
   console.log(
     'Workers CI / CLOUDFLARE_BUILD: OpenNext webpack build (skipping `next build` Turbopack)',
   )
-  run('pnpm', ['exec', 'opennextjs-cloudflare', 'build'])
-  run('node', ['scripts/pin-cf-worker-name.mjs'])
-  process.exit(0)
+  runOrExit('node', ['scripts/stub-sharp-for-workers.mjs'])
+  let status = 0
+  try {
+    status = run('pnpm', ['exec', 'opennextjs-cloudflare', 'build'])
+    if (status === 0) {
+      status = run('node', ['scripts/pin-cf-worker-name.mjs'])
+    }
+    if (status === 0) {
+      status = run('node', ['scripts/assert-no-native-sharp.mjs'])
+    }
+  } finally {
+    run('node', ['scripts/stub-sharp-for-workers.mjs', '--restore'])
+  }
+  process.exit(status)
 }
 
-run('pnpm', ['generate:importmap'])
-run('pnpm', ['exec', 'next', 'build'])
+runOrExit('pnpm', ['generate:importmap'])
+runOrExit('pnpm', ['exec', 'next', 'build'])
