@@ -4,7 +4,9 @@
  * `require`s sharp. Webpack aliases do not apply to that pass, so native
  * libvips lands in worker.js and crashes the Worker on the first request.
  *
- * Replace every installed sharp entry with a JS stub before OpenNext runs.
+ * Replace every installed sharp entry with a JS stub after `next build`
+ * and before OpenNext's esbuild pass. Do not stub during `next build`:
+ * the image loader calls Sharp to compile static images.
  * Writes break pnpm store hardlinks (unlink + recreate) and keep a sidecar
  * backup so `--restore` can put Docker/Node Sharp back.
  */
