@@ -1,10 +1,7 @@
 'use client'
 
-import posthog from 'posthog-js'
 import type { TechEvent } from '@/lib/events'
-import { isPastEventDate } from '@/lib/events'
 import {
-  ANALYTICS_EVENTS,
   type AnalyticsEvent,
   type CalendarProvider,
   type DirectoryCta,
@@ -14,16 +11,6 @@ import {
   type ShareContentType,
   type WhatsAppSurface,
 } from '@/lib/analytics-events'
-
-/**
- * Every PostHog capture in the app goes through this module.
- *
- * Two rules make the data survive refactors:
- *   1. Names and property *values* come from `analytics-events.ts`, never from
- *      UI copy. Renaming a button label must not silently split a metric.
- *   2. Entity properties are built by one function per entity, so a chart
- *      grouped by `event_slug` keeps working no matter which surface fired it.
- */
 
 /**
  * Why an action did not complete. These need different responses, so they must
@@ -55,14 +42,7 @@ export function captureRequestFailed(
     kind?: FailureKind
   },
   properties?: Record<string, unknown>,
-) {
-  posthog.capture(event, {
-    ...properties,
-    status,
-    reason: reason ?? null,
-    failure_kind: kind ?? (status === null ? 'network' : 'response'),
-  })
-}
+) {}
 
 /**
  * Reads the error message out of a failed response without disturbing the
@@ -80,18 +60,6 @@ export async function readErrorReason(
   }
 }
 
-/** Identity + segmentation properties shared by every event-related capture. */
-function eventProps(event: TechEvent) {
-  return {
-    event_slug: event.slug,
-    event_title: event.title,
-    event_organizer: event.organizer || null,
-    event_is_in_person: Boolean(event.isInPerson),
-    event_is_past: isPastEventDate(event.date),
-    event_has_registration: Boolean(event.registerUrl),
-  }
-}
-
 /**
  * A user picked an event out of a listing. Fires on the *listing* surface, so
  * comparing `surface` answers which discovery path people actually use.
@@ -100,46 +68,24 @@ export function captureEventCardClicked(
   event: TechEvent,
   surface: EventSurface,
   destination: 'page' | 'modal',
-) {
-  posthog.capture(ANALYTICS_EVENTS.eventCardClicked, {
-    ...eventProps(event),
-    surface,
-    destination,
-  })
-}
+) {}
 
 /**
  * Event details were actually shown on the detail page.
  */
-export function captureEventViewed(event: TechEvent, surface: EventSurface) {
-  posthog.capture(ANALYTICS_EVENTS.eventViewed, {
-    ...eventProps(event),
-    surface,
-  })
-}
+export function captureEventViewed(event: TechEvent, surface: EventSurface) {}
 
 /** The user left for the external registration page. */
 export function captureEventRegistrationStarted(
   event: TechEvent,
   surface: EventSurface,
-) {
-  posthog.capture(ANALYTICS_EVENTS.eventRegistrationStarted, {
-    ...eventProps(event),
-    surface,
-  })
-}
+) {}
 
 export function captureEventAddedToCalendar(
   event: TechEvent,
   provider: CalendarProvider,
   surface: EventSurface,
-) {
-  posthog.capture(ANALYTICS_EVENTS.eventAddedToCalendar, {
-    ...eventProps(event),
-    provider,
-    surface,
-  })
-}
+) {}
 
 /**
  * A link off the event page was followed. Worth separating by `link_type`:
@@ -150,25 +96,13 @@ export function captureEventLinkClicked(
   event: TechEvent,
   linkType: EventLinkType,
   surface: EventSurface,
-) {
-  posthog.capture(ANALYTICS_EVENTS.eventExternalLinkClicked, {
-    ...eventProps(event),
-    link_type: linkType,
-    surface,
-  })
-}
+) {}
 
 export function captureContentShared(
   method: 'shared' | 'copied',
   contentType: ShareContentType | undefined,
   contentId: string | undefined,
-) {
-  posthog.capture(ANALYTICS_EVENTS.contentShared, {
-    method,
-    content_type: contentType ?? null,
-    content_id: contentId ?? null,
-  })
-}
+) {}
 
 /**
  * A directory entry was picked out of a listing on the home page.
@@ -186,39 +120,20 @@ export function captureEntryCardClicked(
     city?: string | null
   },
   surface: EntrySurface,
-) {
-  posthog.capture(ANALYTICS_EVENTS.entryCardClicked, {
-    entry_slug: entry.slug,
-    entry_name: entry.name,
-    entry_type: entry.entryType,
-    entry_city: entry.city ?? null,
-    surface,
-  })
-}
+) {}
 
 /** Someone chose to browse the whole directory instead of a specific entry. */
-export function captureDirectoryCtaClicked(cta: DirectoryCta) {
-  posthog.capture(ANALYTICS_EVENTS.directoryCtaClicked, { cta })
-}
+export function captureDirectoryCtaClicked(cta: DirectoryCta) {}
 
 /** A WhatsApp join link was followed, from one of several placements. */
-export function captureWhatsAppJoinStarted(surface: WhatsAppSurface) {
-  posthog.capture(ANALYTICS_EVENTS.whatsappCommunityJoinStarted, { surface })
-}
+export function captureWhatsAppJoinStarted(surface: WhatsAppSurface) {}
 
 export function captureJobApplicationStarted(job: {
   slug: string
   title: string
   company?: string | null
   modality?: string | null
-}) {
-  posthog.capture(ANALYTICS_EVENTS.jobApplicationStarted, {
-    job_slug: job.slug,
-    job_title: job.title,
-    job_company: job.company ?? null,
-    job_modality: job.modality ?? null,
-  })
-}
+}) {}
 
 // Re-exported so components have a single analytics import.
 export {

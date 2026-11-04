@@ -1,7 +1,7 @@
 import '@/styles/globals.css'
+import Script from 'next/script'
 import { JetBrains_Mono, Space_Grotesk } from 'next/font/google'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
-import { PostHogIdentify } from '@/components/providers/PostHogIdentify'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { MatrixBackground } from '@/components/layout/MatrixBackground'
@@ -32,9 +32,17 @@ export default function FrontendLayout({
       data-scroll-behavior="smooth"
       suppressHydrationWarning
     >
+      <head>
+        {process.env.NODE_ENV === 'production' && (
+          <Script
+            src="https://analytics.molecula.digital/script.js"
+            data-website-id="87276dcc-091a-468d-a36f-4f1be4c4e1bc"
+            strategy="afterInteractive"
+          />
+        )}
+      </head>
       <body className="bg-background">
         <ThemeProvider>
-          <PostHogIdentify />
           <div className="font-sans w-full min-h-screen flex flex-col text-secondary selection:bg-accent selection:text-accent-foreground relative overflow-x-clip">
             <MatrixBackground highlight={false} />
             <HeroBackdrop />

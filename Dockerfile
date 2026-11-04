@@ -40,13 +40,6 @@ RUN test -n "${SENTRY_AUTH_TOKEN}"
 # absent at build time and therefore stays a real runtime lookup in the server
 # bundle — which is how --env-file supplies it today. Adding it here would
 # freeze it at build and break every non-production deployment.
-ARG NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN=
-ARG NEXT_PUBLIC_POSTHOG_HOST=https://t.molecula.digital
-ARG NEXT_PUBLIC_POSTHOG_UI_HOST=https://us.posthog.com
-ENV NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN=${NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN}
-ENV NEXT_PUBLIC_POSTHOG_HOST=${NEXT_PUBLIC_POSTHOG_HOST}
-ENV NEXT_PUBLIC_POSTHOG_UI_HOST=${NEXT_PUBLIC_POSTHOG_UI_HOST}
-
 RUN pnpm generate:importmap
 RUN pnpm payload:migrate -- --force-accept-warning
 RUN node scripts/migrate.mjs

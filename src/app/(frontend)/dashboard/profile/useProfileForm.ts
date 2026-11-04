@@ -7,7 +7,6 @@ import { slugifyProfile } from '@/lib/profile-fields'
 import { uploadMediaFile, validateImageFile } from '@/lib/media-upload'
 import { replaceObjectUrl, revokeObjectUrl } from '@/lib/object-url'
 import { useFormSubmission } from '@/hooks/useFormSubmission'
-import posthog from 'posthog-js'
 import { ANALYTICS_EVENTS } from '@/lib/analytics-events'
 import { captureRequestFailed } from '@/lib/analytics'
 
@@ -288,9 +287,6 @@ export function useProfileForm() {
       setPublished({
         isPublic: next.isPublic,
         slug: next.isPublic ? next.slug : '',
-      })
-      posthog.capture(ANALYTICS_EVENTS.profileUpdated, {
-        is_public: next.isPublic,
       })
     })
   }, [profile, session, submission])

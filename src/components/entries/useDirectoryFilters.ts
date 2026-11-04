@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import posthog from 'posthog-js'
 import {
   CATEGORY_URL_MAP,
   ENTRY_TYPE_LABELS,
@@ -9,7 +8,6 @@ import {
   isStartupLike,
   type AtlasEntryType,
 } from '@/config'
-import { ANALYTICS_EVENTS } from '@/lib/analytics-events'
 
 export interface CityInfo {
   id: string
@@ -110,11 +108,6 @@ export function useDirectoryFilters({
   const selectType = useCallback(
     (type: string) => {
       const next = type === activeType ? '' : type
-      posthog.capture(ANALYTICS_EVENTS.directoryFilterApplied, {
-        filter: 'entry_type',
-        value: next || null,
-        cleared: next === '',
-      })
       // Sector only applies to startup-like types — drop it when leaving them.
       const keepSectors = !next || isStartupLike(next) ? selectedSectors : []
       navigate(next, '', keepSectors)
@@ -125,55 +118,21 @@ export function useDirectoryFilters({
   const selectCity = useCallback(
     (id: string) => {
       const next = id === activeCity ? '' : id
-      posthog.capture(ANALYTICS_EVENTS.directoryFilterApplied, {
-        filter: 'city',
-        value: next || null,
-        cleared: next === '',
-      })
       navigate('', next)
     },
     [navigate, activeCity],
   )
 
-  const setSectors = useCallback(
-    (sectors: string[]) => {
-      const prev = new Set(selectedSectors)
-      const next = new Set(sectors)
-      for (const value of next) {
-        if (!prev.has(value)) {
-          posthog.capture(ANALYTICS_EVENTS.directoryFilterApplied, {
-            filter: 'sector',
-            value,
-            cleared: false,
-          })
-        }
-      }
-      for (const value of prev) {
-        if (!next.has(value)) {
-          posthog.capture(ANALYTICS_EVENTS.directoryFilterApplied, {
-            filter: 'sector',
-            value,
-            cleared: true,
-          })
-        }
-      }
-      setSelectedSectors(sectors)
-      writeSectorsToURL(sectors)
-    },
-    [selectedSectors],
-  )
+  const setSectors = useCallback((sectors: string[]) => {
+    setSelectedSectors(sectors)
+    writeSectorsToURL(sectors)
+  }, [])
 
   const clearFilters = useCallback(() => {
-    posthog.capture(ANALYTICS_EVENTS.directoryFilterApplied, {
-      filter: 'all',
-      value: null,
-      cleared: true,
-    })
     navigate('', '', [])
   }, [navigate])
 
   const setSort = useCallback((sort: SortOption) => {
-    posthog.capture(ANALYTICS_EVENTS.directorySortChanged, { sort })
     setCurrentSort(sort)
     const url = new URL(window.location.href)
     url.searchParams.delete('page')

@@ -1,18 +1,5 @@
 /**
- * The analytics vocabulary: every event name and every stable property value
- * the app reports to PostHog.
- *
- * Every event is captured in the browser. Route handlers report nothing: each
- * one of them is reached from a page that already has a PostHog session, so a
- * server capture would only ever be a second copy of an event the client is
- * better placed to send — and one that costs a Node SDK, request-header
- * plumbing, and a datacenter IP on every geo breakdown to obtain.
- *
- * Failures are captured where the request fails, from `status` and the error
- * body, so an outcome is still recorded when a request does not succeed.
- *
- * Renaming a value here renames it in PostHog and orphans the history behind
- * the old name — add a new key instead when a metric needs to change meaning.
+ * Stable names for interactions the UI still labels. Nothing is sent off the page.
  */
 export const ANALYTICS_EVENTS = {
   // Auth. One sign-in event with `is_new_user`, because Google is the only
