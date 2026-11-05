@@ -113,7 +113,7 @@ El build de Cloudflare usa **webpack** (`next build --webpack`) porque Turbopack
 ### Primera vez
 
 1. Instala dependencias y autentica Wrangler: `pnpm wrangler login`
-2. Copia las variables de `.env` al dashboard de Cloudflare (Workers → Settings → Variables and Secrets). `DATABASE_URL` debe ser el hostname **pooler** de Neon.
+2. Los secretos de la app viven en Infisical (`https://infisical.molecula.digital`, entorno `prod`). El build los lee con Universal Auth despues de pasar Cloudflare Access. En **Builds → Variables and secrets** tienen que estar `CF_ACCESS_CLIENT_ID`, `CF_ACCESS_CLIENT_SECRET`, `INFISICAL_CLIENT_ID` e `INFISICAL_CLIENT_SECRET`. `wrangler secret put` solo los deja en el Worker en ejecucion; el build no los ve.
 3. Las variables `NEXT_PUBLIC_*` de analytics **y** `NEXT_PUBLIC_SITE_URL` se incrustan en el **build**. Sin `NEXT_PUBLIC_SITE_URL` el cliente de auth cae a localhost. En Cloudflare Builds van como variables de entorno del build.
 4. Cloudflare Builds suele auto-detectar Next.js y correr `pnpm run build`. En ese entorno (`WORKERS_CI=1`) el script redirige a OpenNext + webpack; no uses Turbopack ahi (revienta con Sharp/libvips). `CLOUDFLARE_BUILD=1` lo ponen `preview` / `deploy` / `cf:build`, y tambien `pnpm build` cuando detecta Workers CI. Sin ese flag, Docker sigue generando el output `standalone`.
 5. El build de Next sigue necesitando Postgres (para `generateStaticParams` y las paginas estaticas), mas `PAYLOAD_SECRET` y `BETTER_AUTH_SECRET`. Es el mismo requisito que el Dockerfile. `src/app/(payload)/admin/importMap.js` va en git (webpack en Cloudflare no lo encuentra si solo se genera en el clone); el build de Workers lo regenera antes de webpack.

@@ -8,6 +8,23 @@
  * Worker build instead.
  */
 import { spawnSync } from 'node:child_process'
+import {
+  infisicalCredentialsPresent,
+  loadInfisicalSecrets,
+} from './load-infisical-secrets.mjs'
+
+const workersRequested =
+  process.env.WORKERS_CI === '1' ||
+  process.env.WORKERS_CI === 'true' ||
+  process.env.CLOUDFLARE_BUILD === '1'
+
+if (workersRequested && !infisicalCredentialsPresent()) {
+  console.warn(
+    'Infisical credentials are not in this build environment. wrangler secret put only stores them on the running Worker. Add CF_ACCESS_CLIENT_ID, CF_ACCESS_CLIENT_SECRET, INFISICAL_CLIENT_ID, and INFISICAL_CLIENT_SECRET under Builds → Variables and secrets.',
+  )
+} else {
+  await loadInfisicalSecrets()
+}
 
 const env = { ...process.env }
 const onWorkers =
