@@ -7,7 +7,13 @@
  * database the site reads, and it does not depend on the public hostname
  * or on the GitHub Actions secret.
  */
+import { connect as cloudflareConnect } from 'cloudflare:sockets'
 import { default as handler } from './.open-next/worker.js'
+
+// pg-cloudflare reads this when it opens a TCP socket. A dynamic
+// import("cloudflare:sockets") goes through the Node compatibility loader
+// and fails in the Worker.
+globalThis.__cloudflareConnect = cloudflareConnect
 
 const LUMA_SYNC_URL = 'https://atlas-sinaloa.tech/api/cron/luma-sync'
 

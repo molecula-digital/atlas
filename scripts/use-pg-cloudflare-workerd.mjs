@@ -6,8 +6,10 @@
  * `o is not a constructor` on the first Postgres query.
  *
  * Point the default export at the real socket for the Workers build, then
- * restore it. The socket only imports `cloudflare:sockets` when connecting,
- * so the Node compile still uses `net.Socket`.
+ * restore it. The socket connects through `globalThis.__cloudflareConnect`,
+ * which the Worker entry sets from a static `cloudflare:sockets` import.
+ * A dynamic import of that specifier is handled by the Node compatibility
+ * loader and throws "Cannot find module 'cloudflare:sockets'".
  */
 import { createRequire } from 'node:module'
 import {
@@ -24,6 +26,14 @@ import { fileURLToPath } from 'node:url'
 const root = fileURLToPath(new URL('..', import.meta.url))
 const restore = process.argv.includes('--restore')
 const backupSuffix = '.workers-socket-orig'
+
+const SOCKET_IMPORT =
+  /const mod = await import\((['"])cloudflare:sockets\1\);\s*const connect = mod\.connect;/g
+
+const SOCKET_REPLACEMENT = `const connect = globalThis.__cloudflareConnect;
+            if (typeof connect !== "function") {
+                throw new Error("Workers TCP connect is not installed");
+            }`
 
 const packages = new Set()
 
@@ -58,17 +68,26 @@ function writeBreakingHardlink(file, contents) {
   writeFileSync(file, contents)
 }
 
+function socketFiles(packageJsonPath) {
+  const dir = dirname(packageJsonPath)
+  return [join(dir, 'dist/index.js'), join(dir, 'esm/index.mjs')].filter(
+    (file) => existsSync(file),
+  )
+}
+
 let changed = 0
 let restored = 0
 
 for (const file of packages) {
   if (restore) {
-    const backup = backupPath(file)
-    if (!existsSync(backup)) continue
-    if (existsSync(file)) unlinkSync(file)
-    copyFileSync(backup, file)
-    unlinkSync(backup)
-    restored += 1
+    for (const target of [file, ...socketFiles(file)]) {
+      const backup = backupPath(target)
+      if (!existsSync(backup)) continue
+      if (existsSync(target)) unlinkSync(target)
+      copyFileSync(backup, target)
+      unlinkSync(backup)
+      restored += 1
+    }
     continue
   }
 
@@ -79,6 +98,20 @@ for (const file of packages) {
   entry.default = './dist/index.js'
   writeBreakingHardlink(file, `${JSON.stringify(pkg, null, 2)}\n`)
   changed += 1
+
+  for (const socketFile of socketFiles(file)) {
+    const source = readFileSync(socketFile, 'utf8')
+    if (!SOCKET_IMPORT.test(source)) {
+      SOCKET_IMPORT.lastIndex = 0
+      continue
+    }
+    SOCKET_IMPORT.lastIndex = 0
+    writeBreakingHardlink(
+      socketFile,
+      source.replace(SOCKET_IMPORT, SOCKET_REPLACEMENT),
+    )
+    changed += 1
+  }
 }
 
 if (restore) {

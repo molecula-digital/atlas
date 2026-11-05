@@ -71,6 +71,9 @@ if (onWorkers) {
     if (status === 0) {
       status = run('node', ['scripts/assert-no-native-sharp.mjs'])
     }
+    if (status === 0) {
+      status = run('node', ['scripts/assert-cloudflare-sockets.mjs'])
+    }
   } finally {
     run('node', ['scripts/use-pg-cloudflare-workerd.mjs', '--restore'])
     run('node', ['scripts/stub-sharp-for-workers.mjs', '--restore'])
