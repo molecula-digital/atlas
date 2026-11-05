@@ -3,7 +3,6 @@
 import { useState, useCallback, type FormEvent } from 'react'
 import { NEWSLETTER } from '@/config'
 import { useFormSubmission } from '@/hooks/useFormSubmission'
-import posthog from 'posthog-js'
 import { ANALYTICS_EVENTS } from '@/lib/analytics-events'
 import { captureRequestFailed, readErrorReason } from '@/lib/analytics'
 
@@ -74,7 +73,6 @@ export function useNewsletterSignup(source: NewsletterSignupSource) {
           )
           throw new Error(reason || NEWSLETTER.error)
         }
-        posthog.capture(ANALYTICS_EVENTS.newsletterSubscribed, { source })
         setEmailValue('')
       })
     },

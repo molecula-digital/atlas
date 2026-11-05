@@ -10,7 +10,6 @@ import {
 } from '@/config'
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import { buttonVariants } from '@/components/ui/button-variants'
-import posthog from 'posthog-js'
 import { ANALYTICS_EVENTS } from '@/lib/analytics-events'
 import { captureRequestFailed } from '@/lib/analytics'
 
@@ -96,7 +95,6 @@ export default function NewJobPage() {
         throw new Error(reason || 'Submission failed')
       }
 
-      posthog.capture(ANALYTICS_EVENTS.jobSubmitted, jobProps)
       router.push('/dashboard?submitted=job')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al enviar')

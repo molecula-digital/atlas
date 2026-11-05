@@ -79,21 +79,9 @@ Copia `.env.example` y configura segun tu entorno:
 | `S3_REGION`                                 | Region (`us-east-1` para MinIO, `auto` para R2)                                                                                                                                   |
 | `MEDIA_URL`                                 | URL publica (CDN) donde se sirven las imagenes. Local: `http://localhost:9000/atlas-media`. Produccion: `https://cdn.atlas-sinaloa.tech` — no usar el endpoint R2                 |
 
-**Analytics (opcionales):**
+**Analytics:**
 
-Ninguna es obligatoria: sin ellas la app funciona igual y simplemente no registra nada. Todas empiezan con `NEXT_PUBLIC_`, asi que **se incrustan en el bundle durante el build, no se leen en tiempo de ejecucion** — hay que pasarlas como `--build-arg` (ver Docker). Si falta alguna el build no falla: queda como `undefined` y la captura se apaga en silencio.
-
-Analytics solo se inicializa en produccion, asi que en desarrollo (`pnpm dev`) no se envia nada y no hace falta configurarlas.
-
-| Variable                            | Descripcion                                                                                                                                                              |
-| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` | Token del proyecto de PostHog. En PostHog: Settings → Project → Project API Key                                                                                          |
-| `NEXT_PUBLIC_POSTHOG_HOST`          | Endpoint de ingesta del navegador. Apunta al proxy inverso (`https://t.molecula.digital`) para esquivar los bloqueadores. Usa `https://us.i.posthog.com` para ir directo |
-| `NEXT_PUBLIC_POSTHOG_UI_HOST`       | Donde vive PostHog, para los enlaces del toolbar. Solo importa si el anterior es un proxy. Por defecto `https://us.posthog.com`                                          |
-| `NEXT_PUBLIC_UMAMI_WEBSITE_ID`      | ID del sitio en Umami (conteo de visitas sin cookies). No es secreto: aparece en el HTML                                                                                 |
-| `NEXT_PUBLIC_UMAMI_SRC`             | URL del script de Umami. Por defecto `https://analytics.molecula.digital/script.js`                                                                                      |
-
-Ver [`docs/posthog.md`](docs/posthog.md) para el detalle de que se registra y por que.
+En produccion el layout carga [Umami](https://analytics.molecula.digital) desde `https://analytics.molecula.digital/script.js`. En `pnpm dev` el script no se incluye.
 
 ## Sincronizacion de calendarios Luma
 
@@ -101,8 +89,8 @@ Los eventos publicos de uno o mas calendarios de [Luma](https://luma.com) se pue
 
 1. En el admin (`/admin`), abre **Integraciones → Calendarios Luma**
 2. La migracion siembra **Gina**, **La Cripto Plebada** y **Cursor Culiacan, Mexico**; agrega mas filas para otros calendarios
-3. Configura `CRON_SECRET` (`openssl rand -hex 32`) como secret del Worker y en GitHub Actions
-4. El workflow [`.github/workflows/luma-sync.yml`](.github/workflows/luma-sync.yml) llama al endpoint cada 12h (`0 */12 * * *`). Tambien puedes lanzarlo a mano:
+3. Configura `CRON_SECRET` (`openssl rand -hex 32`) como secret del Worker. El mismo valor va en GitHub Actions si quieres el workflow manual.
+4. El Cron Trigger del Worker (`0 */12 * * *`, UTC) llama a `POST /api/cron/luma-sync` dentro del propio Worker (`custom-worker.mjs`). Escribe en el mismo Neon aunque el dominio aun no apunte al Worker. El workflow [`.github/workflows/luma-sync.yml`](.github/workflows/luma-sync.yml) queda como respaldo contra la URL publica; hoy no corre porque `CRON_SECRET` no esta en los secrets de GitHub. Tambien puedes lanzarlo a mano:
 
 ```bash
 curl -fsS -X POST \
@@ -125,7 +113,7 @@ El build de Cloudflare usa **webpack** (`next build --webpack`) porque Turbopack
 ### Primera vez
 
 1. Instala dependencias y autentica Wrangler: `pnpm wrangler login`
-2. Copia las variables de `.env` al dashboard de Cloudflare (Workers → Settings → Variables and Secrets). `DATABASE_URL` debe ser el hostname **pooler** de Neon.
+2. Los secretos de la app viven en Infisical (`https://infisical.molecula.digital`, entorno `prod`). El build los lee con Universal Auth despues de pasar Cloudflare Access. En **Builds → Variables and secrets** tienen que estar `CF_ACCESS_CLIENT_ID`, `CF_ACCESS_CLIENT_SECRET`, `INFISICAL_CLIENT_ID` e `INFISICAL_CLIENT_SECRET`. `wrangler secret put` solo los deja en el Worker en ejecucion; el build no los ve.
 3. Las variables `NEXT_PUBLIC_*` de analytics **y** `NEXT_PUBLIC_SITE_URL` se incrustan en el **build**. Sin `NEXT_PUBLIC_SITE_URL` el cliente de auth cae a localhost. En Cloudflare Builds van como variables de entorno del build.
 4. Cloudflare Builds suele auto-detectar Next.js y correr `pnpm run build`. En ese entorno (`WORKERS_CI=1`) el script redirige a OpenNext + webpack; no uses Turbopack ahi (revienta con Sharp/libvips). `CLOUDFLARE_BUILD=1` lo ponen `preview` / `deploy` / `cf:build`, y tambien `pnpm build` cuando detecta Workers CI. Sin ese flag, Docker sigue generando el output `standalone`.
 5. El build de Next sigue necesitando Postgres (para `generateStaticParams` y las paginas estaticas), mas `PAYLOAD_SECRET` y `BETTER_AUTH_SECRET`. Es el mismo requisito que el Dockerfile. `src/app/(payload)/admin/importMap.js` va en git (webpack en Cloudflare no lo encuentra si solo se genera en el clone); el build de Workers lo regenera antes de webpack.
@@ -144,7 +132,7 @@ Hyperdrive es opcional: descomenta el bloque en `wrangler.jsonc` despues de `wra
 
 `pnpm dev` no cambia: sigue siendo Node.js contra Postgres y MinIO locales. `pnpm preview` construye el Worker y lo sirve con Wrangler para validar el runtime de Cloudflare.
 
-Sharp (thumbnails de Payload) no corre en Workers; las imagenes originales siguen en R2 y el CDN. Los tamanos ya generados no se tocan.
+El binding `IMAGES` no es el bucket. Es la API de [Image Resizing](https://developers.cloudflare.com/images/optimization/binding/) (`env.IMAGES`). OpenNext la usa para optimizar `next/image` (PNG, JPEG, WEBP, AVIF, GIF, SVG). Los originales siguen en R2 y salen por `cdn.atlas-sinaloa.tech`. Sharp no corre en el Worker: Payload no genera los tamanos `thumbnail` / `card` / `cover` ahi, y el build sustituye el paquete `sharp` por un stub JS para que Next no arrastre libvips. Image Resizing tiene que estar activo en la cuenta; tiene coste aparte del plan Workers.
 
 ## Docker (alternativa / self-host)
 
@@ -158,7 +146,6 @@ El `Dockerfile` multi-stage construye la app en 3 fases:
 docker build \
   --build-arg DATABASE_DIRECT_URL="postgresql://..." \
   --build-arg SENTRY_AUTH_TOKEN="sntrys_..." \
-  --build-arg NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN="phc_..." \
   -t atlas-tech .
 
 docker run -p 3000:3000 --env-file .env atlas-tech
@@ -167,8 +154,6 @@ docker run -p 3000:3000 --env-file .env atlas-tech
 > La base de datos debe estar accesible durante el build para que las migraciones se ejecuten.
 
 > `SENTRY_AUTH_TOKEN` tambien es obligatorio durante el build. `withSentryConfig` lo usa para crear la release y subir source maps; si falta o la subida falla, el build falla y no produce una imagen desplegable.
-
-> Las variables `NEXT_PUBLIC_*` de analytics **tienen que ir en el build**, no en `docker run`: Next.js las incrusta en el bundle durante `pnpm build`, asi que pasarlas solo con `--env-file` llega tarde y analytics se despliega muerto sin ningun error visible. Solo el token de PostHog es obligatorio; las demas tienen valores por defecto en el `Dockerfile` y unicamente hace falta pasarlas para apuntar a otro proyecto o a otro sitio de Umami.
 
 > `NEXT_PUBLIC_SITE_URL` es la excepcion: **no** se pasa como `--build-arg`. Se queda fuera del build a proposito para que siga leyendose en tiempo de ejecucion desde `--env-file`, que es como llega hoy. Convertirla en build-arg la congelaria y romperia cualquier despliegue que no sea produccion.
 
