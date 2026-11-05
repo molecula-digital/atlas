@@ -70,8 +70,8 @@ async function resolveProjectId(headers) {
   const configured = process.env.INFISICAL_PROJECT_ID?.trim()
   if (configured) return configured
 
-  const listed = await infisicalFetch('/api/v2/workspace', { headers })
-  const workspaces = listed.workspaces || listed.projects || []
+  const listed = await infisicalFetch('/api/v1/projects', { headers })
+  const workspaces = listed.projects || listed.workspaces || []
   if (workspaces.length === 1) return workspaces[0].id
   const names = workspaces.map((item) => `${item.name}:${item.id}`).join(', ')
   throw new Error(
