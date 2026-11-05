@@ -2,9 +2,11 @@
  * Runtime helpers shared by Payload and Drizzle so the same code can run
  * on Node.js (local / Docker) and Cloudflare Workers.
  *
- * Workers cannot reuse TCP connections across requests, so the pool is
- * effectively disabled there (`maxUses: 1`). Pair that with Neon’s pooled
- * hostname or Cloudflare Hyperdrive.
+ * Workers should not keep a query connection for a later request, so
+ * `maxUses` is 1. Payload still checks out one client inside
+ * `connectWithReconnect` and never releases it, so `max` has to leave a
+ * free slot for the query that runs after that. Pair this with Neon’s
+ * pooled hostname or Cloudflare Hyperdrive.
  */
 
 import { getCloudflareContext } from '@opennextjs/cloudflare'
@@ -32,11 +34,16 @@ export function postgresPoolOptions(connectionString = getDatabaseUrl()) {
   if (isCloudflareWorkers()) {
     return {
       connectionString,
-      max: 1,
+      // Payload's adapter holds one client for the life of the isolate.
+      // max: 1 makes the next checkout wait until connectionTimeoutMillis
+      // and every page query fails with "timeout exceeded when trying to connect".
+      // A transaction keeps a second client, so leave room past those two.
+      max: 4,
       min: 0,
       maxUses: 1,
-      idleTimeoutMillis: 1,
-      connectionTimeoutMillis: 5_000,
+      idleTimeoutMillis: 5_000,
+      // Neon can take longer than 5s to wake a suspended compute.
+      connectionTimeoutMillis: 20_000,
     }
   }
 
