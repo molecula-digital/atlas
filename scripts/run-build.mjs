@@ -61,6 +61,7 @@ if (onWorkers) {
   // images; the stub returns the original bytes. OpenNext's esbuild pass
   // then inlines that stub instead of libvips.
   runOrExit('node', ['scripts/stub-sharp-for-workers.mjs'])
+  runOrExit('node', ['scripts/use-pg-cloudflare-workerd.mjs'])
   let status = 0
   try {
     status = run('pnpm', ['exec', 'opennextjs-cloudflare', 'build'])
@@ -71,6 +72,7 @@ if (onWorkers) {
       status = run('node', ['scripts/assert-no-native-sharp.mjs'])
     }
   } finally {
+    run('node', ['scripts/use-pg-cloudflare-workerd.mjs', '--restore'])
     run('node', ['scripts/stub-sharp-for-workers.mjs', '--restore'])
   }
   process.exit(status)

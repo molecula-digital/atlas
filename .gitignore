@@ -43,6 +43,7 @@ next-env.d.ts
 .wrangler
 # Sidecar copies of sharp while the Workers build stubs native binaries
 **/*.workers-stub-orig
+**/*.workers-socket-orig
 .dev.vars
 .dev.vars.*
 !.dev.vars.example
