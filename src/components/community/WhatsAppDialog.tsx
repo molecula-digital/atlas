@@ -1,8 +1,9 @@
 'use client'
 
-import { MessageCircle } from 'lucide-react'
+import { X } from 'lucide-react'
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -11,16 +12,18 @@ import {
 } from '@/components/ui/Dialog'
 import {
   buttonVariants,
+  type ButtonSize,
   type ButtonVariant,
 } from '@/components/ui/button-variants'
+import { WhatsAppIcon } from '@/components/icons/SocialIcons'
 import { WhatsAppJoinLink } from '@/components/community/WhatsAppJoinLink'
+import { cn } from '@/lib/utils'
 import type { WhatsAppSurface } from '@/lib/analytics-events'
 
-const NOTES = [
-  'Meetups, talleres y lo que se está organizando',
-  'Gente que busca colaborar, contratar o aprender',
-  'Preguntas de tecnología, IA y software, de cualquier nivel',
-]
+const TOPICS = ['Meetups', 'Colaborar', 'Preguntas', 'Empleo']
+
+const WHATSAPP_BUTTON =
+  'border-[#128C7E] bg-[#25D366] text-[#07342c] hover:border-[#0f7a62] hover:bg-[#1ebe5a] hover:text-[#07342c]'
 
 /**
  * The invitation to the WhatsApp community.
@@ -33,11 +36,16 @@ export function WhatsAppDialog({
   surface,
   label,
   variant = 'accent-filled',
+  appearance = 'default',
+  size = 'md',
   className,
 }: {
   surface: WhatsAppSurface
   label: string
   variant?: ButtonVariant
+  /** `whatsapp` paints the trigger in WhatsApp green, with the brand mark. */
+  appearance?: 'default' | 'whatsapp'
+  size?: ButtonSize
   className?: string
 }) {
   return (
@@ -45,45 +53,72 @@ export function WhatsAppDialog({
       <DialogTrigger asChild>
         <button
           type="button"
-          className={buttonVariants({ variant, size: 'md', className })}
+          className={buttonVariants({
+            variant,
+            size,
+            className: cn(
+              appearance === 'whatsapp' && WHATSAPP_BUTTON,
+              className,
+            ),
+          })}
         >
-          <MessageCircle className="size-3.5" />
+          {appearance === 'whatsapp' ? (
+            <WhatsAppIcon className="size-4" />
+          ) : null}
           {label}
         </button>
       </DialogTrigger>
-      <DialogContent showCloseButton>
-        <DialogHeader>
-          <DialogTitle>El grupo de WhatsApp</DialogTitle>
-          <DialogDescription>
-            La comunidad tech de Sinaloa se escribe aquí. El directorio es el
-            mapa; el grupo es donde esa gente conversa.
+      <DialogContent
+        className="gap-0 overflow-hidden p-0 sm:max-w-md"
+        showCloseButton={false}
+      >
+        <div className="relative bg-[#075E54] px-6 pt-7 pb-6 text-white">
+          <DialogClose
+            className="absolute top-3 right-3 flex size-8 cursor-pointer items-center justify-center rounded-full text-white/80 transition-colors hover:bg-white/10 hover:text-white"
+            aria-label="Cerrar"
+          >
+            <X className="size-4" />
+          </DialogClose>
+          <DialogHeader className="items-start text-left">
+            <div className="mb-4 flex size-12 items-center justify-center rounded-full bg-[#25D366] text-[#075E54]">
+              <WhatsAppIcon className="size-7" />
+            </div>
+            <DialogTitle className="text-2xl text-white">
+              Comunidad Tech Atlas
+            </DialogTitle>
+            <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-white/70">
+              Grupo de WhatsApp · Sinaloa
+            </p>
+          </DialogHeader>
+        </div>
+
+        <div className="space-y-5 px-6 py-6">
+          <DialogDescription className="text-base leading-relaxed text-secondary">
+            El directorio es el mapa. El grupo es donde esa gente se escribe:
+            tecnología, IA, software y lo que se está armando en el estado.
           </DialogDescription>
-        </DialogHeader>
-        <ul className="space-y-2.5">
-          {NOTES.map((note) => (
-            <li
-              key={note}
-              className="flex items-start gap-2.5 text-sm text-secondary"
-            >
-              <span
-                className="mt-1.5 size-1.5 shrink-0 rounded-full bg-accent"
-                aria-hidden
-              />
-              {note}
-            </li>
-          ))}
-        </ul>
-        <WhatsAppJoinLink
-          surface={surface}
-          className={buttonVariants({
-            variant: 'accent-filled',
-            size: 'md',
-            className: 'w-fit',
-          })}
-        >
-          <MessageCircle className="size-3.5" />
-          Unirme en WhatsApp
-        </WhatsAppJoinLink>
+          <ul className="flex flex-wrap gap-2">
+            {TOPICS.map((topic) => (
+              <li
+                key={topic}
+                className="rounded-full border border-border bg-elevated px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-secondary"
+              >
+                {topic}
+              </li>
+            ))}
+          </ul>
+          <WhatsAppJoinLink
+            surface={surface}
+            className={cn(
+              buttonVariants({ size: 'lg' }),
+              WHATSAPP_BUTTON,
+              'w-full py-2.5',
+            )}
+          >
+            <WhatsAppIcon className="size-4" />
+            Unirme en WhatsApp
+          </WhatsAppJoinLink>
+        </div>
       </DialogContent>
     </Dialog>
   )

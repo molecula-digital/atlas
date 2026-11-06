@@ -43,7 +43,10 @@ export function HeroSection({
           <div className="mt-6 flex flex-col items-start gap-3">
             <WhatsAppDialog
               surface={WHATSAPP_SURFACE.hero}
-              label="Únete al grupo"
+              label="Grupo de WhatsApp"
+              appearance="whatsapp"
+              size="lg"
+              className="px-4 py-2.5"
             />
             <div className="flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-xs">
               <DirectoryCtaLink

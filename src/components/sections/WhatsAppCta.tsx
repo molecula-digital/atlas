@@ -39,8 +39,8 @@ export function WhatsAppCta({
         </p>
         <WhatsAppDialog
           surface={surface}
-          label="Conocer el grupo"
-          variant="accent"
+          label="Grupo de WhatsApp"
+          appearance="whatsapp"
           className="shrink-0"
         />
       </div>
