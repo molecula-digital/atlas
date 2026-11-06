@@ -60,23 +60,23 @@ if (onWorkers) {
   // Stub before Next compiles. The image loader calls Sharp for static
   // images; the stub returns the original bytes. OpenNext's esbuild pass
   // then inlines that stub instead of libvips.
-  runOrExit('node', ['scripts/stub-sharp-for-workers.mjs'])
-  runOrExit('node', ['scripts/use-pg-cloudflare-workerd.mjs'])
+  runOrExit('node', ['cloudflare/patch-sharp.mjs'])
+  runOrExit('node', ['cloudflare/patch-pg.mjs'])
   let status = 0
   try {
     status = run('pnpm', ['exec', 'opennextjs-cloudflare', 'build'])
     if (status === 0) {
-      status = run('node', ['scripts/pin-cf-worker-name.mjs'])
+      status = run('node', ['cloudflare/pin-name.mjs'])
     }
     if (status === 0) {
-      status = run('node', ['scripts/assert-no-native-sharp.mjs'])
+      status = run('node', ['cloudflare/assert-sharp.mjs'])
     }
     if (status === 0) {
-      status = run('node', ['scripts/assert-cloudflare-sockets.mjs'])
+      status = run('node', ['cloudflare/assert-sockets.mjs'])
     }
   } finally {
-    run('node', ['scripts/use-pg-cloudflare-workerd.mjs', '--restore'])
-    run('node', ['scripts/stub-sharp-for-workers.mjs', '--restore'])
+    run('node', ['cloudflare/patch-pg.mjs', '--restore'])
+    run('node', ['cloudflare/patch-sharp.mjs', '--restore'])
   }
   process.exit(status)
 }

@@ -8,10 +8,10 @@ import { isCloudflareBuildEnv } from './src/lib/cloudflare-build-env'
 
 const isCloudflareBuild = isCloudflareBuildEnv()
 const dirname = path.dirname(fileURLToPath(import.meta.url))
-const emptyOg = path.join(dirname, 'stubs/empty-og.js')
-const emptyModule = path.join(dirname, 'stubs/empty-module.js')
+const emptyOg = path.join(dirname, 'cloudflare/stubs/empty-og.js')
+const emptyModule = path.join(dirname, 'cloudflare/stubs/empty-module.js')
 
-const emptySharp = path.join(dirname, 'stubs/empty-sharp.js')
+const emptySharp = path.join(dirname, 'cloudflare/stubs/empty-sharp.js')
 
 const cloudflareOgAliases = {
   'next/og': emptyOg,
@@ -24,6 +24,8 @@ const cloudflareNativeAliases = {
   ...cloudflareOgAliases,
   sharp: emptySharp,
   'drizzle-kit': emptyModule,
+  // Webpack does not rewrite every require() of this package. OpenNext's
+  // esbuild pass still resolves it, so it stays a direct dependency.
   'require-in-the-middle': emptyModule,
 }
 
@@ -48,15 +50,15 @@ const nextConfig: NextConfig = {
     ? {
         turbopack: {
           resolveAlias: {
-            'next/og': './stubs/empty-og.js',
-            'next/dist/compiled/@vercel/og': './stubs/empty-og.js',
+            'next/og': './cloudflare/stubs/empty-og.js',
+            'next/dist/compiled/@vercel/og': './cloudflare/stubs/empty-og.js',
             'next/dist/compiled/@vercel/og/index.node.js':
-              './stubs/empty-og.js',
+              './cloudflare/stubs/empty-og.js',
             'next/dist/compiled/@vercel/og/index.edge.js':
-              './stubs/empty-og.js',
-            sharp: './stubs/empty-sharp.js',
-            'drizzle-kit': './stubs/empty-module.js',
-            'require-in-the-middle': './stubs/empty-module.js',
+              './cloudflare/stubs/empty-og.js',
+            sharp: './cloudflare/stubs/empty-sharp.js',
+            'drizzle-kit': './cloudflare/stubs/empty-module.js',
+            'require-in-the-middle': './cloudflare/stubs/empty-module.js',
           },
         },
       }
