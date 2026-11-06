@@ -24,6 +24,8 @@ const cloudflareNativeAliases = {
   ...cloudflareOgAliases,
   sharp: emptySharp,
   'drizzle-kit': emptyModule,
+  // Webpack does not rewrite every require() of this package. OpenNext's
+  // esbuild pass still resolves it, so it stays a direct dependency.
   'require-in-the-middle': emptyModule,
 }
 
