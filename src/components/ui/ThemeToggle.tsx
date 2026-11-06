@@ -48,9 +48,10 @@ export default function ThemeToggle({
         className="group relative flex min-h-8 min-w-8 cursor-pointer items-center justify-center text-secondary hover:text-accent transition-colors duration-200"
       >
         {/*
-          The header row is h-8 and so is this button, so a background on the
-          button itself would run edge to edge. The hover fill is inset instead,
-          which keeps the full 32px tap target.
+          The header row is h-11 and this button stays min-h-8, so a background
+          on the button itself would still crowd the bar. The hover fill is
+          inset instead, which keeps the 32px tap target from painting the
+          full row.
         */}
         <span
           aria-hidden

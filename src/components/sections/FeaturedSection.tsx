@@ -37,7 +37,7 @@ export function FeaturedSection({
     <SectionBlock>
       <div className="min-w-0">
         <div className="mb-6 flex items-center justify-between">
-          <SectionTitle description="Startups y organizaciones destacadas del ecosistema">
+          <SectionTitle description="Registros destacados del directorio.">
             Destacados
           </SectionTitle>
           <DirectoryCtaLink
@@ -61,7 +61,7 @@ export function FeaturedSection({
           </DirectoryCtaLink>
         </div>
 
-        <div className="overflow-hidden rounded-xl border-2 border-accent/25 bg-card/50 p-4 shadow-sm sm:p-6">
+        <div className="overflow-hidden rounded-lg border border-border bg-card p-4 sm:p-6">
           <div className="flex min-w-0 flex-col gap-6 xl:grid xl:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] xl:items-stretch xl:gap-8">
             <div className="min-w-0">
               {/* Scroller up to lg — six stacked tiles turned the panel into a tower on phones */}

@@ -21,8 +21,8 @@ export function HeroBackdrop() {
 
   // -z-[5] slots the layer between the matrix canvas (-z-10) and the content
   // stack (z-10): on top of the grid, under everything readable. The height
-  // is tuned to cover the hero plus its stats row before the bottom fade
-  // (see .hero-backdrop) takes over.
+  // covers the title and the map plate; the mask fades the field out over
+  // the category index (see .hero-backdrop).
   return (
     <div
       className="hero-backdrop absolute inset-x-0 top-0 -z-[5] h-[52rem] pointer-events-none"

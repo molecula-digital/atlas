@@ -99,11 +99,11 @@ export default async function HomePage() {
 
       <HeroSection cityCounts={counts.byCity} typeCounts={counts.byType} />
 
+      <CommunitySection />
+
       <SectionBlock id="eventos">
         <UpcomingEventsStrip />
       </SectionBlock>
-
-      <CommunitySection />
       <FeaturedSection
         entries={featured.map((entry) => ({
           slug: entry.slug,

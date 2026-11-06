@@ -1,6 +1,10 @@
 import { ListObjectsV2Command, S3Client } from '@aws-sdk/client-s3'
 import { unstable_cache } from 'next/cache'
 import { MEDIA_CDN_ORIGIN } from '@/lib/media-url'
+import {
+  isPreviewStubEnabled,
+  STUB_COMMUNITY_PHOTOS,
+} from '@/lib/preview-stubs'
 
 /** CDN/bucket prefix the community photos live under. Drop a file here and it shows up. */
 const COMMUNITY_PHOTO_PREFIX = 'public/community'
@@ -180,5 +184,8 @@ export async function getCommunityPhotos(
   limit = 24,
 ): Promise<CommunityPhoto[]> {
   const objects = await getListing()
+  if (objects.length === 0) {
+    return isPreviewStubEnabled() ? STUB_COMMUNITY_PHOTOS.slice(0, limit) : []
+  }
   return shuffle(objects).slice(0, limit).map(toPhoto)
 }

@@ -1,6 +1,7 @@
 import { MessageCircle } from 'lucide-react'
-import { buttonVariants } from '@/components/ui/button-variants'
 import { WhatsAppJoinLink } from '@/components/community/WhatsAppJoinLink'
+import { WhatsAppIcon } from '@/components/icons/SocialIcons'
+import { buttonVariants } from '@/components/ui/button-variants'
 import type { WhatsAppSurface } from '@/lib/analytics-events'
 
 /**
@@ -40,13 +41,13 @@ export function WhatsAppCta({
         <WhatsAppJoinLink
           surface={surface}
           className={buttonVariants({
-            variant: 'accent',
+            variant: 'accent-filled',
             size: 'md',
             className: 'shrink-0',
           })}
         >
-          <MessageCircle className="w-3.5 h-3.5" />
-          Unirme al grupo
+          <WhatsAppIcon className="size-4" />
+          Grupo de WhatsApp
         </WhatsAppJoinLink>
       </div>
     </div>

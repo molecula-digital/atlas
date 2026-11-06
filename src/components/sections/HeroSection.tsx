@@ -1,27 +1,14 @@
 import Link from 'next/link'
-import { Search, Plus, MessageCircle, ArrowUpRight, Mail } from 'lucide-react'
-import { SINALOA_CITIES, ENTRY_TYPES, ENTRY_TYPE_CONFIG } from '@/config'
+import { ArrowRight } from 'lucide-react'
+import { ENTRY_TYPES, ENTRY_TYPE_CONFIG, SINALOA_CITIES } from '@/config'
 import type { AtlasEntryType } from '@/config'
 import SinaloaMap from '@/components/maps/SinaloaMapLazy'
 import { ENTRY_TYPE_ICON_MAP } from '@/lib/icons'
-import { buttonVariants } from '@/components/ui/button-variants'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/Tooltip'
-import { NewsletterSignup } from '@/components/newsletter/NewsletterSignup'
 import { DirectoryCtaLink } from '@/components/entries/DirectoryCtaLink'
 import { WhatsAppJoinLink } from '@/components/community/WhatsAppJoinLink'
+import { WhatsAppIcon } from '@/components/icons/SocialIcons'
+import { buttonVariants } from '@/components/ui/button-variants'
 import { DIRECTORY_CTA, WHATSAPP_SURFACE } from '@/lib/analytics-events'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/Dialog'
 
 interface HeroSectionProps {
   cityCounts?: Record<string, number>
@@ -42,139 +29,89 @@ export function HeroSection({
   }))
 
   return (
-    <section id="hero" className="py-6 lg:py-8">
-      <div className="grid gap-8 lg:min-h-[34rem] lg:grid-cols-[minmax(0,1fr)_28rem] lg:gap-12 xl:grid-cols-[minmax(0,1fr)_31rem]">
-        <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
-          <div className="mt-14 space-y-6 lg:mt-auto">
+    <section id="hero" className="pt-8 pb-2 lg:pt-14">
+      <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,28rem)] lg:gap-12">
+        <div>
+          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">
+            Directorio y comunidad
+          </p>
+          <h1 className="mt-3 max-w-xl font-sans text-4xl font-bold leading-[0.98] tracking-tight text-primary sm:text-5xl lg:text-6xl">
+            El directorio tech de <span className="text-accent">Sinaloa</span>
+          </h1>
+          <p className="mt-5 max-w-md text-sm leading-relaxed text-secondary md:text-base">
+            Startups, consultoras, comunidades y personas del estado. También el
+            grupo donde se habla de tecnología, IA y software.
+          </p>
+          <div className="mt-6 flex flex-col items-start gap-3">
             <WhatsAppJoinLink
               surface={WHATSAPP_SURFACE.hero}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 border border-accent/20 hover:bg-accent/20 transition-colors"
+              className={buttonVariants({
+                variant: 'accent-filled',
+                size: 'lg',
+                className: 'px-4 py-2.5',
+              })}
             >
-              <MessageCircle className="w-3.5 h-3.5 text-accent" />
-              <span className="text-xs font-mono font-semibold text-accent tracking-wide">
-                {'// ÚNETE EN WHATSAPP'}
-              </span>
-              <ArrowUpRight className="w-3.5 h-3.5 text-accent" />
+              <WhatsAppIcon className="size-4" />
+              Grupo de WhatsApp
             </WhatsAppJoinLink>
-
-            <h1 className="text-3xl font-sans font-bold text-primary leading-[1] tracking-[-0.04em] uppercase sm:text-4xl lg:text-[2.65rem]">
-              <span className="block">Descubre el</span>
-              <span className="block text-accent">ecosistema tech</span>
-              <span className="block">
-                de Sinaloa
-                <span className="text-accent" aria-hidden="true">
-                  _
-                </span>
-              </span>
-            </h1>
-
-            <p className="text-xs md:text-sm font-mono font-light text-muted leading-relaxed max-w-110">
-              Directorio y comunidad del ecosistema tech de Sinaloa. Hablamos de
-              tecnología, IA, desarrollo de software y emprendimiento.
-            </p>
-
-            <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-xs">
               <DirectoryCtaLink
                 cta={DIRECTORY_CTA.hero}
-                className={buttonVariants({
-                  variant: 'accent-filled',
-                  size: 'md',
-                  className: 'uppercase',
-                })}
+                className="inline-flex items-center gap-1 text-accent hover:underline"
               >
-                <Search className="w-3.5 h-3.5" />
-                Explorar directorio
+                Ver el directorio completo
+                <ArrowRight className="size-3.5" />
               </DirectoryCtaLink>
               <Link
                 href="/dashboard"
-                className={buttonVariants({
-                  size: 'md',
-                  className: 'uppercase',
-                })}
+                className="text-secondary hover:text-primary"
               >
-                <Plus className="w-3.5 h-3.5" />
-                Crear perfil
+                Agregar un perfil
               </Link>
-            </div>
-
-            <div className="flex flex-col items-center gap-3 text-center lg:flex-row lg:justify-start lg:text-left">
-              <Dialog>
-                <DialogTrigger asChild>
-                  <button className="group inline-flex cursor-pointer items-center gap-2 text-xs text-muted transition-colors hover:text-accent">
-                    <Mail className="h-4 w-4 shrink-0 text-accent" />
-                    Newsletter — novedades una vez al mes
-                    <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                  </button>
-                </DialogTrigger>
-                <DialogContent showCloseButton>
-                  <DialogHeader>
-                    <DialogTitle>Newsletter de Tech Atlas</DialogTitle>
-                    <DialogDescription>
-                      Noticias, eventos y proyectos del ecosistema tech de
-                      Sinaloa. Un correo al mes.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <NewsletterSignup source="homepage" variant="section" />
-                </DialogContent>
-              </Dialog>
             </div>
           </div>
         </div>
 
-        <div className="hidden lg:block self-start pt-12">
-          <div className="bg-card/40 border border-border rounded-lg p-3 flex flex-col gap-3 h-[31rem] shadow-[0_16px_50px_rgba(0,0,0,0.08)]">
-            {/* Map header */}
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-mono font-medium text-muted tracking-wide">
-                {'// SINALOA.GEO'}
-              </span>
-              <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-                <span className="text-xs font-mono font-semibold text-accent">
-                  [{SINALOA_CITIES.length} municipios]
-                </span>
-              </div>
-            </div>
-
-            {/* Map container */}
-            <div className="relative flex-1 rounded border border-border bg-elevated/15 overflow-hidden">
-              <SinaloaMap
-                compact
-                linkOnClick
-                dither
-                pulseActive
-                cityCounts={cityCounts}
-              />
-            </div>
+        <div className="relative h-80 overflow-hidden rounded-2xl border border-border bg-card/70 sm:h-96 lg:h-[32rem]">
+          <SinaloaMap
+            compact
+            linkOnClick
+            dither
+            pulseActive
+            cityCounts={cityCounts}
+          />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-card via-card/80 to-transparent px-4 pt-14 pb-3">
+            <span className="font-sans text-sm font-semibold text-primary">
+              Sinaloa
+            </span>
+            <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted">
+              {SINALOA_CITIES.length} municipios
+            </span>
           </div>
         </div>
       </div>
 
-      {/* Ecosystem stats */}
-      <div className="mt-8 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-3 lg:grid-cols-6">
+      <div className="mt-10 grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
         {ecosystemStats.map(
           ({ type, label, description, slug, Icon, count }) => (
-            <Tooltip key={type}>
-              <TooltipTrigger asChild>
-                <Link
-                  href={`/${slug}`}
-                  className="group bg-card px-3 py-3 transition-colors hover:bg-elevated"
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-accent/10 transition-colors group-hover:bg-accent/20">
-                      {Icon && <Icon className="h-3.5 w-3.5 text-accent" />}
-                    </span>
-                    <span className="font-mono text-xl font-bold leading-none text-primary">
-                      {count}
-                    </span>
-                  </div>
-                  <p className="mt-2 truncate font-mono text-[10px] uppercase tracking-wider text-muted group-hover:text-accent transition-colors">
-                    {label}
-                  </p>
-                </Link>
-              </TooltipTrigger>
-              <TooltipContent>{description}</TooltipContent>
-            </Tooltip>
+            <Link
+              key={type}
+              href={`/${slug}`}
+              className="group flex items-start justify-between gap-4 bg-card px-4 py-4 transition-colors hover:bg-elevated"
+            >
+              <span className="min-w-0">
+                <span className="flex items-center gap-2 font-sans text-base font-semibold text-primary group-hover:text-accent">
+                  {Icon && <Icon className="size-4 shrink-0 text-accent" />}
+                  {label}
+                </span>
+                <span className="mt-1 block text-xs leading-relaxed text-muted">
+                  {description}
+                </span>
+              </span>
+              <span className="shrink-0 font-mono text-sm tabular-nums text-secondary">
+                {count}
+              </span>
+            </Link>
           ),
         )}
       </div>

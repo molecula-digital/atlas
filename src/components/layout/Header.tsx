@@ -25,7 +25,7 @@ import { AtlasLogo } from '@/components/layout/AtlasLogo'
 import { SiteFrame } from '@/components/layout/SiteFrame'
 
 const NAV_LINK =
-  'flex cursor-pointer items-center gap-1 px-2 py-1 text-[10px] font-mono text-secondary hover:text-accent rounded hover:bg-elevated transition-colors'
+  'flex cursor-pointer items-center gap-1 px-2.5 py-1.5 text-xs font-mono text-secondary hover:text-accent rounded hover:bg-elevated transition-colors'
 const MOBILE_LINK =
   'flex items-center gap-2 py-3 text-lg font-mono font-semibold text-primary hover:text-accent transition-colors'
 
@@ -59,20 +59,20 @@ export function Header() {
             Ir al contenido
           </a>
 
-          <SiteFrame className="flex h-8 items-center justify-between">
+          <SiteFrame className="flex h-11 items-center justify-between">
             <div className="flex min-w-0 items-center gap-3">
               <Link
                 href="/"
                 className="flex items-center shrink-0"
                 aria-label="Tech Atlas — inicio"
               >
-                <AtlasLogo className="h-4 w-auto" priority />
+                <AtlasLogo className="h-5 w-auto" priority />
               </Link>
 
               <nav className="hidden lg:flex items-center gap-0.5">
                 <div className="relative" ref={dropdownRef}>
                   <button onClick={toggleDropdown} className={NAV_LINK}>
-                    <FolderOpen className="w-3 h-3" />
+                    <FolderOpen className="size-3.5" />
                     Directorio
                     <svg
                       className={`w-2.5 h-2.5 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`}
@@ -115,23 +115,23 @@ export function Header() {
                 </div>
 
                 <Link href="/eventos" className={NAV_LINK}>
-                  <CalendarDays className="w-3 h-3" />
+                  <CalendarDays className="size-3.5" />
                   Eventos
                 </Link>
                 <Link href="/noticias" className={NAV_LINK}>
-                  <Newspaper className="w-3 h-3" />
+                  <Newspaper className="size-3.5" />
                   Noticias
                 </Link>
                 <Link href="/empleos" className={NAV_LINK}>
-                  <Briefcase className="w-3 h-3" />
+                  <Briefcase className="size-3.5" />
                   Empleos
                 </Link>
                 <Link href="/comunidad" className={NAV_LINK}>
-                  <Images className="w-3 h-3" />
+                  <Images className="size-3.5" />
                   Comunidad
                 </Link>
                 <Link href="/#map" className={NAV_LINK}>
-                  <Map className="w-3 h-3" />
+                  <Map className="size-3.5" />
                   Mapa
                 </Link>
               </nav>
