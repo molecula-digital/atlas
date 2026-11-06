@@ -110,11 +110,46 @@ El sitio esta pensado para correr en [Cloudflare Workers](https://developers.clo
 
 El build de Cloudflare usa **webpack** (`next build --webpack`) porque Turbopack duplica paquetes de Payload y infla el Worker. `@vercel/og` / wasm no se empaquetan: el OG del sitio es el JPG estatico `/og.jpg`. GraphQL de Payload esta desactivado; el admin usa REST.
 
+### Por que el adaptador es tan raro
+
+Workers no es Node. Next, Payload, `pg` y Sharp asumen procesos, addons nativos y `require` de Node. OpenNext empaqueta eso en un solo script. Cada archivo de abajo tapa un hueco que el paquete original no cubre. Quitar uno vuelve a romper el build o la primera visita.
+
+| Archivo | Que tapa |
+| --- | --- |
+| `scripts/run-build.mjs` | Si `WORKERS_CI` o `CLOUDFLARE_BUILD` estan puestos, corre OpenNext en vez de `next build`. Antes del bundle parchea Sharp y `pg-cloudflare`, y al terminar los restaura para que Docker siga usando los paquetes reales. |
+| `scripts/stub-sharp-for-workers.mjs` | Sharp es libvips nativo. El alias de webpack no llega al esbuild de OpenNext, asi que este script sustituye el paquete en disco por `stubs/empty-sharp.js` y `stubs/empty-sharp.cjs`. |
+| `scripts/assert-no-native-sharp.mjs` | Falla el build si `worker.js` todavia trae el binario de Sharp. |
+| `scripts/use-pg-cloudflare-workerd.mjs` | `pg-cloudflare` exporta un modulo vacio por defecto y conecta con `import('cloudflare:sockets')`. Ese import dinamico lo resuelve el loader de Node y lanza `Cannot find module 'cloudflare:sockets'`. El script apunta el paquete al socket real y cambia la llamada a `globalThis.__cloudflareConnect`. |
+| `scripts/assert-cloudflare-sockets.mjs` | Falla el build si el bundle todavia tiene el import dinamico. |
+| `custom-worker.mjs` | OpenNext solo genera `fetch`. Este archivo es el entry: importa `cloudflare:sockets` en estatico (la forma que Workers deja fuera del bundle), lo guarda en `__cloudflareConnect`, y agrega el cron de Luma. |
+| `scripts/pin-cf-worker-name.mjs` | Cloudflare Builds cambia el nombre del script al subirlo y no reescribe el service binding. Este script deja `name`, `WORKER_SELF_REFERENCE` y `main` en `atlas` / `custom-worker.mjs`. |
+| `scripts/check-worker-size.mjs` | `pnpm cf:deploy` aborta si el gzip pasa de 10 MiB. |
+| `package.json` | Dependencias directas `pg-cloudflare` y `require-in-the-middle`. Scripts `cf:build`, `cf:deploy`, `preview`. El paquete npm sigue llamandose `atlas-tech`. El Worker se llama `atlas`. |
+| `stubs/empty-sharp.js`, `stubs/empty-sharp.cjs` | Reemplazo de Sharp. En el build de Next devuelve los bytes originales. En el request, `next/image` usa el binding `IMAGES`. |
+| `stubs/empty-og.js` | `@vercel/og` compila WASM en runtime. Workers lo prohibe. El OG del sitio es `/og.jpg`. |
+| `stubs/empty-module.js` | Sustituto de `drizzle-kit` y `require-in-the-middle`. El segundo igual tiene que estar en `package.json`: el esbuild de OpenNext sigue resolviendo el `require()` que webpack no reescribio. |
+| `next.config.ts` | En el build de Workers aliasa Sharp, OG, `drizzle-kit` y `require-in-the-middle`, quita `output: 'standalone'` y no corre el plugin de Sentry (mete `require-in-the-middle` y se pasa del tope de 10 MiB). |
+| `open-next.config.ts` | Fuerza `next build --webpack` mas el import map de Payload. |
+| `wrangler.jsonc` | Nombre `atlas`, cron, bindings `ASSETS`, `IMAGES` y `WORKER_SELF_REFERENCE`, y el alias de Sharp para el bundle final. |
+| `src/lib/cloudflare-build-env.ts` | Detecta `WORKERS_CI` / `CLOUDFLARE_BUILD`. `next.config.ts` deja `CLOUDFLARE_BUILD=1` grabado en el bundle. |
+| `src/lib/runtime.ts` | En Workers el pool es `max: 4`, `maxUses: 1`. Payload se queda un cliente para siempre en `connectWithReconnect`. Con `max: 1` la siguiente query espera hasta el timeout. |
+| `payload.config.ts` | No carga Sharp durante el build de Workers. Los tamanos `thumbnail` / `card` / `cover` no se generan ahi. |
+| `src/collections/Media.ts` | `skipSafeFetch` en Workers. El fetch anti-SSRF de undici no corre en workerd. |
+| `src/instrumentation.ts` | No arranca el SDK de Sentry de Node en este build. Los errores del navegador siguen saliendo de `src/instrumentation-client.ts`. Los del Worker quedan en los logs de Cloudflare. |
+| `src/lib/static-params.ts` | Si Neon no responde durante el build de Workers, el build falla. En `pnpm dev` esa misma falla solo avisa. |
+| `.gitignore` | Ignora `*.workers-stub-orig` y `*.workers-socket-orig`, las copias que los scripts de parche dejan al romper los hardlinks de pnpm. |
+
+`WORKER_SELF_REFERENCE` no es un parche nuestro. OpenNext lo usa para revalidar una pagina llamando al mismo Worker, sin salir a `https://atlas-sinaloa.tech`. El `service` tiene que ser `atlas`.
+
+El binding `IMAGES` no es el bucket. Es [Image Resizing](https://developers.cloudflare.com/images/optimization/binding/) (`env.IMAGES`). OpenNext lo usa para `next/image`. Los originales siguen en R2 y salen por `cdn.atlas-sinaloa.tech`. Image Resizing tiene que estar activo en la cuenta y se cobra aparte.
+
+El cron `0 */12 * * *` tambien esta en `wrangler.jsonc`. Es el Cron Trigger de Cloudflare (5:00 AM y 5:00 PM, hora de Mazatlan). `custom-worker.mjs` llama a `/api/cron/luma-sync` con `CRON_SECRET` porque esa ruta tambien es publica.
+
 ### Primera vez
 
 1. Instala dependencias y autentica Wrangler: `pnpm wrangler login`
 2. Los secretos de la app viven en Infisical (`https://infisical.molecula.digital`, entorno `prod`). El build los lee con Universal Auth despues de pasar Cloudflare Access. En **Builds → Variables and secrets** tienen que estar `CF_ACCESS_CLIENT_ID`, `CF_ACCESS_CLIENT_SECRET`, `INFISICAL_CLIENT_ID` e `INFISICAL_CLIENT_SECRET`. `wrangler secret put` solo los deja en el Worker en ejecucion; el build no los ve.
-3. Las variables `NEXT_PUBLIC_*` de analytics **y** `NEXT_PUBLIC_SITE_URL` se incrustan en el **build**. Sin `NEXT_PUBLIC_SITE_URL` el cliente de auth cae a localhost. En Cloudflare Builds van como variables de entorno del build.
+3. `NEXT_PUBLIC_SITE_URL` se incrusta en el **build**. Si falta, el cliente usa `https://atlas-sinaloa.tech`. Una copia solo en los secretos del Worker no cambia el bundle.
 4. Cloudflare Builds corre `pnpm run build`. Con `WORKERS_CI=1` ese script usa OpenNext + webpack. `pnpm cf:build` y `pnpm preview` fuerzan el mismo camino. Sin ese flag, Docker sigue generando el output `standalone`.
 5. El build de Next sigue necesitando Postgres (para `generateStaticParams` y las paginas estaticas), mas `PAYLOAD_SECRET` y `BETTER_AUTH_SECRET`. Es el mismo requisito que el Dockerfile. `src/app/(payload)/admin/importMap.js` va en git (webpack en Cloudflare no lo encuentra si solo se genera en el clone); el build de Workers lo regenera antes de webpack.
 6. Despliega conectando el repo en Cloudflare (Workers → Create → Connect git). El Worker del dashboard se llama **`atlas`** (el paquete npm sigue siendo `atlas-tech`). Comando de build: `pnpm cf:build` o `pnpm run build` (en Workers CI es lo mismo). Deploy: `pnpm cf:deploy` (no `npx wrangler deploy` a secas: hay que alinear `WORKER_SELF_REFERENCE` con el nombre del dashboard; si apunta a `atlas-tech` el upload falla con API 10143).
@@ -131,8 +166,6 @@ Si un deploy anterior dejo un service binding `WORKER_SELF_REFERENCE` → `atlas
 Hyperdrive es opcional: descomenta el bloque en `wrangler.jsonc` despues de `wrangler hyperdrive create atlas-tech --connection-string="$DATABASE_URL"` para pool de conexiones y cache de queries. Sin el, Neon pooler + `maxUses: 1` es suficiente.
 
 `pnpm dev` no cambia: sigue siendo Node.js contra Postgres y MinIO locales. `pnpm preview` construye el Worker y lo sirve con Wrangler para validar el runtime de Cloudflare.
-
-El binding `IMAGES` no es el bucket. Es la API de [Image Resizing](https://developers.cloudflare.com/images/optimization/binding/) (`env.IMAGES`). OpenNext la usa para optimizar `next/image` (PNG, JPEG, WEBP, AVIF, GIF, SVG). Los originales siguen en R2 y salen por `cdn.atlas-sinaloa.tech`. Sharp no corre en el Worker: Payload no genera los tamanos `thumbnail` / `card` / `cover` ahi, y el build sustituye el paquete `sharp` por un stub JS para que Next no arrastre libvips. Image Resizing tiene que estar activo en la cuenta; tiene coste aparte del plan Workers.
 
 ## Docker (alternativa / self-host)
 
