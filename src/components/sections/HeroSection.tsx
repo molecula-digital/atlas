@@ -44,7 +44,6 @@ export function HeroSection({
             <WhatsAppDialog
               surface={WHATSAPP_SURFACE.hero}
               label="Grupo de WhatsApp"
-              appearance="whatsapp"
               size="lg"
               className="px-4 py-2.5"
             />

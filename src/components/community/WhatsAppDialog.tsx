@@ -15,11 +15,7 @@ import {
 } from '@/components/ui/button-variants'
 import { WhatsAppIcon } from '@/components/icons/SocialIcons'
 import { WhatsAppJoinLink } from '@/components/community/WhatsAppJoinLink'
-import { cn } from '@/lib/utils'
 import type { WhatsAppSurface } from '@/lib/analytics-events'
-
-const WHATSAPP_BUTTON =
-  'border-[#128C7E] bg-[#25D366] text-[#07342c] hover:border-[#0f7a62] hover:bg-[#1ebe5a] hover:text-[#07342c]'
 
 /**
  * The invitation to the WhatsApp community.
@@ -32,15 +28,12 @@ export function WhatsAppDialog({
   surface,
   label,
   variant = 'accent-filled',
-  appearance = 'default',
   size = 'md',
   className,
 }: {
   surface: WhatsAppSurface
   label: string
   variant?: ButtonVariant
-  /** `whatsapp` paints the trigger in WhatsApp green, with the brand mark. */
-  appearance?: 'default' | 'whatsapp'
   size?: ButtonSize
   className?: string
 }) {
@@ -49,24 +42,15 @@ export function WhatsAppDialog({
       <DialogTrigger asChild>
         <button
           type="button"
-          className={buttonVariants({
-            variant,
-            size,
-            className: cn(
-              appearance === 'whatsapp' && WHATSAPP_BUTTON,
-              className,
-            ),
-          })}
+          className={buttonVariants({ variant, size, className })}
         >
-          {appearance === 'whatsapp' ? (
-            <WhatsAppIcon className="size-4" />
-          ) : null}
+          <WhatsAppIcon className="size-4" />
           {label}
         </button>
       </DialogTrigger>
       <DialogContent showCloseButton className="sm:max-w-sm">
         <DialogHeader className="sm:text-left">
-          <div className="mb-1 flex size-10 items-center justify-center rounded-full bg-[#25D366] text-[#07342c]">
+          <div className="mb-1 flex size-10 items-center justify-center rounded-full border border-accent/20 bg-accent/10 text-accent">
             <WhatsAppIcon className="size-5" />
           </div>
           <DialogTitle>Grupo de WhatsApp</DialogTitle>
@@ -77,11 +61,11 @@ export function WhatsAppDialog({
         </DialogHeader>
         <WhatsAppJoinLink
           surface={surface}
-          className={cn(
-            buttonVariants({ size: 'md' }),
-            WHATSAPP_BUTTON,
-            'w-fit',
-          )}
+          className={buttonVariants({
+            variant: 'accent-filled',
+            size: 'md',
+            className: 'w-fit',
+          })}
         >
           <WhatsAppIcon className="size-4" />
           Unirme al grupo

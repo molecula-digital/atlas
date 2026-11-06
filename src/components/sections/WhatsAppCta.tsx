@@ -40,7 +40,6 @@ export function WhatsAppCta({
         <WhatsAppDialog
           surface={surface}
           label="Grupo de WhatsApp"
-          appearance="whatsapp"
           className="shrink-0"
         />
       </div>
