@@ -10,10 +10,10 @@ import {
 /**
  * The one way to link to the WhatsApp community.
  *
- * The link is scattered across the site — the join dialog, the footer, and
- * the CTA block on several page types. Routing every placement through here
- * means the URL and the reported surface cannot drift, and a new placement
- * has to name itself.
+ * The link is scattered across the site — the hero, the footer, and the CTA
+ * block on several page types. Routing every placement through here means
+ * the URL and the reported surface cannot drift, and a new placement has to
+ * name itself.
  */
 export function WhatsAppJoinLink({
   surface,

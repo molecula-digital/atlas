@@ -1,5 +1,7 @@
 import { MessageCircle } from 'lucide-react'
-import { WhatsAppDialog } from '@/components/community/WhatsAppDialog'
+import { WhatsAppJoinLink } from '@/components/community/WhatsAppJoinLink'
+import { WhatsAppIcon } from '@/components/icons/SocialIcons'
+import { buttonVariants } from '@/components/ui/button-variants'
 import type { WhatsAppSurface } from '@/lib/analytics-events'
 
 /**
@@ -7,8 +9,7 @@ import type { WhatsAppSurface } from '@/lib/analytics-events'
  * can sit inside an already-padded section without doubling up.
  *
  * `surface` is required because this block renders on multiple different page
- * types, and without it every one of them reported the same thing. The button
- * opens the join dialog; the outbound click is counted from inside it.
+ * types, and without it every one of them reported the same thing.
  */
 export function WhatsAppCta({
   className,
@@ -37,11 +38,17 @@ export function WhatsAppCta({
           Comparte ideas, encuentra colaboradores y entérate de todo lo que pasa
           en el ecosistema.
         </p>
-        <WhatsAppDialog
+        <WhatsAppJoinLink
           surface={surface}
-          label="Grupo de WhatsApp"
-          className="shrink-0"
-        />
+          className={buttonVariants({
+            variant: 'accent-filled',
+            size: 'md',
+            className: 'shrink-0',
+          })}
+        >
+          <WhatsAppIcon className="size-4" />
+          Grupo de WhatsApp
+        </WhatsAppJoinLink>
       </div>
     </div>
   )

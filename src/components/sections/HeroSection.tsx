@@ -5,7 +5,9 @@ import type { AtlasEntryType } from '@/config'
 import SinaloaMap from '@/components/maps/SinaloaMapLazy'
 import { ENTRY_TYPE_ICON_MAP } from '@/lib/icons'
 import { DirectoryCtaLink } from '@/components/entries/DirectoryCtaLink'
-import { WhatsAppDialog } from '@/components/community/WhatsAppDialog'
+import { WhatsAppJoinLink } from '@/components/community/WhatsAppJoinLink'
+import { WhatsAppIcon } from '@/components/icons/SocialIcons'
+import { buttonVariants } from '@/components/ui/button-variants'
 import { DIRECTORY_CTA, WHATSAPP_SURFACE } from '@/lib/analytics-events'
 
 interface HeroSectionProps {
@@ -41,12 +43,17 @@ export function HeroSection({
             grupo donde se habla de tecnología, IA y software.
           </p>
           <div className="mt-6 flex flex-col items-start gap-3">
-            <WhatsAppDialog
+            <WhatsAppJoinLink
               surface={WHATSAPP_SURFACE.hero}
-              label="Grupo de WhatsApp"
-              size="lg"
-              className="px-4 py-2.5"
-            />
+              className={buttonVariants({
+                variant: 'accent-filled',
+                size: 'lg',
+                className: 'px-4 py-2.5',
+              })}
+            >
+              <WhatsAppIcon className="size-4" />
+              Grupo de WhatsApp
+            </WhatsAppJoinLink>
             <div className="flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-xs">
               <DirectoryCtaLink
                 cta={DIRECTORY_CTA.hero}
