@@ -6,7 +6,8 @@
   // custom-worker.mjs re-exports the OpenNext fetch handler and adds cron.
   "main": "custom-worker.mjs",
   "triggers": {
-    // UTC. Same cadence as .github/workflows/luma-sync.yml.
+    // 00:00 and 12:00 UTC (5:00 AM and 5:00 PM America/Mazatlan).
+    // custom-worker.mjs scheduled() runs the Luma sync.
     "crons": ["0 */12 * * *"],
   },
   "compatibility_date": "2026-08-04",

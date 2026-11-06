@@ -89,8 +89,8 @@ Los eventos publicos de uno o mas calendarios de [Luma](https://luma.com) se pue
 
 1. En el admin (`/admin`), abre **Integraciones → Calendarios Luma**
 2. La migracion siembra **Gina**, **La Cripto Plebada** y **Cursor Culiacan, Mexico**; agrega mas filas para otros calendarios
-3. Configura `CRON_SECRET` (`openssl rand -hex 32`) como secret del Worker. El mismo valor va en GitHub Actions si quieres el workflow manual.
-4. El Cron Trigger del Worker (`0 */12 * * *`, UTC) llama a `POST /api/cron/luma-sync` dentro del propio Worker (`custom-worker.mjs`). Escribe en el mismo Neon aunque el dominio aun no apunte al Worker. El workflow [`.github/workflows/luma-sync.yml`](.github/workflows/luma-sync.yml) queda como respaldo contra la URL publica; hoy no corre porque `CRON_SECRET` no esta en los secrets de GitHub. Tambien puedes lanzarlo a mano:
+3. Configura `CRON_SECRET` (`openssl rand -hex 32`) en Infisical. El Worker lo usa en runtime.
+4. El cron esta en `wrangler.jsonc` (`0 */12 * * *`, 5:00 AM y 5:00 PM hora de Mazatlan). Cloudflare lo registra al desplegar. `custom-worker.mjs` llama a `POST /api/cron/luma-sync` dentro del propio Worker. Tambien puedes lanzarlo a mano:
 
 ```bash
 curl -fsS -X POST \
@@ -106,7 +106,7 @@ La sync corre en runtime contra la app desplegada (no en el build). Usa el feed 
 
 El sitio esta pensado para correr en [Cloudflare Workers](https://developers.cloudflare.com/workers/) con [`@opennextjs/cloudflare`](https://opennext.js.org/cloudflare). No hace falta un VPS: Neon sigue siendo Postgres, R2 sigue siendo el bucket de imagenes, y el Worker sirve Next.js + Payload.
 
-**Hace falta el plan Workers Paid.** El script del Worker (gzip) tiene que quedar **por debajo de 10 MiB**; el plan gratuito (3 MiB) no alcanza con Payload + Next. Los assets estaticos del cliente no cuentan en ese tope. Un dry-run reciente midio **~6.0 MiB gzip** (tope de pago 10 MiB). `pnpm deploy` corre `pnpm cf:check-size` y falla si Wrangler reporta gzip por encima de 10 MiB.
+**Hace falta el plan Workers Paid.** El script del Worker (gzip) tiene que quedar **por debajo de 10 MiB**; el plan gratuito (3 MiB) no alcanza con Payload + Next. Los assets estaticos del cliente no cuentan en ese tope. `pnpm cf:deploy` corre `pnpm cf:check-size` y falla si Wrangler reporta gzip por encima de 10 MiB.
 
 El build de Cloudflare usa **webpack** (`next build --webpack`) porque Turbopack duplica paquetes de Payload y infla el Worker. `@vercel/og` / wasm no se empaquetan: el OG del sitio es el JPG estatico `/og.jpg`. GraphQL de Payload esta desactivado; el admin usa REST.
 
@@ -115,7 +115,7 @@ El build de Cloudflare usa **webpack** (`next build --webpack`) porque Turbopack
 1. Instala dependencias y autentica Wrangler: `pnpm wrangler login`
 2. Los secretos de la app viven en Infisical (`https://infisical.molecula.digital`, entorno `prod`). El build los lee con Universal Auth despues de pasar Cloudflare Access. En **Builds → Variables and secrets** tienen que estar `CF_ACCESS_CLIENT_ID`, `CF_ACCESS_CLIENT_SECRET`, `INFISICAL_CLIENT_ID` e `INFISICAL_CLIENT_SECRET`. `wrangler secret put` solo los deja en el Worker en ejecucion; el build no los ve.
 3. Las variables `NEXT_PUBLIC_*` de analytics **y** `NEXT_PUBLIC_SITE_URL` se incrustan en el **build**. Sin `NEXT_PUBLIC_SITE_URL` el cliente de auth cae a localhost. En Cloudflare Builds van como variables de entorno del build.
-4. Cloudflare Builds suele auto-detectar Next.js y correr `pnpm run build`. En ese entorno (`WORKERS_CI=1`) el script redirige a OpenNext + webpack; no uses Turbopack ahi (revienta con Sharp/libvips). `CLOUDFLARE_BUILD=1` lo ponen `preview` / `deploy` / `cf:build`, y tambien `pnpm build` cuando detecta Workers CI. Sin ese flag, Docker sigue generando el output `standalone`.
+4. Cloudflare Builds corre `pnpm run build`. Con `WORKERS_CI=1` ese script usa OpenNext + webpack. `pnpm cf:build` y `pnpm preview` fuerzan el mismo camino. Sin ese flag, Docker sigue generando el output `standalone`.
 5. El build de Next sigue necesitando Postgres (para `generateStaticParams` y las paginas estaticas), mas `PAYLOAD_SECRET` y `BETTER_AUTH_SECRET`. Es el mismo requisito que el Dockerfile. `src/app/(payload)/admin/importMap.js` va en git (webpack en Cloudflare no lo encuentra si solo se genera en el clone); el build de Workers lo regenera antes de webpack.
 6. Despliega conectando el repo en Cloudflare (Workers → Create → Connect git). El Worker del dashboard se llama **`atlas`** (el paquete npm sigue siendo `atlas-tech`). Comando de build: `pnpm cf:build` o `pnpm run build` (en Workers CI es lo mismo). Deploy: `pnpm cf:deploy` (no `npx wrangler deploy` a secas: hay que alinear `WORKER_SELF_REFERENCE` con el nombre del dashboard; si apunta a `atlas-tech` el upload falla con API 10143).
 
@@ -171,4 +171,4 @@ Coloca el archivo descargado en `public/topo/`.
 2. Configura tu base de datos PostgreSQL y variables de entorno
 3. Crea credenciales OAuth en Google Cloud Console
 4. Descarga los mapas AGEM de tu estado desde INEGI
-5. Despliega en Cloudflare Workers (`pnpm deploy`) o con Docker
+5. Despliega en Cloudflare Workers (`pnpm cf:deploy`) o con Docker

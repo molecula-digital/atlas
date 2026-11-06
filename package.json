@@ -22,9 +22,8 @@
     "payload:migrate": "node scripts/payload-migrate.mjs",
     "payload:migrate:create": "payload migrate:create",
     "preview": "CLOUDFLARE_BUILD=1 node scripts/run-build.mjs && opennextjs-cloudflare preview",
-    "deploy": "CLOUDFLARE_BUILD=1 node scripts/run-build.mjs && pnpm cf:check-size && opennextjs-cloudflare deploy",
     "cf:build": "CLOUDFLARE_BUILD=1 node scripts/run-build.mjs",
-    "cf:deploy": "node scripts/pin-cf-worker-name.mjs && OPEN_NEXT_DEPLOY=true pnpm exec wrangler deploy",
+    "cf:deploy": "node scripts/pin-cf-worker-name.mjs && pnpm cf:check-size && OPEN_NEXT_DEPLOY=true pnpm exec wrangler deploy",
     "cf:check-size": "node scripts/check-worker-size.mjs",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "prepare": "husky"
@@ -69,7 +68,6 @@
     "react-dom": "19.2.8",
     "react-markdown": "10.1.0",
     "react-simple-maps": "3.0.0",
-    "require-in-the-middle": "8.0.1",
     "sharp": "0.35.3",
     "tailwind-merge": "3.6.0",
     "tailwindcss": "4.3.3",
