@@ -24,8 +24,14 @@ import { fileURLToPath } from 'node:url'
 
 const root = fileURLToPath(new URL('..', import.meta.url))
 const restore = process.argv.includes('--restore')
-const stubEsm = readFileSync(join(root, 'stubs/empty-sharp.js'), 'utf8')
-const stubCjs = readFileSync(join(root, 'stubs/empty-sharp.cjs'), 'utf8')
+const stubEsm = readFileSync(
+  fileURLToPath(new URL('./stubs/empty-sharp.js', import.meta.url)),
+  'utf8',
+)
+const stubCjs = readFileSync(
+  fileURLToPath(new URL('./stubs/empty-sharp.cjs', import.meta.url)),
+  'utf8',
+)
 const backupSuffix = '.workers-stub-orig'
 
 const roots = new Set()

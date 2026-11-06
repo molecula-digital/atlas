@@ -90,7 +90,7 @@ Los eventos publicos de uno o mas calendarios de [Luma](https://luma.com) se pue
 1. En el admin (`/admin`), abre **Integraciones → Calendarios Luma**
 2. La migracion siembra **Gina**, **La Cripto Plebada** y **Cursor Culiacan, Mexico**; agrega mas filas para otros calendarios
 3. Configura `CRON_SECRET` (`openssl rand -hex 32`) en Infisical. El Worker lo usa en runtime.
-4. El cron esta en `wrangler.jsonc` (`0 */12 * * *`, 5:00 AM y 5:00 PM hora de Mazatlan). Cloudflare lo registra al desplegar. `custom-worker.mjs` llama a `POST /api/cron/luma-sync` dentro del propio Worker. Tambien puedes lanzarlo a mano:
+4. El cron esta en `wrangler.jsonc` (`0 */12 * * *`, 5:00 AM y 5:00 PM hora de Mazatlan). Cloudflare lo registra al desplegar. `cloudflare/worker.mjs` llama a `POST /api/cron/luma-sync` dentro del propio Worker. Tambien puedes lanzarlo a mano:
 
 ```bash
 curl -fsS -X POST \
@@ -116,18 +116,18 @@ Workers no es Node. Next, Payload, `pg` y Sharp asumen procesos, addons nativos 
 
 | Archivo | Que tapa |
 | --- | --- |
-| `scripts/run-build.mjs` | Si `WORKERS_CI` o `CLOUDFLARE_BUILD` estan puestos, corre OpenNext en vez de `next build`. Antes del bundle parchea Sharp y `pg-cloudflare`, y al terminar los restaura para que Docker siga usando los paquetes reales. |
-| `scripts/stub-sharp-for-workers.mjs` | Sharp es libvips nativo. El alias de webpack no llega al esbuild de OpenNext, asi que este script sustituye el paquete en disco por `stubs/empty-sharp.js` y `stubs/empty-sharp.cjs`. |
-| `scripts/assert-no-native-sharp.mjs` | Falla el build si `worker.js` todavia trae el binario de Sharp. |
-| `scripts/use-pg-cloudflare-workerd.mjs` | `pg-cloudflare` exporta un modulo vacio por defecto y conecta con `import('cloudflare:sockets')`. Ese import dinamico lo resuelve el loader de Node y lanza `Cannot find module 'cloudflare:sockets'`. El script apunta el paquete al socket real y cambia la llamada a `globalThis.__cloudflareConnect`. |
-| `scripts/assert-cloudflare-sockets.mjs` | Falla el build si el bundle todavia tiene el import dinamico. |
-| `custom-worker.mjs` | OpenNext solo genera `fetch`. Este archivo es el entry: importa `cloudflare:sockets` en estatico (la forma que Workers deja fuera del bundle), lo guarda en `__cloudflareConnect`, y agrega el cron de Luma. |
-| `scripts/pin-cf-worker-name.mjs` | Cloudflare Builds cambia el nombre del script al subirlo y no reescribe el service binding. Este script deja `name`, `WORKER_SELF_REFERENCE` y `main` en `atlas` / `custom-worker.mjs`. |
-| `scripts/check-worker-size.mjs` | `pnpm cf:deploy` aborta si el gzip pasa de 10 MiB. |
+| `scripts/run-build.mjs` | Si `WORKERS_CI` o `CLOUDFLARE_BUILD` estan puestos, corre los parches de `cloudflare/` y luego OpenNext. Al terminar restaura Sharp y `pg-cloudflare` para que Docker siga usando los paquetes reales. |
+| `cloudflare/patch-sharp.mjs` | Sharp es libvips nativo. El alias de webpack no llega al esbuild de OpenNext, asi que este script sustituye el paquete en disco por `cloudflare/stubs/empty-sharp.js` y `empty-sharp.cjs`. |
+| `cloudflare/assert-sharp.mjs` | Falla el build si `worker.js` todavia trae el binario de Sharp. |
+| `cloudflare/patch-pg.mjs` | `pg-cloudflare` exporta un modulo vacio por defecto y conecta con `import('cloudflare:sockets')`. Ese import dinamico lo resuelve el loader de Node y lanza `Cannot find module 'cloudflare:sockets'`. El script apunta el paquete al socket real y cambia la llamada a `globalThis.__cloudflareConnect`. |
+| `cloudflare/assert-sockets.mjs` | Falla el build si el bundle todavia tiene el import dinamico. |
+| `cloudflare/worker.mjs` | Entry del Worker. OpenNext solo genera `fetch`. Este archivo importa `cloudflare:sockets` en estatico, lo guarda en `__cloudflareConnect`, y agrega el cron de Luma. |
+| `cloudflare/pin-name.mjs` | Cloudflare Builds cambia el nombre del script al subirlo y no reescribe el service binding. Este script deja `name`, `WORKER_SELF_REFERENCE` y `main` en `atlas` / `cloudflare/worker.mjs`. |
+| `cloudflare/check-size.mjs` | `pnpm cf:deploy` aborta si el gzip pasa de 10 MiB. |
 | `package.json` | Dependencias directas `pg-cloudflare` y `require-in-the-middle`. Scripts `cf:build`, `cf:deploy`, `preview`. El paquete npm sigue llamandose `atlas-tech`. El Worker se llama `atlas`. |
-| `stubs/empty-sharp.js`, `stubs/empty-sharp.cjs` | Reemplazo de Sharp. En el build de Next devuelve los bytes originales. En el request, `next/image` usa el binding `IMAGES`. |
-| `stubs/empty-og.js` | `@vercel/og` compila WASM en runtime. Workers lo prohibe. El OG del sitio es `/og.jpg`. |
-| `stubs/empty-module.js` | Sustituto de `drizzle-kit` y `require-in-the-middle`. El segundo igual tiene que estar en `package.json`: el esbuild de OpenNext sigue resolviendo el `require()` que webpack no reescribio. |
+| `cloudflare/stubs/empty-sharp.js`, `cloudflare/stubs/empty-sharp.cjs` | Reemplazo de Sharp. En el build de Next devuelve los bytes originales. En el request, `next/image` usa el binding `IMAGES`. |
+| `cloudflare/stubs/empty-og.js` | `@vercel/og` compila WASM en runtime. Workers lo prohibe. El OG del sitio es `/og.jpg`. |
+| `cloudflare/stubs/empty-module.js` | Sustituto de `drizzle-kit` y `require-in-the-middle`. El segundo igual tiene que estar en `package.json`: el esbuild de OpenNext sigue resolviendo el `require()` que webpack no reescribio. |
 | `next.config.ts` | En el build de Workers aliasa Sharp, OG, `drizzle-kit` y `require-in-the-middle`, quita `output: 'standalone'` y no corre el plugin de Sentry (mete `require-in-the-middle` y se pasa del tope de 10 MiB). |
 | `open-next.config.ts` | Fuerza `next build --webpack` mas el import map de Payload. |
 | `wrangler.jsonc` | Nombre `atlas`, cron, bindings `ASSETS`, `IMAGES` y `WORKER_SELF_REFERENCE`, y el alias de Sharp para el bundle final. |
@@ -143,7 +143,7 @@ Workers no es Node. Next, Payload, `pg` y Sharp asumen procesos, addons nativos 
 
 El binding `IMAGES` no es el bucket. Es [Image Resizing](https://developers.cloudflare.com/images/optimization/binding/) (`env.IMAGES`). OpenNext lo usa para `next/image`. Los originales siguen en R2 y salen por `cdn.atlas-sinaloa.tech`. Image Resizing tiene que estar activo en la cuenta y se cobra aparte.
 
-El cron `0 */12 * * *` tambien esta en `wrangler.jsonc`. Es el Cron Trigger de Cloudflare (5:00 AM y 5:00 PM, hora de Mazatlan). `custom-worker.mjs` llama a `/api/cron/luma-sync` con `CRON_SECRET` porque esa ruta tambien es publica.
+El cron `0 */12 * * *` tambien esta en `wrangler.jsonc`. Es el Cron Trigger de Cloudflare (5:00 AM y 5:00 PM, hora de Mazatlan). `cloudflare/worker.mjs` llama a `/api/cron/luma-sync` con `CRON_SECRET` porque esa ruta tambien es publica.
 
 ### Primera vez
 

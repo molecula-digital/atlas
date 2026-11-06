@@ -2,7 +2,7 @@
 /**
  * The Worker must not resolve cloudflare:sockets through Node's require.
  * pg-cloudflare should call globalThis.__cloudflareConnect, installed by
- * custom-worker.mjs with a static import.
+ * cloudflare/worker.mjs with a static import.
  */
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'

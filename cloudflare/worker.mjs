@@ -5,10 +5,10 @@
  *
  * The cron calls the Next route in-process. That writes the same Neon
  * database the site reads, and it does not depend on the public hostname
- * or on the GitHub Actions secret.
+ * or on a public hostname.
  */
 import { connect as cloudflareConnect } from 'cloudflare:sockets'
-import { default as handler } from './.open-next/worker.js'
+import { default as handler } from '../.open-next/worker.js'
 
 // pg-cloudflare reads this when it opens a TCP socket. A dynamic
 // import("cloudflare:sockets") goes through the Node compatibility loader

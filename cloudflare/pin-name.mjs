@@ -17,7 +17,7 @@ const wranglerPath = fileURLToPath(
   new URL('../wrangler.jsonc', import.meta.url),
 )
 const DASHBOARD_WORKER = 'atlas'
-const WORKER_ENTRY = 'custom-worker.mjs'
+const WORKER_ENTRY = 'cloudflare/worker.mjs'
 
 const workerName = (
   process.env.WRANGLER_CI_OVERRIDE_NAME || DASHBOARD_WORKER
