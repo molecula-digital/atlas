@@ -5,7 +5,8 @@ import type { AtlasEntryType } from '@/config'
 import SinaloaMap from '@/components/maps/SinaloaMapLazy'
 import { ENTRY_TYPE_ICON_MAP } from '@/lib/icons'
 import { DirectoryCtaLink } from '@/components/entries/DirectoryCtaLink'
-import { DIRECTORY_CTA } from '@/lib/analytics-events'
+import { WhatsAppDialog } from '@/components/community/WhatsAppDialog'
+import { DIRECTORY_CTA, WHATSAPP_SURFACE } from '@/lib/analytics-events'
 
 interface HeroSectionProps {
   cityCounts?: Record<string, number>
@@ -39,20 +40,26 @@ export function HeroSection({
             Startups, consultoras, comunidades y personas del estado. También el
             grupo donde se habla de tecnología, IA y software.
           </p>
-          <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-xs">
-            <DirectoryCtaLink
-              cta={DIRECTORY_CTA.hero}
-              className="inline-flex items-center gap-1 text-accent hover:underline"
-            >
-              Ver el directorio completo
-              <ArrowRight className="size-3.5" />
-            </DirectoryCtaLink>
-            <Link
-              href="/dashboard"
-              className="text-secondary hover:text-primary"
-            >
-              Agregar un perfil
-            </Link>
+          <div className="mt-6 flex flex-col items-start gap-3">
+            <WhatsAppDialog
+              surface={WHATSAPP_SURFACE.hero}
+              label="Únete al grupo"
+            />
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-xs">
+              <DirectoryCtaLink
+                cta={DIRECTORY_CTA.hero}
+                className="inline-flex items-center gap-1 text-accent hover:underline"
+              >
+                Ver el directorio completo
+                <ArrowRight className="size-3.5" />
+              </DirectoryCtaLink>
+              <Link
+                href="/dashboard"
+                className="text-secondary hover:text-primary"
+              >
+                Agregar un perfil
+              </Link>
+            </div>
           </div>
         </div>
 
