@@ -85,13 +85,13 @@ export function HeroSection({
         </div>
       </div>
 
-      <div className="mt-10 grid grid-cols-1 gap-x-10 border-t border-border sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-10 grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
         {ecosystemStats.map(
           ({ type, label, description, slug, Icon, count }) => (
             <Link
               key={type}
               href={`/${slug}`}
-              className="group flex items-baseline justify-between gap-4 border-b border-border py-3"
+              className="group flex items-start justify-between gap-4 bg-card px-4 py-4 transition-colors hover:bg-elevated"
             >
               <span className="min-w-0">
                 <span className="flex items-center gap-2 font-sans text-base font-semibold text-primary group-hover:text-accent">

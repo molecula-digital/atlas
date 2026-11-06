@@ -24,6 +24,7 @@ import {
   formatEventTimeRange,
 } from '@/lib/events'
 import { EVENT_SURFACE, captureEventCardClicked } from '@/lib/analytics'
+import { isPreviewStubEnabled, STUB_UPCOMING_EVENTS } from '@/lib/preview-stubs'
 import EventTypeBadge from './EventTypeBadge'
 import { EventTimingBadge } from './EventTimingBadge'
 
@@ -36,7 +37,7 @@ function EventThumbnailCard({ ev }: { ev: TechEvent }) {
 
   return (
     <Link
-      href={getEventPath(ev.slug)}
+      href={ev.id.startsWith('preview-') ? '/eventos' : getEventPath(ev.slug)}
       onClick={() =>
         captureEventCardClicked(ev, EVENT_SURFACE.homeStrip, 'page')
       }
@@ -128,13 +129,16 @@ export default function UpcomingEventsStrip() {
   )
 
   const todayStr = getEventDateToday()
-  const upcoming = selectUpcomingEvents(events, todayStr).slice(
+  const liveUpcoming = selectUpcomingEvents(events, todayStr).slice(
     0,
     UPCOMING_LIMIT,
   )
-
   const isLoading =
     (status === 'loading' || status === 'idle') && events.length === 0
+  const upcoming =
+    !isLoading && liveUpcoming.length === 0 && isPreviewStubEnabled()
+      ? STUB_UPCOMING_EVENTS
+      : liveUpcoming
 
   if (!isLoading && upcoming.length === 0) return null
 

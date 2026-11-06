@@ -20,15 +20,17 @@ export async function CommunitySection() {
         {photos.length > 0 && (
           <>
             <CommunityPhotosCarousel photos={photos} />
-            <p className="text-right">
-              <Link
-                href="/comunidad"
-                className="inline-flex items-center gap-1 font-mono text-xs text-secondary transition-colors hover:text-accent"
-              >
-                Ver todas las fotos
-                <ArrowRight className="size-3.5" />
-              </Link>
-            </p>
+            {!photos[0]?.src.startsWith('/preview/') && (
+              <p className="text-right">
+                <Link
+                  href="/comunidad"
+                  className="inline-flex items-center gap-1 font-mono text-xs text-secondary transition-colors hover:text-accent"
+                >
+                  Ver todas las fotos
+                  <ArrowRight className="size-3.5" />
+                </Link>
+              </p>
+            )}
           </>
         )}
 
