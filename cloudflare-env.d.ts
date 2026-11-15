@@ -2,9 +2,8 @@
  * Cloudflare Workers bindings. Regenerate with `pnpm cf-typegen` after
  * changing wrangler.jsonc. The Hyperdrive binding is optional.
  *
- * ISR cache bindings (`NEXT_INC_CACHE_R2_BUCKET`, `NEXT_CACHE_DO_QUEUE`,
- * `NEXT_TAG_CACHE_DO_SHARDED`) live in wrangler.jsonc; run cf-typegen to
- * refresh this file after a deploy config change.
+ * ISR cache binding (`NEXT_INC_CACHE_R2_BUCKET`) lives in wrangler.jsonc;
+ * run cf-typegen to refresh this file after a deploy config change.
  */
 interface CloudflareEnv {
   HYPERDRIVE?: {

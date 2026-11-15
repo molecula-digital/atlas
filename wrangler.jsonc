@@ -45,29 +45,12 @@
   ],
   // OpenNext ISR / fetch cache. Without this bucket every HTML request SSRs
   // against Neon even when Next sends x-nextjs-prerender.
+  // Durable Objects are intentionally omitted: non-production Builds uses
+  // `wrangler versions upload`, which rejects DO migrations (API 10211).
   "r2_buckets": [
     {
       "binding": "NEXT_INC_CACHE_R2_BUCKET",
       "bucket_name": "atlas-tech-next-cache",
-    },
-  ],
-  // Dedupes ISR revalidation (queue) and stores on-demand revalidatePath/Tag.
-  "durable_objects": {
-    "bindings": [
-      {
-        "name": "NEXT_CACHE_DO_QUEUE",
-        "class_name": "DOQueueHandler",
-      },
-      {
-        "name": "NEXT_TAG_CACHE_DO_SHARDED",
-        "class_name": "DOShardedTagCache",
-      },
-    ],
-  },
-  "migrations": [
-    {
-      "tag": "v1",
-      "new_sqlite_classes": ["DOQueueHandler", "DOShardedTagCache"],
     },
   ],
   // Optional: lower-latency Postgres from Workers. Create with:

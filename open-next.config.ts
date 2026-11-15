@@ -1,8 +1,7 @@
 import { defineCloudflareConfig } from '@opennextjs/cloudflare'
 import r2IncrementalCache from '@opennextjs/cloudflare/overrides/incremental-cache/r2-incremental-cache'
 import { withRegionalCache } from '@opennextjs/cloudflare/overrides/incremental-cache/regional-cache'
-import doQueue from '@opennextjs/cloudflare/overrides/queue/do-queue'
-import doShardedTagCache from '@opennextjs/cloudflare/overrides/tag-cache/do-sharded-tag-cache'
+import memoryQueue from '@opennextjs/cloudflare/overrides/queue/memory-queue'
 
 // Webpack, not Turbopack: Payload's production bundle duplicates packages
 // under Turbopack and the Worker gzip blows the 10 MiB paid cap.
@@ -13,8 +12,9 @@ export default {
     incrementalCache: withRegionalCache(r2IncrementalCache, {
       mode: 'long-lived',
     }),
-    queue: doQueue,
-    tagCache: doShardedTagCache({ baseShardSize: 4 }),
+    // Per-isolate ISR queue. Durable Object queues need wrangler deploy
+    // (not versions upload), which is what PR preview Builds uses.
+    queue: memoryQueue,
     // Serve ISR/SSG from the incremental cache without loading Next/Payload.
     enableCacheInterception: true,
   }),

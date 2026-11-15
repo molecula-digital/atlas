@@ -10,10 +10,6 @@
 import { connect as cloudflareConnect } from 'cloudflare:sockets'
 import { default as handler } from '../.open-next/worker.js'
 
-// Durable Object classes from OpenNext. Wrangler bindings point at this
-// entry, so they have to be re-exported here or ISR revalidation is a no-op.
-export { DOQueueHandler, DOShardedTagCache } from '../.open-next/worker.js'
-
 // pg-cloudflare reads this when it opens a TCP socket. A dynamic
 // import("cloudflare:sockets") goes through the Node compatibility loader
 // and fails in the Worker.
