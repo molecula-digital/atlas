@@ -3,6 +3,8 @@ import DirectoryFilter from '@/components/entries/DirectoryFilter'
 import { SITE_URL } from '@/config'
 import { getDirectorySidebarData } from '@/lib/entry-counts'
 
+export const revalidate = 3600
+
 export const metadata: Metadata = {
   title: 'Directorio',
   description:

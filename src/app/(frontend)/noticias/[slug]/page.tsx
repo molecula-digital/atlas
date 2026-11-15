@@ -14,6 +14,8 @@ import { safeJsonLd } from '@/lib/utils'
 import { LivePreviewRefresh } from '@/components/payload/LivePreviewRefresh'
 import { safeStaticParams } from '@/lib/static-params'
 
+export const revalidate = 3600
+
 export async function generateStaticParams() {
   return safeStaticParams(async () => {
     const result = await getPublishedNews()

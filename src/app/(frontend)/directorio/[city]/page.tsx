@@ -3,6 +3,8 @@ import { ALL_CITY_IDS, getCityName, SITE_URL } from '@/config'
 import DirectoryFilter from '@/components/entries/DirectoryFilter'
 import { getDirectorySidebarData } from '@/lib/entry-counts'
 
+export const revalidate = 3600
+
 export async function generateStaticParams() {
   return ALL_CITY_IDS.filter((id) => id !== 'global').map((city) => ({ city }))
 }

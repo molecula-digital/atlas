@@ -6,9 +6,10 @@
   // cloudflare/worker.mjs re-exports the OpenNext fetch handler and adds cron.
   "main": "cloudflare/worker.mjs",
   "triggers": {
-    // 00:00 and 12:00 UTC (5:00 AM and 5:00 PM America/Mazatlan).
-    // cloudflare/worker.mjs scheduled() runs the Luma sync.
-    "crons": ["0 */12 * * *"],
+    // Keep-alive: every 3 minutes. cloudflare/worker.mjs scheduled() pings
+    // Neon and warms the public pages so isolates and the DB do not sleep.
+    // Luma: 00:00 and 12:00 UTC (5:00 AM and 5:00 PM America/Mazatlan).
+    "crons": ["*/3 * * * *", "0 */12 * * *"],
   },
   "compatibility_date": "2026-08-04",
   "compatibility_flags": [
@@ -16,6 +17,15 @@
     "nodejs_compat_populate_process_env",
     "global_fetch_strictly_public",
   ],
+  // Serve cacheable HTML (s-maxage) without running the Worker. Hits skip
+  // isolate warmup entirely — the 8s TTFB. Admin/API send no-store and bypass.
+  "cache": {
+    "enabled": true,
+  },
+  // Run near Neon on cache misses instead of the eyeball colo.
+  "placement": {
+    "mode": "smart",
+  },
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS",
@@ -33,14 +43,33 @@
       "service": "atlas",
     },
   ],
-  // Optional: uncomment after creating the bucket (`wrangler r2 bucket create atlas-tech-next-cache`)
-  // and an incremental cache will back ISR / fetch cache. Without it, pages SSR on each request.
-  // "r2_buckets": [
-  //   {
-  //     "binding": "NEXT_INC_CACHE_R2_BUCKET",
-  //     "bucket_name": "atlas-tech-next-cache",
-  //   },
-  // ],
+  // OpenNext ISR / fetch cache. Without this bucket every HTML request SSRs
+  // against Neon even when Next sends x-nextjs-prerender.
+  "r2_buckets": [
+    {
+      "binding": "NEXT_INC_CACHE_R2_BUCKET",
+      "bucket_name": "atlas-tech-next-cache",
+    },
+  ],
+  // Dedupes ISR revalidation (queue) and stores on-demand revalidatePath/Tag.
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "NEXT_CACHE_DO_QUEUE",
+        "class_name": "DOQueueHandler",
+      },
+      {
+        "name": "NEXT_TAG_CACHE_DO_SHARDED",
+        "class_name": "DOShardedTagCache",
+      },
+    ],
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["DOQueueHandler", "DOShardedTagCache"],
+    },
+  ],
   // Optional: lower-latency Postgres from Workers. Create with:
   //   wrangler hyperdrive create atlas-tech --connection-string="$DATABASE_URL"
   // then paste the id here. Runtime still works with the DATABASE_URL secret alone
