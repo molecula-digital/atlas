@@ -1,11 +1,10 @@
 /**
- * OpenNext only generates a fetch handler. Luma sync and keep-alive need a
- * scheduled handler, so this file is the Worker entry and delegates requests
- * to `.open-next/worker.js` (produced by `opennextjs-cloudflare build`).
+ * OpenNext only generates a fetch handler. Luma sync needs a scheduled
+ * handler, so this file is the Worker entry and delegates requests to
+ * `.open-next/worker.js` (produced by `opennextjs-cloudflare build`).
  *
  * The cron calls the Next route in-process. That writes the same Neon
- * database the site reads, and it does not depend on the public hostname
- * or on a public hostname.
+ * database the site reads, and it does not depend on the public hostname.
  */
 import { connect as cloudflareConnect } from 'cloudflare:sockets'
 import { default as handler } from '../.open-next/worker.js'
@@ -15,18 +14,10 @@ import { default as handler } from '../.open-next/worker.js'
 // and fails in the Worker.
 globalThis.__cloudflareConnect = cloudflareConnect
 
-const SITE_ORIGIN = 'https://atlas-sinaloa.tech'
-const LUMA_SYNC_URL = `${SITE_ORIGIN}/api/cron/luma-sync`
-const KEEP_ALIVE_URL = `${SITE_ORIGIN}/api/cron/keep-alive`
-const KEEP_ALIVE_CRON = '*/3 * * * *'
-const WARM_PATHS = ['/', '/directorio', '/eventos']
+const LUMA_SYNC_URL = 'https://atlas-sinaloa.tech/api/cron/luma-sync'
 
 /** Cap HTML at the Workers Cache so CMS edits are not stuck behind a 1-year s-maxage. */
 const MAX_HTML_S_MAXAGE = 300
-
-function cronSecret(env) {
-  return typeof env.CRON_SECRET === 'string' ? env.CRON_SECRET.trim() : ''
-}
 
 function withCappedHtmlCache(response) {
   if (response.status !== 200) return response
@@ -59,96 +50,45 @@ function withCappedHtmlCache(response) {
   })
 }
 
-async function fetchInternal(url, env, ctx, init = {}) {
-  return handler.fetch(new Request(url, init), env, ctx)
-}
-
-async function runKeepAlive(env, ctx) {
-  const secret = cronSecret(env)
-  if (!secret) {
-    console.error(
-      JSON.stringify({
-        event: 'keep-alive',
-        ok: false,
-        error: 'CRON_SECRET is not set on the Worker',
-      }),
-    )
-    throw new Error('CRON_SECRET is not set on the Worker')
-  }
-
-  const ping = await fetchInternal(KEEP_ALIVE_URL, env, ctx, {
-    method: 'POST',
-    headers: { authorization: `Bearer ${secret}` },
-  })
-  const pingBody = await ping.text()
-  console.log(
-    JSON.stringify({
-      event: 'keep-alive',
-      status: ping.status,
-      body: pingBody.slice(0, 300),
-    }),
-  )
-  if (!ping.ok) {
-    throw new Error(`keep-alive failed with HTTP ${ping.status}`)
-  }
-
-  for (const path of WARM_PATHS) {
-    const response = await fetchInternal(`${SITE_ORIGIN}${path}`, env, ctx)
-    console.log(
-      JSON.stringify({
-        event: 'keep-alive-warm',
-        path,
-        status: response.status,
-      }),
-    )
-    // Drain so the isolate can reuse the connection; body is unused.
-    await response.text()
-  }
-}
-
-async function runLumaSync(env, ctx) {
-  const secret = cronSecret(env)
-  if (!secret) {
-    console.error(
-      JSON.stringify({
-        event: 'luma-sync',
-        ok: false,
-        error: 'CRON_SECRET is not set on the Worker',
-      }),
-    )
-    throw new Error('CRON_SECRET is not set on the Worker')
-  }
-
-  const response = await fetchInternal(LUMA_SYNC_URL, env, ctx, {
-    method: 'POST',
-    headers: { authorization: `Bearer ${secret}` },
-  })
-  const body = await response.text()
-  console.log(
-    JSON.stringify({
-      event: 'luma-sync',
-      status: response.status,
-      body: body.slice(0, 500),
-    }),
-  )
-  if (!response.ok) {
-    throw new Error(`luma-sync failed with HTTP ${response.status}`)
-  }
-}
-
 const worker = {
   async fetch(request, env, ctx) {
     const response = await handler.fetch(request, env, ctx)
     return withCappedHtmlCache(response)
   },
 
-  async scheduled(controller, env, ctx) {
-    if (controller.cron === KEEP_ALIVE_CRON) {
-      await runKeepAlive(env, ctx)
-      return
+  async scheduled(_controller, env, ctx) {
+    const secret =
+      typeof env.CRON_SECRET === 'string' ? env.CRON_SECRET.trim() : ''
+    if (!secret) {
+      console.error(
+        JSON.stringify({
+          event: 'luma-sync',
+          ok: false,
+          error: 'CRON_SECRET is not set on the Worker',
+        }),
+      )
+      throw new Error('CRON_SECRET is not set on the Worker')
     }
 
-    await runLumaSync(env, ctx)
+    const response = await handler.fetch(
+      new Request(LUMA_SYNC_URL, {
+        method: 'POST',
+        headers: { authorization: `Bearer ${secret}` },
+      }),
+      env,
+      ctx,
+    )
+    const body = await response.text()
+    console.log(
+      JSON.stringify({
+        event: 'luma-sync',
+        status: response.status,
+        body: body.slice(0, 500),
+      }),
+    )
+    if (!response.ok) {
+      throw new Error(`luma-sync failed with HTTP ${response.status}`)
+    }
   },
 }
 

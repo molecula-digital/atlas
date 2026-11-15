@@ -6,10 +6,9 @@
   // cloudflare/worker.mjs re-exports the OpenNext fetch handler and adds cron.
   "main": "cloudflare/worker.mjs",
   "triggers": {
-    // Keep-alive: every 3 minutes. cloudflare/worker.mjs scheduled() pings
-    // Neon and warms the public pages so isolates and the DB do not sleep.
-    // Luma: 00:00 and 12:00 UTC (5:00 AM and 5:00 PM America/Mazatlan).
-    "crons": ["*/3 * * * *", "0 */12 * * *"],
+    // 00:00 and 12:00 UTC (5:00 AM and 5:00 PM America/Mazatlan).
+    // cloudflare/worker.mjs scheduled() runs the Luma sync.
+    "crons": ["0 */12 * * *"],
   },
   "compatibility_date": "2026-08-04",
   "compatibility_flags": [
