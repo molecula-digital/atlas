@@ -60,6 +60,8 @@ import { LivePreviewRefresh } from '@/components/payload/LivePreviewRefresh'
 import { EntryLogoLightbox } from '@/components/entries/EntryLogoLightbox'
 import { safeStaticParams } from '@/lib/static-params'
 
+export const revalidate = 3600
+
 export async function generateStaticParams() {
   return safeStaticParams(async () => {
     const result = await getPublishedEntries()

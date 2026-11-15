@@ -4,6 +4,8 @@ import { PageHero } from '@/components/ui/PageHero'
 import NoticiasContent from './NoticiasContent'
 import { SITE_URL } from '@/config'
 
+export const revalidate = 3600
+
 export const metadata: Metadata = {
   title: 'Noticias',
   description: 'Noticias del ecosistema tecnológico de Sinaloa.',

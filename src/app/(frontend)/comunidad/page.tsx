@@ -16,6 +16,8 @@ const DESCRIPTION =
 
 const PAGE_SIZE = 42
 
+export const revalidate = 3600
+
 type PageProps = { searchParams: Promise<{ page?: string }> }
 
 export async function generateMetadata({

@@ -16,6 +16,15 @@
     "nodejs_compat_populate_process_env",
     "global_fetch_strictly_public",
   ],
+  // Serve cacheable HTML (s-maxage) without running the Worker. Hits skip
+  // isolate warmup entirely — the 8s TTFB. Admin/API send no-store and bypass.
+  "cache": {
+    "enabled": true,
+  },
+  // Run near Neon on cache misses instead of the eyeball colo.
+  "placement": {
+    "mode": "smart",
+  },
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS",
@@ -33,14 +42,16 @@
       "service": "atlas",
     },
   ],
-  // Optional: uncomment after creating the bucket (`wrangler r2 bucket create atlas-tech-next-cache`)
-  // and an incremental cache will back ISR / fetch cache. Without it, pages SSR on each request.
-  // "r2_buckets": [
-  //   {
-  //     "binding": "NEXT_INC_CACHE_R2_BUCKET",
-  //     "bucket_name": "atlas-tech-next-cache",
-  //   },
-  // ],
+  // OpenNext ISR / fetch cache. Without this bucket every HTML request SSRs
+  // against Neon even when Next sends x-nextjs-prerender.
+  // Durable Objects are intentionally omitted: non-production Builds uses
+  // `wrangler versions upload`, which rejects DO migrations (API 10211).
+  "r2_buckets": [
+    {
+      "binding": "NEXT_INC_CACHE_R2_BUCKET",
+      "bucket_name": "atlas-tech-next-cache",
+    },
+  ],
   // Optional: lower-latency Postgres from Workers. Create with:
   //   wrangler hyperdrive create atlas-tech --connection-string="$DATABASE_URL"
   // then paste the id here. Runtime still works with the DATABASE_URL secret alone

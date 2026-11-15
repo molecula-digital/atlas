@@ -4,6 +4,8 @@ import { PageHero } from '@/components/ui/PageHero'
 import EmpleosContent from './EmpleosContent'
 import { SITE_URL } from '@/config'
 
+export const revalidate = 3600
+
 export const metadata: Metadata = {
   title: 'Empleos',
   description:

@@ -5,6 +5,8 @@ import { PastEventsSection } from '@/components/sections/PastEventsSection'
 import { PageHero } from '@/components/ui/PageHero'
 import { SITE_URL } from '@/config'
 
+export const revalidate = 3600
+
 export const metadata: Metadata = {
   title: 'Eventos Tech en Sinaloa',
   description:

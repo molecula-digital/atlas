@@ -12,6 +12,8 @@ import { CommunitySection } from '@/components/sections/CommunitySection'
 import { CombinedCtaSection } from '@/components/sections/CombinedCtaSection'
 import UpcomingEventsStrip from '@/components/calendar/UpcomingEventsStrip'
 
+export const revalidate = 3600
+
 export const metadata: Metadata = {
   title: 'Tech Atlas — Ecosistema Tech de Sinaloa',
   description: SITE_DESCRIPTION,

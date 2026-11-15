@@ -9,6 +9,8 @@ import DirectoryFilter from '@/components/entries/DirectoryFilter'
 import { getDirectorySidebarData } from '@/lib/entry-counts'
 import { notFound } from 'next/navigation'
 
+export const revalidate = 3600
+
 export async function generateStaticParams() {
   return Object.values(ENTRY_TYPE_CONFIG).map((c) => ({ category: c.slug }))
 }
