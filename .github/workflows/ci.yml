@@ -36,3 +36,6 @@ jobs:
 
       - name: Type-check
         run: pnpm typecheck
+
+      - name: Test Worker cache headers
+        run: pnpm test

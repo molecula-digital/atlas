@@ -16,8 +16,10 @@
     "nodejs_compat_populate_process_env",
     "global_fetch_strictly_public",
   ],
-  // Serve cacheable HTML (s-maxage) without running the Worker. Hits skip
-  // isolate warmup entirely — the 8s TTFB. Admin/API send no-store and bypass.
+  // Serve cacheable HTML without running the Worker. Hits skip isolate
+  // warmup entirely — the 8s TTFB. Admin/API send no-store and bypass.
+  // Do not put s-maxage on HTML: Cloudflare treats it as proxy-revalidate
+  // and disables stale-while-revalidate. See cloudflare/html-cache.mjs.
   "cache": {
     "enabled": true,
   },

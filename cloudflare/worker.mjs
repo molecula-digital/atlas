@@ -8,6 +8,11 @@
  */
 import { connect as cloudflareConnect } from 'cloudflare:sockets'
 import { default as handler } from '../.open-next/worker.js'
+import {
+  HTML_CACHE_TAG,
+  shouldPurgeHtmlCache,
+  withPublicHtmlCache,
+} from './html-cache.mjs'
 
 // pg-cloudflare reads this when it opens a TCP socket. A dynamic
 // import("cloudflare:sockets") goes through the Node compatibility loader
@@ -16,44 +21,46 @@ globalThis.__cloudflareConnect = cloudflareConnect
 
 const LUMA_SYNC_URL = 'https://atlas-sinaloa.tech/api/cron/luma-sync'
 
-/** Cap HTML at the Workers Cache so CMS edits are not stuck behind a 1-year s-maxage. */
-const MAX_HTML_S_MAXAGE = 300
+/**
+ * @param {ExecutionContext} ctx
+ */
+function purgeHtmlCache(ctx) {
+  const purge = ctx.cache?.purge
+  if (typeof purge !== 'function') return
 
-function withCappedHtmlCache(response) {
-  if (response.status !== 200) return response
-  const contentType = response.headers.get('content-type') || ''
-  if (!contentType.includes('text/html')) return response
-
-  const cacheControl = response.headers.get('cache-control') || ''
-  if (/no-store|private/.test(cacheControl)) return response
-
-  const match = cacheControl.match(/s-maxage=(\d+)/)
-  if (!match) return response
-
-  const current = Number(match[1])
-  if (!Number.isFinite(current) || current <= MAX_HTML_S_MAXAGE) {
-    return response
-  }
-
-  let next = cacheControl.replace(
-    /s-maxage=\d+/,
-    `s-maxage=${MAX_HTML_S_MAXAGE}`,
+  ctx.waitUntil(
+    Promise.resolve(purge.call(ctx.cache, { tags: [HTML_CACHE_TAG] }))
+      .then((result) => {
+        if (result && result.success === false) {
+          console.error(
+            JSON.stringify({
+              event: 'html-cache-purge',
+              ok: false,
+              errors: result.errors,
+            }),
+          )
+        }
+      })
+      .catch((error) => {
+        console.error(
+          JSON.stringify({
+            event: 'html-cache-purge',
+            ok: false,
+            error: String(error),
+          }),
+        )
+      }),
   )
-  if (!/\bpublic\b/i.test(next)) next = `public, ${next}`
-
-  const headers = new Headers(response.headers)
-  headers.set('Cache-Control', next)
-  return new Response(response.body, {
-    status: response.status,
-    statusText: response.statusText,
-    headers,
-  })
 }
 
 const worker = {
   async fetch(request, env, ctx) {
     const response = await handler.fetch(request, env, ctx)
-    return withCappedHtmlCache(response)
+    const pathname = new URL(request.url).pathname
+    if (shouldPurgeHtmlCache(request.method, pathname) && response.ok) {
+      purgeHtmlCache(ctx)
+    }
+    return withPublicHtmlCache(response)
   },
 
   async scheduled(_controller, env, ctx) {
@@ -89,6 +96,7 @@ const worker = {
     if (!response.ok) {
       throw new Error(`luma-sync failed with HTTP ${response.status}`)
     }
+    purgeHtmlCache(ctx)
   },
 }
 
