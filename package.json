@@ -14,6 +14,7 @@
     "commitlint": "commitlint",
     "check": "pnpm format:check && pnpm lint",
     "typecheck": "tsc --noEmit",
+    "test": "node --test cloudflare/*.test.mjs",
     "generate:types": "payload generate:types",
     "generate:importmap": "node scripts/generate-importmap.mjs",
     "seed": "PAYLOAD_CONFIG_PATH=./payload.config.ts tsx scripts/seed.ts",
